@@ -1,0 +1,1030 @@
+{
+ "id": 820876,
+ "name": "Create Box folders for ServiceNow service requests",
+ "description": "1. A service request is created in ServiceNow.\n2. Workato creates a folder in Box with the ServiceNow request's **number** as the folder name, if it doesn't already exist.\n3.  Workato creates a shared link to the Box folder.",
+ "applications": [
+  "service_now",
+  "box"
+ ],
+ "action_applications": [
+  "box"
+ ],
+ "trigger_application": "service_now",
+ "business_objects": [
+  "file",
+  "folder"
+ ],
+ "categories": [
+  "Customer Service",
+  "IT Service Management",
+  "Document/File"
+ ],
+ "copy_count": 655,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-08-31T16:38:38.138-07:00",
+ "source_url": "https://app.workato.com/recipes/820876?community=us",
+ "steps": [
+  "service_now.new_object",
+  "box.search_files",
+  "box.create_folder",
+  "box.create_folder_shared_link"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "service_now",
+  "name": "new_object",
+  "as": "new_object",
+  "title": "New record in Request",
+  "description": "New <span class=\"provider\">record</span> in <span class=\"provider\">Request</span> table in <span class=\"provider\">ServiceNow</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "table": "Request"
+  },
+  "toggleCfg": {
+   "table": true
+  },
+  "input": {
+   "since": "=1.days.ago",
+   "table": "sc_request~Request"
+  },
+  "extended_output_schema": [
+   {
+    "type": "integer",
+    "name": "calendar_stc",
+    "control_type": "number",
+    "label": "Resolve Time",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "delivery_address",
+    "control_type": "text",
+    "label": "Delivery address",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "price",
+    "control_type": "text",
+    "label": "Price",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "requested_date",
+    "control_type": "date_time",
+    "label": "Requested for date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "object",
+    "name": "requested_for",
+    "label": "Requested for",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "request_state",
+    "control_type": "text",
+    "label": "Request state",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "special_instructions",
+    "control_type": "text",
+    "label": "Special instructions",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "stage",
+    "control_type": "text",
+    "label": "Stage",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "sys_id",
+    "control_type": "text",
+    "label": "Sys ID",
+    "optional": true,
+    "custom": false,
+    "key_scope": "sc_request"
+   },
+   {
+    "type": "boolean",
+    "name": "active",
+    "control_type": "checkbox",
+    "label": "Active",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Active",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "custom": false,
+     "optional": true,
+     "type": "boolean",
+     "name": "active"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "activity_due",
+    "control_type": "text",
+    "label": "Activity due",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "additional_assignee_list",
+    "control_type": "text",
+    "label": "Additional assignee list",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "approval",
+    "control_type": "text",
+    "label": "Approval",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "approval_history",
+    "control_type": "text",
+    "label": "Approval history",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "approval_set",
+    "control_type": "date_time",
+    "label": "Approval set",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "object",
+    "name": "assigned_to",
+    "label": "Assigned to",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "object",
+    "name": "assignment_group",
+    "label": "Assignment group",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "business_duration",
+    "control_type": "text",
+    "label": "Business duration",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "object",
+    "name": "business_service",
+    "label": "Business service",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "calendar_duration",
+    "control_type": "text",
+    "label": "Duration",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "closed_at",
+    "control_type": "date_time",
+    "label": "Closed",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "object",
+    "name": "closed_by",
+    "label": "Closed by",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "close_notes",
+    "control_type": "text",
+    "label": "Close notes",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "object",
+    "name": "cmdb_ci",
+    "label": "Configuration item",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "comments",
+    "control_type": "text",
+    "label": "Additional comments",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "comments_and_work_notes",
+    "control_type": "text",
+    "label": "Comments and Work notes",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "object",
+    "name": "company",
+    "label": "Company",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "contact_type",
+    "control_type": "text",
+    "label": "Contact type",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "correlation_display",
+    "control_type": "text",
+    "label": "Correlation display",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "correlation_id",
+    "control_type": "text",
+    "label": "Correlation ID",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "credit_cards",
+    "control_type": "text",
+    "label": "Credit cards",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "object",
+    "name": "delivery_plan",
+    "label": "Delivery plan",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "object",
+    "name": "delivery_task",
+    "label": "Delivery task",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "description",
+    "control_type": "text",
+    "label": "Description",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "due_date",
+    "control_type": "date_time",
+    "label": "Due date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "object",
+    "name": "encrypted_by",
+    "label": "Encrypted by",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "object",
+    "name": "encryption_context",
+    "label": "Encryption context",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "escalation",
+    "control_type": "number",
+    "label": "Escalation",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "date_time",
+    "name": "expected_start",
+    "control_type": "date_time",
+    "label": "Expected start",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "date_time",
+    "name": "follow_up",
+    "control_type": "date_time",
+    "label": "Follow up",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "string",
+    "name": "group_list",
+    "control_type": "text",
+    "label": "Group list",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "integer",
+    "name": "impact",
+    "control_type": "number",
+    "label": "Impact",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "boolean",
+    "name": "knowledge",
+    "control_type": "checkbox",
+    "label": "Knowledge",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Knowledge",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "custom": false,
+     "optional": true,
+     "type": "boolean",
+     "name": "knowledge"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "object",
+    "name": "location",
+    "label": "Location",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "boolean",
+    "name": "made_sla",
+    "control_type": "checkbox",
+    "label": "Made SLA",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Made SLA",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "custom": false,
+     "optional": true,
+     "type": "boolean",
+     "name": "made_sla"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "number",
+    "control_type": "text",
+    "label": "Number",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "opened_at",
+    "control_type": "date_time",
+    "label": "Opened",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "object",
+    "name": "opened_by",
+    "label": "Opened by",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "order",
+    "control_type": "number",
+    "label": "Order",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "object",
+    "name": "parent",
+    "label": "Parent",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "priority",
+    "control_type": "number",
+    "label": "Priority",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "reassignment_count",
+    "control_type": "number",
+    "label": "Reassignment count",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "short_description",
+    "control_type": "text",
+    "label": "Short description",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "sla_due",
+    "control_type": "text",
+    "label": "SLA due",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "ssns",
+    "control_type": "text",
+    "label": "Social security numbers",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "integer",
+    "name": "state",
+    "control_type": "number",
+    "label": "State",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "sys_class_name",
+    "control_type": "text",
+    "label": "Task type",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "sys_created_by",
+    "control_type": "text",
+    "label": "Created by",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "sys_created_on",
+    "control_type": "date_time",
+    "label": "Created",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "string",
+    "name": "sys_domain",
+    "control_type": "text",
+    "label": "Domain",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "sys_domain_path",
+    "control_type": "text",
+    "label": "Domain Path",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "integer",
+    "name": "sys_mod_count",
+    "control_type": "number",
+    "label": "Updates",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "sys_updated_by",
+    "control_type": "text",
+    "label": "Updated by",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "sys_updated_on",
+    "control_type": "date_time",
+    "label": "Updated",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "string",
+    "name": "time_worked",
+    "control_type": "text",
+    "label": "Time worked",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "upon_approval",
+    "control_type": "text",
+    "label": "Upon approval",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "upon_reject",
+    "control_type": "text",
+    "label": "Upon reject",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "integer",
+    "name": "urgency",
+    "control_type": "number",
+    "label": "Urgency",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "user_input",
+    "control_type": "text",
+    "label": "User input",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "watch_list",
+    "control_type": "text",
+    "label": "Watch list",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "work_end",
+    "control_type": "date_time",
+    "label": "Actual end",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   },
+   {
+    "type": "string",
+    "name": "work_notes",
+    "control_type": "text",
+    "label": "Work notes",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "work_notes_list",
+    "control_type": "text",
+    "label": "Work notes list",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "date_time",
+    "name": "work_start",
+    "control_type": "date_time",
+    "label": "Actual start",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_servicenow_utc_time",
+    "parse_output": "parse_servicenow_utc_time"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "box",
+    "name": "search_files",
+    "as": "11a3b052",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "type": true,
+     "exact_match": true
+    },
+    "input": {
+     "type": "folder",
+     "exact_match": "true",
+     "query": "#{_('data.service_now.new_object.number')}"
+    },
+    "comment": "Search for a folder in box by ServiceNow request number",
+    "uuid": "5c590bd3-1c47-45a2-a3b2-097799816673",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.box.11a3b052.files.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "box",
+      "name": "create_folder",
+      "as": "create_folder",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "parent_id": {
+        "ids": [
+         "0"
+        ],
+        "titles": [
+         "Home folder"
+        ]
+       }
+      },
+      "toggleCfg": {
+       "parent_id": true
+      },
+      "input": {
+       "folder_name": "#{_('data.service_now.new_object.number')}",
+       "parent_id": "0"
+      },
+      "uuid": "900894c7-d250-47d5-a15f-13e90a66db6b",
+      "title": null,
+      "description": null
+     }
+    ],
+    "comment": "If folder with ServiceNow request number does not exist in Box",
+    "uuid": "0cab832e-0bf0-48bd-b0b3-eab45f988652"
+   },
+   {
+    "number": 4,
+    "provider": "box",
+    "name": "create_folder_shared_link",
+    "as": "create_folder_shared_link",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "access": "open",
+     "folder_id": "=_('data.box.11a3b052.files.first.id') or _('data.box.create_folder.id')"
+    },
+    "uuid": "d413d962-3407-40bc-922c-d2e74dc40f25",
+    "title": null,
+    "description": null
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_3",
+    "label": "Folder name"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "ServiceNow request"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_3": "#{_('data.service_now.new_object.number')}",
+   "custom_column_1": "#{_('data.service_now.new_object.short_description')}"
+  },
+  "uuid": "f63614c8-51cb-4c6c-a1bb-b00624ddf029",
+  "param": {}
+ }
+}

@@ -1,0 +1,350 @@
+{
+ "name": "sap_secondary",
+ "title": "SAP RFC secondary",
+ "requires_connection": true,
+ "categories": [
+  "ERP",
+  "Sales Enablement"
+ ],
+ "aliases": [
+  "SAP RFC",
+  "ecc",
+  "s4",
+  "hana"
+ ],
+ "triggers": [
+  {
+   "name": "new_idocs_batch",
+   "title": "New IDocs",
+   "description": "New IDocs from SAP",
+   "help": "The trigger listens to outbound IDocs coming from SAP and supports processing multiple IDocs in a single job. To fully leverage this functionality, consider configuring the SAP system partner profile to enable sending multiple IDocs in one transaction. Refer to the WE20 dialogue in the SAP system an…",
+   "input": [
+    {
+     "name": "idoc",
+     "type": "string",
+     "label": "IDoc type",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "idoc_list_outbound",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "idoc_name",
+      "type": "string"
+     },
+     "hint": "Select an IDoc type from the target SAP system. If certain IDoc is not available in the dropdown, consider configuring it in the WE20 dialogue in the SAP system, before establishing a connection betwe…"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "required": true,
+     "default": 100,
+     "hint": "Set a batch size for processing multiple IDocs per job, aligned with the solution architecture and Workato webhook volume limits . For single-document processing, consider using the 'New IDoc' trigger…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_idoc",
+   "title": "New IDoc",
+   "description": "New IDoc from SAP",
+   "help": "Triggers when new IDoc is received from SAP. This trigger listens to outbound IDoc in real-time. However since IDoc is asynchronous, your SAP system may schedule the IDoc to be sent at a later time, thus trigger may not receive it immediately. You need to configure the needed IDocs in your SAP syste…",
+   "input": [
+    {
+     "name": "idoc",
+     "type": "string",
+     "label": "IDoc name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "idoc_list_outbound",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "idoc_name",
+      "type": "string"
+     },
+     "hint": "Select an IDoc from your SAP system. If a specific IDoc is not visible, please configure it in your SAP system and then click Refresh in the top right corner. Learn more"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "call_bapi",
+   "title": "Call BAPI",
+   "description": "Run BAPI in SAP",
+   "help": "Use this action to discover and run a BAPI or RFM via Remote Function Call (RFC) in your SAP system. Please ensure you are using an OPA version >= 24.1 for the Business Object field to be populated, otherwise you need to manually enter the BAPI name in the BAPI name field.",
+   "input": [
+    {
+     "name": "action_name",
+     "type": "string",
+     "label": "BAPI description",
+     "control_type": "text",
+     "hint": "Describe what this BAPI does. e.g. Create Sales Order"
+    },
+    {
+     "name": "business_process",
+     "type": "string",
+     "label": "Business Object",
+     "control_type": "select",
+     "pick_list": "business_process_list",
+     "hint": "Select the business object to which the BAPI belongs."
+    },
+    {
+     "name": "function",
+     "type": "string",
+     "label": "BAPI name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bapi_catalogue",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "function",
+      "type": "string"
+     },
+     "hint": "Select BAPI from the list."
+    },
+    {
+     "name": "scope_type",
+     "type": "string",
+     "label": "Transaction ID",
+     "control_type": "text",
+     "visible_if": "input.protocol != \"arfc\"",
+     "hint": "Provide the transaction ID generated in the output of the Begin transaction action. If this is mapped, Force auto-commit will be disabled."
+    },
+    {
+     "name": "auto-commit",
+     "type": "boolean",
+     "label": "Force auto-commit",
+     "control_type": "checkbox",
+     "required": true,
+     "visible_if": "!input.scope_type",
+     "default": "false",
+     "toggle_field": {
+      "name": "auto-commit",
+      "type": "boolean"
+     },
+     "hint": "If Yes , Workato will execute RFC call in stateful context and force BAPI_TRANSACTION_COMMIT/BAPI_TRANSACTION_ROLLBACK on completion. If No , whether BAPI/RFM will auto commit depends on its own setti…"
+    },
+    {
+     "name": "protocol",
+     "type": "string",
+     "label": "Timeout",
+     "control_type": "select",
+     "options": [
+      "srfc",
+      "arfc"
+     ],
+     "hint": "Configure the timeout for this RFC to up to 30 minutes. If 30 minutes is selected, you cannot run this RFC in a transaction."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "idoc_status",
+   "title": "Check IDoc status",
+   "description": "Check if an IDoc is successfully processed in SAP",
+   "help": "Use this action to check if an IDoc is successfully processed in SAP. When you use action Send IDoc , Workato automatically attaches an unique Submission ID to the IDoc, so you can check the the IDoc status later. Provide this Submission ID in the input field below.",
+   "input": [
+    {
+     "name": "submission_id",
+     "type": "string",
+     "label": "Submission ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Use Submission ID data pill from the output of action Send IDoc . Or enter Submission ID directly."
+    }
+   ],
+   "output": [
+    {
+     "name": "idocNumber",
+     "type": "string",
+     "label": "IDoc number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "statusCode",
+     "type": "string",
+     "label": "Status code",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Status description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "detail",
+     "type": "string",
+     "label": "Detail",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "idoc_upload_new",
+   "title": "Send IDoc",
+   "description": "Send IDoc to SAP",
+   "help": "Use this action to send IDoc to SAP. You can configure the action to wait for SAP to process the IDoc before moving on to the next recipe step, or use another action Check IDoc status to check if the IDoc is successfully processed. Note that you need to configure the needed IDocs in your SAP system …",
+   "input": [
+    {
+     "name": "idoc",
+     "type": "string",
+     "label": "IDoc name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "idoc_list_inbound",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "idoc_name",
+      "type": "string"
+     },
+     "hint": "Select an IDoc from your SAP system. If you do not see certain IDoc, please configure it in your SAP system first. Then click schema refresh at the bottom of this page. Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "idoc_upload_v3",
+   "title": "Send IDoc (Advanced)",
+   "description": "Send IDoc to SAP",
+   "help": "Use this action to send IDoc to SAP. You can configure the action to wait for SAP to process the IDoc before moving on to the next recipe step, or use another action Check IDoc status to check if the IDoc is successfully processed. Note that you need to configure the needed IDocs in your SAP system …",
+   "input": [],
+   "output": []
+  },
+  {
+   "name": "run_rfm",
+   "title": "Call remote function module",
+   "description": "Run RFC in SAP",
+   "help": "Use this action to discover and run a BAPI or RFM via Remote Function Call (RFC) in your SAP system.",
+   "input": [
+    {
+     "name": "action_name",
+     "type": "string",
+     "label": "RFM description",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Describe what this RFM does. e.g. Create Sales Order"
+    },
+    {
+     "name": "function",
+     "type": "string",
+     "label": "RFM name",
+     "control_type": "tree",
+     "required": true,
+     "visible_if": "!authUser.feature_flags.sap_disable_rfm_picklist",
+     "pick_list": "rfm_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "function_name",
+      "type": "string"
+     },
+     "hint": "Select an RFM you want to run. Searching can load faster if you copy & paste the RFM name here instead of typing. Learn more"
+    },
+    {
+     "name": "function_name",
+     "type": "string",
+     "label": "RFM name",
+     "control_type": "text",
+     "visible_if": "authUser.feature_flags.sap_disable_rfm_picklist",
+     "extends_schema": true,
+     "hint": "Enter the exact case-sensitive name of the RFM you want to use."
+    },
+    {
+     "name": "scope_type",
+     "type": "string",
+     "label": "Transaction ID",
+     "control_type": "text",
+     "visible_if": "input.protocol != \"arfc\"",
+     "hint": "Provide the transaction ID generated in the output of the Begin transaction action. If this is mapped, Force auto-commit will be disabled."
+    },
+    {
+     "name": "auto-commit",
+     "type": "string",
+     "label": "Force auto-commit",
+     "control_type": "select",
+     "required": true,
+     "visible_if": "!input.scope_type",
+     "default": "false",
+     "options": [
+      "true",
+      "false"
+     ],
+     "hint": "If Yes , Workato will execute RFC call in stateful context and force BAPI_TRANSACTION_COMMIT/BAPI_TRANSACTION_ROLLBACK on completion. If No , whether BAPI/RFM will auto commit depends on its own setti…"
+    },
+    {
+     "name": "protocol",
+     "type": "string",
+     "label": "Timeout",
+     "control_type": "select",
+     "options": [
+      "srfc",
+      "arfc"
+     ],
+     "extends_schema": true,
+     "hint": "Configure the timeout for this RFC to up to 30 minutes. If 30 minutes is selected, you cannot run this RFC in a transaction."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "trfc_begin",
+   "title": "Begin transaction",
+   "description": "Begin transaction in SAP",
+   "help": "This action signifies the creation of a transaction to run multiple RFCs in the same context. The output of this action is a transaction ID that can be passed to the Call remote function module action to execute it in this transaction. This action must also be paired with the End transaction action …",
+   "input": [],
+   "output": [
+    {
+     "name": "scope_type",
+     "type": "string",
+     "label": "Transaction ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "trfc_end",
+   "title": "End transaction",
+   "description": "End transaction and Rollback changes in SAP",
+   "help": "This action ends a transaction after multiple RFCs have been executed. Select Commit work to execute the BAPI BAPI_TRANSACTION_COMMIT to commit the changes to SAP or Rollback changes to execute the BAPI BAPI_TRANSACTION_ROLLBACK to rollback the changes. Learn more",
+   "input": [
+    {
+     "name": "function",
+     "type": "string",
+     "label": "Upon ending the transaction, do you want to",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "BAPI_TRANSACTION_COMMIT",
+      "BAPI_TRANSACTION_ROLLBACK"
+     ],
+     "extends_schema": true,
+     "hint": "Select a BAPI you want to run."
+    },
+    {
+     "name": "scope_type",
+     "type": "string",
+     "label": "Transaction ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the transaction ID generated in the output of the Begin transaction action."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

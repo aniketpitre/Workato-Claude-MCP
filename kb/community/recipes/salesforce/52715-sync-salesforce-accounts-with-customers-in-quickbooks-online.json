@@ -1,0 +1,806 @@
+{
+ "id": 52715,
+ "name": "Sync Salesforce accounts with customers in QuickBooks Online",
+ "description": "This integration keeps Salesforce accounts in sync with QuickBooks customers.\n\n1. An account is created or updated in Salesforce.\n2. Workato searches for a matching customer in QuickBooks Online.\n3. If the customer already exists in QuickBooks, and Salesforce is the Customer Master, update the QuickBooks customer.\n4. If customer does not already exist in QuickBooks, create the customer.",
+ "applications": [
+  "salesforce",
+  "quickbooks",
+  "email"
+ ],
+ "action_applications": [
+  "quickbooks",
+  "email"
+ ],
+ "trigger_application": "salesforce",
+ "business_objects": [
+  "account",
+  "customer",
+  "email"
+ ],
+ "categories": [
+  "CRM",
+  "Marketing",
+  "Accounting",
+  "Recipe Tools"
+ ],
+ "copy_count": 2402,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2020-05-17T23:08:38.492-07:00",
+ "source_url": "https://app.workato.com/recipes/52715?community=us",
+ "steps": [
+  "salesforce.updated_custom_object",
+  "quickbooks.search_customer",
+  "quickbooks.create_customer",
+  "quickbooks.update_customer",
+  "email.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "salesforce",
+  "name": "updated_custom_object",
+  "as": "updated_custom_object",
+  "title": "New/updated Account",
+  "description": "New/updated <span class=\"provider\">Account</span> in <span class=\"provider\">Salesforce</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "sobject_name": "Account"
+  },
+  "toggleCfg": {},
+  "input": {
+   "sobject_name": "Account",
+   "since": "#{_('data.workato.job_context.parameters.start_date')}",
+   "since_offset": "-3600"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "Description",
+    "control_type": "text-area",
+    "label": "Account Description",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "Id",
+    "control_type": "text",
+    "label": "Account ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false,
+    "key_scope": "Account"
+   },
+   {
+    "type": "string",
+    "name": "Name",
+    "control_type": "text",
+    "label": "Account Name",
+    "optional": false,
+    "custom": false,
+    "event_title": true
+   },
+   {
+    "type": "string",
+    "name": "Phone",
+    "control_type": "phone",
+    "label": "Account Phone",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "Type",
+    "control_type": "select",
+    "label": "Account Type",
+    "pick_list": [
+     [
+      "Analyst",
+      "Analyst"
+     ],
+     [
+      "Competitor",
+      "Competitor"
+     ],
+     [
+      "Customer",
+      "Customer"
+     ],
+     [
+      "Integrator",
+      "Integrator"
+     ],
+     [
+      "Investor",
+      "Investor"
+     ],
+     [
+      "Partner",
+      "Partner"
+     ],
+     [
+      "Press",
+      "Press"
+     ],
+     [
+      "Prospect",
+      "Prospect"
+     ],
+     [
+      "Reseller",
+      "Reseller"
+     ],
+     [
+      "Other",
+      "Other"
+     ]
+    ],
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list instead?",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Account Type",
+     "toggle_hint": "Enter custom value instead?",
+     "optional": true,
+     "custom": false,
+     "type": "string",
+     "name": "Type"
+    }
+   },
+   {
+    "type": "string",
+    "name": "BillingAddress",
+    "control_type": "text",
+    "label": "Billing Address",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "BillingCity",
+    "control_type": "text",
+    "label": "Billing City",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "BillingCountry",
+    "control_type": "text",
+    "label": "Billing Country",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "number",
+    "name": "BillingLatitude",
+    "control_type": "number",
+    "label": "Billing Latitude",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "number",
+    "name": "BillingLongitude",
+    "control_type": "number",
+    "label": "Billing Longitude",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "BillingState",
+    "control_type": "text",
+    "label": "Billing State/Province",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "BillingStreet",
+    "control_type": "text-area",
+    "label": "Billing Street",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "BillingPostalCode",
+    "control_type": "text",
+    "label": "Billing Zip/Postal Code",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "CreatedById",
+    "control_type": "text",
+    "label": "Created By ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "date_time",
+    "name": "CreatedDate",
+    "control_type": "date_time",
+    "label": "Created Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "boolean",
+    "name": "IsDeleted",
+    "control_type": "checkbox",
+    "label": "Deleted",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Deleted",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "type": "boolean",
+     "name": "IsDeleted"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "integer",
+    "name": "NumberOfEmployees",
+    "control_type": "number",
+    "label": "Employees",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "Industry",
+    "control_type": "select",
+    "label": "Industry",
+    "pick_list": [
+     [
+      "Agriculture",
+      "Agriculture"
+     ],
+     [
+      "Apparel",
+      "Apparel"
+     ],
+     [
+      "Banking",
+      "Banking"
+     ],
+     [
+      "Biotechnology",
+      "Biotechnology"
+     ],
+     [
+      "Chemicals",
+      "Chemicals"
+     ],
+     [
+      "Communications",
+      "Communications"
+     ],
+     [
+      "Construction",
+      "Construction"
+     ],
+     [
+      "Consulting",
+      "Consulting"
+     ],
+     [
+      "Education",
+      "Education"
+     ],
+     [
+      "Electronics",
+      "Electronics"
+     ],
+     [
+      "Energy",
+      "Energy"
+     ],
+     [
+      "Engineering",
+      "Engineering"
+     ],
+     [
+      "Entertainment",
+      "Entertainment"
+     ],
+     [
+      "Environmental",
+      "Environmental"
+     ],
+     [
+      "Finance",
+      "Finance"
+     ],
+     [
+      "Food & Beverage",
+      "Food & Beverage"
+     ],
+     [
+      "Government",
+      "Government"
+     ],
+     [
+      "Healthcare",
+      "Healthcare"
+     ],
+     [
+      "Hospitality",
+      "Hospitality"
+     ],
+     [
+      "Insurance",
+      "Insurance"
+     ],
+     [
+      "Machinery",
+      "Machinery"
+     ],
+     [
+      "Manufacturing",
+      "Manufacturing"
+     ],
+     [
+      "Media",
+      "Media"
+     ],
+     [
+      "Not For Profit",
+      "Not For Profit"
+     ],
+     [
+      "Other",
+      "Other"
+     ],
+     [
+      "Recreation",
+      "Recreation"
+     ],
+     [
+      "Retail",
+      "Retail"
+     ],
+     [
+      "Shipping",
+      "Shipping"
+     ],
+     [
+      "Technology",
+      "Technology"
+     ],
+     [
+      "Telecommunications",
+      "Telecommunications"
+     ],
+     [
+      "Transportation",
+      "Transportation"
+     ],
+     [
+      "Utilities",
+      "Utilities"
+     ]
+    ],
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list instead?",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Industry",
+     "toggle_hint": "Enter custom value instead?",
+     "optional": true,
+     "custom": false,
+     "type": "string",
+     "name": "Industry"
+    }
+   },
+   {
+    "type": "string",
+    "name": "JigsawCompanyId",
+    "control_type": "text",
+    "label": "Jigsaw Company ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastActivityDate",
+    "control_type": "date_time",
+    "label": "Last Activity",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date"
+   },
+   {
+    "type": "string",
+    "name": "LastModifiedById",
+    "control_type": "text",
+    "label": "Last Modified By ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last Modified Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "date_time",
+    "name": "LastReferencedDate",
+    "control_type": "date_time",
+    "label": "Last Referenced Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "date_time",
+    "name": "LastViewedDate",
+    "control_type": "date_time",
+    "label": "Last Viewed Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "string",
+    "name": "MasterRecordId",
+    "control_type": "text",
+    "label": "Master Record ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "OwnerId",
+    "control_type": "text",
+    "label": "Owner ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "ParentId",
+    "control_type": "text",
+    "label": "Parent Account ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "PhotoUrl",
+    "control_type": "url",
+    "label": "Photo URL",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "ShippingAddress",
+    "control_type": "text",
+    "label": "Shipping Address",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "ShippingCity",
+    "control_type": "text",
+    "label": "Shipping City",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "ShippingCountry",
+    "control_type": "text",
+    "label": "Shipping Country",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "number",
+    "name": "ShippingLatitude",
+    "control_type": "number",
+    "label": "Shipping Latitude",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "number",
+    "name": "ShippingLongitude",
+    "control_type": "number",
+    "label": "Shipping Longitude",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "ShippingState",
+    "control_type": "text",
+    "label": "Shipping State/Province",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "ShippingStreet",
+    "control_type": "text-area",
+    "label": "Shipping Street",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "ShippingPostalCode",
+    "control_type": "text",
+    "label": "Shipping Zip/Postal Code",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "date_time",
+    "name": "SystemModstamp",
+    "control_type": "date_time",
+    "label": "System Modstamp",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "string",
+    "name": "Website",
+    "control_type": "url",
+    "label": "Website",
+    "optional": true,
+    "custom": false
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "since_offset",
+    "control_type": "select",
+    "label": "When first started, this recipe should pick up events from",
+    "hint": "When starting the recipe for the first time, picks up Salesforce records from the specified date and time. <b>Once the recipe has been run or tested, this value cannot be changed.</b>",
+    "default": -3600,
+    "pick_list": [
+     [
+      "Recipe start",
+      0
+     ],
+     [
+      "An hour ago",
+      -3600
+     ],
+     [
+      "Yesterday",
+      -86400
+     ],
+     [
+      "Last week",
+      -604800
+     ],
+     [
+      "Last month",
+      -2629746
+     ],
+     [
+      "Beginning of time",
+      "no_limit"
+     ]
+    ],
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "render_input": "convert_date_time",
+     "parse_output": "convert_date_time",
+     "toggle_hint": "Enter custom value",
+     "since_field": true,
+     "hint": "When starting the recipe for the first time, picks up Salesforce records from the specified date and time. <b>Once the recipe has been run or tested, this value cannot be changed.</b>",
+     "type": "date_time",
+     "name": "since"
+    },
+    "since_field": true
+   }
+  ],
+  "parameters_schema": "[\n  {\n    \"label\": \"Start date\",\n    \"name\": \"start_date\",\n    \"type\": \"date_time\",\n    \"control_type\": \"date_time\",\n    \"hint\": \"Set the date and time from when you want to process records from. by clicking on the calendar icon to the left. (For example: setting it to 12/02/2015 12:00 am will pick up all accounts created or updated since that time.)\"\n  },\n    {\n    \"label\": \"Master for Contacts\",\n    \"name\": \"ContactMaster\",\n    \"type\": \"string\",\n    \"control_type\": \"select\",\n    \"pick_list\": [\n      [\"Salesforce\", \"Salesforce\"],\n      [\"QuickBooks\", \"QuickBooks\"],\n      [\"both\",\"both\"]\n    ],\n    \"hint\": \"Which system is the master for contacts? Salesforce, QuickBooks, or both. Updates will be made to existing QuickBooks customers only if Salesforce is the Master,  otherwise only missing customers will be created in QuickBooks. <br><em>Make sure you use the same value for all your contact sync recipes<em>\"\n  }\n]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "quickbooks",
+    "name": "search_customer",
+    "as": "lookup_customer1",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "DisplayName": "#{_('data.salesforce.updated_custom_object.Name')}"
+    },
+    "comment": "Check to see if a corresponding customer exists in Quickbooks",
+    "uuid": "d59bb67d-5119-4a7b-8f8d-20b1c9da7876",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.quickbooks.lookup_customer1.customers.first.DisplayName')}",
+       "rhs": null,
+       "operand": "blank"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "quickbooks",
+      "name": "create_customer",
+      "as": "create_customer",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "SalesTermRef": "Net 30"
+      },
+      "toggleCfg": {
+       "Active": true
+      },
+      "input": {
+       "SalesTermRef": "3",
+       "PrimaryPhone_FreeFormNumber": "#{_('data.salesforce.updated_custom_object.Phone')}",
+       "DisplayName": "#{_('data.salesforce.updated_custom_object.Name')}",
+       "GivenName": "=_('data.salesforce.updated_custom_object.Name').split.first",
+       "FamilyName": "=_('data.salesforce.updated_custom_object.Name').split.last",
+       "CompanyName": "#{_('data.salesforce.updated_custom_object.Name')}",
+       "Mobile_FreeFormNumber": "#{_('data.salesforce.updated_custom_object.Phone')}",
+       "WebAddr_URI": "#{_('data.salesforce.updated_custom_object.Website')}",
+       "BillAddr_Line1": "#{_('data.salesforce.updated_custom_object.BillingStreet')}",
+       "BillAddr_City": "#{_('data.salesforce.updated_custom_object.BillingCity')}",
+       "BillAddr_Country": "#{_('data.salesforce.updated_custom_object.BillingCountry')}",
+       "BillAddr_PostalCode": "#{_('data.salesforce.updated_custom_object.BillingPostalCode')}",
+       "Notes": "#{_('data.salesforce.updated_custom_object.Description')}",
+       "BillAddr_CountrySubDivisionCode": "#{_('data.salesforce.updated_custom_object.BillingState')}",
+       "ShipAddr_Line1": "#{_('data.salesforce.updated_custom_object.ShippingStreet')}",
+       "ShipAddr_City": "#{_('data.salesforce.updated_custom_object.ShippingCity')}",
+       "ShipAddr_CountrySubDivisionCode": "#{_('data.salesforce.updated_custom_object.ShippingState')}",
+       "ShipAddr_Country": "#{_('data.salesforce.updated_custom_object.ShippingCountry')}",
+       "ShipAddr_PostalCode": "#{_('data.salesforce.updated_custom_object.ShippingPostalCode')}",
+       "Active": "true"
+      },
+      "comment": "Create a new customer in Quickbooks",
+      "uuid": "f34cdcad-019e-4d63-8c10-5d0c37866a9c",
+      "title": null,
+      "description": null
+     }
+    ],
+    "comment": "If the customer does not exist in Quickbooks",
+    "uuid": "621b8305-8a24-4cb3-8276-c605c9840d6c"
+   },
+   {
+    "number": 4,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.quickbooks.lookup_customer1.customers.first.DisplayName')}",
+       "rhs": null,
+       "operand": "present"
+      },
+      {
+       "operand": "equals_to",
+       "lhs": "#{_('data.workato.job_context.parameters.ContactMaster')}",
+       "rhs": "Salesforce"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 5,
+      "provider": "quickbooks",
+      "name": "update_customer",
+      "as": "update_customer",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "Active": true
+      },
+      "input": {
+       "Active": "true",
+       "Id": "#{_('data.quickbooks.lookup_customer1.customers.first.Id')}",
+       "PrimaryPhone_FreeFormNumber": "#{_('data.salesforce.updated_custom_object.Phone')}",
+       "WebAddr_URI": "#{_('data.salesforce.updated_custom_object.Website')}",
+       "BillAddr_PostalCode": "#{_('data.salesforce.updated_custom_object.BillingPostalCode')}",
+       "BillAddr_Country": "#{_('data.salesforce.updated_custom_object.BillingCountry')}",
+       "BillAddr_CountrySubDivisionCode": "#{_('data.salesforce.updated_custom_object.BillingState')}",
+       "BillAddr_City": "#{_('data.salesforce.updated_custom_object.BillingCity')}",
+       "BillAddr_Line1": "#{_('data.salesforce.updated_custom_object.BillingStreet')}",
+       "ShipAddr_PostalCode": "#{_('data.salesforce.updated_custom_object.ShippingPostalCode')}",
+       "ShipAddr_Country": "#{_('data.salesforce.updated_custom_object.ShippingCountry')}",
+       "ShipAddr_CountrySubDivisionCode": "#{_('data.salesforce.updated_custom_object.ShippingState')}",
+       "ShipAddr_City": "#{_('data.salesforce.updated_custom_object.ShippingCity')}",
+       "ShipAddr_Line1": "#{_('data.salesforce.updated_custom_object.ShippingStreet')}",
+       "Notes": "#{_('data.salesforce.updated_custom_object.Description')}"
+      },
+      "uuid": "92d129cc-7334-492e-9d28-e50a4537a21d",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 6,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "send_mail",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "to": "#{_('data.workato.job_context.user_email')}",
+       "subject": "Salesforce Customer updated in Quickbooks \n: #{_('data.salesforce.updated_custom_object.Name')}",
+       "body": "Hi,\nSalesforce is the Customer Master. \n\nSalesforce Customer: #{_('data.salesforce.updated_custom_object.Name')} was updated, as a result \nQuickBooks customer :  #{_('data.quickbooks.lookup_customer1.customers.first.DisplayName')} was updated.",
+       "email_type": "-- REDACTED --"
+      },
+      "uuid": "e5f631e1-ea31-4079-9bfa-5ba21f33d543",
+      "title": null,
+      "description": null
+     }
+    ],
+    "comment": "Update the customer ONLY if Salesforce is the customer master",
+    "uuid": "4d15b9d0-9d59-44e2-b9db-74a9be547a86"
+   }
+  ],
+  "comment": "When an account is created/updated in Salesforce",
+  "uuid": "3ea6c24b-3f86-47c9-8a6d-444f0c8084a5"
+ }
+}

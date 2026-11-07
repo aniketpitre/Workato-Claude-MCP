@@ -306,7 +306,7 @@ endpoints with defined response codes; Genie skills with clear descriptions and 
 | M | Deliverable | Exit criteria |
 | --- | --- | --- |
 | **M0** | This design approved; open questions (§15) answered | Your sign-off |
-| **M1** | Knowledge plane complete: connector catalog, Labs patterns, recipe JSON spec, community corpus for core apps, examples index | Catalog covers all connectors in workspace; JSON spec reviewed; ≥ 300 example recipes indexed |
+| **M1** ✅ 2026-11-07 | Knowledge plane complete: connector catalog, Labs patterns, recipe JSON spec, community corpus for core apps, examples index | Catalog covers all connectors in workspace; JSON spec reviewed; ≥ 300 example recipes indexed. **Met:** 324 connectors / 913 triggers / 3,161 actions; spec written; 309 examples |
 | **M2** | Validation: `recipe_check`, `spec_check`, golden and mutation corpora, CI workflow | 0 false negatives on mutations, < 2% false positives on golden; CI green |
 | **M3** | Loop skeleton: lifecycle skill, templates, `state.json`, push + read-back diff, environment config | One recipe goes intent → pushed with all artifacts committed |
 | **M4** | Test and debug: test runner and report, error classifier, debug playbook | Seeded failures are auto-fixed within budget in ≥ 4 of 5 cases |

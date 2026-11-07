@@ -1,0 +1,603 @@
+{
+ "id": 49246693,
+ "name": "Hubspot - Deal Automation",
+ "description": "",
+ "applications": [
+  "hubspot",
+  "coax_connector_3082925_1699932125"
+ ],
+ "action_applications": [
+  "coax_connector_3082925_1699932125"
+ ],
+ "trigger_application": "hubspot",
+ "business_objects": [
+  "deal",
+  "contact"
+ ],
+ "categories": [
+  "Marketing"
+ ],
+ "copy_count": 6,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2024-08-19T00:26:19.783-07:00",
+ "source_url": "https://app.workato.com/recipes/49246693?community=us",
+ "steps": [
+  "hubspot.new_or_updated_object",
+  "hubspot.list_associations",
+  "hubspot.get_record",
+  "coax_connector_3082925_1699932125.parse_phone_number",
+  "coax_connector_3082925_1699932125.upsert_contact",
+  "coax_connector_3082925_1699932125.upsert_contact",
+  "coax_connector_3082925_1699932125.create_activity"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "hubspot",
+  "name": "new_or_updated_object",
+  "as": "a1be7c26",
+  "title": "New/updated Deal",
+  "description": "New/updated <span class=\"provider\">deal</span> in <span class=\"provider\">HubSpot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "hs_object": "Deal",
+   "fields": [
+    {
+     "label": "Deal Collaborator",
+     "value": "hs_all_collaborator_owner_ids"
+    },
+    {
+     "label": "Deal Stage",
+     "value": "dealstage"
+    },
+    {
+     "label": "Deal Name",
+     "value": "dealname"
+    }
+   ]
+  },
+  "input": {
+   "hs_object": "deal",
+   "fields": "hs_all_collaborator_owner_ids,dealstage,dealname"
+  },
+  "extended_output_schema": [
+   {
+    "label": "Deal properties",
+    "name": "properties",
+    "properties": [
+     {
+      "control_type": "select",
+      "label": "Deal Collaborator",
+      "hint": "Owner ids of the users involved in closing the deal",
+      "optional": true,
+      "custom": false,
+      "sticky": false,
+      "pick_list": "owners_picklist",
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Deal Collaborator",
+       "toggle_hint": "Enter text",
+       "toggle_to_primary_hint": "Select from list",
+       "toggle_to_secondary_hint": "Enter text",
+       "hint": "Owner ids of the users involved in closing the deal",
+       "type": "string",
+       "name": "hs_all_collaborator_owner_ids"
+      },
+      "type": "string",
+      "name": "hs_all_collaborator_owner_ids"
+     },
+     {
+      "control_type": "text",
+      "label": "Deal Name",
+      "hint": "The name given to this deal.",
+      "optional": true,
+      "custom": false,
+      "sticky": false,
+      "pick_list": [],
+      "type": "string",
+      "name": "dealname"
+     },
+     {
+      "control_type": "text",
+      "label": "Deal Stage",
+      "hint": "The stage of the deal. Deal stages allow you to categorize and track the progress of the deals that you are working on.",
+      "optional": true,
+      "custom": false,
+      "sticky": false,
+      "pick_list": [],
+      "type": "string",
+      "name": "dealstage"
+     }
+    ],
+    "type": "object"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "hubspot",
+    "name": "list_associations",
+    "as": "f713914d",
+    "title": null,
+    "description": "List <span class=\"provider\">associations</span> from <span class=\"provider\">Deal</span> to <span class=\"provider\">Contact</span> in <span class=\"provider\">HubSpot</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "fromObjectType": "Deal",
+     "toObjectType": "Contact"
+    },
+    "toggleCfg": {
+     "fromObjectType": true,
+     "toObjectType": true
+    },
+    "input": {
+     "fromObjectType": "deal",
+     "toObjectType": "contact",
+     "inputs": {
+      "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"a1be7c26\",\"path\":[\"id\"]}')}"
+     }
+    },
+    "uuid": "f6a77451-f82f-4714-8a99-81d95b0de93e"
+   },
+   {
+    "number": 2,
+    "provider": "hubspot",
+    "name": "get_record",
+    "as": "7794d717",
+    "title": "Get contact",
+    "description": "Get <span class=\"provider\">contact</span> in <span class=\"provider\">HubSpot</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "hs_object": "Contact",
+     "fields": [
+      {
+       "label": "Email",
+       "value": "email"
+      },
+      {
+       "label": "Mobile Phone Number",
+       "value": "mobilephone"
+      },
+      {
+       "label": "Phone Number",
+       "value": "phone"
+      },
+      {
+       "label": "First Name",
+       "value": "firstname"
+      },
+      {
+       "label": "Last Name",
+       "value": "lastname"
+      }
+     ]
+    },
+    "input": {
+     "hs_object": "contact",
+     "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"f713914d\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"to\",{\"path_element_type\":\"current_item\"},\"toObjectId\"]}')}",
+     "fields": "email,mobilephone,phone,firstname,lastname"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Contact properties",
+      "name": "properties",
+      "properties": [
+       {
+        "control_type": "date_time",
+        "label": "Last Modified Date",
+        "render_input": "date_field_to_milliseconds",
+        "parse_output": "milliseconds_to_date_trigger",
+        "hint": "The date any property on this contact was modified",
+        "optional": true,
+        "custom": false,
+        "sticky": false,
+        "pick_list": [],
+        "type": "date_time",
+        "name": "lastmodifieddate"
+       },
+       {
+        "control_type": "text",
+        "label": "First Name",
+        "hint": "A contact's first name",
+        "optional": true,
+        "custom": false,
+        "sticky": true,
+        "pick_list": [],
+        "type": "string",
+        "name": "firstname"
+       },
+       {
+        "control_type": "text",
+        "label": "Last Name",
+        "hint": "A contact's last name",
+        "optional": true,
+        "custom": false,
+        "sticky": true,
+        "pick_list": [],
+        "type": "string",
+        "name": "lastname"
+       },
+       {
+        "control_type": "text",
+        "label": "Email",
+        "hint": "A contact's email address",
+        "optional": true,
+        "custom": false,
+        "sticky": false,
+        "pick_list": [],
+        "type": "string",
+        "name": "email"
+       },
+       {
+        "control_type": "text",
+        "label": "Mobile Phone Number",
+        "hint": "A contact's mobile phone number",
+        "optional": true,
+        "custom": false,
+        "sticky": false,
+        "pick_list": [],
+        "type": "string",
+        "name": "mobilephone"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone Number",
+        "hint": "A contact's primary phone number",
+        "optional": true,
+        "custom": false,
+        "sticky": false,
+        "pick_list": [],
+        "type": "string",
+        "name": "phone"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "369972c2-523e-4854-831e-2966b145b082"
+   },
+   {
+    "number": 3,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"a1be7c26\",\"path\":[]}')['properties']['dealstage']",
+       "rhs": "qualifiedtobuy",
+       "uuid": "c2ba2e9e-b41f-4a9c-86bb-b25af941b7bb"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 4,
+      "keyword": "try",
+      "input": {},
+      "block": [
+       {
+        "number": 5,
+        "provider": "coax_connector_3082925_1699932125",
+        "name": "parse_phone_number",
+        "as": "3daff1b6",
+        "title": null,
+        "description": null,
+        "keyword": "action",
+        "input": {
+         "number": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"mobilephone\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"mobilephone\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"phone\"]}')",
+         "country_code": "AU"
+        },
+        "extended_input_schema": [
+         {
+          "control_type": "phone",
+          "label": "Phone Number",
+          "name": "number",
+          "optional": false,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "label": "Country Code (ISO2 or ISO3)",
+          "name": "country_code",
+          "optional": true,
+          "type": "string"
+         }
+        ],
+        "visible_config_fields": [
+         "country_code"
+        ],
+        "uuid": "3a444d06-45e4-4a63-afe7-006521137f95"
+       },
+       {
+        "number": 6,
+        "provider": "coax_connector_3082925_1699932125",
+        "name": "upsert_contact",
+        "as": "1e1b71b3",
+        "title": null,
+        "description": null,
+        "keyword": "action",
+        "input": {
+         "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"firstname\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"lastname\"]}')}",
+         "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"email\"]}')}",
+         "phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"3daff1b6\",\"path\":[\"body\",\"code\"]}')}#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"3daff1b6\",\"path\":[\"body\",\"phone\"]}')}",
+         "added_tags": "=[\"Via Hubspot\"]"
+        },
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "label": "Contact Name",
+          "name": "name",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "label": "Address",
+          "name": "address",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "email",
+          "label": "Contact Email",
+          "name": "email",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "phone",
+          "label": "Receiving Phone Number",
+          "name": "phone",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "label": "Company Name",
+          "name": "company_name",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "hint": "This will replace all existing tags on the contact. Please use following format: [\"tag1\", \"tag2\"]",
+          "label": "Add Tags",
+          "name": "tags",
+          "of": "string",
+          "optional": true,
+          "type": "array"
+         },
+         {
+          "hint": "This will append the provided tags to existing tags on a contact. Please use following format: [\"tag1\", \"tag2\"]",
+          "label": "Update To Tags",
+          "name": "added_tags",
+          "of": "string",
+          "optional": true,
+          "type": "array"
+         },
+         {
+          "control_type": "text",
+          "label": "Enquiry ID",
+          "name": "enquiry_id",
+          "optional": true,
+          "type": "string"
+         }
+        ],
+        "visible_config_fields": [
+         "added_tags",
+         "email",
+         "phone",
+         "name"
+        ],
+        "uuid": "b38bfc47-16f9-48ee-ad98-9fb12aeffb17"
+       },
+       {
+        "number": 7,
+        "as": "fcef60b7",
+        "keyword": "catch",
+        "input": {
+         "max_retry_count": "0",
+         "retry_interval": "2"
+        },
+        "block": [
+         {
+          "number": 8,
+          "provider": "coax_connector_3082925_1699932125",
+          "name": "upsert_contact",
+          "as": "d80110a6",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "input": {
+           "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"firstname\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"lastname\"]}')}",
+           "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"email\"]}')}",
+           "added_tags": "=[\"Via Hubspot\"]"
+          },
+          "extended_input_schema": [
+           {
+            "control_type": "text",
+            "label": "Contact Name",
+            "name": "name",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Address",
+            "name": "address",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "email",
+            "label": "Contact Email",
+            "name": "email",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "phone",
+            "label": "Receiving Phone Number",
+            "name": "phone",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Company Name",
+            "name": "company_name",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "hint": "This will replace all existing tags on the contact. Please use following format: [\"tag1\", \"tag2\"]",
+            "label": "Add Tags",
+            "name": "tags",
+            "of": "string",
+            "optional": true,
+            "type": "array"
+           },
+           {
+            "hint": "This will append the provided tags to existing tags on a contact. Please use following format: [\"tag1\", \"tag2\"]",
+            "label": "Update To Tags",
+            "name": "added_tags",
+            "of": "string",
+            "optional": true,
+            "type": "array"
+           },
+           {
+            "control_type": "text",
+            "label": "Enquiry ID",
+            "name": "enquiry_id",
+            "optional": true,
+            "type": "string"
+           }
+          ],
+          "visible_config_fields": [
+           "added_tags",
+           "email",
+           "phone",
+           "name"
+          ],
+          "uuid": "e302d81b-c0cd-46dd-b01a-7f62c1f00931"
+         }
+        ],
+        "uuid": "fe3404a0-eb5d-44e5-b6af-fd33d9e6bef7"
+       }
+      ],
+      "uuid": "c2e8ef1a-5077-4fec-806a-24cd1a915bfe"
+     },
+     {
+      "number": 9,
+      "provider": "coax_connector_3082925_1699932125",
+      "name": "create_activity",
+      "as": "0a40f3b5",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "type": "Booking Confirmed"
+      },
+      "input": {
+       "type": "booking_confirmed",
+       "description": "=\"#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"a1be7c26\",\"path\":[]}')['properties']['dealname']} Pipeline Updated to : Qualified to Buy\"",
+       "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"7794d717\",\"path\":[\"properties\",\"email\"]}')}"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "select",
+        "label": "Activity Type",
+        "name": "type",
+        "optional": false,
+        "pick_list": "activity_type",
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Activity Description",
+        "name": "description",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "email",
+        "label": "Customer Email",
+        "name": "email",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "phone",
+        "label": "Receiving Phone Number",
+        "name": "phone",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Tracking Number",
+        "name": "tracking_number",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "key_value",
+        "empty_list_title": "Add metadata",
+        "item_label": "Metadata",
+        "label": "Metadata",
+        "name": "meta",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Key",
+          "optional": true,
+          "type": "string",
+          "name": "key"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "type": "array"
+       },
+       {
+        "control_type": "text",
+        "label": "Enquiry ID",
+        "name": "enquiry_id",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Metadata JSON",
+        "name": "meta_text",
+        "optional": true,
+        "type": "string"
+       }
+      ],
+      "visible_config_fields": [
+       "phone",
+       "email"
+      ],
+      "uuid": "99413481-ad31-4d1c-8102-19f4320cef96",
+      "skip": false
+     }
+    ],
+    "uuid": "fa81efa8-f2ef-4b1f-807b-70a22452f6bb"
+   }
+  ],
+  "uuid": "45a64371-43ea-4ddc-8e5d-b41964c337b9",
+  "unfinished": false,
+  "param": {}
+ }
+}

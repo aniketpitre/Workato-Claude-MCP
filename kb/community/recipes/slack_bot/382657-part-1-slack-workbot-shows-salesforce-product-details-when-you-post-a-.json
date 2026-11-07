@@ -1,0 +1,653 @@
+{
+ "id": 382657,
+ "name": "Part 1: Slack Workbot shows Salesforce Product details when you post a URL in Slack ",
+ "description": "1. Type or paste a **Salesforce Product URL** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will search Salesforce and your Price Book entries to obtain information about the Product.\n3. Workbot will automatically reply with a message showing more information about that particular Product. \n4. Workbot will prompt you with a button to update the Salesforce Product Activity.\n5. Activate or deactivate your Product from within Slack with Workbot.\n\n**Notes**\n- This recipe works together with the [Update Salesforce Product Active state by Product ID with Slack Workbot](https://www.workato.com/recipes/382678-internal-update-salesforce-product-active-state-by-product-id#recipe) recipe. To use this recipe, copy and run both recipes.\n- Workbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "salesforce",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "salesforce",
+  "slack_bot"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "ur l mention",
+  "product 2",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "CRM",
+  "Marketing"
+ ],
+ "copy_count": 3930,
+ "curated": false,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2018-06-28T23:39:15.152-07:00",
+ "source_url": "https://app.workato.com/recipes/382657?community=us",
+ "steps": [
+  "slack_bot.bot_document_mention",
+  "salesforce.get_custom_object",
+  "salesforce.get_related",
+  "slack_bot.post_bot_message",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_document_mention",
+  "as": "bot_document_mention",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Salesforce",
+   "scope": "Product"
+  },
+  "toggleCfg": {},
+  "input": {
+   "domain": "salesforce",
+   "scope": "product"
+  },
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "salesforce",
+      "name": "get_custom_object",
+      "as": "get_custom_object",
+      "title": "Get Product details by ID",
+      "description": "Get details of specific <span class=\"provider\">Product</span> in <span class=\"provider\">Salesforce</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "sobject_name": "Product"
+      },
+      "toggleCfg": {},
+      "input": {
+       "sobject_name": "Product2",
+       "id": "#{_('data.slack_bot.bot_document_mention.object_id')}"
+      },
+      "extended_output_schema": [
+       {
+        "type": "boolean",
+        "name": "IsActive",
+        "control_type": "checkbox",
+        "label": "Active",
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Active",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "boolean",
+         "name": "IsActive"
+        },
+        "render_input": {},
+        "parse_output": {},
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "CreatedById",
+        "control_type": "text",
+        "label": "Created By ID",
+        "optional": true,
+        "custom": false,
+        "foreign_key": "User",
+        "fetch_with": "get_custom_object(id, sobject_name: User)",
+        "join_point_label": "Created by",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "object",
+        "name": "get_custom_object+CreatedById",
+        "label": "Created by",
+        "properties": [],
+        "fetch_with": "get_custom_object(CreatedById>id, sobject_name: User)",
+        "join_point": true
+       },
+       {
+        "type": "date_time",
+        "name": "CreatedDate",
+        "control_type": "date_time",
+        "label": "Created Date",
+        "optional": true,
+        "custom": false,
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "boolean",
+        "name": "IsDeleted",
+        "control_type": "checkbox",
+        "label": "Deleted",
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Deleted",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": false,
+         "sfdc_updateable": false,
+         "type": "boolean",
+         "name": "IsDeleted"
+        },
+        "render_input": {},
+        "parse_output": {},
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "string",
+        "name": "LastModifiedById",
+        "control_type": "text",
+        "label": "Last Modified By ID",
+        "optional": true,
+        "custom": false,
+        "foreign_key": "User",
+        "fetch_with": "get_custom_object(id, sobject_name: User)",
+        "join_point_label": "Last modified by",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "object",
+        "name": "get_custom_object+LastModifiedById",
+        "label": "Last modified by",
+        "properties": [],
+        "fetch_with": "get_custom_object(LastModifiedById>id, sobject_name: User)",
+        "join_point": true
+       },
+       {
+        "type": "date_time",
+        "name": "LastModifiedDate",
+        "control_type": "date_time",
+        "label": "Last Modified Date",
+        "optional": true,
+        "custom": false,
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "date_time",
+        "name": "LastReferencedDate",
+        "control_type": "date_time",
+        "label": "Last Referenced Date",
+        "optional": true,
+        "custom": false,
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "date_time",
+        "name": "LastViewedDate",
+        "control_type": "date_time",
+        "label": "Last Viewed Date",
+        "optional": true,
+        "custom": false,
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "string",
+        "name": "ProductCode",
+        "control_type": "text",
+        "label": "Product Code",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Description",
+        "control_type": "text-area",
+        "label": "Product Description",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Family",
+        "control_type": "select",
+        "label": "Product Family",
+        "pick_list": [
+         [
+          "None",
+          "None"
+         ]
+        ],
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Product Family",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Family"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Id",
+        "control_type": "text",
+        "label": "Product ID",
+        "optional": true,
+        "custom": false,
+        "key_scope": "Product2",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "string",
+        "name": "Name",
+        "control_type": "text",
+        "label": "Product Name",
+        "custom": false,
+        "event_title": true,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "date_time",
+        "name": "SystemModstamp",
+        "control_type": "date_time",
+        "label": "System Modstamp",
+        "optional": true,
+        "custom": false,
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       }
+      ],
+      "uuid": "991d9972-3437-429c-8dd6-657743370ad4"
+     },
+     {
+      "number": 3,
+      "provider": "salesforce",
+      "name": "get_related",
+      "as": "get_related",
+      "title": null,
+      "description": "Get list of related <span class=\"provider\">Price Book Entries</span> in <span class=\"provider\">Salesforce</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "child_sobject_name": "Price Book Entry"
+      },
+      "toggleCfg": {},
+      "input": {
+       "child_sobject_name": "PricebookEntry",
+       "Product2Id": "#{_('data.salesforce.get_custom_object.Id')}"
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "PricebookEntries",
+        "label": "Price Book Entries",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "checkbox",
+          "label": "Active",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Active",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "boolean",
+           "name": "IsActive"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "boolean",
+          "name": "IsActive"
+         },
+         {
+          "control_type": "text",
+          "label": "Created By ID",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "CreatedById"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Created Date",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "CreatedDate"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Deleted",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Deleted",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": false,
+           "sfdc_updateable": false,
+           "type": "boolean",
+           "name": "IsDeleted"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "boolean",
+          "name": "IsDeleted"
+         },
+         {
+          "control_type": "text",
+          "label": "Last Modified By ID",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "LastModifiedById"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Last Modified Date",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "LastModifiedDate"
+         },
+         {
+          "control_type": "number",
+          "label": "List Price",
+          "parse_output": "float_conversion",
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "number",
+          "name": "UnitPrice"
+         },
+         {
+          "control_type": "text",
+          "label": "Price Book Entry ID",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "Id"
+         },
+         {
+          "control_type": "text",
+          "label": "Price Book ID",
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "Pricebook2Id"
+         },
+         {
+          "control_type": "text",
+          "label": "Product Code",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "ProductCode"
+         },
+         {
+          "control_type": "text",
+          "label": "Product ID",
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "Product2Id"
+         },
+         {
+          "control_type": "text",
+          "label": "Product Name",
+          "optional": true,
+          "event_title": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "Name"
+         },
+         {
+          "control_type": "date_time",
+          "label": "System Modstamp",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "SystemModstamp"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Use Standard Price",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Use Standard Price",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "boolean",
+           "name": "UseStandardPrice"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "boolean",
+          "name": "UseStandardPrice"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "CreatedById",
+        "control_type": "text",
+        "label": "Created By ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "string",
+        "name": "LastModifiedById",
+        "control_type": "text",
+        "label": "Last Modified By ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": false,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "string",
+        "name": "Pricebook2Id",
+        "control_type": "text",
+        "label": "Price Book ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false
+       },
+       {
+        "type": "string",
+        "name": "Product2Id",
+        "control_type": "text",
+        "label": "Product ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false
+       }
+      ],
+      "visible_config_fields": [
+       "child_sobject_name",
+       "Product2Id"
+      ],
+      "uuid": "148a6634-525e-478e-b572-394f5860a53c"
+     },
+     {
+      "number": 4,
+      "provider": "slack_bot",
+      "name": "post_bot_message",
+      "as": "post_bot_message",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "channel": true,
+       "attachment_buttons.0.bot_command": false
+      },
+      "input": {
+       "channel": "#random",
+       "text": "Here you go",
+       "message": {
+        "title": ":label: Salesforce Product: #{_('data.salesforce.get_custom_object.Name')}",
+        "title_link": "https://ap2.salesforce.com/#{_('data.salesforce.get_custom_object.Id')}",
+        "color": "good"
+       },
+       "attachment_fields": [
+        {
+         "title": ":dollar: Price",
+         "value": "$#{_('data.salesforce.get_related.PricebookEntries.first.UnitPrice')}"
+        },
+        {
+         "title": ":id: Code",
+         "value": "#{_('data.salesforce.get_custom_object.ProductCode')}"
+        },
+        {
+         "title": "Description",
+         "value": "#{_('data.salesforce.get_custom_object.Description')}"
+        },
+        {
+         "title": "=(_('data.salesforce.get_custom_object.IsActive')? \":white_check_mark:\" : \":x:\") + \" Status\"",
+         "value": "=_('data.salesforce.get_custom_object.IsActive')? \"Active\" : \"Not Active\""
+        }
+       ],
+       "attachment_buttons": [
+        {
+         "title": "=(_('data.salesforce.get_custom_object.IsActive') ? \"De-activate\" : \"Activate\")",
+         "bot_command": "update_by_product_activity salesforce product",
+         "params": "=\"product_id: _('data.slack_bot.bot_document_mention.object_id') product_activity: \" + (_('data.salesforce.get_custom_object.IsActive') ? \"false\" : \"true\")"
+        }
+       ]
+      },
+      "uuid": "84efb994-8008-41cf-986a-96c39614b720",
+      "title": null,
+      "description": "Post <span class=\"provider\">message</span> as <span class=\"provider\">Slack Workbot</span>"
+     },
+     {
+      "number": 5,
+      "as": "catch",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {},
+      "block": [
+       {
+        "number": 6,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply_v2",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "text": ":red_circle: Workbot Error",
+         "message": {
+          "title": ":x: Workbot ran into an error",
+          "title_link": "#{_('data.workato.job_context.recipe_url')}",
+          "attachment_text": ":information_source: If this error persists please ask your system administrator to contact support. ",
+          "color": "danger"
+         }
+        },
+        "uuid": "0b6bb9bc-5b29-4239-babb-f70c06023a72",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       }
+      ],
+      "uuid": "4e68d724-4c0c-41a8-993f-0d77de2354fe"
+     }
+    ],
+    "uuid": "d07b9ade-566a-47ae-bf32-ff8495a326ea"
+   }
+  ],
+  "uuid": "55e74d2e-4e97-4fc4-b77d-e21935a08c85",
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

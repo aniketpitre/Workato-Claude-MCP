@@ -13,7 +13,12 @@ Pin down the recipe design inputs from `kb/docs/en/recipes/building-recipes.md`:
 - **Trigger**: what starts the job
 - **Error handling**: what happens when a step fails
 
-## 2. Research the docs (always)
+## 2. Research (always, in this order)
+1. `kb/patterns/RECIPE_JSON_SPEC.md`: the rules for valid recipe JSON.
+2. Live catalog for every step: `python3 kb/search.py --connector <provider> --op <action>`.
+   Use exact names; map every `required` input.
+3. Closest real example to adapt: `python3 kb/search.py --examples <provider.action> [--feature try]`.
+4. Docs for behaviour and limits:
 ```bash
 python3 kb/search.py "<app> <trigger or action name>" -s Connectors
 python3 kb/search.py "<concept, e.g. repeat helper / monitor error / batch>"

@@ -1,0 +1,238 @@
+{
+ "name": "pgp",
+ "title": "PGP tools by Workato",
+ "requires_connection": true,
+ "categories": [
+  "Developer Tool",
+  "Recipe Tools",
+  "Workato"
+ ],
+ "aliases": [
+  "PGP tools by Workato",
+  "cryptography",
+  "encrypt",
+  "decrypt",
+  "sign",
+  "verify",
+  "utilities",
+  "utility"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "decrypt",
+   "title": "Decrypt data",
+   "description": "Decrypt data",
+   "input": [
+    {
+     "name": "ciphertext",
+     "type": "string",
+     "label": "Encrypted content",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Input File content data pill or input encrypted text directly"
+    },
+    {
+     "name": "is_connection_public_key",
+     "type": "string",
+     "label": "Use public key from connection?",
+     "control_type": "checkbox",
+     "default": false,
+     "hint": "Select Yes to use public key from connection."
+    },
+    {
+     "name": "verification_public_key",
+     "type": "string",
+     "label": "Verification public key",
+     "control_type": "text-area",
+     "visible_if": "input.is_connection_public_key != 'true'",
+     "extends_schema": true,
+     "hint": "Enter the public key to use for verifying the signature of the file contents."
+    },
+    {
+     "name": "ignore_mdc_error",
+     "type": "boolean",
+     "label": "Ignore MDC error",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "ignore_mdc_error",
+      "type": "boolean"
+     },
+     "hint": "Ignore MDC error when decrypting the content."
+    }
+   ],
+   "output": [
+    {
+     "name": "plaintext",
+     "type": "string",
+     "label": "Decrypted contents",
+     "control_type": "text-area",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "encrypt2",
+   "title": "Encrypt data",
+   "description": "Encrypt data",
+   "input": [
+    {
+     "name": "plaintext",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Input File content data pill or input text directly"
+    },
+    {
+     "name": "public_key",
+     "type": "string",
+     "label": "Public key",
+     "control_type": "text-area",
+     "hint": "Public key of the recipient to encrypt the message with or it will use public key from the connection. Learn how to generate a pair of Public key & Private key here."
+    },
+    {
+     "name": "sign",
+     "type": "boolean",
+     "label": "Sign",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "sign",
+      "type": "boolean"
+     },
+     "hint": "Input document will be encrypted and signed with PGP. Private key and passphrase from the connection setting will be used to sign the document."
+    },
+    {
+     "name": "original_filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "hint": "Original name of the input file. If empty, file name will be auto generated."
+    },
+    {
+     "name": "ascii_armor",
+     "type": "boolean",
+     "label": "ASCII armor",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "true",
+     "toggle_field": {
+      "name": "ascii_armor",
+      "type": "boolean"
+     },
+     "hint": "The encrypted content will consist of printable ASCII characters. The content can be sent in a standard messaging format such as email."
+    },
+    {
+     "name": "armor_comment",
+     "type": "string",
+     "label": "Armor comment header",
+     "control_type": "text-area",
+     "visible_if": "input.ascii_armor == 'true'",
+     "hint": "The comment to include in the armor header of the encrypted content."
+    }
+   ],
+   "output": [
+    {
+     "name": "ciphertext",
+     "type": "string",
+     "label": "Encrypted contents",
+     "control_type": "text-area",
+     "required": true
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "sign",
+   "title": "Sign a message",
+   "description": "Sign a message",
+   "help": "Private key and passphrase from connection setting will be used to sign the content",
+   "input": [
+    {
+     "name": "plaintext",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Input a File content data pill or input text directly"
+    },
+    {
+     "name": "clear_sign",
+     "type": "boolean",
+     "label": "Clear sign",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "clear_sign",
+      "type": "boolean"
+     },
+     "hint": "Produce a clear-signed message where the original content remains human-readable alongside the PGP signature."
+    },
+    {
+     "name": "ascii_armor",
+     "type": "boolean",
+     "label": "ASCII armor",
+     "control_type": "checkbox",
+     "visible_if": "input.clear_sign != 'true'",
+     "default": "true",
+     "toggle_field": {
+      "name": "ascii_armor",
+      "type": "boolean"
+     },
+     "hint": "The signed content will consist of printable ASCII characters. The content can be sent in a standard messaging format such as email."
+    }
+   ],
+   "output": [
+    {
+     "name": "signed_document",
+     "type": "string",
+     "label": "PGP Signature",
+     "control_type": "text-area",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "verify",
+   "title": "Verify a signed message",
+   "description": "Verify a signed message",
+   "input": [
+    {
+     "name": "signed_document",
+     "type": "string",
+     "label": "Signed document",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Input File content data pill or input signed text directly"
+    },
+    {
+     "name": "is_connection_public_key",
+     "type": "string",
+     "label": "Use public key from connection?",
+     "control_type": "checkbox",
+     "default": false,
+     "hint": "Select Yes to use public key from connection."
+    },
+    {
+     "name": "verification_public_key",
+     "type": "string",
+     "label": "Verification public key",
+     "control_type": "text-area",
+     "visible_if": "input.is_connection_public_key != 'true'",
+     "hint": "Enter the public key to use for verifying the signature of the file contents."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

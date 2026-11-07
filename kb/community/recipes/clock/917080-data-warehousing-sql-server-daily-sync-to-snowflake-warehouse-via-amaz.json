@@ -1,0 +1,296 @@
+{
+ "id": 917080,
+ "name": "[Data warehousing] SQL server Daily sync to Snowflake warehouse via Amazon S3",
+ "description": "When there is a trigger event, do action",
+ "applications": [
+  "clock",
+  "mssql",
+  "onprem_files",
+  "amazon_s3",
+  "snowflake",
+  "email"
+ ],
+ "action_applications": [
+  "mssql",
+  "onprem_files",
+  "amazon_s3",
+  "snowflake",
+  "email"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "file",
+  "email"
+ ],
+ "categories": [
+  "Recipe Tools",
+  "Database",
+  "Document/File",
+  "Developer Tool"
+ ],
+ "copy_count": 30,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2019-03-26T01:01:18.835-07:00",
+ "source_url": "https://app.workato.com/recipes/917080?community=us",
+ "steps": [
+  "clock.timer",
+  "mssql.execute_procedure",
+  "onprem_files.download_file",
+  "amazon_s3.upload_file",
+  "snowflake.bulk_load_s3",
+  "email.send_mail",
+  "email.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "timer",
+  "as": "363c0263",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "interval": "5"
+  },
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "mssql",
+      "name": "execute_procedure",
+      "as": "ee90498f",
+      "title": "Execute dbo.export_CSV",
+      "description": "Execute <span class=\"provider\">dbo.export_CSV</span> in <span class=\"provider\">SQL Server</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "procedure_name": "export_CSV"
+      },
+      "toggleCfg": {},
+      "input": {
+       "procedure_name": "dbo.export_CSV"
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "dataset",
+        "label": "Dataset",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "filepath",
+          "details": {
+           "data_type": "varchar(64)",
+           "column_name": "filepath"
+          },
+          "type": "string",
+          "name": "filepath1"
+         }
+        ]
+       },
+       {
+        "type": "object",
+        "name": "parameters",
+        "label": "Output parameters",
+        "properties": []
+       },
+       {
+        "type": "integer",
+        "name": "return_value",
+        "control_type": "number",
+        "label": "Return value",
+        "parse_output": "integer_conversion"
+       }
+      ],
+      "comment": "executes stored procedure that transforms and loads data into a CSV. would be the filepath of the newly created CSV",
+      "uuid": "c1f74fef-adee-4396-9cda-d0788209077d"
+     },
+     {
+      "number": 3,
+      "provider": "onprem_files",
+      "name": "download_file",
+      "as": "014d6c03",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "path": {
+        "ids": [
+         "/",
+         "/test-dataset-2.csv"
+        ],
+        "titles": [
+         "Home folder",
+         "test-dataset-2.csv"
+        ]
+       }
+      },
+      "toggleCfg": {
+       "path": false
+      },
+      "input": {
+       "path": "#{_('data.mssql.ee90498f.dataset.first.filepath1')}"
+      },
+      "visible_config_fields": [
+       "path"
+      ],
+      "uuid": "1b02bc99-58f3-46bd-a86f-accd3fc3640c"
+     },
+     {
+      "number": 4,
+      "provider": "amazon_s3",
+      "name": "upload_file",
+      "as": "289a7eb9",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "accelerate": "false",
+       "region": "ap-southeast-1",
+       "bucket": "workato-test-1",
+       "object_name": "ALL_DATA_TYPES/test-dataset-2.csv",
+       "file": "#{_('data.onprem_files.014d6c03.content')}"
+      },
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "region",
+        "control_type": "text",
+        "label": "Region",
+        "hint": "Go to <b>Bucket</b>><b>Properties</b>><b>Static website hosting</b> to find your region in the 'Endpoint' URL, e.g. <b>us-west-2</b>",
+        "optional": false
+       },
+       {
+        "type": "string",
+        "name": "bucket",
+        "control_type": "text",
+        "label": "Bucket name",
+        "hint": "Exact, case sensitive bucket name",
+        "optional": false
+       },
+       {
+        "type": "string",
+        "name": "object_name",
+        "control_type": "text",
+        "label": "Object name",
+        "hint": "Exact, case sensitive name of the object/file",
+        "optional": false
+       },
+       {
+        "type": "string",
+        "name": "file",
+        "control_type": "text",
+        "label": "Contents",
+        "hint": "The file contents to upload",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "type": "number",
+        "name": "accelerate",
+        "control_type": "number",
+        "label": "Use accelerated endpoint",
+        "hint": "                Default is <b>false</b>. Enter <b>true</b> to use accelerated endpoint.\n                Go to <b>Bucket</b>><b>Properties</b>><b>Transfer acceleration</b> to check if accelerated endpoint is enabled\n",
+        "default": "false",
+        "sticky": true,
+        "optional": true,
+        "parse_output": "float_conversion"
+       }
+      ],
+      "uuid": "0deb413c-e5a9-4c58-8416-ce76f3eed29f"
+     },
+     {
+      "number": 5,
+      "provider": "snowflake",
+      "name": "bulk_load_s3",
+      "as": "98a98547",
+      "title": null,
+      "description": "Bulk load data to <span class=\"provider\">PUBLIC.CUSTOMER_DATA</span> from <span class=\"provider\">PUBLIC.ALL_DATA_TYPES_S3_STAGE</span> in <span class=\"provider\">Snowflake</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "table": "PUBLIC.CUSTOMER_DATA",
+       "stage": "ALL_DATA_TYPES_S3_STAGE (s3://workato-test-1/ALL_DATA_TYPES/ALL_DATA_TYPES_3_M.csv)"
+      },
+      "toggleCfg": {
+       "table": true,
+       "stage": true
+      },
+      "input": {
+       "table": "PUBLIC.CUSTOMER_DATA",
+       "stage": "PUBLIC.ALL_DATA_TYPES_S3_STAGE"
+      },
+      "uuid": "a8964de4-cd29-4d04-8247-e53f0e39d6e3"
+     },
+     {
+      "number": 6,
+      "as": "c787354a",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 7,
+        "provider": "email",
+        "name": "send_mail",
+        "as": "8d49f77e",
+        "title": null,
+        "description": null,
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "email_type": "-- REDACTED --",
+         "to": "-- REDACTED --",
+         "subject": "SQL Server daily export failed ",
+         "body": "Error type:#{_('data.catch.c787354a.type')}\nError message: #{_('data.catch.c787354a.message')}\nJob ID:#{_('data.workato.job_context.job_id')}\nJob URL: #{_('data.workato.job_context.job_url')}\nRecipe ID: #{_('data.workato.job_context.recipe_id')} \nRecipe URL: #{_('data.workato.job_context.recipe_url')}"
+        },
+        "uuid": "97132142-bf54-4c6c-919e-88786fae28f9"
+       }
+      ],
+      "uuid": "8bbf7f2f-256f-4e9e-a4f3-093c7d58fc33"
+     }
+    ],
+    "uuid": "385c27bd-a664-410c-aae4-8b355e7f7510"
+   },
+   {
+    "number": 8,
+    "provider": "email",
+    "name": "send_mail",
+    "as": "594a9c41",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "email_type": "-- REDACTED --",
+     "to": "-- REDACTED --",
+     "subject": "SQL Server daily export success",
+     "body": "=\"Data flow completed at\" + today"
+    },
+    "uuid": "027065c9-cc89-4e3e-a35f-515f0102d884"
+   }
+  ],
+  "comment": "2.00am picked due to low network traffic",
+  "uuid": "4b989335-e7a4-4f54-8861-f47c07824fe0",
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

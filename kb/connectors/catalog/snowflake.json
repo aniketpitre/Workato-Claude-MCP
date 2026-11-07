@@ -1,0 +1,1220 @@
+{
+ "name": "snowflake",
+ "title": "Snowflake",
+ "requires_connection": true,
+ "categories": [
+  "Database",
+  "Marketing"
+ ],
+ "aliases": [
+  "Snowflake",
+  "database"
+ ],
+ "triggers": [
+  {
+   "name": "new_row",
+   "title": "New row",
+   "description": "New row in a table in Snowflake",
+   "help": "Triggers when a row is inserted in the selected table. Checks for new rows every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "primary_key",
+     "type": "string",
+     "label": "Unique key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Select a unique key column to deduplicate rows. Performance can be improved if the selected unique key is indexed. Learn more"
+    },
+    {
+     "name": "output_columns",
+     "type": "string",
+     "label": "Output columns",
+     "control_type": "multiselect",
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Choose columns to be returned from the selected table. Leave blank to return all columns."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be processed, e.g. currency = 'USD' (enclose strings in single quotes)"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_rows_batch",
+   "title": "New rows",
+   "description": "New batch of rows in a table in Snowflake",
+   "help": "Triggers when rows are inserted in the selected table. These rows will be processed in batches. If less rows are available, trigger will deliver as a smaller batch. You can configure the batch size to be any number between 1 and 1000. Default batch size is 100.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "scheduled_select",
+   "title": "Scheduled query",
+   "description": "Scheduled query using custom SQL in Snowflake",
+   "help": "Execute SQL query on specified schedule. Rows matching the SQL query will be processed in batches. If less rows are available, trigger will deliver as a smaller batch. You can configure the batch size to be any number between 1 and 1000. Default batch size is 100.",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide a valid SQL string to be executed on each scheduled time. Use meaningful column aliases. If an indexed unique key of query execution result is not provided you are required to have an ‘ORDER B…"
+    },
+    {
+     "name": "unique_key",
+     "type": "string",
+     "label": "Indexed unique key",
+     "control_type": "select",
+     "pick_list": "sql_columns_list",
+     "hint": "Provide an indexed unique key of query execution result to make execution more efficient. For queries that return more than 1000 rows, this is highly recommended to reduce load on your database"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Minimum is 1, maximum is 1000, default is 100"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Trigger on",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "interval",
+      "schedule"
+     ],
+     "extends_schema": true
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to manually define the columns returned in your query. Only needed when queries take too long."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_row",
+   "title": "New/updated row",
+   "description": "New/updated row in a table in Snowflake",
+   "help": "Triggers when a row is inserted/updated in the selected table. Checks for new/updated rows every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "primary_key",
+     "type": "string",
+     "label": "Unique key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Select a unique key column to deduplicate rows. Performance can be improved if the selected unique key is indexed. Learn more"
+    },
+    {
+     "name": "sort_column",
+     "type": "string",
+     "label": "Sort column",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timestamp_columns_list",
+     "hint": "Select a column to identify updated rows. Only timestamp columns can be used as a sort column. Learn more"
+    },
+    {
+     "name": "output_columns",
+     "type": "string",
+     "label": "Output columns",
+     "control_type": "multiselect",
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Choose columns to be returned from the selected table. Leave blank to return all columns."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be processed, e.g. currency = 'USD' (enclose strings in single quotes)"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_rows_batch",
+   "title": "New/updated rows",
+   "description": "New/updated batch of rows in a table in Snowflake",
+   "help": "Triggers when rows are inserted/updated in the selected table. These rows will be processed in batches. If less rows are available, trigger will deliver as a smaller batch. You can configure the batch size to be any number between 1 and 1000. Default batch size is 100.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "bulk_load_s3",
+   "title": "Bulk load data to table from stage",
+   "description": "Bulk load data to table from stage in Snowflake",
+   "help": "This action loads data files from an Snowflake stage into an existing table using the COPY command.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "stage",
+     "type": "string",
+     "label": "Stage name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "stage_list",
+     "toggle_field": {
+      "name": "stage",
+      "type": "string"
+     },
+     "hint": "Specify the stage you would want to load the file from. Learn more."
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "hint": "Specify a list of one or more file names (separated by commas) to be loaded. If left unspecified, all files from the stage will be loaded. Learn more."
+    },
+    {
+     "name": "file_format",
+     "type": "string",
+     "label": "File format",
+     "control_type": "select",
+     "pick_list": "file_format_list",
+     "toggle_field": {
+      "name": "file_format_def",
+      "type": "string"
+     },
+     "hint": "Select a named file format. Learn more."
+    }
+   ],
+   "output": [
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "rows_parsed",
+     "type": "integer",
+     "label": "Rows parsed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "rows_loaded",
+     "type": "integer",
+     "label": "Rows loaded",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "error_limit",
+     "type": "integer",
+     "label": "Error limit",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "errors_seen",
+     "type": "integer",
+     "label": "Errors seen",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "first_error",
+     "type": "string",
+     "label": "First error",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_error_line",
+     "type": "integer",
+     "label": "First error line",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "first_error_character",
+     "type": "integer",
+     "label": "First error character",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "first_error_column_name",
+     "type": "string",
+     "label": "First error column name",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "delete_rows",
+   "title": "Delete rows",
+   "description": "Delete rows in a table in Snowflake",
+   "help": "Delete one or more rows in any table that matches a filter. First select the table, then specify the WHERE condition to filter the row(s) to delete.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be deleted, e.g. currency = 'USD' (enclose strings in single quotes)"
+    }
+   ],
+   "output": [
+    {
+     "name": "rows_deleted",
+     "type": "integer",
+     "label": "Number of rows deleted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "export_csv_v2",
+   "title": "Export query result",
+   "description": "Export query result as a CSV file in Snowflake",
+   "help": "This action executes a SQL query and exports the result into a CSV file. This action is intended to write SQL(SELECT) queries.",
+   "input": [
+    {
+     "name": "_action_version",
+     "type": "string",
+     "label": "Action version",
+     "control_type": "text",
+     "visible_if": "false",
+     "default": "2"
+    },
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Export the results of this SQL (SELECT) query."
+    },
+    {
+     "name": "delimiter",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "comma",
+      "space",
+      "tab",
+      "colon",
+      "semicolon",
+      "pipe"
+     ],
+     "hint": "The delimiter character that separates each column in the CSV file. CSV files typically use comma ."
+    },
+    {
+     "name": "target_url",
+     "type": "string",
+     "label": "Upload URL",
+     "control_type": "text",
+     "visible_if": "input._action_version != '2'",
+     "hint": "Export the CSV file to this URL. Use the output of Generate on-prem file URL or an S3 presigned URL (with PUT method)."
+    }
+   ],
+   "output": [
+    {
+     "name": "row_count",
+     "type": "integer",
+     "label": "Number of rows exported",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "names",
+     "type": "array",
+     "label": "Column names",
+     "required": true,
+     "of": "string"
+    }
+   ]
+  },
+  {
+   "name": "insert_row",
+   "title": "Insert row",
+   "description": "Insert row in a table in Snowflake",
+   "help": "Inserts a row in the selected table. Select the table, then provide data for the new row.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "merge_action",
+   "title": "Merge rows",
+   "description": "Merge rows from source table to target table in Snowflake",
+   "help": "Inserts or updates values in a target table based on values in a source table. Use this action to upsert rows in bulk. This action only supports merging of tables with identical schema.",
+   "input": [
+    {
+     "name": "source_table",
+     "type": "string",
+     "label": "Source table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "source_table",
+      "type": "string"
+     },
+     "hint": "Specify the table containing the data that will be used for the merge operation. Only first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "target_table",
+     "type": "string",
+     "label": "Target table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "target_table",
+      "type": "string"
+     },
+     "hint": "Specify the table where data will be merged into. Only first 1000 are displayed.Enter name if table is not shown."
+    },
+    {
+     "name": "join_expression",
+     "type": "object",
+     "label": "Join condition",
+     "required": true,
+     "properties": [
+      {
+       "name": "unique_key",
+       "type": "string",
+       "label": "Unique key",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "columns_list",
+       "toggle_field": {
+        "name": "unique_key",
+        "type": "string"
+       },
+       "hint": "Select the unique key from the target table that will be used to identify duplicate rows. Both tables will be joined on this key."
+      }
+     ],
+     "hint": "Define the join condition by selecting the unique key that identifies duplicate rows. Learn more"
+    },
+    {
+     "name": "timeout",
+     "type": "integer",
+     "label": "Timeout limit (minutes)",
+     "control_type": "integer",
+     "hint": "Set an upper limit for this wait action. If one or more of the async jobs take longer than this, proceed to the next step without waiting. Maximum is 120 minutes."
+    }
+   ],
+   "output": [
+    {
+     "name": "row_updated",
+     "type": "integer",
+     "label": "Row updated",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "row_affected",
+     "type": "integer",
+     "label": "Row affected",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "row_inserted",
+     "type": "integer",
+     "label": "Row inserted",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "replicate_table_schema",
+   "title": "Replicate schema",
+   "description": "Replicate table schema in Snowflake",
+   "help": "This table inspects the schema of a data source against a table in Snowflake.If the table does not exist in Snowflake, it will be created, else any additional column in the schema will be created in the table provided.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Enter your table name here. We recommend using uppercase for table names in Snowflake. Learn more"
+    },
+    {
+     "name": "column_case",
+     "type": "string",
+     "label": "Column case",
+     "control_type": "select",
+     "default": "upcase",
+     "options": [
+      "upcase",
+      "preserve"
+     ],
+     "hint": "If set to preserve original , replicated column names will be preserved as given in the input. If not set, defaults to upcase . This allows case-insensitive queries and is recommended. Learn more"
+    },
+    {
+     "name": "source_type",
+     "type": "string",
+     "label": "Source type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "csv",
+      "schema"
+     ],
+     "extends_schema": true,
+     "hint": "Select the source type to replicate schema in your table."
+    }
+   ],
+   "output": [
+    {
+     "name": "columns_affected",
+     "type": "integer",
+     "label": "Number of columns altered",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "run_custom_sql",
+   "title": "Run custom SQL",
+   "description": "Run custom SQL in Snowflake",
+   "help": "Execute a SQL in Snowflake. Provide a valid SQL string and define the expected output fields. This action is intended for write SQL (INSERT and UPDATE) and DDL (CREATE, ALTER and DROP). Maximum number of rows returned in this action is 50000. For SELECT queries, you may use Select rows using custom …",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SQL string to be executed here. Use bind variables, e.g. id = :id , and the parameter field to parameterize inputs."
+    },
+    {
+     "name": "update_only",
+     "type": "boolean",
+     "label": "Execute update only SQL statement without row limit",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "update_only",
+      "type": "boolean"
+     },
+     "hint": "Defaults to No. When Yes, this action imposes no row limits on SQL statements but returns no rows. Use this to do bulk transformations of data."
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "visible_if": "input.update_only != \"true\"",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "run_custom_sql_async_v2",
+   "title": "Run long query using custom SQL",
+   "description": "Run long query using custom SQL in Snowflake",
+   "help": "Execute a SQL in Snowflake asynchronously. Provide a valid SQL string and define the expected output fields. This action is intended to write DML statements (INSERT, UPDATE and DELETE) and DDL statements (CREATE, ALTER and DROP). Query size limit excluding parameters is 1MB. ** For SELECT statements…",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SQL string to be executed here."
+    },
+    {
+     "name": "update_only",
+     "type": "boolean",
+     "label": "Update only query?",
+     "control_type": "checkbox",
+     "visible_if": "false",
+     "toggle_field": {
+      "name": "update_only",
+      "type": "boolean"
+     },
+     "hint": "When Yes, this action will execute the query without returning any rows. Use this to do bulk transformations of data."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true
+    },
+    {
+     "name": "timeout",
+     "type": "integer",
+     "label": "Timeout limit (minutes)",
+     "control_type": "integer",
+     "visible_if": "false",
+     "default": "120",
+     "hint": "Set an upper limit for this wait action. If one or more of the async jobs take longer than this, proceed to the next step without waiting. Maximum is 1440 minutes (24 hours)."
+    }
+   ],
+   "output": [
+    {
+     "name": "rows_affected",
+     "type": "integer",
+     "label": "Rows affected",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_rows",
+   "title": "Select rows",
+   "description": "Select rows in a table in Snowflake",
+   "help": "Select rows from the selected table/view that match your WHERE condition. Result is limited to 50000 rows.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "output_columns",
+     "type": "string",
+     "label": "Output columns",
+     "control_type": "multiselect",
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Choose columns to be selected from the table. Default is to return all columns."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be selected, e.g. currency = 'USD' (enclose strings in single quotes). Use bind variables, e.g. id = :id , and the parameter field to parameterize inputs."
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "orderby",
+     "type": "string",
+     "label": "Order by",
+     "control_type": "text",
+     "hint": "Order of rows to return. e.g. updated_at DESC"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Max number of rows to return. Limit is 50000 and default is 100."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "number",
+     "default": 0,
+     "hint": "Number of rows to skip. e.g. 100 ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_rows_sql",
+   "title": "Select rows using custom SQL",
+   "description": "Select rows using custom SQL in Snowflake",
+   "help": "Select rows in Snowflake with a custom SQL query.",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Put your native SQL query here with meaningful column aliases. Any ORDER BY clauses should be removed from the query and placed in the Order by input field below. Avoid using any restrictive clauses l…"
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "orderby",
+     "type": "string",
+     "label": "Order by",
+     "control_type": "text",
+     "hint": "Order of rows to return. e.g. updated_at DESC"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Limit number of rows (default is 100)"
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Number of rows to skip, before starting to return rows from the query expression"
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to define the columns returned in your query. We try to do this for you dynamically but this can be used to override any columns in case of errors. The name of fields defined should match the…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "sync_objects_to_snowflake_v2",
+   "title": "Replicate rows",
+   "description": "Replicate batch of rows to table in Snowflake",
+   "help": "This action first detects the schema of the source data. If changes are found, it will alter the selected table. Finally, this action inserts or updates the batch of rows into the table.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "rows",
+     "type": "string",
+     "label": "Rows",
+     "control_type": "text",
+     "required": true,
+     "default": "=",
+     "extends_schema": true,
+     "hint": "Use a list datapill of the rows."
+    },
+    {
+     "name": "flatten_columns",
+     "type": "boolean",
+     "label": "Flatten columns",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "flatten_columns",
+      "type": "boolean"
+     },
+     "hint": "Select Yes to flatten the object into individual key-value pairs.For example, flatten column user with value { 'id': 1, 'email': 'john@workato.com' } to columns user.id and user.email with value 1 and…"
+    },
+    {
+     "name": "flatten_level",
+     "type": "integer",
+     "label": "Flatten level",
+     "control_type": "integer",
+     "visible_if": "input.flatten_columns == \"true\"",
+     "default": 1,
+     "hint": "Number of levels to flatten. Default level is 1 . Maximum level supported is 50 ."
+    },
+    {
+     "name": "column_case",
+     "type": "string",
+     "label": "Column case",
+     "control_type": "select",
+     "options": [
+      "upcase",
+      "preserve"
+     ],
+     "hint": "If set to preserve original , replicated column names will be preserved as given in the input. If not set, defaults to upcase . This allows case-insensitive queries and is recommended. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "table_created",
+     "type": "boolean",
+     "label": "A new table was created",
+     "control_type": "boolean",
+     "required": true,
+     "toggle_field": {
+      "name": "table_created",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "table_altered",
+     "type": "boolean",
+     "label": "An existing table was altered",
+     "control_type": "boolean",
+     "required": true,
+     "toggle_field": {
+      "name": "table_altered",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "rows_affected",
+     "type": "integer",
+     "label": "Number of rows upserted",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_rows",
+   "title": "Update rows",
+   "description": "Update rows in a table in Snowflake",
+   "help": "Updates one or more rows in the selected table. Select the table, then provide the WHERE condition to filter the rows to update. Finally, provide the data to update.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be updated, e.g. currency = 'USD' (enclose strings in single quotes)"
+    }
+   ],
+   "output": [
+    {
+     "name": "rows_updated",
+     "type": "integer",
+     "label": "Number of rows updated",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upload_to_internal_stage",
+   "title": "Upload file to internal stage",
+   "description": "Upload file to internal stage in Snowflake",
+   "help": "This action uploads a file to an internal stage in Snowflake using PUT command.",
+   "input": [
+    {
+     "name": "source_type",
+     "type": "string",
+     "label": "Source Type",
+     "control_type": "select",
+     "required": true,
+     "default": "file_contents",
+     "options": [
+      "file_contents",
+      "w_path"
+     ],
+     "extends_schema": true,
+     "hint": "Specify how you would like to access your source data. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "target_file_path",
+     "type": "string",
+     "label": "Target File Path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "target_size",
+     "type": "integer",
+     "label": "Target file size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "source_compression",
+     "type": "string",
+     "label": "Source compression",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "target_compression",
+     "type": "string",
+     "label": "Target compression",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "internal_stage",
+     "type": "string",
+     "label": "Internal stage name",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upsert_rows_batch",
+   "title": "Upsert rows",
+   "description": "Upsert batch of rows in a table in Snowflake",
+   "help": "Inserts/updates a batch of rows in the selected table by the specified unique key. Select the table, then provide data for the rows. Rows with unique key values found will be updated with the data provided. Rows without existing unique key values will be created with data provided.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only first 1000 are displayed. Enter name if table is not shown."
+    }
+   ],
+   "output": [
+    {
+     "name": "rows_affected",
+     "type": "integer",
+     "label": "Number of rows upserted",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

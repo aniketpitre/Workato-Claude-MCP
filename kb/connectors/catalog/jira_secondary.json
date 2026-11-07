@@ -1,0 +1,3624 @@
+{
+ "name": "jira_secondary",
+ "title": "Jira secondary",
+ "requires_connection": true,
+ "categories": [
+  "Project Management",
+  "Marketing"
+ ],
+ "aliases": [
+  "Jira",
+  "Atlassian"
+ ],
+ "triggers": [
+  {
+   "name": "deleted_object",
+   "title": "Deleted object",
+   "description": "Deleted object in Jira secondary",
+   "help": "Fetches deleted object in real-time. Requires Jira administrators global permission. If you don't have global permissions, use an HTTP connector instead (New event via webhook trigger).",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "issue",
+      "project",
+      "comment",
+      "worklog"
+     ],
+     "extends_schema": true,
+     "hint": "Select the object to receive deleted events from Jira."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "issue_created_bulk",
+   "title": "Export new issues in Jira",
+   "description": "Export new issues in Jira secondary",
+   "help": "Triggers on a specified schedule and returns created issues in Jira. Search results are returned in full as a CSV stream. You can write the CSV stream to a file using a file connector, e.g. Box, SFTP. You can also parse it to use as a list of data in Workato using the Parse CSV action in the CSV too…",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Defaults to one hour from time of start of recipe. Once recipe has been run or tested, value can…"
+    },
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL where class",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "issue_fields",
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select one or more fields from the dropdown. If left blank, defaults to retrieving all navigable fields."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "When exporting records to form the CSV, fetch them in batches of",
+     "control_type": "number",
+     "hint": "This trigger pulls records in batches and streams them as a CSV. Use this input to control the number of records per batch. Maximum value is 100. Defaults to 100 records."
+    }
+   ],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "CSV content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "schema",
+     "type": "array",
+     "label": "Object schema",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "original_type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mapped_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "created_from",
+     "type": "date_time",
+     "label": "New From",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "issue_created_or_updated_bulk",
+   "title": "Export new/updated issues in Jira",
+   "description": "Export new/updated issues in Jira secondary",
+   "help": "Triggers on a specified schedule and returns created or updated issues in Jira. Search results are returned in full as a CSV stream. You can write the CSV stream to a file using a file connector, e.g. Box, SFTP. You can also parse it to use as a list of data in Workato using the Parse CSV action in …",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Defaults to one hour from time of start of recipe. Once recipe has been run or tested, value can…"
+    },
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL where class",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "issue_fields",
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select one or more fields from the dropdown. If left blank, defaults to retrieving all navigable fields."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "When exporting records to form the CSV, fetch them in batches of",
+     "control_type": "number",
+     "hint": "This trigger pulls records in batches and streams them as a CSV. Use this input to control the number of records per batch. Maximum value is 100. Defaults to 100 records."
+    }
+   ],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "CSV content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "schema",
+     "type": "array",
+     "label": "Object schema",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "original_type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mapped_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "created_or_updated_from",
+     "type": "date_time",
+     "label": "New/updated From",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_event",
+   "title": "New event",
+   "description": "New event in Jira secondary",
+   "help": "Fetches new event in real-time. Requires Jira administrators global permission. If you don't have global permissions, use the Webhooks connector instead. Configure the webhook events for the selected object in JIRA . This trigger requires endpoint setup in JIRA with the below endpoint URL. Endpoint …",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "issue",
+      "project",
+      "comment",
+      "worklog"
+     ],
+     "extends_schema": true,
+     "hint": "Select the object to receive events from Jira."
+    },
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Use a unique name to generate webhook URL."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_issue",
+   "title": "New issue",
+   "description": "New issue in Jira secondary",
+   "help": "Checks for new issues every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL where class",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_issue_batch",
+   "title": "New issue",
+   "description": "New issue in Jira secondary",
+   "help": "Checks for New issues every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get created records one hour ago. Once recipe has been run or tested, value canno…"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Maximum number of records per trigger event. Minimum is 1, maximum is 100 , default is 100 ."
+    },
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL where class",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "text",
+     "hint": "Specify fields with comma separated to retrieve. *all - Returns all fields, *navigable - Returns navigable fields, -description - Returns all navigable fields except description. In default, returns n…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_comment_webhook",
+   "title": "New/updated comment",
+   "description": "New/updated comment in Jira secondary",
+   "help": "Fetches new/updated comments in real-time. Requires Jira administrators global permission. If you don't have global permissions, use an HTTP connector instead (New event via webhook trigger). This trigger is not supported for Service account connections. Use an API Token based connection instead.",
+   "input": [
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL WHERE clause",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    }
+   ],
+   "output": [
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "author",
+     "type": "object",
+     "label": "Author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updateAuthor",
+     "type": "object",
+     "label": "Update author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "visibility",
+     "type": "object",
+     "label": "Visibility",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "updated_issue",
+   "title": "Updated issue",
+   "description": "Updated issue in Jira secondary",
+   "help": "Checks for updated issues every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL where class",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_issue_batch",
+   "title": "Updated issue",
+   "description": "Updated issue in Jira secondary",
+   "help": "Checks for Updated issues every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get updated records one hour ago. Once recipe has been run or tested, value canno…"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Maximum number of records per trigger event. Minimum is 1, maximum is 100 , default is 100 ."
+    },
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL where class",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "text",
+     "hint": "Specify fields with comma separated to retrieve. *all - Returns all fields, *navigable - Returns navigable fields, -description - Returns all navigable fields except description. In default, returns n…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_issue_webhook",
+   "title": "New/updated issue",
+   "description": "New/updated issue in Jira secondary",
+   "help": "Fetches new/updated issues in real-time. Requires Jira administrators global permission. If you don't have global permissions, use an HTTP connector instead (New event via webhook trigger). This trigger returns limited data due to API limitation. To obtain all issue related fields, use the Get issue…",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "When you start recipe for the first time, it picks up new/updated issues from this specified date and time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL WHERE clause",
+     "control_type": "text",
+     "hint": "JQL query to filter the records you want, e.g. project = \"PRJ\" AND status = \"Done\" . Only issueKey, project, issuetype, status, assignee, reporter, issue.property and cf[id] JQL queries are supported.…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_worklog_webhook",
+   "title": "New/updated worklog",
+   "description": "New/updated worklog in Jira secondary",
+   "help": "Fetches new/updated #{title}s in real-time. Requires Jira administrators global permission. If you don't have global permissions, use an HTTP connector instead (New event via webhook trigger). This trigger is not supported for Service account connections. Use an API Token based connection instead.",
+   "input": [],
+   "output": [
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "author",
+     "type": "object",
+     "label": "Author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "timeZone",
+       "type": "string",
+       "label": "Time zone",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "avatarUrls",
+       "type": "object",
+       "label": "Avatar urls",
+       "required": true,
+       "properties": [
+        {
+         "name": "48x48",
+         "type": "string",
+         "label": "48 x 48",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "24x24",
+         "type": "string",
+         "label": "24 x 24",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "16x16",
+         "type": "string",
+         "label": "16 x 16",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "32x32",
+         "type": "string",
+         "label": "32 x 32",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updateAuthor",
+     "type": "object",
+     "label": "Update author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "timeZone",
+       "type": "string",
+       "label": "Time zone",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "avatarUrls",
+       "type": "object",
+       "label": "Avatar urls",
+       "required": true,
+       "properties": [
+        {
+         "name": "48x48",
+         "type": "string",
+         "label": "48 x 48",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "24x24",
+         "type": "string",
+         "label": "24 x 24",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "16x16",
+         "type": "string",
+         "label": "16 x 16",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "32x32",
+         "type": "string",
+         "label": "32 x 32",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "started",
+     "type": "date_time",
+     "label": "Started",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "timeSpent",
+     "type": "string",
+     "label": "Time spent",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "timeSpentSeconds",
+     "type": "integer",
+     "label": "Time spent seconds",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "issueId",
+     "type": "string",
+     "label": "Issue ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Jira secondary (Custom)",
+   "help": "Build your own Jira action with a HTTP request. The request will be authorized with your Jira connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "assign_issue",
+   "title": "Assign user to issue",
+   "description": "Assign user to issue in Jira secondary",
+   "help": "Assignee's Jira username e.g. if e-mail is 'johndoe@workato.com', use johndoe . Existing assignees will be replaced. Action fails if username is invalid.",
+   "input": [
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to add comment to, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "assignee",
+     "type": "string",
+     "label": "Assignee username",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "assignee_id",
+      "type": "string"
+     },
+     "hint": "Assignee's Jira username e.g. if user's e-mail is 'johndoe@workato.com', use johndoe . Username is only usable in older versions of Jira server."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_comment",
+   "title": "Create comment",
+   "description": "Create comment for issue in Jira secondary",
+   "help": "Add a comment to an existing Jira issue.",
+   "input": [
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to add comment to, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Comment text",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "To mention a user in Jira Cloud, use [~accountid:accountId] e.g. [~accountid:5b10ac8d82e05b22cc7d4ef5]. For Jira Server/Data Center, use [~username] e.g. [~johndoe]."
+    },
+    {
+     "name": "visibility",
+     "type": "object",
+     "label": "Visibility",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text",
+       "hint": "Enter role name of roles to restrict visibility of the comment to, as defined in your Jira account. Use 'All Users' to remove restrictions."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "author",
+     "type": "object",
+     "label": "Author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updateAuthor",
+     "type": "object",
+     "label": "Update author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "visibility",
+     "type": "object",
+     "label": "Visibility",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_issue",
+   "title": "Create issue",
+   "description": "Create issue in Jira secondary",
+   "help": "Create issue of specific project and issue type.",
+   "input": [
+    {
+     "name": "project_issuetype_id",
+     "type": "string",
+     "label": "Project issue type (by ID)",
+     "control_type": "tree",
+     "required_when_visible": true,
+     "visible_if": "!input.project_issuetype && !input.sample_project_issuetype",
+     "pick_list": "list_projects_and_issuetypes_by_id",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "project_issuetype_id",
+      "type": "string"
+     },
+     "hint": "Select the project and issue type for this issue (ID-based)."
+    },
+    {
+     "name": "sample_project_issuetype_id",
+     "type": "string",
+     "label": "Sample Project issue type (by ID)",
+     "control_type": "tree",
+     "visible_if": "!input.project_issuetype && !input.sample_project_issuetype",
+     "pick_list": "list_projects_and_issuetypes_by_id",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "sample_project_issuetype_id",
+      "type": "string"
+     },
+     "hint": "Select the project and issue type to retrieve custom fields for this issue. Note that if input is not yet selected/specified for Project issue type , custom fields will not be populated."
+    },
+    {
+     "name": "project_issuetype",
+     "type": "string",
+     "label": "Project issue type",
+     "control_type": "tree",
+     "visible_if": "input.project_issuetype || input.sample_project_issuetype",
+     "pick_list": "list_projects_and_issuetypes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "project_issuetype",
+      "type": "string"
+     },
+     "hint": "Select the project and issue type for this issue."
+    },
+    {
+     "name": "sample_project_issuetype",
+     "type": "string",
+     "label": "Sample project issue type",
+     "control_type": "tree",
+     "visible_if": "input.sample_project_issuetype || input.project_issuetype",
+     "pick_list": "list_projects_and_issuetypes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "sample_project_issuetype",
+      "type": "string"
+     },
+     "hint": "Select the project and issue type to retrieve custom fields for this issue. Note that if input is not yet selected/specified for Project issue type , custom fields will not be populated."
+    },
+    {
+     "name": "summary",
+     "type": "string",
+     "label": "Summary",
+     "control_type": "text",
+     "required": true,
+     "hint": "Summary of issue."
+    },
+    {
+     "name": "reporter_id",
+     "type": "string",
+     "label": "Reporter account ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "reporter",
+      "type": "string"
+     },
+     "hint": "Account ID can be found in the people's page at the end of the URL."
+    },
+    {
+     "name": "components",
+     "type": "string",
+     "label": "Components",
+     "control_type": "text",
+     "hint": "Enter components separated by commas ."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text-area"
+    },
+    {
+     "name": "priority",
+     "type": "string",
+     "label": "Issue priority",
+     "control_type": "select",
+     "pick_list": "priority_picklist",
+     "toggle_field": {
+      "name": "priority",
+      "type": "string"
+     }
+    },
+    {
+     "name": "labels",
+     "type": "string",
+     "label": "Labels",
+     "control_type": "text",
+     "hint": "Enter labels separated by comma ."
+    },
+    {
+     "name": "assignee_id",
+     "type": "string",
+     "label": "Assignee account ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "assignee",
+      "type": "string"
+     },
+     "hint": "Account ID can be found in the people's page at the end of the URL."
+    },
+    {
+     "name": "timetracking",
+     "type": "object",
+     "label": "Time tracking",
+     "properties": [
+      {
+       "name": "originalEstimate",
+       "type": "string",
+       "label": "Original estimate",
+       "control_type": "text",
+       "hint": "Example format: 3w 4d 12h"
+      },
+      {
+       "name": "remainingEstimate",
+       "type": "string",
+       "label": "Remaining estimate",
+       "control_type": "text",
+       "hint": "Example format: 3w 4d 12h"
+      }
+     ]
+    },
+    {
+     "name": "issuelinks",
+     "type": "string",
+     "label": "Issue link",
+     "control_type": "text",
+     "hint": "Issue key of issue to link, e.g. 10105 ."
+    },
+    {
+     "name": "duedate",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_user",
+   "title": "Create user",
+   "description": "Create user in Jira secondary",
+   "help": "Warning : This action will increase the number of Jira licenses for your company and affect monthly Jira subscription fees.",
+   "input": [
+    {
+     "name": "password",
+     "type": "string",
+     "label": "Password",
+     "control_type": "text"
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text",
+     "required": true,
+     "hint": "New user's e-mail address."
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name (deprecated)",
+     "control_type": "text",
+     "hint": "New user's display name."
+    },
+    {
+     "name": "products",
+     "type": "string",
+     "label": "Products",
+     "control_type": "multiselect",
+     "pick_list": "products_list",
+     "toggle_field": {
+      "name": "products",
+      "type": "string"
+     },
+     "hint": "Products the new user has access to. Select none to create a user without any product access. Leave the field empty for default access."
+    }
+   ],
+   "output": [
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self url",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "accountId",
+     "type": "string",
+     "label": "Account ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "avatarUrls",
+     "type": "object",
+     "label": "Avatar urls",
+     "required": true,
+     "properties": [
+      {
+       "name": "16x16",
+       "type": "string",
+       "label": "16 x 16",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "24x24",
+       "type": "string",
+       "label": "24 x 24",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "32x32",
+       "type": "string",
+       "label": "32 x 32",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "48x48",
+       "type": "string",
+       "label": "48 x 48",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "active",
+     "type": "boolean",
+     "label": "Active",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "active",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "timeZone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "locale",
+     "type": "string",
+     "label": "Locale",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "groups",
+     "type": "object",
+     "label": "Groups",
+     "required": true,
+     "properties": [
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "items",
+       "type": "array",
+       "label": "Items",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self url",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "applicationRoles",
+     "type": "object",
+     "label": "Application roles",
+     "required": true,
+     "properties": [
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "items",
+       "type": "array",
+       "label": "Items",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self url",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "expand",
+     "type": "string",
+     "label": "Expand",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastLoginTime",
+     "type": "date_time",
+     "label": "Last login time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "find_user",
+   "title": "Get user details",
+   "description": "Get user in Jira secondary",
+   "help": "Retrieve the user record that matches the provided search criteria. Action will fail if user does not exist. Provide at least one search criteria.",
+   "input": [
+    {
+     "name": "username",
+     "type": "string",
+     "label": "Username",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "accountId",
+      "type": "string"
+     },
+     "hint": "Exact Jira username. Case insensitive."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Email",
+     "control_type": "text",
+     "hint": "Enter email address of the user."
+    }
+   ],
+   "output": [
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self",
+     "control_type": "text"
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Key",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "accountId",
+     "type": "string",
+     "label": "Account ID",
+     "control_type": "text"
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text"
+    },
+    {
+     "name": "avatarUrls",
+     "type": "object",
+     "label": "Avatar urls",
+     "properties": [
+      {
+       "name": "16x16",
+       "type": "string",
+       "label": "16 x 16",
+       "control_type": "text"
+      },
+      {
+       "name": "24x24",
+       "type": "string",
+       "label": "24 x 24",
+       "control_type": "text"
+      },
+      {
+       "name": "32x32",
+       "type": "string",
+       "label": "32 x 32",
+       "control_type": "text"
+      },
+      {
+       "name": "48x48",
+       "type": "string",
+       "label": "48 x 48",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "active",
+     "type": "number",
+     "label": "Active",
+     "control_type": "number"
+    },
+    {
+     "name": "timeZone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "text"
+    },
+    {
+     "name": "locale",
+     "type": "string",
+     "label": "Locale",
+     "control_type": "text"
+    },
+    {
+     "name": "expand",
+     "type": "string",
+     "label": "Expand",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_attachment",
+   "title": "Download attachment",
+   "description": "Download attachment from issue in Jira secondary",
+   "help": "Maximum attachment size is 25MB. Attachments can be downloaded for use in subsequent recipe steps.",
+   "input": [
+    {
+     "name": "content_uri",
+     "type": "string",
+     "label": "Attachment URI",
+     "control_type": "text",
+     "required": true,
+     "hint": "Obtainable from the step output of objects that support attachments, e.g. the Content datapill from the Get issue action ."
+    }
+   ],
+   "output": [
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Attachment content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_changelog",
+   "title": "Get changelog of an issue",
+   "description": "Get changelog of an issue in Jira secondary",
+   "help": "Get changelog of an issue",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "maxResults",
+     "type": "string",
+     "label": "Max results",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "startAt",
+     "type": "string",
+     "label": "Start at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "total",
+     "type": "string",
+     "label": "Total",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isLast",
+     "type": "boolean",
+     "label": "Is last",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isLast",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "values",
+     "type": "array",
+     "label": "Values",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "author",
+       "type": "object",
+       "label": "Author",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "key",
+         "type": "string",
+         "label": "Key",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "accountId",
+         "type": "string",
+         "label": "Account ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "avatarUrls",
+         "type": "object",
+         "label": "Avatar urls",
+         "required": true,
+         "properties": [
+          {
+           "name": "48x48",
+           "type": "string",
+           "label": "48 x 48",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "24x24",
+           "type": "string",
+           "label": "24 x 24",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "16x16",
+           "type": "string",
+           "label": "16 x 16",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "32x32",
+           "type": "string",
+           "label": "32 x 32",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "active",
+         "type": "boolean",
+         "label": "Active",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "active",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "timeZone",
+         "type": "string",
+         "label": "Time zone",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "items",
+       "type": "array",
+       "label": "Items",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "field",
+         "type": "string",
+         "label": "Field",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "fieldtype",
+         "type": "string",
+         "label": "Field type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "fieldId",
+         "type": "string",
+         "label": "Field ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "from",
+         "type": "string",
+         "label": "From",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "fromString",
+         "type": "string",
+         "label": "From string",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "to",
+         "type": "string",
+         "label": "To",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "toString",
+         "type": "string",
+         "label": "To string",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_issue",
+   "title": "Get issue",
+   "description": "Get issue details from Jira secondary",
+   "help": "Retrieves a specific Jira issue via a specified issue ID or key.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to retrieve, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "issue_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select the fields you wish to use in your recipe. All fields will be returned if left blank."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_issue_comments",
+   "title": "Get issue comments",
+   "description": "Get list of issue comments for issue in Jira secondary",
+   "help": "Retrieves a list of comments belonging to an issue.",
+   "input": [
+    {
+     "name": "issuekey",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to be updated, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    }
+   ],
+   "output": [
+    {
+     "name": "comments",
+     "type": "array",
+     "label": "Comments",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "author",
+       "type": "object",
+       "label": "Author",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "accountId",
+         "type": "string",
+         "label": "Account ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "active",
+         "type": "boolean",
+         "label": "Active",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "active",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "body",
+       "type": "string",
+       "label": "Body",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "updateAuthor",
+       "type": "object",
+       "label": "Update author",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "accountId",
+         "type": "string",
+         "label": "Account ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "active",
+         "type": "boolean",
+         "label": "Active",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "active",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "updated",
+       "type": "date_time",
+       "label": "Updated",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "visibility",
+       "type": "object",
+       "label": "Visibility",
+       "required": true,
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_object_schema",
+   "title": "Get issue schema",
+   "description": "Get issue schema for Jira secondary",
+   "help": "Fetch the name and schema of all fields in a Jira object. Use this action to replicate schema to your data warehouse",
+   "input": [
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "issue_fields",
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select the fields you wish to use in your recipe. All fields will be returned if left blank."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "label",
+     "type": "string",
+     "label": "Object label",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fields",
+     "type": "array",
+     "label": "Fields",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "original_type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mapped_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "orderable",
+       "type": "boolean",
+       "label": "Orderable",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "orderable",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "navigable",
+       "type": "boolean",
+       "label": "Navigable",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "navigable",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "searchable",
+       "type": "boolean",
+       "label": "Searchable",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "searchable",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "custom",
+       "type": "boolean",
+       "label": "Custom field?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "custom",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_priorities",
+   "title": "List priorities",
+   "description": "List priorities in Jira secondary",
+   "input": [
+    {
+     "name": "startAt",
+     "type": "integer",
+     "label": "Start at",
+     "control_type": "number",
+     "hint": "Index of the first priority to return. Defaults to 0 ."
+    },
+    {
+     "name": "maxResults",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "hint": "Priorities to return per page. Defaults to 50 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "priorities",
+     "type": "array",
+     "label": "Priorities",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "iconUrl",
+       "type": "string",
+       "label": "Icon URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "statusColor",
+       "type": "string",
+       "label": "Status color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isDefault",
+       "type": "boolean",
+       "label": "Is default",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "isDefault",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "startAt",
+     "type": "integer",
+     "label": "Start at",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "maxResults",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "isLast",
+     "type": "boolean",
+     "label": "Is last page",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isLast",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "search_assignable_users",
+   "title": "Search assignable users",
+   "description": "Search assignable users for issue in Jira secondary",
+   "help": "Retrieves a list of users who can be assigned to new or updated issues. If username of user is given, retrieves only the specified user (provided the user can be assigned to issue). Returns an empty list if specified user cannot be assigned or an invalid username is provided.",
+   "input": [
+    {
+     "name": "project",
+     "type": "string",
+     "label": "Project ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Project ID or key of project."
+    },
+    {
+     "name": "issuekey",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to be updated, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "startAt",
+     "type": "integer",
+     "label": "Start at",
+     "control_type": "number",
+     "default": 0,
+     "hint": "Index of the first user to evaluate. Defaults to 0 ."
+    },
+    {
+     "name": "maxResults",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Size of the user range to evaluate. Defaults to 100 . Must be between 1 and 100 . Jira filters this range for assignability, so fewer users are usually returned."
+    },
+    {
+     "name": "username",
+     "type": "string",
+     "label": "Username",
+     "control_type": "text",
+     "hint": "User's Jira username e.g. if e-mail is 'johndoe@workato.com', use johndoe ."
+    },
+    {
+     "name": "accountId",
+     "type": "string",
+     "label": "Assignee account ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "assignee",
+      "type": "string"
+     },
+     "hint": "Account ID can be found in the people's page at the end of the URL."
+    }
+   ],
+   "output": [
+    {
+     "name": "users",
+     "type": "array",
+     "label": "Users",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self url",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "avatarUrls",
+       "type": "object",
+       "label": "Avatar urls",
+       "required": true,
+       "properties": [
+        {
+         "name": "16x16",
+         "type": "string",
+         "label": "16 x 16",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "24x24",
+         "type": "string",
+         "label": "24 x 24",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "32x32",
+         "type": "string",
+         "label": "32 x 32",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "48x48",
+         "type": "string",
+         "label": "48 x 48",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "timeZone",
+       "type": "string",
+       "label": "Time zone",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "locale",
+       "type": "string",
+       "label": "Locale",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "groups",
+       "type": "object",
+       "label": "Groups",
+       "required": true,
+       "properties": [
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "Size",
+         "control_type": "integer",
+         "required": true
+        },
+        {
+         "name": "items",
+         "type": "array",
+         "label": "Items",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self url",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "applicationRoles",
+       "type": "object",
+       "label": "Application roles",
+       "required": true,
+       "properties": [
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "Size",
+         "control_type": "integer",
+         "required": true
+        },
+        {
+         "name": "items",
+         "type": "array",
+         "label": "Items",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self url",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "expand",
+       "type": "string",
+       "label": "Expand",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastLoginTime",
+       "type": "date_time",
+       "label": "Last login time",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "returned_count",
+     "type": "integer",
+     "label": "Returned count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_start_at",
+     "type": "integer",
+     "label": "Next start at",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_issues",
+   "title": "Search issues",
+   "description": "Search issues in Jira secondary",
+   "help": "Search for specific Jira issues via specified search criteria. Only issues matching all specified fields will be retrieved. Action fails if no values are passed in. Search results may not immediately reflect recent changes made by users. To improve accuracy, consider using the Reconcile Issue IDs fi…",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Issue ID",
+     "control_type": "text",
+     "hint": "Issue ID to search by e.g. 10105 ."
+    },
+    {
+     "name": "Key",
+     "type": "string",
+     "label": "Issue key",
+     "control_type": "text",
+     "hint": "Issue key to search by e.g. ABC-123 ."
+    },
+    {
+     "name": "Summary",
+     "type": "string",
+     "label": "Summary",
+     "control_type": "text",
+     "hint": "Exact summary value to search by. Avoid URL in the input of this field. If you wish to include URL in your search query, use Search issues by JQL action."
+    },
+    {
+     "name": "Description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Exact description value to search by. If you wish to include URL in your search query, use Search issues by JQL action."
+    },
+    {
+     "name": "Priority",
+     "type": "string",
+     "label": "Priority",
+     "control_type": "select",
+     "pick_list": "priority_picklist",
+     "toggle_field": {
+      "name": "Priority",
+      "type": "string"
+     },
+     "hint": "Priority to search by, e.g. Low, Medium, High."
+    },
+    {
+     "name": "Status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "select",
+     "pick_list": "status_picklist",
+     "toggle_field": {
+      "name": "Status",
+      "type": "string"
+     },
+     "hint": "Status of issue to search by."
+    },
+    {
+     "name": "Resolution",
+     "type": "string",
+     "label": "Resolution",
+     "control_type": "select",
+     "pick_list": "resolution_picklist",
+     "toggle_field": {
+      "name": "Resolution",
+      "type": "string"
+     },
+     "hint": "Resolution state to search by, e.g. Done, Unresolved."
+    },
+    {
+     "name": "Assignee",
+     "type": "string",
+     "label": "Assignee",
+     "control_type": "text",
+     "hint": "Exact name or e-mail address or account ID to search by."
+    },
+    {
+     "name": "Project",
+     "type": "string",
+     "label": "Project",
+     "control_type": "text",
+     "hint": "Exact project ID, key or name to search by."
+    },
+    {
+     "name": "Parent",
+     "type": "string",
+     "label": "Parent",
+     "control_type": "text",
+     "hint": "Exact parent issue key or ID to search by."
+    },
+    {
+     "name": "Epic_link",
+     "type": "string",
+     "label": "Epic Link (Deprecated)",
+     "control_type": "text",
+     "hint": "Exact linked epic key or name to search by. Deprecated. Use Parent instead."
+    },
+    {
+     "name": "Labels",
+     "type": "string",
+     "label": "Labels",
+     "control_type": "text",
+     "hint": "Comma-separated list of labels to search by."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "issue_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select the fields you wish to use in your recipe. All fields will be returned if left blank."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_issues_by_JQL",
+   "title": "Search issues by JQL",
+   "description": "Search issues by JQL in Jira secondary",
+   "help": "Search for specific Jira issues via JQL. Only issues matching all specified fields will be retrieved. Action fails if no values are passed in. Search results may not immediately reflect recent changes made by users. To improve accuracy, consider using the Reconcile Issue IDs field, or implement a sh…",
+   "input": [
+    {
+     "name": "jql",
+     "type": "string",
+     "label": "JQL query string",
+     "control_type": "text",
+     "required": true,
+     "hint": "JQL query string. Learn more about JQL ."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "issue_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select the fields you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "properties": [
+      {
+       "name": "maxResults",
+       "type": "integer",
+       "label": "Max result",
+       "control_type": "integer",
+       "default": 100,
+       "hint": "Maximum records to be returned. Must be an integer between 1 to 5000 . Defaults to 100 ."
+      },
+      {
+       "name": "startAt",
+       "type": "integer",
+       "label": "Start at",
+       "control_type": "integer",
+       "hint": "Number of records to skip. Default is 0 ."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "expand",
+     "type": "string",
+     "label": "Expand",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "startAt",
+     "type": "integer",
+     "label": "Start at",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "maxResults",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "nextPageToken",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_comment",
+   "title": "Update comment",
+   "description": "Update comment for issue in Jira secondary",
+   "help": "Replace existing comment with new comment text.",
+   "input": [
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to add comment to, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "comment_id",
+     "type": "string",
+     "label": "Comment ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of comment to update."
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Content to update the comment with. To mention a user in Jira Cloud, use [~accountid:accountId] e.g. [~accountid:5b10ac8d82e05b22cc7d4ef5]. For Jira Server/Data Center, use [~username] e.g. [~johndoe]…"
+    },
+    {
+     "name": "visibility",
+     "type": "object",
+     "label": "Visibility",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text",
+       "default": "All Users",
+       "hint": "Enter role name of roles to restrict visibility of the comment to, as defined in your Jira account. Use 'All Users' to remove restrictions."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "self",
+     "type": "string",
+     "label": "Self",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "author",
+     "type": "object",
+     "label": "Author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updateAuthor",
+     "type": "object",
+     "label": "Update author",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "visibility",
+     "type": "object",
+     "label": "Visibility",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_issue",
+   "title": "Update issue",
+   "description": "Update issue in Jira secondary",
+   "help": "Update an issue in Jira by its issue ID or issue key. Select the Sample project issue type of the issue to retrieve custom fields specific to that project and issue type.",
+   "input": [
+    {
+     "name": "issuekey",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to be updated, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "project_issuetype",
+     "type": "string",
+     "label": "Sample project issue type",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "list_projects_and_issuetypes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "project_issuetype",
+      "type": "string"
+     },
+     "hint": "Used to retrieve custom fields specific to project and issue type. If you use a non-English Jira instance, Please specify system issue types in equivalent English. For example, タスク (Japanese) as Task …"
+    },
+    {
+     "name": "summary",
+     "type": "string",
+     "label": "Summary",
+     "control_type": "text",
+     "hint": "Summary of issue."
+    },
+    {
+     "name": "reporter_id",
+     "type": "string",
+     "label": "Reporter account ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "reporter",
+      "type": "string"
+     },
+     "hint": "Account ID can be found in the people's page at the end of the URL."
+    },
+    {
+     "name": "components",
+     "type": "string",
+     "label": "Components",
+     "control_type": "text",
+     "hint": "Enter components separated by commas ."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text-area"
+    },
+    {
+     "name": "priority",
+     "type": "string",
+     "label": "Issue priority",
+     "control_type": "select",
+     "pick_list": "priority_picklist",
+     "toggle_field": {
+      "name": "priority",
+      "type": "string"
+     }
+    },
+    {
+     "name": "labels",
+     "type": "string",
+     "label": "Labels",
+     "control_type": "text",
+     "hint": "Enter labels separated by comma ."
+    },
+    {
+     "name": "assignee_id",
+     "type": "string",
+     "label": "Assignee account ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "assignee",
+      "type": "string"
+     },
+     "hint": "Account ID can be found in the people's page at the end of the URL."
+    },
+    {
+     "name": "timetracking",
+     "type": "object",
+     "label": "Time tracking",
+     "properties": [
+      {
+       "name": "originalEstimate",
+       "type": "string",
+       "label": "Original estimate",
+       "control_type": "text",
+       "hint": "Example format: 3w 4d 12h"
+      },
+      {
+       "name": "remainingEstimate",
+       "type": "string",
+       "label": "Remaining estimate",
+       "control_type": "text",
+       "hint": "Example format: 3w 4d 12h"
+      }
+     ]
+    },
+    {
+     "name": "issuelinks",
+     "type": "string",
+     "label": "Issue link",
+     "control_type": "text",
+     "hint": "Issue key of issue to link, e.g. 10105 ."
+    },
+    {
+     "name": "duedate",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_issue_status",
+   "title": "Update issue status",
+   "description": "Update status of issue in Jira secondary",
+   "help": "Change the status of an issue. Action fails if the transition name is invalid for the specified issue. Transition name is case sensitive.",
+   "input": [
+    {
+     "name": "issue_key",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Issue ID or key of issue to update, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "transition_name",
+     "type": "string",
+     "label": "Transition name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Case sensitive name of transition to make, e.g. To do, In progress, Done."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upload_attachment",
+   "title": "Upload attachment",
+   "description": "Upload attachment to issue in Jira secondary",
+   "help": "Upload a file to a Jira issue by specifying the issue and the content of the file. Obtainable from the step output of any object which support attachments, e.g. the Attachment content datapill from the output of a preceding Download attachment action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key of issue to retrieve, e.g. 10105 (issue ID) or ABC-123 (issue key). Use issue ID if your issue moves between projects."
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true,
+     "hint": "File content to upload, e.g. Attachment content datapill from output of preceding Download attachment action."
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Filename with extension, e.g. .pdf, .csv, .jpg"
+    }
+   ],
+   "output": [
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "filename",
+       "type": "string",
+       "label": "Filename",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "author",
+       "type": "object",
+       "label": "Author",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self url",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "key",
+         "type": "string",
+         "label": "Key",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "accountId",
+         "type": "string",
+         "label": "Account ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "avatarUrls",
+         "type": "object",
+         "label": "Avatar urls",
+         "required": true,
+         "properties": [
+          {
+           "name": "16x16",
+           "type": "string",
+           "label": "16 x 16",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "24x24",
+           "type": "string",
+           "label": "24 x 24",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "32x32",
+           "type": "string",
+           "label": "32 x 32",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "48x48",
+           "type": "string",
+           "label": "48 x 48",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "active",
+         "type": "boolean",
+         "label": "Active",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "active",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "timeZone",
+         "type": "string",
+         "label": "Time zone",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "locale",
+         "type": "string",
+         "label": "Locale",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "groups",
+         "type": "object",
+         "label": "Groups",
+         "required": true,
+         "properties": [
+          {
+           "name": "size",
+           "type": "integer",
+           "label": "Size",
+           "control_type": "integer",
+           "required": true
+          },
+          {
+           "name": "items",
+           "type": "array",
+           "label": "Items",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self url",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "applicationRoles",
+         "type": "object",
+         "label": "Application roles",
+         "required": true,
+         "properties": [
+          {
+           "name": "size",
+           "type": "integer",
+           "label": "Size",
+           "control_type": "integer",
+           "required": true
+          },
+          {
+           "name": "items",
+           "type": "array",
+           "label": "Items",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self url",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "expand",
+         "type": "string",
+         "label": "Expand",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "lastLoginTime",
+         "type": "date_time",
+         "label": "Last login time",
+         "control_type": "date_time",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "size",
+       "type": "string",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mimeType",
+       "type": "string",
+       "label": "Mime type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "thumbnail",
+       "type": "string",
+       "label": "Thumbnail",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

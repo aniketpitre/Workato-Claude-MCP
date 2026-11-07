@@ -1,0 +1,290 @@
+{
+ "id": 2935199,
+ "name": "CollectionsToProcess>50KCSV",
+ "description": "When there is a trigger event, do action",
+ "applications": [
+  "clock",
+  "google_drive",
+  "workato_smart_list"
+ ],
+ "action_applications": [
+  "google_drive",
+  "workato_smart_list"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [],
+ "categories": [
+  "Recipe Tools",
+  "Marketing",
+  "Document/File",
+  "Sales Enablement",
+  "Database",
+  "Utilities"
+ ],
+ "copy_count": 13,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2022-10-19T10:29:35.973-07:00",
+ "source_url": "https://app.workato.com/recipes/2935199?community=us",
+ "steps": [
+  "clock.scheduled_event",
+  "google_drive.download_file_contents",
+  "workato_smart_list.create_list_from_csv",
+  "workato_smart_list.query_list"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "scheduled_event",
+  "as": "1c21d502",
+  "title": null,
+  "description": "<span class=\"provider\">Trigger</span> every 5 minutes",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "time_unit": "minutes",
+   "trigger_every": "5"
+  },
+  "extended_input_schema": [
+   {
+    "control_type": "integer",
+    "default": "5",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Define repeating schedule. Enter whole numbers only.\n                        This field can be set to a minimum of 5 minutes.",
+    "label": "Trigger every",
+    "name": "trigger_every",
+    "optional": false,
+    "suffix": {
+     "text": "minutes"
+    },
+    "type": "string"
+   },
+   {
+    "control_type": "date_time",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+    "label": "Start after",
+    "name": "start_after",
+    "optional": true,
+    "since_field": true,
+    "type": "date_time",
+    "parse_output": "date_time_conversion",
+    "render_input": "date_time_conversion"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "google_drive",
+    "name": "download_file_contents",
+    "as": "78ac63dd",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "parents": {
+      "ids": [
+       "0AMA-IRTnpex_Uk9PVA",
+       "1AQh2aFKBALs_9G3S7Yp_5iggLSRo0g0J"
+      ],
+      "titles": [
+       "My Drive",
+       "Recipe Test Folder"
+      ]
+     },
+     "fileId": {
+      "ids": [
+       "0AMA-IRTnpex_Uk9PVA",
+       "1AQh2aFKBALs_9G3S7Yp_5iggLSRo0g0J",
+       "12aIk_2LaG7ZB-Jd00HeVO6ahKiHYa0kF"
+      ],
+      "titles": [
+       "My Drive",
+       "Recipe Test Folder",
+       "50kcsv2 - 50kcsv2.csv"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "fileId": false
+    },
+    "input": {
+     "fileId": "12aIk_2LaG7ZB-Jd00HeVO6ahKiHYa0kF"
+    },
+    "uuid": "126a4685-d75f-46e8-abaf-e4316ca8d27d"
+   },
+   {
+    "number": 2,
+    "provider": "workato_smart_list",
+    "name": "create_list_from_csv",
+    "as": "2ba833c6",
+    "title": null,
+    "description": "Create <span class=\"provider\">table2 list</span> from CSV file",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "headers": true,
+     "file_encoded_type": true
+    },
+    "input": {
+     "file_encoded_type": "UTF-8",
+     "headers": "false",
+     "col_sep": "comma",
+     "list_source": "#{_('data.google_drive.78ac63dd.payload')}",
+     "list_name": "table2",
+     "csv_schema_json": "[{\"name\":\"col1\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Col 1\"},{\"name\":\"col2\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Col 2\"}]"
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "label": "table2",
+      "name": "list_name",
+      "type": "string"
+     },
+     {
+      "label": "Columns",
+      "name": "columns",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Col 1",
+        "optional": false,
+        "list_data_type": "string",
+        "type": "string",
+        "name": "col1"
+       },
+       {
+        "control_type": "text",
+        "label": "Col 2",
+        "optional": false,
+        "list_data_type": "string",
+        "type": "string",
+        "name": "col2"
+       }
+      ],
+      "type": "object"
+     },
+     {
+      "control_type": "number",
+      "label": "Row count",
+      "name": "row_count",
+      "type": "integer",
+      "parse_output": "integer_conversion"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "checkbox",
+      "hint": "Select <b>Yes</b> to overwrite <b>table2</b> list if it already exists",
+      "label": "Overwrite list?",
+      "name": "force",
+      "optional": true,
+      "toggle_field": {
+       "label": "Overwrite list?",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "hint": "Select <b>Yes</b> to overwrite <b>table2</b> list if it already exists",
+       "optional": true,
+       "type": "boolean",
+       "name": "force"
+      },
+      "toggle_hint": "Select from option list",
+      "type": "boolean",
+      "parse_output": {},
+      "render_input": {}
+     },
+     {
+      "control_type": "multiselect",
+      "delimiter": "\n",
+      "hint": "Collections are like databases. Having index improves query performance. Select one or more fields from list source.",
+      "label": "Primary index",
+      "name": "primary_index",
+      "ngIf": "input.create_table_if_not_exist != 'false'",
+      "optional": true,
+      "pick_list": [
+       [
+        "Col 1",
+        "col1"
+       ],
+       [
+        "Col 2",
+        "col2"
+       ]
+      ],
+      "sticky": true,
+      "type": "string"
+     },
+     {
+      "control_type": "multiselect",
+      "delimiter": "\n",
+      "hint": "Select one or more fields from list source.",
+      "label": "Secondary index",
+      "name": "secondary_index",
+      "ngIf": "input.create_table_if_not_exist != 'false'",
+      "optional": true,
+      "pick_list": [
+       [
+        "Col 1",
+        "col1"
+       ],
+       [
+        "Col 2",
+        "col2"
+       ]
+      ],
+      "type": "string"
+     }
+    ],
+    "uuid": "6a1dc021-4f03-47ae-9f47-03c659f1d721"
+   },
+   {
+    "number": 3,
+    "provider": "workato_smart_list",
+    "name": "query_list",
+    "as": "14f40bc4",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "csv": true
+    },
+    "input": {
+     "output_schema_by": "index",
+     "csv": "false",
+     "headers": "false",
+     "col_sep": "comma",
+     "sql": "select count(*) from #{_('data.workato_smart_list.2ba833c6.list_name')}",
+     "result_schema_json": "[{\"name\":\"count\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Count\"}]"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Rows",
+      "name": "rows",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Count",
+        "name": "count",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "uuid": "f484ba7a-7548-4248-87cd-de8fe3ef925b"
+   }
+  ],
+  "comment": "Build a recipe to monitor/ manage other recipes, jobs, or this account",
+  "uuid": "0def7065-1704-4e6c-a6d0-4f72bc6f7f20",
+  "param": {}
+ }
+}

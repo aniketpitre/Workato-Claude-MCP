@@ -1,0 +1,4843 @@
+{
+ "name": "asana",
+ "title": "Asana",
+ "requires_connection": true,
+ "categories": [
+  "Project Management",
+  "Marketing"
+ ],
+ "aliases": [
+  "Asana"
+ ],
+ "triggers": [
+  {
+   "name": "new_event",
+   "title": "New event",
+   "description": "New event in Asana",
+   "help": "Triggers when a event occurs on an object.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "section",
+      "task",
+      "project",
+      "membership"
+     ],
+     "extends_schema": true,
+     "hint": "Select the object you wish to monitor."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_task_v2",
+   "title": "New or updated tasks trigger",
+   "description": "New or updated task in Asana",
+   "help": "This trigger requires a premium Asana account. Specify the workspace to fetch tasks from. Select projects in workspace to fetch tasks from selected projects. Defaults to all projects in workspace.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When left blank, trigger will start picking up tasks created or updated 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "workspace",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces",
+     "extends_schema": true,
+     "hint": "Select the workspace"
+    },
+    {
+     "name": "projects",
+     "type": "string",
+     "label": "Projects",
+     "control_type": "multiselect",
+     "pick_list": "projects",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "projects",
+      "type": "string"
+     },
+     "hint": "Select the projects from which the tasks need to be picked. Tasks in all projects will be picked by default. A maximum of 5 projects can be selected."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Asana (Custom)",
+   "help": "Build your own Asana action with a HTTP request. The request will be authorized with your Asana connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_task_to_section",
+   "title": "Add task to section",
+   "description": "Add task to section in Asana",
+   "input": [
+    {
+     "name": "section_gid",
+     "type": "integer",
+     "label": "Section ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Section to which the task should be added"
+    },
+    {
+     "name": "task",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "insert_after",
+     "type": "integer",
+     "label": "Insert after task ID",
+     "control_type": "number",
+     "hint": "ID of the task after which this task should be added"
+    },
+    {
+     "name": "insert_before",
+     "type": "integer",
+     "label": "Insert before task ID",
+     "control_type": "number",
+     "hint": "ID of the task before which this task should be added"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_goal",
+   "title": "Create goal",
+   "description": "Create goal in Asana",
+   "input": [
+    {
+     "name": "workspace",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace",
+      "type": "string"
+     }
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Goal name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "time_period",
+     "type": "string",
+     "label": "Time period",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "time_periods",
+     "toggle_field": {
+      "name": "time_period",
+      "type": "string"
+     },
+     "hint": "Select the timeframe for this goal"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Plain text description. Ignored when Description (HTML) is provided."
+    },
+    {
+     "name": "html_notes",
+     "type": "string",
+     "label": "Description (HTML)",
+     "control_type": "text",
+     "hint": "Wrap the content in a <body> tag, for example: <body>Some notes</body> . Overrides Description when provided."
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date",
+     "hint": "The date on which this goal is due"
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date",
+     "hint": "The date on which work for this goal begins"
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Like this",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "liked",
+      "type": "string"
+     },
+     "hint": "Provide Yes to be liked by the authorized user, No if not. Default value is No ."
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Owner ID",
+       "control_type": "text",
+       "hint": "Enter ID of people who owns this goal"
+      }
+     ]
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Follower ID",
+       "control_type": "text",
+       "hint": "Enter ID of people"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Goal ID",
+     "control_type": "text"
+    },
+    {
+     "name": "resource_type",
+     "type": "string",
+     "label": "Resource type",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Goal name",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "html_notes",
+     "type": "string",
+     "label": "Html notes",
+     "control_type": "text"
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date"
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date"
+    },
+    {
+     "name": "is_workspace_level",
+     "type": "number",
+     "label": "Is workspace level",
+     "control_type": "number"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "e.g. green, yellow, red, achieved, missed, partial, dropped"
+    },
+    {
+     "name": "num_likes",
+     "type": "integer",
+     "label": "Number of likes",
+     "control_type": "number"
+    },
+    {
+     "name": "likes",
+     "type": "array",
+     "label": "Likes",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "People",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "People ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Liked",
+     "control_type": "number"
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "workspace",
+     "type": "object",
+     "label": "Workspace",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "team",
+     "type": "object",
+     "label": "Team",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "time_period",
+     "type": "object",
+     "label": "Time period",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "start_on",
+       "type": "string",
+       "label": "Start on",
+       "control_type": "text"
+      },
+      {
+       "name": "end_on",
+       "type": "string",
+       "label": "End on",
+       "control_type": "text"
+      },
+      {
+       "name": "display_name",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "period",
+       "type": "string",
+       "label": "Period",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "metric",
+     "type": "object",
+     "label": "Metric",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_type",
+       "type": "string",
+       "label": "Resource type",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_subtype",
+       "type": "string",
+       "label": "Resource subtype",
+       "control_type": "text"
+      },
+      {
+       "name": "precision",
+       "type": "number",
+       "label": "Precision",
+       "control_type": "number"
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Unit",
+       "control_type": "text"
+      },
+      {
+       "name": "currency_code",
+       "type": "string",
+       "label": "Currency code",
+       "control_type": "text"
+      },
+      {
+       "name": "initial_number_value",
+       "type": "number",
+       "label": "Initial number value",
+       "control_type": "number"
+      },
+      {
+       "name": "target_number_value",
+       "type": "number",
+       "label": "Target number value",
+       "control_type": "number"
+      },
+      {
+       "name": "current_number_value",
+       "type": "number",
+       "label": "Current number value",
+       "control_type": "number"
+      },
+      {
+       "name": "current_display_value",
+       "type": "string",
+       "label": "Current display value",
+       "control_type": "text"
+      },
+      {
+       "name": "progress_source",
+       "type": "string",
+       "label": "Progress source",
+       "control_type": "text"
+      },
+      {
+       "name": "is_custom_weight",
+       "type": "number",
+       "label": "Is custom weight",
+       "control_type": "number"
+      },
+      {
+       "name": "can_manage",
+       "type": "number",
+       "label": "Can manage",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "current_status_update",
+     "type": "object",
+     "label": "Current status update",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_membership",
+   "title": "Create a membership",
+   "description": "Create a membership in Asana",
+   "help": "Creates a membership via POST /memberships (project, goal, portfolio, etc.). Member can be a user or a team. Access levels: admin, editor, commenter, viewer.",
+   "input": [
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "GID of the parent resource (e.g. project, goal, or portfolio)."
+    },
+    {
+     "name": "member",
+     "type": "string",
+     "label": "Member GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "User or team GID to add as a member."
+    },
+    {
+     "name": "access_level",
+     "type": "string",
+     "label": "Access level",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "admin",
+      "editor",
+      "commenter",
+      "viewer"
+     ],
+     "toggle_field": {
+      "name": "access_level",
+      "type": "string"
+     },
+     "hint": "Access level for the member on the parent resource (project, goal, or portfolio)."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "membership_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_project",
+   "title": "Create a project",
+   "description": "Create a project in Asana",
+   "help": "Creates a new project in a workspace or organization. If privacy_setting is omitted, the project defaults to private.",
+   "input": [
+    {
+     "name": "workspace",
+     "type": "string",
+     "label": "Workspace GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workspace or organization where the project will be created."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the project."
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "hint": "Free-form project description."
+    },
+    {
+     "name": "html_notes",
+     "type": "string",
+     "label": "HTML notes",
+     "control_type": "text",
+     "hint": "HTML-formatted project description."
+    },
+    {
+     "name": "owner",
+     "type": "string",
+     "label": "Owner GID",
+     "control_type": "text",
+     "hint": "User GID of the project owner. May be null."
+    },
+    {
+     "name": "privacy_setting",
+     "type": "string",
+     "label": "Privacy setting",
+     "control_type": "select",
+     "options": [
+      "private",
+      "public_to_workspace",
+      "private_to_team"
+     ],
+     "toggle_field": {
+      "name": "privacy_setting",
+      "type": "string"
+     },
+     "hint": "Who can access the project. Defaults to private when omitted."
+    },
+    {
+     "name": "default_view",
+     "type": "string",
+     "label": "Default view",
+     "control_type": "select",
+     "options": [
+      "list",
+      "board",
+      "calendar",
+      "timeline"
+     ],
+     "toggle_field": {
+      "name": "default_view",
+      "type": "string"
+     },
+     "hint": "Default view of the project."
+    },
+    {
+     "name": "color",
+     "type": "string",
+     "label": "Color",
+     "control_type": "text",
+     "hint": "Project color (e.g. light-green , dark-blue , none )."
+    },
+    {
+     "name": "due_on",
+     "type": "date",
+     "label": "Due on",
+     "control_type": "date",
+     "hint": "The day on which this project is due. Cannot be used with due_at."
+    },
+    {
+     "name": "start_on",
+     "type": "date",
+     "label": "Start on",
+     "control_type": "date",
+     "hint": "The day on which work for this project begins."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "project_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_section_for_project",
+   "title": "Create a section in a project",
+   "description": "Create a section in a project in Asana",
+   "help": "Creates a new section in a project. Optionally place it with insert_before or insert_after.",
+   "input": [
+    {
+     "name": "project_gid",
+     "type": "string",
+     "label": "Project GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Project ID. Can be found in the URL of the project page."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the section. Required and cannot be empty."
+    },
+    {
+     "name": "insert_before",
+     "type": "string",
+     "label": "Insert before",
+     "control_type": "text",
+     "hint": "Existing section GID to insert before. Cannot be used with Insert after ."
+    },
+    {
+     "name": "insert_after",
+     "type": "string",
+     "label": "Insert after",
+     "control_type": "text",
+     "hint": "Existing section GID to insert after. Cannot be used with Insert before ."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "section_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_status_for_object",
+   "title": "Create a status update",
+   "description": "Create a status update in Asana",
+   "help": "Creates a status update on a parent object (project, portfolio, or goal). Valid status_type values depend on the parent type.",
+   "input": [
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "GID of the parent (project, portfolio, or goal)."
+    },
+    {
+     "name": "status_type",
+     "type": "string",
+     "label": "Status type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "on_track",
+      "at_risk",
+      "off_track",
+      "on_hold",
+      "complete",
+      "dropped",
+      "achieved",
+      "partial",
+      "missed"
+     ],
+     "toggle_field": {
+      "name": "status_type",
+      "type": "string"
+     },
+     "hint": "Projects/portfolios: on_track, at_risk, off_track, on_hold, complete, dropped. Goals also support achieved, partial, missed."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "hint": "Title of the status update."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true,
+     "hint": "Plain text content of the status update."
+    },
+    {
+     "name": "html_text",
+     "type": "string",
+     "label": "HTML text",
+     "control_type": "text",
+     "hint": "HTML-formatted status update body (opt-in)."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "status_update_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_story_for_task",
+   "title": "Create a story on a task",
+   "description": "Create a story on a task in Asana",
+   "help": "Adds a comment story to a task. Provide text or html_text (not both). Authored by the authenticated user.",
+   "input": [
+    {
+     "name": "task_gid",
+     "type": "string",
+     "label": "Task GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Task ID. Can be found at the end of the task URL."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "hint": "Plain text of the comment. Cannot be used with HTML text ."
+    },
+    {
+     "name": "html_text",
+     "type": "string",
+     "label": "HTML text",
+     "control_type": "text",
+     "hint": "HTML-formatted comment body (e.g. <body>...</body> ). Cannot be used with Text ."
+    },
+    {
+     "name": "is_pinned",
+     "type": "boolean",
+     "label": "Pinned",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "is_pinned",
+      "type": "string"
+     },
+     "hint": "Whether the story should be pinned on the task."
+    },
+    {
+     "name": "sticker_name",
+     "type": "string",
+     "label": "Sticker name",
+     "control_type": "select",
+     "options": [
+      "green_checkmark",
+      "people_dancing",
+      "dancing_unicorn",
+      "heart",
+      "party_popper",
+      "people_waving_flags",
+      "splashing_narwhal",
+      "trophy",
+      "yeti_riding_unicorn",
+      "celebrating_people",
+      "determined_climbers",
+      "phoenix_spreading_love"
+     ],
+     "toggle_field": {
+      "name": "sticker_name",
+      "type": "string"
+     },
+     "hint": "Optional sticker to attach to the story."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "story_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_subtask",
+   "title": "Create subtask",
+   "description": "Create subtask in Asana",
+   "input": [
+    {
+     "name": "assignee_status",
+     "type": "string",
+     "label": "Assignee status",
+     "control_type": "text",
+     "hint": "Accepted values are inbox, later, today, upcoming"
+    },
+    {
+     "name": "completed",
+     "type": "number",
+     "label": "Completed",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date",
+     "hint": "Use if 'due at' field is not specified"
+    },
+    {
+     "name": "due_at",
+     "type": "date_time",
+     "label": "Due at",
+     "control_type": "date_time",
+     "hint": "Use if 'due on' field is not specified"
+    },
+    {
+     "name": "hearted",
+     "type": "number",
+     "label": "Heart this",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date",
+     "hint": "If value is provided, either due on or due at field should be specified."
+    },
+    {
+     "name": "start_at",
+     "type": "date_time",
+     "label": "Start at",
+     "control_type": "date_time",
+     "hint": "Start timestamp. Mutually exclusive with start on. Requires due at in the same request."
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Like this",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "liked",
+      "type": "string"
+     },
+     "hint": "Provide Yes to be liked by the authorized user, No if not. Default value is No ."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Task name",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "task_id",
+     "type": "integer",
+     "label": "Parent Task ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Can be found at the end of URL of the parent task page"
+    },
+    {
+     "name": "assignee",
+     "type": "object",
+     "label": "Assignee",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Assignee ID",
+       "control_type": "number",
+       "hint": "Enter ID of people. Should be specified if 'Assignee status' is 'today' or 'inbox'"
+      },
+      {
+       "name": "gid",
+       "type": "string",
+       "label": "Assignee GID",
+       "control_type": "text",
+       "hint": "User GID, email, or me . Used when Assignee ID is blank."
+      }
+     ]
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Follower ID",
+       "control_type": "number",
+       "hint": "Enter ID of people"
+      }
+     ]
+    },
+    {
+     "name": "projects",
+     "type": "array",
+     "label": "Projects",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number",
+       "hint": "Can be found in URL of projects page"
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Tag ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "configuration",
+     "type": "object",
+     "label": "Configuration",
+     "properties": [
+      {
+       "name": "workspace",
+       "type": "string",
+       "label": "Sample workspace",
+       "control_type": "select",
+       "pick_list": "workspaces",
+       "extends_schema": true,
+       "toggle_field": {
+        "name": "project",
+        "type": "integer"
+       },
+       "hint": "Custom fields associated to this workspace will be listed in the input."
+      }
+     ]
+    },
+    {
+     "name": "custom_fields_json",
+     "type": "string",
+     "label": "Custom fields",
+     "control_type": "code",
+     "hint": "JSON object: custom field GID → value. Example: {\"1234567890\": \"High\"}. If Sample workspace/project custom fields have values, those are used instead."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number",
+     "hint": "Can be found at the end of URL of the task page after you click the required task"
+    },
+    {
+     "name": "assignee",
+     "type": "object",
+     "label": "Assignee",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Assignee ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "assignee_status",
+     "type": "string",
+     "label": "Assignee status",
+     "control_type": "text",
+     "hint": "Accepted values are inbox, later, today, upcoming"
+    },
+    {
+     "name": "completed",
+     "type": "number",
+     "label": "Completed",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "completed_at",
+     "type": "date_time",
+     "label": "Completed at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date",
+     "hint": "Use if 'due at' field is not specified"
+    },
+    {
+     "name": "due_at",
+     "type": "date_time",
+     "label": "Due at",
+     "control_type": "date_time",
+     "hint": "Use if 'due on' field is not specified"
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Follower ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "num_hearts",
+     "type": "integer",
+     "label": "Number of hearts",
+     "control_type": "number"
+    },
+    {
+     "name": "hearts",
+     "type": "array",
+     "label": "Hearts",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "People",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "People ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date",
+     "hint": "If value is provided, either due on or due at field should be specified."
+    },
+    {
+     "name": "start_at",
+     "type": "date_time",
+     "label": "Start at",
+     "control_type": "date_time",
+     "hint": "Start timestamp. Mutually exclusive with start on. Requires due at in the same request."
+    },
+    {
+     "name": "resource_subtype",
+     "type": "string",
+     "label": "Resource subtype",
+     "control_type": "text",
+     "hint": "default_task, milestone, approval, or custom. Milestones cannot have a start date."
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Like this",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "liked",
+      "type": "string"
+     },
+     "hint": "Provide Yes to be liked by the authorized user, No if not. Default value is No ."
+    },
+    {
+     "name": "num_likes",
+     "type": "integer",
+     "label": "Number of likes",
+     "control_type": "number"
+    },
+    {
+     "name": "likes",
+     "type": "array",
+     "label": "Likes",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "People",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "People ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "modified_at",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Task name",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "projects",
+     "type": "array",
+     "label": "Projects",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent Task",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Task ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "workspace",
+     "type": "object",
+     "label": "Workspace",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Workspace ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "memberships",
+     "type": "array",
+     "label": "Memberships",
+     "of": "object",
+     "properties": [
+      {
+       "name": "project",
+       "type": "object",
+       "label": "Project",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Project ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "section",
+       "type": "object",
+       "label": "Section",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Section ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "is_inherited",
+       "type": "number",
+       "label": "Is inherited",
+       "control_type": "number",
+       "hint": "true when membership is inherited from an ancestor task; false for a direct membership"
+      }
+     ]
+    },
+    {
+     "name": "effective_memberships",
+     "type": "array",
+     "label": "Effective memberships",
+     "of": "object",
+     "properties": [
+      {
+       "name": "project",
+       "type": "object",
+       "label": "Project",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Project ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "section",
+       "type": "object",
+       "label": "Section",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Section ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "is_inherited",
+       "type": "number",
+       "label": "Is inherited",
+       "control_type": "number",
+       "hint": "true when membership is inherited from an ancestor task; false for a direct membership"
+      }
+     ],
+     "hint": "Union of direct and inherited memberships. Where both exist for a project, direct takes precedence."
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Tag ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "created_by",
+     "type": "object",
+     "label": "Created by",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_type",
+       "type": "string",
+       "label": "Resource type",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "hearted",
+     "type": "number",
+     "label": "Hearted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "create_tag",
+   "title": "Create tag",
+   "description": "Create tag in Asana",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Tag name",
+     "control_type": "text"
+    },
+    {
+     "name": "color",
+     "type": "string",
+     "label": "Color",
+     "control_type": "text",
+     "hint": "Click here for accepted values"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Detailed description about tag"
+    },
+    {
+     "name": "workspace",
+     "type": "integer",
+     "label": "Workspace ID",
+     "control_type": "number",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Tag ID",
+     "control_type": "number"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Follower ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Tag name",
+     "control_type": "text"
+    },
+    {
+     "name": "color",
+     "type": "string",
+     "label": "Color",
+     "control_type": "text",
+     "hint": "Click here for accepted values"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Detailed description about tag"
+    },
+    {
+     "name": "workspace",
+     "type": "object",
+     "label": "Workspace",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Workspace ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_task",
+   "title": "Create task",
+   "description": "Create task in Asana",
+   "input": [
+    {
+     "name": "configuration",
+     "type": "object",
+     "label": "Configuration",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "workspace",
+       "type": "string",
+       "label": "Sample workspace",
+       "control_type": "select",
+       "pick_list": "workspaces",
+       "toggle_field": {
+        "name": "project",
+        "type": "integer"
+       },
+       "hint": "Custom fields associated to this workspace will be listed in the input."
+      }
+     ]
+    },
+    {
+     "name": "workspace",
+     "type": "integer",
+     "label": "Workspace ID",
+     "control_type": "number",
+     "required": true,
+     "extends_schema": true
+    },
+    {
+     "name": "projects",
+     "type": "array",
+     "label": "Projects",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number",
+       "hint": "Can be found in URL of projects page"
+      }
+     ]
+    },
+    {
+     "name": "memberships",
+     "type": "array",
+     "label": "Memberships (project + section)",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "project",
+       "type": "string",
+       "label": "Project GID",
+       "control_type": "text",
+       "required": true,
+       "hint": "Project GID. Required for each membership."
+      },
+      {
+       "name": "section",
+       "type": "string",
+       "label": "Section GID",
+       "control_type": "text",
+       "hint": "Section GID within that project. Omit to add to the project without a specific section."
+      }
+     ],
+     "hint": "Create-only. Place the task in a project section in the same request. Each item needs project and optional section GIDs (e.g. [{ \"project\": \"123\", \"section\": \"456\" }]). To move an existing task later,…"
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent task GID",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Parent task GID (creates a subtask)"
+    },
+    {
+     "name": "assignee_status",
+     "type": "string",
+     "label": "Assignee status",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Accepted values are inbox, later, today, upcoming"
+    },
+    {
+     "name": "completed",
+     "type": "number",
+     "label": "Completed",
+     "control_type": "number",
+     "extends_schema": true
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date",
+     "extends_schema": true,
+     "hint": "Use if 'due at' field is not specified"
+    },
+    {
+     "name": "due_at",
+     "type": "date_time",
+     "label": "Due at",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "Use if 'due on' field is not specified"
+    },
+    {
+     "name": "hearted",
+     "type": "number",
+     "label": "Heart this",
+     "control_type": "number",
+     "extends_schema": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Task name",
+     "control_type": "text",
+     "extends_schema": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "extends_schema": true
+    },
+    {
+     "name": "assignee",
+     "type": "object",
+     "label": "Assignee",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Assignee ID",
+       "control_type": "number",
+       "hint": "Enter ID of people. Should be specified if 'Assignee status' is 'today' or 'inbox'"
+      },
+      {
+       "name": "gid",
+       "type": "string",
+       "label": "Assignee GID",
+       "control_type": "text",
+       "hint": "User GID, email, or me . Used when Assignee ID is blank."
+      }
+     ]
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Follower ID",
+       "control_type": "number",
+       "hint": "Enter ID of people"
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Tag ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date",
+     "extends_schema": true,
+     "hint": "If value is provided, either due on or due at field should be specified."
+    },
+    {
+     "name": "start_at",
+     "type": "date_time",
+     "label": "Start at",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "Mutually exclusive with start on. Requires due at in the same request."
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Like this",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "liked",
+      "type": "string"
+     },
+     "hint": "Provide Yes to be liked by the authorized user, No if not."
+    },
+    {
+     "name": "custom_fields_json",
+     "type": "string",
+     "label": "Custom fields",
+     "control_type": "code",
+     "extends_schema": true,
+     "hint": "JSON object: custom field GID → value. Example: {\"1234567890\": \"High\"}. If Sample workspace/project custom fields have values, those are used instead."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_custom_field_settings_for_project",
+   "title": "Get a project's custom field settings",
+   "description": "Get a project's custom field settings in Asana",
+   "help": "Returns a list of all of the custom fields settings on a project, in compact form.",
+   "input": [
+    {
+     "name": "project_gid",
+     "type": "string",
+     "label": "Project GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Project ID. Can be found in the URL of the project page."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "Results per page. Allowed values: 1 to 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "Use the next page offset from a previous response to fetch the next page. Omit for the first page."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "custom_field_settings_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": [
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "required": true,
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_goal",
+   "title": "Get goal",
+   "description": "Get goal in Asana",
+   "input": [
+    {
+     "name": "goal_id",
+     "type": "string",
+     "label": "Goal ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Can be found at the end of URL of the goal page"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Goal ID",
+     "control_type": "text"
+    },
+    {
+     "name": "resource_type",
+     "type": "string",
+     "label": "Resource type",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Goal name",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "html_notes",
+     "type": "string",
+     "label": "Html notes",
+     "control_type": "text"
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date"
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date"
+    },
+    {
+     "name": "is_workspace_level",
+     "type": "number",
+     "label": "Is workspace level",
+     "control_type": "number"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "e.g. green, yellow, red, achieved, missed, partial, dropped"
+    },
+    {
+     "name": "num_likes",
+     "type": "integer",
+     "label": "Number of likes",
+     "control_type": "number"
+    },
+    {
+     "name": "likes",
+     "type": "array",
+     "label": "Likes",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "People",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "People ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Liked",
+     "control_type": "number"
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "workspace",
+     "type": "object",
+     "label": "Workspace",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "team",
+     "type": "object",
+     "label": "Team",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "time_period",
+     "type": "object",
+     "label": "Time period",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "start_on",
+       "type": "string",
+       "label": "Start on",
+       "control_type": "text"
+      },
+      {
+       "name": "end_on",
+       "type": "string",
+       "label": "End on",
+       "control_type": "text"
+      },
+      {
+       "name": "display_name",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "period",
+       "type": "string",
+       "label": "Period",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "metric",
+     "type": "object",
+     "label": "Metric",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_type",
+       "type": "string",
+       "label": "Resource type",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_subtype",
+       "type": "string",
+       "label": "Resource subtype",
+       "control_type": "text"
+      },
+      {
+       "name": "precision",
+       "type": "number",
+       "label": "Precision",
+       "control_type": "number"
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Unit",
+       "control_type": "text"
+      },
+      {
+       "name": "currency_code",
+       "type": "string",
+       "label": "Currency code",
+       "control_type": "text"
+      },
+      {
+       "name": "initial_number_value",
+       "type": "number",
+       "label": "Initial number value",
+       "control_type": "number"
+      },
+      {
+       "name": "target_number_value",
+       "type": "number",
+       "label": "Target number value",
+       "control_type": "number"
+      },
+      {
+       "name": "current_number_value",
+       "type": "number",
+       "label": "Current number value",
+       "control_type": "number"
+      },
+      {
+       "name": "current_display_value",
+       "type": "string",
+       "label": "Current display value",
+       "control_type": "text"
+      },
+      {
+       "name": "progress_source",
+       "type": "string",
+       "label": "Progress source",
+       "control_type": "text"
+      },
+      {
+       "name": "is_custom_weight",
+       "type": "number",
+       "label": "Is custom weight",
+       "control_type": "number"
+      },
+      {
+       "name": "can_manage",
+       "type": "number",
+       "label": "Can manage",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "current_status_update",
+     "type": "object",
+     "label": "Current status update",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_people_details_by_id",
+   "title": "Get people details by ID",
+   "description": "Get people details by ID in Asana",
+   "input": [
+    {
+     "name": "user_id",
+     "type": "integer",
+     "label": "People ID",
+     "control_type": "number",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "object",
+     "label": "People",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "People ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "photo",
+       "type": "object",
+       "label": "Photo",
+       "properties": [
+        {
+         "name": "image_21x21",
+         "type": "string",
+         "label": "Image 21 x 21",
+         "control_type": "text"
+        },
+        {
+         "name": "image_27x27",
+         "type": "string",
+         "label": "Image 27 x 27",
+         "control_type": "text"
+        },
+        {
+         "name": "image_36x36",
+         "type": "string",
+         "label": "Image 36 x 36",
+         "control_type": "text"
+        },
+        {
+         "name": "image_70x70",
+         "type": "string",
+         "label": "Image 70 x 70",
+         "control_type": "text"
+        },
+        {
+         "name": "image_128x128",
+         "type": "string",
+         "label": "Image 128 x 128",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "workspaces",
+       "type": "array",
+       "label": "Workspaces",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Workspace ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_project_detail_by_id",
+   "title": "Get project detail by ID",
+   "description": "Get project details by ID in Asana",
+   "input": [
+    {
+     "name": "ProjectID",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "ProjectID",
+      "type": "integer"
+     },
+     "hint": "Can be found in URL of projects page"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Project name",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number"
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Owner ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "current_status",
+     "type": "string",
+     "label": "Current status",
+     "control_type": "text",
+     "hint": "Accepted values are null, green, yellow, red"
+    },
+    {
+     "name": "due_date",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date"
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "modified_at",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "archived",
+     "type": "number",
+     "label": "Archived",
+     "control_type": "number"
+    },
+    {
+     "name": "public",
+     "type": "number",
+     "label": "Public",
+     "control_type": "number",
+     "hint": "True if the project is public to the organization."
+    },
+    {
+     "name": "privacy_setting",
+     "type": "string",
+     "label": "Privacy setting",
+     "control_type": "text"
+    },
+    {
+     "name": "members",
+     "type": "array",
+     "label": "Members",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Member ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "follower ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "color",
+     "type": "string",
+     "label": "Color",
+     "control_type": "text",
+     "hint": "Click here for accepted values"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Detailed description about the project"
+    },
+    {
+     "name": "workspace",
+     "type": "object",
+     "label": "Workspace",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Workspace ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_project_sections",
+   "title": "Get project sections",
+   "description": "Get sections in project in Asana",
+   "input": [
+    {
+     "name": "project_gid",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_gid",
+      "type": "integer"
+     },
+     "hint": "Can be found in URL of projects page"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "hint": "Results per page. Allowed values: 1 to 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "Use the next page offset from a previous response to fetch the next page. Omit for the first page."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Sections",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text"
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text"
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_stories_for_task",
+   "title": "Get stories from a task",
+   "description": "Get stories from a task in Asana",
+   "help": "Returns the compact records for all stories on the task. Includes comment stories and system-generated activity, not comments only.",
+   "input": [
+    {
+     "name": "task_gid",
+     "type": "string",
+     "label": "Task GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Task ID. Can be found at the end of the task URL."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "Results per page. Allowed values: 1 to 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "Use the next page offset from a previous response to fetch the next page. Omit for the first page."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "story_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": [
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "required": true,
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_subtasks_for_task",
+   "title": "Get subtasks from a task",
+   "description": "Get subtasks from a task in Asana",
+   "help": "Returns a compact representation of all of the subtasks of a task.",
+   "input": [
+    {
+     "name": "task_gid",
+     "type": "string",
+     "label": "Task GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Task ID. Can be found at the end of the task URL."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "Results per page. Allowed values: 1 to 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "Use the next page offset from a previous response to fetch the next page. Omit for the first page."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "task_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": [
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "required": true,
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_task_counts_for_project",
+   "title": "Get task counts for a project",
+   "description": "Get task counts for a project in Asana",
+   "help": "Returns the number of tasks in a project, broken down by completion status and milestone. Use Response fields to select which count fields to include.",
+   "input": [
+    {
+     "name": "project_gid",
+     "type": "string",
+     "label": "Project GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Project ID. Can be found in the URL of the project page."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "task_counts_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_task_details_by_id",
+   "title": "Get task details by ID",
+   "description": "Get task details by ID in Asana",
+   "input": [
+    {
+     "name": "taskID",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Can be found at the end of URL of the task page"
+    },
+    {
+     "name": "workspace",
+     "type": "string",
+     "label": "Workspace ID",
+     "control_type": "select",
+     "pick_list": "workspaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace",
+      "type": "integer"
+     }
+    },
+    {
+     "name": "Projects",
+     "type": "string",
+     "label": "Project",
+     "control_type": "multiselect",
+     "pick_list": "projects",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "Projects",
+      "type": "string"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number",
+     "hint": "Can be found at the end of URL of the task page after you click the required task"
+    },
+    {
+     "name": "assignee",
+     "type": "object",
+     "label": "Assignee",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Assignee ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "assignee_status",
+     "type": "string",
+     "label": "Assignee status",
+     "control_type": "text",
+     "hint": "Accepted values are inbox, later, today, upcoming"
+    },
+    {
+     "name": "completed",
+     "type": "number",
+     "label": "Completed",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "completed_at",
+     "type": "date_time",
+     "label": "Completed at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date",
+     "hint": "Use if 'due at' field is not specified"
+    },
+    {
+     "name": "due_at",
+     "type": "date_time",
+     "label": "Due at",
+     "control_type": "date_time",
+     "hint": "Use if 'due on' field is not specified"
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Follower ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "hearted",
+     "type": "number",
+     "label": "Heart this",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "num_hearts",
+     "type": "integer",
+     "label": "Number of hearts",
+     "control_type": "number"
+    },
+    {
+     "name": "hearts",
+     "type": "array",
+     "label": "Hearts",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "People",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "People ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date",
+     "hint": "If value is provided, either due on or due at field should be specified."
+    },
+    {
+     "name": "start_at",
+     "type": "date_time",
+     "label": "Start at",
+     "control_type": "date_time",
+     "hint": "Start timestamp. Mutually exclusive with start on. Requires due at in the same request."
+    },
+    {
+     "name": "resource_subtype",
+     "type": "string",
+     "label": "Resource subtype",
+     "control_type": "text",
+     "hint": "default_task, milestone, approval, or custom. Milestones cannot have a start date."
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Like this",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "liked",
+      "type": "string"
+     },
+     "hint": "Provide Yes to be liked by the authorized user, No if not. Default value is No ."
+    },
+    {
+     "name": "num_likes",
+     "type": "integer",
+     "label": "Number of likes",
+     "control_type": "number"
+    },
+    {
+     "name": "likes",
+     "type": "array",
+     "label": "Likes",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "People",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "People ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "modified_at",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Task name",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "projects",
+     "type": "array",
+     "label": "Projects",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent Task",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Task ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "workspace",
+     "type": "object",
+     "label": "Workspace",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Workspace ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "memberships",
+     "type": "array",
+     "label": "Memberships",
+     "of": "object",
+     "properties": [
+      {
+       "name": "project",
+       "type": "object",
+       "label": "Project",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Project ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "section",
+       "type": "object",
+       "label": "Section",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Section ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "is_inherited",
+       "type": "number",
+       "label": "Is inherited",
+       "control_type": "number",
+       "hint": "true when membership is inherited from an ancestor task; false for a direct membership"
+      }
+     ]
+    },
+    {
+     "name": "effective_memberships",
+     "type": "array",
+     "label": "Effective memberships",
+     "of": "object",
+     "properties": [
+      {
+       "name": "project",
+       "type": "object",
+       "label": "Project",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Project ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "section",
+       "type": "object",
+       "label": "Section",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Section ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "is_inherited",
+       "type": "number",
+       "label": "Is inherited",
+       "control_type": "number",
+       "hint": "true when membership is inherited from an ancestor task; false for a direct membership"
+      }
+     ],
+     "hint": "Union of direct and inherited memberships. Where both exist for a project, direct takes precedence."
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Tag ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "created_by",
+     "type": "object",
+     "label": "Created by",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_type",
+       "type": "string",
+       "label": "Resource type",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_tasks_for_section",
+   "title": "Get tasks from a section",
+   "description": "Get tasks from a section in Asana",
+   "help": "Returns the compact list of tasks in a section. Use completed_since to include incomplete tasks plus those completed on or after that time.",
+   "input": [
+    {
+     "name": "section_gid",
+     "type": "string",
+     "label": "Section GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Section ID. Can be found in the Asana URL."
+    },
+    {
+     "name": "completed_since",
+     "type": "string",
+     "label": "Completed since",
+     "control_type": "text",
+     "hint": "Return incomplete tasks, plus tasks completed on or after this time. Use an ISO 8601 date-time, or now for incomplete tasks only. Omit to include all."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "Results per page. Allowed values: 1 to 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "Use the next page offset from a previous response to fetch the next page. Omit for the first page."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "task_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": [
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "required": true,
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_tasks_for_user_task_list",
+   "title": "Get tasks from a user task list",
+   "description": "Get tasks from a user task list in Asana",
+   "help": "Returns the compact list of tasks in a user's My Tasks list. Use completed_since to include incomplete tasks plus those completed on or after that time.",
+   "input": [
+    {
+     "name": "user_task_list_gid",
+     "type": "string",
+     "label": "User task list GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Globally unique identifier for the user task list."
+    },
+    {
+     "name": "completed_since",
+     "type": "string",
+     "label": "Completed since",
+     "control_type": "text",
+     "hint": "Return incomplete tasks, plus tasks completed on or after this time. Use an ISO 8601 date-time, or now for incomplete tasks only. Omit to include all."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "Results per page. Allowed values: 1 to 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "Use the next page offset from a previous response to fetch the next page. Omit for the first page."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "task_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": [
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "required": true,
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_user_task_list_for_user",
+   "title": "Get a user's task list",
+   "description": "Get a user's task list in Asana",
+   "help": "Returns the user's personal My Tasks list in a workspace. Each user has one My Tasks list per workspace.",
+   "input": [
+    {
+     "name": "user_gid",
+     "type": "string",
+     "label": "User GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "User whose My Tasks list to fetch. Use me for the authenticated user."
+    },
+    {
+     "name": "workspace",
+     "type": "string",
+     "label": "Workspace GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workspace where the user's My Tasks list lives."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "user_task_list_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_all_tasks_with_tag",
+   "title": "List all tasks with tag",
+   "description": "List tasks with tag in Asana",
+   "input": [
+    {
+     "name": "tagID",
+     "type": "integer",
+     "label": "Tag ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "limit",
+     "type": "string",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "The number of objects to return per page. The value must be between 1 and 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "An offset to the next page returned by the API. If an offset is not passed in, the API will return the first page of results."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Tasks",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "created_by",
+       "type": "object",
+       "label": "Created by",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text"
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text"
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_people",
+   "title": "List people",
+   "description": "List people in Asana",
+   "input": [
+    {
+     "name": "workspace",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "text",
+     "hint": "The workspace or organization ID to filter users on."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "hint": "The number of objects to return per page. The value must be between 1 and 100 . Note: Workspace must be provided for pagination."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "An offset to the next page returned by the API. If an offset is not passed in, the API will return the first page of results."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "People",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text"
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text"
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_project_tasks",
+   "title": "List project tasks",
+   "description": "List tasks in project in Asana",
+   "input": [
+    {
+     "name": "ProjectID",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "ProjectID",
+      "type": "integer"
+     },
+     "hint": "Can be found in URL of projects page"
+    },
+    {
+     "name": "limit",
+     "type": "string",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "The number of objects to return per page. The value must be between 1 and 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "An offset to the next page returned by the API. If an offset is not passed in, the API will return the first page of results."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Tasks",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "created_by",
+       "type": "object",
+       "label": "Created by",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text"
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text"
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_workspaces",
+   "title": "List workspaces",
+   "description": "List workspaces in Asana",
+   "input": [
+    {
+     "name": "limit",
+     "type": "string",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "The number of objects to return per page. The value must be between 1 and 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text",
+     "hint": "An offset to the next page returned by the API. If an offset is not passed in, the API will return the first page of results."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Workspaces",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "next_page",
+     "type": "object",
+     "label": "Next page",
+     "properties": [
+      {
+       "name": "offset",
+       "type": "string",
+       "label": "Offset",
+       "control_type": "text"
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text"
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_projects",
+   "title": "Search projects",
+   "description": "Search projects in Asana",
+   "input": [
+    {
+     "name": "workspace",
+     "type": "integer",
+     "label": "Workspace ID",
+     "control_type": "number",
+     "hint": "Projects that belong to the workspace"
+    },
+    {
+     "name": "team",
+     "type": "integer",
+     "label": "Team ID",
+     "control_type": "number",
+     "hint": "Click on team conversations, team ID is at the end of the url"
+    },
+    {
+     "name": "archived",
+     "type": "number",
+     "label": "Archived",
+     "control_type": "number"
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Projects",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_tags",
+   "title": "Search tags",
+   "description": "Search tags in Asana",
+   "input": [
+    {
+     "name": "workspace",
+     "type": "integer",
+     "label": "Workspace ID",
+     "control_type": "number",
+     "hint": "Get tags belonging to this workspace"
+    },
+    {
+     "name": "team",
+     "type": "integer",
+     "label": "Team ID",
+     "control_type": "number",
+     "hint": "Click on team conversations, team ID is at the end of the url"
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Tags",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_tasks",
+   "title": "Search tasks",
+   "description": "Search tasks in workspace in Asana",
+   "input": [
+    {
+     "name": "workspace",
+     "type": "integer",
+     "label": "Workspace ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "assignee",
+     "type": "integer",
+     "label": "Assignee ID",
+     "control_type": "number",
+     "hint": "Leave empty to get tasks assigned to you"
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Tasks",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "created_by",
+       "type": "object",
+       "label": "Created by",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_tasks_for_workspace",
+   "title": "Search tasks in a workspace",
+   "description": "Search tasks in a workspace in Asana",
+   "help": "Uses Asana's task search API. Requires Asana search entitlement (premium). Supports text, assignee, project/section, dates, completion, and custom field filters.",
+   "input": [
+    {
+     "name": "workspace",
+     "type": "string",
+     "label": "Workspace GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Globally unique identifier for the workspace or organization."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "hint": "Full-text search over task name and description"
+    },
+    {
+     "name": "resource_subtype",
+     "type": "string",
+     "label": "Resource subtype",
+     "control_type": "select",
+     "options": [
+      "default_task",
+      "milestone",
+      "approval",
+      "custom"
+     ],
+     "toggle_field": {
+      "name": "resource_subtype",
+      "type": "string"
+     },
+     "hint": "Task subtype to search. Defaults to default_task ."
+    },
+    {
+     "name": "assignee.any",
+     "type": "string",
+     "label": "Assignee any",
+     "control_type": "text",
+     "hint": "User GID, email, or me"
+    },
+    {
+     "name": "projects.any",
+     "type": "string",
+     "label": "Projects any",
+     "control_type": "text",
+     "hint": "Comma-separated project GIDs. Combined with sections.any , Asana returns the union."
+    },
+    {
+     "name": "sections.any",
+     "type": "string",
+     "label": "Sections any",
+     "control_type": "text",
+     "hint": "Comma-separated section GIDs. Combined with projects.any , Asana returns the union."
+    },
+    {
+     "name": "due_on.before",
+     "type": "date",
+     "label": "Due on before",
+     "control_type": "date"
+    },
+    {
+     "name": "due_on.after",
+     "type": "date",
+     "label": "Due on after",
+     "control_type": "date"
+    },
+    {
+     "name": "created_on.before",
+     "type": "date",
+     "label": "Created on before",
+     "control_type": "date"
+    },
+    {
+     "name": "created_on.after",
+     "type": "date",
+     "label": "Created on after",
+     "control_type": "date"
+    },
+    {
+     "name": "completed",
+     "type": "boolean",
+     "label": "Completed",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "completed",
+      "type": "string"
+     },
+     "hint": "Omit for all tasks; true / false to filter by completion."
+    },
+    {
+     "name": "custom_fields",
+     "type": "string",
+     "label": "Custom fields",
+     "control_type": "code",
+     "hint": "JSON object of filters by custom field GID. Example: {\"1234567890.value\": \"High\"}. Requires projects.any ."
+    },
+    {
+     "name": "limit",
+     "type": "string",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "The number of objects to return per page. The value must be between 1 and 100 ."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "task_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "typeahead_for_workspace",
+   "title": "Get objects via typeahead",
+   "description": "Get objects via typeahead in Asana",
+   "help": "Retrieves objects in a workspace via Asana typeahead (auto-completion). Meant for quick results — not accurate or exhaustive search. Returns a single non-paginated page. Search one resource type at a time.",
+   "input": [
+    {
+     "name": "workspace_gid",
+     "type": "string",
+     "label": "Workspace GID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Globally unique identifier for the workspace or organization."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "required": true,
+     "hint": "String used to search for relevant objects. An empty string still returns results."
+    },
+    {
+     "name": "resource_type",
+     "type": "string",
+     "label": "Resource type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "actor",
+      "agent",
+      "custom_field",
+      "goal",
+      "portfolio",
+      "project",
+      "project_template",
+      "tag",
+      "task",
+      "team",
+      "user"
+     ],
+     "toggle_field": {
+      "name": "resource_type",
+      "type": "string"
+     },
+     "hint": "Type of values the typeahead should return. Multiple types in one request are not supported."
+    },
+    {
+     "name": "count",
+     "type": "integer",
+     "label": "Count",
+     "control_type": "number",
+     "hint": "Number of results to return. Default 20 , minimum 1 , maximum 100 ."
+    },
+    {
+     "name": "opt_fields",
+     "type": "string",
+     "label": "Response fields",
+     "control_type": "multiselect",
+     "pick_list": "typeahead_opt_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "opt_fields",
+      "type": "string"
+     },
+     "hint": "Select fields to include in the response. Leave blank to use this action's default fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_goal",
+   "title": "Update goal",
+   "description": "Update goal in Asana",
+   "input": [
+    {
+     "name": "goal_id",
+     "type": "string",
+     "label": "Goal ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Can be found at the end of URL of the goal page"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Goal name",
+     "control_type": "text"
+    },
+    {
+     "name": "time_period",
+     "type": "string",
+     "label": "Time period",
+     "control_type": "select",
+     "pick_list": "time_periods",
+     "toggle_field": {
+      "name": "time_period",
+      "type": "string"
+     },
+     "hint": "Select the timeframe for this goal"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Plain text description. Ignored when Description (HTML) is provided."
+    },
+    {
+     "name": "html_notes",
+     "type": "string",
+     "label": "Description (HTML)",
+     "control_type": "text",
+     "hint": "Wrap the content in a <body> tag, for example: <body>Some notes</body> . Overrides Description when provided."
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date",
+     "hint": "The date on which this goal is due"
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date",
+     "hint": "The date on which work for this goal begins"
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Like this",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "liked",
+      "type": "string"
+     },
+     "hint": "Provide Yes to be liked by the authorized user, No if not."
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Owner ID",
+       "control_type": "text",
+       "hint": "Enter ID of people who owns this goal"
+      }
+     ]
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "Accepted values when open: green , yellow , red . when closed: achieved , missed , partial , dropped"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Goal ID",
+     "control_type": "text"
+    },
+    {
+     "name": "resource_type",
+     "type": "string",
+     "label": "Resource type",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Goal name",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "html_notes",
+     "type": "string",
+     "label": "Html notes",
+     "control_type": "text"
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date"
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date"
+    },
+    {
+     "name": "is_workspace_level",
+     "type": "number",
+     "label": "Is workspace level",
+     "control_type": "number"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "e.g. green, yellow, red, achieved, missed, partial, dropped"
+    },
+    {
+     "name": "num_likes",
+     "type": "integer",
+     "label": "Number of likes",
+     "control_type": "number"
+    },
+    {
+     "name": "likes",
+     "type": "array",
+     "label": "Likes",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "People",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "People ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "resource_type",
+         "type": "string",
+         "label": "Resource type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Liked",
+     "control_type": "number"
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "workspace",
+     "type": "object",
+     "label": "Workspace",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "team",
+     "type": "object",
+     "label": "Team",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "time_period",
+     "type": "object",
+     "label": "Time period",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "start_on",
+       "type": "string",
+       "label": "Start on",
+       "control_type": "text"
+      },
+      {
+       "name": "end_on",
+       "type": "string",
+       "label": "End on",
+       "control_type": "text"
+      },
+      {
+       "name": "display_name",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "period",
+       "type": "string",
+       "label": "Period",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "metric",
+     "type": "object",
+     "label": "Metric",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_type",
+       "type": "string",
+       "label": "Resource type",
+       "control_type": "text"
+      },
+      {
+       "name": "resource_subtype",
+       "type": "string",
+       "label": "Resource subtype",
+       "control_type": "text"
+      },
+      {
+       "name": "precision",
+       "type": "number",
+       "label": "Precision",
+       "control_type": "number"
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Unit",
+       "control_type": "text"
+      },
+      {
+       "name": "currency_code",
+       "type": "string",
+       "label": "Currency code",
+       "control_type": "text"
+      },
+      {
+       "name": "initial_number_value",
+       "type": "number",
+       "label": "Initial number value",
+       "control_type": "number"
+      },
+      {
+       "name": "target_number_value",
+       "type": "number",
+       "label": "Target number value",
+       "control_type": "number"
+      },
+      {
+       "name": "current_number_value",
+       "type": "number",
+       "label": "Current number value",
+       "control_type": "number"
+      },
+      {
+       "name": "current_display_value",
+       "type": "string",
+       "label": "Current display value",
+       "control_type": "text"
+      },
+      {
+       "name": "progress_source",
+       "type": "string",
+       "label": "Progress source",
+       "control_type": "text"
+      },
+      {
+       "name": "is_custom_weight",
+       "type": "number",
+       "label": "Is custom weight",
+       "control_type": "number"
+      },
+      {
+       "name": "can_manage",
+       "type": "number",
+       "label": "Can manage",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "current_status_update",
+     "type": "object",
+     "label": "Current status update",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "followers",
+     "type": "array",
+     "label": "Followers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_task",
+   "title": "Update task",
+   "description": "Update task in Asana",
+   "input": [
+    {
+     "name": "configuration",
+     "type": "object",
+     "label": "Configuration",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "workspace",
+       "type": "string",
+       "label": "Sample workspace",
+       "control_type": "select",
+       "pick_list": "workspaces",
+       "toggle_field": {
+        "name": "project",
+        "type": "integer"
+       },
+       "hint": "Custom fields associated to this workspace will be listed in the input."
+      }
+     ]
+    },
+    {
+     "name": "taskID",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Can be found at the end of URL of the task page"
+    },
+    {
+     "name": "assignee",
+     "type": "object",
+     "label": "Assignee",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Assignee ID",
+       "control_type": "number",
+       "hint": "Enter ID of people. Should be specified if 'Assignee status' is 'today' or 'inbox'"
+      },
+      {
+       "name": "gid",
+       "type": "string",
+       "label": "Assignee GID",
+       "control_type": "text",
+       "hint": "User GID, email, or me . Used when Assignee ID is blank."
+      }
+     ]
+    },
+    {
+     "name": "assignee_status",
+     "type": "string",
+     "label": "Assignee status",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Accepted values are inbox, later, today, upcoming"
+    },
+    {
+     "name": "completed",
+     "type": "number",
+     "label": "Completed",
+     "control_type": "number",
+     "extends_schema": true
+    },
+    {
+     "name": "due_on",
+     "type": "date_time",
+     "label": "Due on",
+     "control_type": "date",
+     "extends_schema": true,
+     "hint": "Use if 'due at' field is not specified"
+    },
+    {
+     "name": "due_at",
+     "type": "date_time",
+     "label": "Due at",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "Use if 'due on' field is not specified"
+    },
+    {
+     "name": "hearted",
+     "type": "number",
+     "label": "Heart this",
+     "control_type": "number",
+     "extends_schema": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Task name",
+     "control_type": "text",
+     "extends_schema": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "extends_schema": true
+    },
+    {
+     "name": "start_on",
+     "type": "date_time",
+     "label": "Start on",
+     "control_type": "date",
+     "extends_schema": true,
+     "hint": "If value is provided, either due on or due at field should be specified."
+    },
+    {
+     "name": "start_at",
+     "type": "date_time",
+     "label": "Start at",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "Mutually exclusive with start on. Requires due at. Invalid on milestones."
+    },
+    {
+     "name": "liked",
+     "type": "number",
+     "label": "Like this",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "liked",
+      "type": "string"
+     },
+     "hint": "Provide Yes to be liked by the authorized user, No if not."
+    },
+    {
+     "name": "custom_fields_json",
+     "type": "string",
+     "label": "Custom fields",
+     "control_type": "code",
+     "extends_schema": true,
+     "hint": "JSON object: custom field GID → value. Example: {\"1234567890\": \"High\"}. If Sample workspace/project custom fields have values, those are used instead."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

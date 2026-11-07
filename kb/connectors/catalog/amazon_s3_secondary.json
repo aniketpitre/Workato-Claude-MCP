@@ -1,0 +1,635 @@
+{
+ "name": "amazon_s3_secondary",
+ "title": "Amazon S3 secondary",
+ "requires_connection": true,
+ "categories": [
+  "Developer Tool",
+  "Marketing"
+ ],
+ "aliases": [
+  "Amazon S3"
+ ],
+ "triggers": [
+  {
+   "name": "new_CSV_file",
+   "title": "New CSV file",
+   "description": "New CSV file in Amazon S3 secondary",
+   "help": "Triggers when new CSV file is uploaded into specific S3 bucket or folder. Define the folder for Workato to sample a CSV file in that folder and generate the column headers. Folder path is required if Include files not ending with .csv? is Yes . Checks for new files every {{authUser.membership.poll_i…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When left blank, trigger picks up files created from an hour ago at recipe start. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "region",
+     "type": "string",
+     "label": "Region",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Go to Bucket > Properties > Static website hosting to find your region in the 'Endpoint' URL, e.g. us-west-2 . Can be left blank if region is already specified in connection."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_file",
+   "title": "New file",
+   "description": "New file in Amazon S3 secondary",
+   "help": "Triggers when new object is uploaded into specific S3 bucket or folder. When first started, this trigger fetches all records from the beginning of time. Checks for new objects every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "region",
+     "type": "string",
+     "label": "Region",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Go to Bucket > Properties > Static website hosting to find your region in the 'Endpoint' URL, e.g. us-west-2 . Can be left blank if region is already specified in connection."
+    }
+   ],
+   "output": [
+    {
+     "name": "Key",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text"
+    },
+    {
+     "name": "LastModified",
+     "type": "string",
+     "label": "Last modified",
+     "control_type": "text"
+    },
+    {
+     "name": "ETag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text"
+    },
+    {
+     "name": "Size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text"
+    },
+    {
+     "name": "StorageClass",
+     "type": "string",
+     "label": "Storage class",
+     "control_type": "text"
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "new_file_slice",
+   "title": "New file slice",
+   "description": "New file slice in Amazon S3 secondary",
+   "help": "Triggers when new file is uploaded into specific S3 bucket or folder. Use this trigger if you wish to handle large S3 files in the form of smaller slices. Otherwise, use the New File trigger. This trigger splits an S3 file into slices of specified size, and creates a job for each individual slice. U…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "region",
+     "type": "string",
+     "label": "Region",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Go to Bucket > Properties > Static website hosting to find your region in the 'Endpoint' URL, e.g. us-west-2 . Can be left blank if region is already specified in connection."
+    }
+   ],
+   "output": [
+    {
+     "name": "Key",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text"
+    },
+    {
+     "name": "LastModified",
+     "type": "string",
+     "label": "Last modified",
+     "control_type": "text"
+    },
+    {
+     "name": "ETag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text"
+    },
+    {
+     "name": "Size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text"
+    },
+    {
+     "name": "StorageClass",
+     "type": "string",
+     "label": "Storage class",
+     "control_type": "text"
+    },
+    {
+     "name": "Offset",
+     "type": "string",
+     "label": "Offset",
+     "control_type": "text"
+    },
+    {
+     "name": "Slice",
+     "type": "string",
+     "label": "Slice",
+     "control_type": "text"
+    },
+    {
+     "name": "Number",
+     "type": "string",
+     "label": "Number",
+     "control_type": "text"
+    },
+    {
+     "name": "Total",
+     "type": "string",
+     "label": "Total",
+     "control_type": "text"
+    },
+    {
+     "name": "Last",
+     "type": "string",
+     "label": "Last",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "new_updated_file",
+   "title": "New/updated file or folder",
+   "description": "New/updated file or folder in Amazon S3 secondary",
+   "help": "Triggers when a file/folder is created or updated in the specific S3 bucket or folder. When first started, this trigger fetches all records from the beginning of time. Checks for new/updated files or folders every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "region",
+     "type": "string",
+     "label": "Region",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Go to Bucket > Properties > Static website hosting to find your region in the 'Endpoint' URL, e.g. us-west-2 . Can be left blank if region is already specified in connection."
+    }
+   ],
+   "output": [
+    {
+     "name": "Key",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text"
+    },
+    {
+     "name": "LastModified",
+     "type": "string",
+     "label": "Last modified",
+     "control_type": "text"
+    },
+    {
+     "name": "ETag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text"
+    },
+    {
+     "name": "Size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text"
+    },
+    {
+     "name": "StorageClass",
+     "type": "string",
+     "label": "Storage class",
+     "control_type": "text"
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Amazon S3 secondary (Custom)",
+   "help": "Build your own Amazon S3 action with a HTTP request. The request will be authorized with your Amazon S3 connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "copy_object",
+   "title": "Copy file",
+   "description": "Copy file in Amazon S3 secondary",
+   "help": "Copy a file from any source bucket to a destination bucket. The destination region will be taken from the connection if not provided. Files up to 5GB in size can be copied.",
+   "input": [
+    {
+     "name": "region",
+     "type": "string",
+     "label": "Destination region",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Go to Bucket > Properties > Static website hosting to find your region in the 'Endpoint' URL, e.g. us-west-2 . Can be left blank if region is already specified in connection."
+    }
+   ],
+   "output": [
+    {
+     "name": "LastModified",
+     "type": "string",
+     "label": "Last modified",
+     "control_type": "text"
+    },
+    {
+     "name": "ETag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_bucket",
+   "title": "Create bucket",
+   "description": "Create bucket in Amazon S3 secondary",
+   "input": [],
+   "output": []
+  },
+  {
+   "name": "delete_bucket",
+   "title": "Delete bucket",
+   "description": "Delete a bucket in Amazon S3 secondary",
+   "help": "This action permanently deletes the specified bucket / restricted bucket. Note that only empty buckets can be deleted. If you delete the bucket you are restricted to, you might get a connection lost error in the next refresh.",
+   "input": [
+    {
+     "name": "region",
+     "type": "string",
+     "label": "Region",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Go to Bucket > Properties > Static website hosting to find your region in the 'Endpoint' URL, e.g. us-west-2 . Can be left blank if region is already specified in connection."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "number",
+     "label": "Success",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "delete_file",
+   "title": "Delete file/folder",
+   "description": "Delete file or folder in Amazon S3 secondary",
+   "help": "Delete an object or a folder by its name. To delete a folder, specify the folder name in 'path/foldername/' format under 'Object name'.",
+   "input": [],
+   "output": [
+    {
+     "name": "success",
+     "type": "number",
+     "label": "Delete success?",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "generate_presigned_url",
+   "title": "Generate presigned URL",
+   "description": "Generate a presigned object URL in Amazon S3 secondary",
+   "help": "Create a temporary authenticated URL to an object in your Amazon S3 bucket. With this URL, a third party can upload and modify this object for the specified duration. Use this action to securely share temporary access for other actions to your S3 bucket.",
+   "input": [],
+   "output": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "Presigned object URL",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_file",
+   "title": "Download file contents",
+   "description": "Download file contents in Amazon S3 secondary",
+   "help": "Download contents of a specific file located in a specified Amazon S3 bucket via the file/object name. Contents can be used in subsequent steps of the recipe to upload the file into another app.",
+   "input": [],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "list_bucket",
+   "title": "List files in bucket",
+   "description": "List files in Amazon S3 secondary",
+   "help": "Retrieve list of objects in selected bucket or its folders.",
+   "input": [
+    {
+     "name": "region",
+     "type": "string",
+     "label": "Region",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Go to Bucket > Properties > Static website hosting to find your region in the 'Endpoint' URL, e.g. us-west-2 . Can be left blank if region is already specified in connection."
+    }
+   ],
+   "output": [
+    {
+     "name": "metadata",
+     "type": "object",
+     "label": "Metadata",
+     "properties": [
+      {
+       "name": "bucket_name",
+       "type": "string",
+       "label": "Bucket name",
+       "control_type": "text"
+      },
+      {
+       "name": "prefix",
+       "type": "string",
+       "label": "Prefix",
+       "control_type": "text"
+      },
+      {
+       "name": "next_page_token",
+       "type": "string",
+       "label": "Next page token",
+       "control_type": "text"
+      },
+      {
+       "name": "key_count",
+       "type": "integer",
+       "label": "Response size",
+       "control_type": "number"
+      },
+      {
+       "name": "max_keys",
+       "type": "integer",
+       "label": "Response limit",
+       "control_type": "number"
+      },
+      {
+       "name": "is_truncated",
+       "type": "number",
+       "label": "Is truncated?",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "of": "object",
+     "properties": [
+      {
+       "name": "Key",
+       "type": "string",
+       "label": "Object name",
+       "control_type": "text"
+      },
+      {
+       "name": "LastModified",
+       "type": "string",
+       "label": "Last modified",
+       "control_type": "text"
+      },
+      {
+       "name": "ETag",
+       "type": "string",
+       "label": "E tag",
+       "control_type": "text"
+      },
+      {
+       "name": "Size",
+       "type": "string",
+       "label": "Size",
+       "control_type": "text"
+      },
+      {
+       "name": "StorageClass",
+       "type": "string",
+       "label": "Storage class",
+       "control_type": "text"
+      },
+      {
+       "name": "Owner",
+       "type": "object",
+       "label": "Owner",
+       "properties": [
+        {
+         "name": "ID",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "DisplayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "upload_file",
+   "title": "Upload file",
+   "description": "Upload file into bucket via file contents",
+   "help": "Uploads a file into the selected bucket using its contents. By default, files are uploaded in a single request (non-streaming) for fast processing. To handle larger files (>50MB), you can enable streaming by selecting Yes for Upload file with streaming mode? for the file to be uploaded in chunks. Le…",
+   "input": [],
+   "output": [
+    {
+     "name": "success",
+     "type": "number",
+     "label": "Upload success?",
+     "control_type": "number"
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "text"
+    }
+   ]
+  }
+ ]
+}

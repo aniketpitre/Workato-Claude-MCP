@@ -1,0 +1,195 @@
+{
+ "id": 804317,
+ "name": "Record DocuSign completed documents to Google Sheets",
+ "description": "1. A document is completed in DocuSign.\n2. Workato records the completed document in Google Sheets as a new row.\n\n**Requirements**\nTo test this recipe, copy [the sample Google Sheet here](https://docs.google.com/spreadsheets/d/17N9hLgV12zAvMYf4KrXpgVYur4C0dIXOj4SYMek-l_U/edit?usp=sharing) to your Google Drive account.",
+ "applications": [
+  "docusign",
+  "google_sheets"
+ ],
+ "action_applications": [
+  "google_sheets"
+ ],
+ "trigger_application": "docusign",
+ "business_objects": [
+  "document",
+  "spreadsheet row"
+ ],
+ "categories": [
+  "E-signature solution",
+  "Productivity",
+  "Document/File"
+ ],
+ "copy_count": 689,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-07-18T22:41:41.864-07:00",
+ "source_url": "https://app.workato.com/recipes/804317?community=us",
+ "steps": [
+  "docusign.new_event",
+  "google_sheets.add_spreadsheet_row_v4"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "docusign",
+  "name": "new_event",
+  "as": "new_event",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "event": "Completed",
+   "since": "=7.days.ago"
+  },
+  "block": [
+   {
+    "number": 1,
+    "as": "foreach",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "google_sheets",
+      "name": "add_spreadsheet_row_v4",
+      "as": "add_spreadsheet_row_v4",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "spreadsheet": "Workato sample - Docusign completed documents"
+      },
+      "toggleCfg": {},
+      "input": {
+       "spreadsheet": "17N9hLgV12zAvMYf4KrXpgVYur4C0dIXOj4SYMek-l_U",
+       "sheet": "Sheet1",
+       "data": {
+        "col_1": "#{_('data.foreach.foreach.email')}",
+        "col_2": "#{_('data.foreach.foreach.name')}",
+        "col_3": "#{_('data.docusign.new_event.status')}",
+        "col_4": "#{_('data.foreach.foreach.deliveredDateTime')}",
+        "col_5": "#{_('data.foreach.foreach.signedDateTime')}"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "sheet",
+        "control_type": "select",
+        "label": "Sheet",
+        "hint": "Select the sheet to create row in",
+        "pick_list": [
+         [
+          "Sheet1",
+          "Sheet1"
+         ]
+        ],
+        "optional": false,
+        "extends_schema": true
+       },
+       {
+        "type": "object",
+        "name": "data",
+        "label": "Columns",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Email",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_1",
+          "sticky": true,
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_2",
+          "sticky": true,
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Status",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_3",
+          "sticky": true,
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Delivered date time",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_4",
+          "sticky": true,
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Signed date time",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_5",
+          "sticky": true,
+          "parent": "data"
+         }
+        ]
+       }
+      ],
+      "uuid": "c726e6cc-e7d7-410e-89cd-dca9bdc887cb"
+     }
+    ],
+    "source": "#{_('data.docusign.new_event.sign_info')}",
+    "uuid": "73425594-ab64-47b7-8b97-09795ebf69d9"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Email"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Name"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Status"
+   },
+   {
+    "name": "custom_column_4",
+    "label": "Signed at"
+   },
+   {
+    "name": "custom_column_5",
+    "label": "delivered at"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.foreach.foreach.email')}",
+   "custom_column_2": "#{_('data.foreach.foreach.name')}",
+   "custom_column_3": "#{_('data.docusign.new_event.status')}",
+   "custom_column_4": "#{_('data.foreach.foreach.signedDateTime')}",
+   "custom_column_5": "#{_('data.foreach.foreach.deliveredDateTime')}"
+  },
+  "uuid": "ef61ed4a-e9ea-4c80-8480-b0705c9fd06d",
+  "param": {}
+ }
+}

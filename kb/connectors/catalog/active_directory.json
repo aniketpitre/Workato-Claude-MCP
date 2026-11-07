@@ -1,0 +1,601 @@
+{
+ "name": "active_directory",
+ "title": "Active Directory",
+ "requires_connection": true,
+ "categories": [
+  "Directory Services",
+  "Marketing"
+ ],
+ "aliases": [
+  "Active Directory",
+  "active directory",
+  "ldap",
+  "azure"
+ ],
+ "triggers": [
+  {
+   "name": "new_entry",
+   "title": "New entry",
+   "description": "New entry in Active Directory",
+   "help": "Triggers when a Active Directory entry is created.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample entry DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing entry, e.g. CN=Jake Smith,ou=People."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get entry created since the given date/time. Leave empty to get entries created 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of results being returned. Maximum value is 1000."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "paged_search_entries",
+   "title": "Scheduled entry search using search filter",
+   "description": "Scheduled entry search using search filter in Active Directory",
+   "help": "Executes search based on filter on specified schedule and returns results as list of entries.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample entry DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in your entry object. Give a distinguished name for a known entry, E.g: CN=Jake Smith,ou=People . Do not use formula or pills."
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Trigger on",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "interval",
+      "schedule"
+     ],
+     "extends_schema": true
+    },
+    {
+     "name": "search_filter",
+     "type": "string",
+     "label": "Entry search filter",
+     "control_type": "text",
+     "hint": "Active Directory filter to search the entries. E.g: &(ou=Dev)(objectClass=Person) ."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Number of Active Directory entries to process in each batch. Larger batch size will increase recipe speed & data throughput. Sometimes Workato will automatically reduce your batch size to avoid hittin…"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of results being returned. Maximum value is 1000."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_entry",
+   "title": "New/updated entry",
+   "description": "New/updated entry in Active Directory",
+   "help": "Triggers when a Active Directory entry is created/updated.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample entry DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing entry, e.g. CN=Jake Smith,ou=People."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get entry created/updated since the given date/time. Leave empty to get entries created 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of results being returned. Maximum value is 1000."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "add_entry",
+   "title": "Add entry",
+   "description": "Add entry in Active Directory",
+   "help": "Add an entry in your Active Directory. First provide a Sample entry DN , then provide attribute values to add.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample entry DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing entry, e.g. CN=Jake Smith,ou=People."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_group",
+   "title": "Add group",
+   "description": "Add group in Active Directory",
+   "help": "Add a group in your Active Directory. First provide a Sample group DN , then provide attribute values to add.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample group DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing group, e.g. CN=Jake Smith,ou=People."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_user",
+   "title": "Add user",
+   "description": "Add user in Active Directory",
+   "help": "Add a user in your Active Directory. First provide a Sample user DN , then provide attribute values to add.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample user DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing user, e.g. CN=Jake Smith,ou=People."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_user_to_group",
+   "title": "Add user to group",
+   "description": "Add user to group in Active Directory",
+   "help": "Add an existing user to the specified group in Active Directory.",
+   "input": [
+    {
+     "name": "user_dn",
+     "type": "string",
+     "label": "User DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of an existing user, e.g. CN=Jake Smith,ou=People."
+    },
+    {
+     "name": "group_dn",
+     "type": "string",
+     "label": "Group DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of an existing group, e.g. CN=Domain Admins,ou=Groups."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_entry",
+   "title": "Delete entry",
+   "description": "Deletes an entry in Active Directory",
+   "help": "Delete an entry in your Active Directory. Provide the Entry DN of the entry you wish to delete.",
+   "input": [
+    {
+     "name": "object_dn",
+     "type": "string",
+     "label": "Entry DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of an existing entry to be removed, e.g. CN=Jake Smith,ou=People."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "disable_user",
+   "title": "Disable a user account",
+   "description": "Disable user in Active Directory",
+   "input": [
+    {
+     "name": "user_dn",
+     "type": "string",
+     "label": "User DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of an existing user, e.g: CN=Jake Smith,ou=People"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "move_user_to_ou",
+   "title": "Move user to Organizational unit",
+   "description": "Move user to Organizational unit in Active Directory",
+   "input": [
+    {
+     "name": "user_dn",
+     "type": "string",
+     "label": "User DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of user, e.g: CN=Jake Smith,ou=People"
+    },
+    {
+     "name": "ou_dn",
+     "type": "string",
+     "label": "Organizational unit DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of Organizational unit, e.g: ou=Marketing"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "remove_user_from_group",
+   "title": "Remove user from group",
+   "description": "Remove user from group in Active Directory",
+   "help": "Remove an existing user from the specified group in Active Directory.",
+   "input": [
+    {
+     "name": "user_dn",
+     "type": "string",
+     "label": "User DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of user, e.g: CN=Orson Scott,ou=Content"
+    },
+    {
+     "name": "group_dn",
+     "type": "string",
+     "label": "Group DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of group, e.g: CN=Writers"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "rename_entry",
+   "title": "Rename entry",
+   "description": "Rename entry in Active Directory",
+   "help": "Rename an entry in your Active Directory. Provide the Existing entry DN and the New entry DN .",
+   "input": [
+    {
+     "name": "object_dn",
+     "type": "string",
+     "label": "Existing entry DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of an existing entry, e.g. CN=Jake Smith,ou=People."
+    },
+    {
+     "name": "new_object_dn",
+     "type": "string",
+     "label": "New entry DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "New distinguished name for the entry, e.g. CN=Jennifer Smith,ou=People."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_entries",
+   "title": "Search entries",
+   "description": "Search entries in Active Directory",
+   "help": "Search will return entries that match all your search criteria. A maximum of 1000 records will be fetched.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample entry DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing entry, e.g. CN=Jake Smith,ou=People"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of results being returned. Maximum value is 1000."
+    },
+    {
+     "name": "page_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of entries per single batch. If the value is greater than or equal to the limit, the action returns just one batch. The value of 0 signals to the server that the iteration is over."
+    },
+    {
+     "name": "page_cookie",
+     "type": "string",
+     "label": "Batch cookie",
+     "control_type": "text",
+     "hint": "The cookie value is used to fetch the next batch. Pass the cookie value returned by the same action earlier, or an empty value to retrieve the first batch."
+    }
+   ],
+   "output": [
+    {
+     "name": "page_cookie",
+     "type": "string",
+     "label": "Batch cookie",
+     "control_type": "string",
+     "required": true,
+     "hint": "Pass this value as input to this action in the loop to get the next batch."
+    }
+   ]
+  },
+  {
+   "name": "search_groups",
+   "title": "Search groups",
+   "description": "Search groups in Active Directory",
+   "help": "Search will return groups that match all your search criteria. A maximum of 1000 records will be fetched.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample group DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing group, e.g. CN=Administrator,ou=People"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of results being returned. Maximum value is 1000."
+    },
+    {
+     "name": "page_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of entries per single batch. If the value is greater than or equal to the limit, the action returns just one batch. The value of 0 signals to the server that the iteration is over."
+    },
+    {
+     "name": "page_cookie",
+     "type": "string",
+     "label": "Batch cookie",
+     "control_type": "text",
+     "hint": "The cookie value is used to fetch the next batch. Pass the cookie value returned by the same action earlier, or an empty value to retrieve the first batch."
+    }
+   ],
+   "output": [
+    {
+     "name": "page_cookie",
+     "type": "string",
+     "label": "Batch cookie",
+     "control_type": "string",
+     "required": true,
+     "hint": "Pass this value as input to this action in the loop to get the next batch."
+    }
+   ]
+  },
+  {
+   "name": "search_users",
+   "title": "Search users",
+   "description": "Search users in Active Directory",
+   "help": "Search will return users that match all your search criteria. A maximum of 1000 records will be fetched.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample user DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing user, e.g. CN=Jake Smith,ou=People"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of results being returned. Maximum value is 1000."
+    },
+    {
+     "name": "page_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of entries per single batch. If the value is greater than or equal to the limit, the action returns just one batch. The value of 0 signals to the server that the iteration is over."
+    },
+    {
+     "name": "page_cookie",
+     "type": "string",
+     "label": "Batch cookie",
+     "control_type": "text",
+     "hint": "The cookie value is used to fetch the next batch. Pass the cookie value returned by the same action earlier, or an empty value to retrieve the first batch."
+    }
+   ],
+   "output": [
+    {
+     "name": "page_cookie",
+     "type": "string",
+     "label": "Batch cookie",
+     "control_type": "string",
+     "required": true,
+     "hint": "Pass this value as input to this action in the loop to get the next batch."
+    }
+   ]
+  },
+  {
+   "name": "set_password",
+   "title": "Set password to User",
+   "description": "Set user password in Active Directory",
+   "help": "Set a new password for specified user. Only available for secured LDAP connection",
+   "input": [
+    {
+     "name": "user_dn",
+     "type": "string",
+     "label": "User DN",
+     "control_type": "text",
+     "required": true,
+     "hint": "Distinguished name of user, e.g: CN=Jake Smith,OU=people"
+    },
+    {
+     "name": "password",
+     "type": "string",
+     "label": "Password",
+     "control_type": "text",
+     "required": true,
+     "hint": "New password for user"
+    },
+    {
+     "name": "reset_password_next_logon",
+     "type": "boolean",
+     "label": "Change password on the next login?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "reset_password_next_logon",
+      "type": "boolean"
+     }
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_entry",
+   "title": "Update entry",
+   "description": "Update entry in Active Directory",
+   "help": "Update an entry in your Active Directory. First provide a Sample entry DN , then the DN of the entry to update. Finally provide attribute values to update.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample entry DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing entry, e.g. CN=Jake Smith,ou=People."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_user",
+   "title": "Update user",
+   "description": "Update user in Active Directory",
+   "help": "Update a user in your Active Directory. First provide a Sample user DN , then the DN of the user to update. Finally provide attribute values to update.",
+   "input": [
+    {
+     "name": "sample_object_dn",
+     "type": "string",
+     "label": "Sample user DN",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to introspect the attributes in the object. Provide a distinguished name of an existing user, e.g. CN=Jake Smith,ou=People."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

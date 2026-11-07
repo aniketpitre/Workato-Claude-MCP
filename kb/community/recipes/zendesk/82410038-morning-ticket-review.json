@@ -1,0 +1,4665 @@
+{
+ "id": 82410038,
+ "name": "Morning Ticket Review",
+ "description": "",
+ "applications": [
+  "zendesk",
+  "slack_bot",
+  "workato_genie",
+  "logger"
+ ],
+ "action_applications": [
+  "slack_bot",
+  "workato_genie",
+  "logger"
+ ],
+ "trigger_application": "zendesk",
+ "business_objects": [
+  "user",
+  "message"
+ ],
+ "categories": [
+  "Customer Service",
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "Recipe Tools",
+  "Workato"
+ ],
+ "copy_count": 3,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": "2026-09-28T07:19:17.399-07:00",
+ "updated_at": "2026-09-28T07:21:34.403-07:00",
+ "source_url": "https://app.workato.com/recipes/82410038?community=us",
+ "steps": [
+  "zendesk.new_updated_object_batch",
+  "slack_bot.get_user_by_email",
+  "workato_genie.assign_task_to_genie",
+  "slack_bot.post_bot_message",
+  "logger.log_message"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "zendesk",
+  "name": "new_updated_object_batch",
+  "as": "5dc794fa",
+  "keyword": "trigger",
+  "input": {
+   "batch_size": "100",
+   "object": "ticket",
+   "since": "2026-09-16T00:00:00.000+08:00"
+  },
+  "extended_output_schema": [
+   {
+    "label": "Tickets",
+    "name": "records",
+    "of": "object",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Ticket ID",
+      "parse_output": "integer_conversion",
+      "event_title": true,
+      "type": "integer",
+      "name": "id"
+     },
+     {
+      "control_type": "text",
+      "label": "Subject",
+      "hint": "Ticket topic or subject.",
+      "event_title": true,
+      "type": "string",
+      "name": "subject"
+     },
+     {
+      "control_type": "select",
+      "label": "Type",
+      "pick_list": [
+       [
+        "Problem",
+        "problem"
+       ],
+       [
+        "Incident",
+        "incident"
+       ],
+       [
+        "Question",
+        "question"
+       ],
+       [
+        "Task",
+        "task"
+       ]
+      ],
+      "hint": "The type of support ticket to create",
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Type",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "render_input": "convert_to_downcase",
+       "hint": "Allowed values are <b>problem</b>, <b>incident</b>, <b>question</b>, <b>task</b>.",
+       "type": "string",
+       "name": "type"
+      },
+      "type": "string",
+      "name": "type"
+     },
+     {
+      "control_type": "select",
+      "label": "Priority",
+      "pick_list": [
+       [
+        "Urgent",
+        "urgent"
+       ],
+       [
+        "High",
+        "high"
+       ],
+       [
+        "Normal",
+        "normal"
+       ],
+       [
+        "Low",
+        "low"
+       ]
+      ],
+      "hint": "Ticket priority",
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Priority",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "render_input": "convert_to_downcase",
+       "hint": "Allowed values are <b>urgent</b>, <b>high</b>, <b>normal</b>, <b>low</b>.",
+       "type": "string",
+       "name": "priority"
+      },
+      "type": "string",
+      "name": "priority"
+     },
+     {
+      "control_type": "text",
+      "label": "External ID",
+      "hint": "ID to link this ticket to external records.",
+      "optional": true,
+      "type": "string",
+      "name": "external_id"
+     },
+     {
+      "control_type": "select",
+      "label": "Status",
+      "pick_list": [
+       [
+        "New",
+        "new"
+       ],
+       [
+        "Open",
+        "open"
+       ],
+       [
+        "Pending",
+        "pending"
+       ],
+       [
+        "Hold",
+        "hold"
+       ],
+       [
+        "Solved",
+        "solved"
+       ],
+       [
+        "Closed",
+        "closed"
+       ]
+      ],
+      "hint": "Ticket status",
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Status",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "render_input": "convert_to_downcase",
+       "hint": "Allowed values are <b>open</b>, <b>pending</b>, <b>hold</b>, <b>solved</b>, <b>closed</b>.",
+       "type": "string",
+       "name": "status"
+      },
+      "type": "string",
+      "name": "status"
+     },
+     {
+      "control_type": "integer",
+      "label": "Requester ID",
+      "parse_output": "integer_conversion",
+      "extended": true,
+      "optional": true,
+      "hint": "Defaults to user who requested the ticket if left empty.",
+      "foreign_key": "user",
+      "fetch_with": "get_user_by_id(id)",
+      "join_point_label": "Requester",
+      "toggle_hint": "Set by ID",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Requester name",
+       "toggle_hint": "Look up by name",
+       "toggle_to_secondary_hint": "Look up by name",
+       "toggle_to_primary_hint": "Set by ID",
+       "optional": true,
+       "hint": "Defaults to user who requested the ticket if left empty.",
+       "type": "string",
+       "name": "requester_name"
+      },
+      "type": "integer",
+      "name": "requester_id"
+     },
+     {
+      "name": "get_user_by_id+requester_id",
+      "type": "object",
+      "label": "Requester",
+      "fetch_with": "get_user_by_id(requester_id>id)",
+      "join_point": true,
+      "properties": []
+     },
+     {
+      "control_type": "integer",
+      "label": "Brand ID",
+      "parse_output": "integer_conversion",
+      "optional": true,
+      "hint": "The ID of the brand to be associated with the ticket. This feature is available only for Zendesk enterprise subscription.",
+      "toggle_hint": "Enter Brand ID",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Brand ID",
+       "toggle_hint": "Select Brand name",
+       "pick_list": "brands",
+       "toggle_to_secondary_hint": "Select Brand name",
+       "toggle_to_primary_hint": "Enter Brand ID",
+       "optional": true,
+       "hint": "Select the brand to be associated with the ticket. This feature is available only for Zendesk enterprise subscription.",
+       "type": "string",
+       "name": "brand_id"
+      },
+      "type": "integer",
+      "name": "brand_id"
+     },
+     {
+      "control_type": "integer",
+      "label": "Submitter ID",
+      "parse_output": "integer_conversion",
+      "extended": true,
+      "optional": true,
+      "hint": "Defaults to user who submitted the ticket if left empty",
+      "foreign_key": "user",
+      "fetch_with": "get_user_by_id(id)",
+      "join_point_label": "Submitter",
+      "toggle_hint": "Set by ID",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Submitter name",
+       "toggle_hint": "Look up by name",
+       "toggle_to_secondary_hint": "Look up by name",
+       "toggle_to_primary_hint": "Set by ID",
+       "optional": true,
+       "hint": "Defaults to user who submitted the ticket if left empty.",
+       "type": "string",
+       "name": "submitter_name"
+      },
+      "type": "integer",
+      "name": "submitter_id"
+     },
+     {
+      "name": "get_user_by_id+submitter_id",
+      "type": "object",
+      "label": "Submitter",
+      "fetch_with": "get_user_by_id(submitter_id>id)",
+      "join_point": true,
+      "properties": []
+     },
+     {
+      "control_type": "integer",
+      "label": "Assignee ID",
+      "parse_output": "integer_conversion",
+      "extended": true,
+      "optional": true,
+      "foreign_key": "user",
+      "fetch_with": "get_user_by_id(id)",
+      "join_point_label": "Assignee",
+      "toggle_hint": "Set by ID",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Assignee name",
+       "toggle_hint": "Look up by name",
+       "toggle_to_secondary_hint": "Look up by name",
+       "toggle_to_primary_hint": "Set by ID",
+       "optional": true,
+       "type": "string",
+       "name": "assignee_name"
+      },
+      "type": "integer",
+      "name": "assignee_id"
+     },
+     {
+      "name": "get_user_by_id+assignee_id",
+      "type": "object",
+      "label": "Assignee",
+      "fetch_with": "get_user_by_id(assignee_id>id)",
+      "join_point": true,
+      "properties": []
+     },
+     {
+      "control_type": "integer",
+      "label": "Organization ID",
+      "parse_output": "integer_conversion",
+      "extended": true,
+      "optional": true,
+      "hint": "Defaults to the organization requester belongs to if left empty",
+      "foreign_key": "organization",
+      "fetch_with": "get_organization_by_id(id)",
+      "join_point_label": "Organization",
+      "toggle_hint": "Set by ID",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Organization name",
+       "toggle_hint": "Look up by name",
+       "toggle_to_secondary_hint": "Look up by name",
+       "toggle_to_primary_hint": "Set by ID",
+       "optional": true,
+       "hint": "Defaults to the organization requester belongs to if left empty.",
+       "type": "string",
+       "name": "organization_name"
+      },
+      "type": "integer",
+      "name": "organization_id"
+     },
+     {
+      "name": "get_organization_by_id+organization_id",
+      "type": "object",
+      "label": "Organization",
+      "fetch_with": "get_organization_by_id(organization_id>id)",
+      "join_point": true,
+      "properties": []
+     },
+     {
+      "control_type": "integer",
+      "label": "Group ID",
+      "parse_output": "integer_conversion",
+      "extended": true,
+      "optional": true,
+      "hint": "Defaults to the group the ticket is assigned to if left empty.",
+      "toggle_hint": "Set by ID",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Group name",
+       "toggle_hint": "Look up by name",
+       "toggle_to_secondary_hint": "Look up by name",
+       "toggle_to_primary_hint": "Set by ID",
+       "optional": true,
+       "hint": "Defaults to the group the ticket is assigned to if left empty.",
+       "type": "string",
+       "name": "group_name"
+      },
+      "type": "integer",
+      "name": "group_id"
+     },
+     {
+      "control_type": "integer",
+      "label": "Forum topic ID",
+      "parse_output": "integer_conversion",
+      "extended": true,
+      "optional": true,
+      "hint": "Forum topic that ticket originated from, if any.",
+      "type": "integer",
+      "name": "forum_topic_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Recipient email address",
+      "extended": true,
+      "optional": true,
+      "hint": "Email address that received the ticket, if any.",
+      "type": "string",
+      "name": "recipient"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Has incidents",
+      "render_input": "boolean_conversion",
+      "parse_output": "boolean_conversion",
+      "extended": true,
+      "optional": true,
+      "hint": "Yes if ticket is marked as a problem, No if not. Defaults to No if left empty.",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Has incidents",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "extended": true,
+       "optional": true,
+       "hint": "Yes if ticket is marked as a problem, No if not. Defaults to No if left empty.",
+       "type": "boolean",
+       "name": "has_incidents"
+      },
+      "type": "boolean",
+      "name": "has_incidents"
+     },
+     {
+      "control_type": "date",
+      "label": "Due at",
+      "render_input": "render_iso8601_date",
+      "parse_output": "parse_iso8601_date",
+      "extended": true,
+      "optional": true,
+      "hint": "Tickets of type Task will have a due date.",
+      "type": "date_time",
+      "name": "due_at"
+     },
+     {
+      "control_type": "text",
+      "label": "Tags",
+      "hint": "Comma separated list of tags. For eg. enterprise, important.",
+      "optional": true,
+      "type": "string",
+      "name": "tags_string"
+     },
+     {
+      "control_type": "text",
+      "label": "Tags list",
+      "optional": true,
+      "of": "string",
+      "type": "array",
+      "name": "tags"
+     },
+     {
+      "control_type": "text",
+      "label": "Ticket form ID",
+      "parse_output": "integer_conversion",
+      "optional": true,
+      "type": "integer",
+      "name": "ticket_form_id"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Score",
+        "type": "string",
+        "name": "score"
+       },
+       {
+        "control_type": "text",
+        "label": "Comment",
+        "type": "string",
+        "name": "comment"
+       }
+      ],
+      "label": "Satisfaction rating",
+      "type": "object",
+      "name": "satisfaction_rating"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Channel",
+        "type": "string",
+        "name": "channel"
+       },
+       {
+        "properties": [
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Address",
+            "type": "string",
+            "name": "address"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "Ticket ID",
+            "type": "string",
+            "name": "ticket_id"
+           },
+           {
+            "control_type": "text",
+            "label": "Subject",
+            "type": "string",
+            "name": "subject"
+           },
+           {
+            "control_type": "text",
+            "label": "Title",
+            "type": "string",
+            "name": "title"
+           },
+           {
+            "control_type": "text",
+            "label": "Topic ID",
+            "type": "string",
+            "name": "topic_id"
+           },
+           {
+            "control_type": "text",
+            "label": "Topic name",
+            "type": "string",
+            "name": "topic_name"
+           },
+           {
+            "control_type": "text",
+            "label": "Profile URL",
+            "type": "string",
+            "name": "profile_url"
+           },
+           {
+            "control_type": "text",
+            "label": "Username",
+            "type": "string",
+            "name": "username"
+           },
+           {
+            "control_type": "text",
+            "label": "Phone",
+            "type": "string",
+            "name": "phone"
+           },
+           {
+            "control_type": "text",
+            "label": "Formatted phone",
+            "type": "string",
+            "name": "formatted_phone"
+           },
+           {
+            "control_type": "text",
+            "label": "Facebook ID",
+            "type": "string",
+            "name": "facebook_id"
+           }
+          ],
+          "label": "From",
+          "type": "object",
+          "name": "from"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Address",
+            "type": "string",
+            "name": "address"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "Ticket ID",
+            "type": "string",
+            "name": "ticket_id"
+           },
+           {
+            "control_type": "text",
+            "label": "Subject",
+            "type": "string",
+            "name": "subject"
+           },
+           {
+            "control_type": "text",
+            "label": "Title",
+            "type": "string",
+            "name": "title"
+           },
+           {
+            "control_type": "text",
+            "label": "Topic ID",
+            "type": "string",
+            "name": "topic_id"
+           },
+           {
+            "control_type": "text",
+            "label": "Topic name",
+            "type": "string",
+            "name": "topic_name"
+           },
+           {
+            "control_type": "text",
+            "label": "Profile URL",
+            "type": "string",
+            "name": "profile_url"
+           },
+           {
+            "control_type": "text",
+            "label": "Username",
+            "type": "string",
+            "name": "username"
+           },
+           {
+            "control_type": "text",
+            "label": "Phone",
+            "type": "string",
+            "name": "phone"
+           },
+           {
+            "control_type": "text",
+            "label": "Formatted phone",
+            "type": "string",
+            "name": "formatted_phone"
+           },
+           {
+            "control_type": "text",
+            "label": "Facebook ID",
+            "type": "string",
+            "name": "facebook_id"
+           }
+          ],
+          "label": "To",
+          "type": "object",
+          "name": "to"
+         },
+         {
+          "control_type": "text",
+          "label": "Rel",
+          "type": "string",
+          "name": "rel"
+         }
+        ],
+        "label": "Source",
+        "type": "object",
+        "name": "source"
+       }
+      ],
+      "label": "Via",
+      "type": "object",
+      "name": "via"
+     },
+     {
+      "control_type": "text",
+      "label": "Description",
+      "optional": true,
+      "type": "string",
+      "name": "description"
+     },
+     {
+      "control_type": "url",
+      "label": "Ticket URL",
+      "optional": true,
+      "type": "string",
+      "name": "url"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Date created",
+      "render_input": "convert_date_time",
+      "parse_output": "convert_date_time",
+      "optional": true,
+      "type": "date_time",
+      "name": "created_at"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Date updated",
+      "render_input": "convert_date_time",
+      "parse_output": "convert_date_time",
+      "optional": true,
+      "type": "date_time",
+      "name": "updated_at"
+     },
+     {
+      "control_type": "text",
+      "label": "Raw subject",
+      "hint": "The dynamic content placeholder, if present, or the <b>Subject</b> value, if not.",
+      "optional": true,
+      "type": "string",
+      "name": "raw_subject"
+     },
+     {
+      "label": "Collaborator IDs",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Value",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "value"
+       }
+      ],
+      "type": "array",
+      "name": "collaborator_ids"
+     },
+     {
+      "label": "Follower IDs",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Value",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "value"
+       }
+      ],
+      "type": "array",
+      "name": "follower_ids"
+     },
+     {
+      "label": "Email CC IDs",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Value",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "value"
+       }
+      ],
+      "type": "array",
+      "name": "email_cc_ids"
+     },
+     {
+      "control_type": "integer",
+      "label": "Problem ID",
+      "parse_output": "integer_conversion",
+      "optional": true,
+      "type": "integer",
+      "name": "problem_id"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Is public",
+      "render_input": "boolean_conversion",
+      "parse_output": "boolean_conversion",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Is public",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "type": "boolean",
+       "name": "is_public"
+      },
+      "type": "boolean",
+      "name": "is_public"
+     },
+     {
+      "label": "Sharing agreement IDs",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Value",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "value"
+       }
+      ],
+      "type": "array",
+      "name": "sharing_agreement_ids"
+     },
+     {
+      "label": "Fields",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "ID",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ],
+      "type": "array",
+      "name": "fields"
+     },
+     {
+      "label": "Followup IDs",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Value",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "value"
+       }
+      ],
+      "type": "array",
+      "name": "followup_ids"
+     },
+     {
+      "control_type": "integer",
+      "label": "Generated timestamp",
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "name": "generated_timestamp"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Allow channelback",
+      "render_input": "boolean_conversion",
+      "parse_output": "boolean_conversion",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Allow channelback",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "type": "boolean",
+       "name": "allow_channelback"
+      },
+      "type": "boolean",
+      "name": "allow_channelback"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Allow attachments",
+      "render_input": "boolean_conversion",
+      "parse_output": "boolean_conversion",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Allow attachments",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "type": "boolean",
+       "name": "allow_attachments"
+      },
+      "type": "boolean",
+      "name": "allow_attachments"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "From messaging channel",
+      "render_input": "boolean_conversion",
+      "parse_output": "boolean_conversion",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "From messaging channel",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "type": "boolean",
+       "name": "from_messaging_channel"
+      },
+      "type": "boolean",
+      "name": "from_messaging_channel"
+     },
+     {
+      "control_type": "integer",
+      "label": "Custom Status ID",
+      "parse_output": "integer_conversion",
+      "optional": true,
+      "type": "integer",
+      "name": "custom_status_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Encoded ID",
+      "optional": true,
+      "type": "string",
+      "name": "encoded_id"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Ticket status",
+        "optional": true,
+        "custom_field_id": 5663334475294,
+        "custom": true,
+        "hint": "Request ticket status",
+        "type": "string",
+        "name": "field_5663334475294"
+       },
+       {
+        "control_type": "select",
+        "label": "Resolution type",
+        "optional": true,
+        "custom_field_id": 5663317926430,
+        "custom": true,
+        "hint": "Identifies whether a ticket was resolved automatically or with agent assistance.",
+        "pick_list": [
+         [
+          "Automated",
+          "zd_automated_resolution"
+         ],
+         [
+          "Assisted",
+          "zd_assisted_resolution"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Resolution type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663317926430,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::resolution_type"
+        },
+        "type": "string",
+        "name": "field_standard::resolution_type"
+       },
+       {
+        "control_type": "select",
+        "label": "Resolution tier",
+        "optional": true,
+        "custom_field_id": 5663317927070,
+        "custom": true,
+        "hint": "The tier that a resolution was grouped into",
+        "pick_list": [
+         [
+          "Non-automated",
+          "zd_resolution_tier_non_automated"
+         ],
+         [
+          "Assisted escalation",
+          "zd_resolution_tier_assisted_escalation"
+         ],
+         [
+          "Contained resolution",
+          "zd_resolution_tier_contained_resolution"
+         ],
+         [
+          "Verified resolution",
+          "zd_resolution_tier_core_resolution"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Resolution tier",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663317927070,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::resolution_tier"
+        },
+        "type": "string",
+        "name": "field_standard::resolution_tier"
+       },
+       {
+        "control_type": "select",
+        "label": "Sentiment",
+        "optional": true,
+        "custom_field_id": 5663317952798,
+        "custom": true,
+        "hint": "Sentiment of the ticket conversation between the agent and the end user.",
+        "pick_list": [
+         [
+          "Very positive",
+          "sentiment__very_positive"
+         ],
+         [
+          "Positive",
+          "sentiment__positive"
+         ],
+         [
+          "Neutral",
+          "sentiment__neutral"
+         ],
+         [
+          "Negative",
+          "sentiment__negative"
+         ],
+         [
+          "Very negative",
+          "sentiment__very_negative"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Sentiment",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663317952798,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::intelligent_triage_sentiment"
+        },
+        "type": "string",
+        "name": "field_standard::intelligent_triage_sentiment"
+       },
+       {
+        "control_type": "select",
+        "label": "Language",
+        "optional": true,
+        "custom_field_id": 5663317975198,
+        "custom": true,
+        "hint": "Language of the ticket conversation between the agent and the end user.",
+        "pick_list": [
+         [
+          "Afrikaans",
+          "language__af"
+         ],
+         [
+          "Albanian",
+          "language__sq"
+         ],
+         [
+          "Amharic",
+          "language__am"
+         ],
+         [
+          "Arabic",
+          "language__ar"
+         ],
+         [
+          "Aragonese",
+          "language__an"
+         ],
+         [
+          "Armenian",
+          "language__hy"
+         ],
+         [
+          "Assamese",
+          "language__as"
+         ],
+         [
+          "Asturian",
+          "language__ast"
+         ],
+         [
+          "Avaric",
+          "language__av"
+         ],
+         [
+          "Azerbaijani",
+          "language__az"
+         ],
+         [
+          "Bangla",
+          "language__bn"
+         ],
+         [
+          "Bashkir",
+          "language__ba"
+         ],
+         [
+          "Basque",
+          "language__eu"
+         ],
+         [
+          "Bavarian",
+          "language__bar"
+         ],
+         [
+          "Belarusian",
+          "language__be"
+         ],
+         [
+          "Bhojpuri",
+          "language__bh"
+         ],
+         [
+          "Bikol",
+          "language__bcl"
+         ],
+         [
+          "Bishnupriya",
+          "language__bpy"
+         ],
+         [
+          "Bosnian",
+          "language__bs"
+         ],
+         [
+          "Breton",
+          "language__br"
+         ],
+         [
+          "Bulgarian",
+          "language__bg"
+         ],
+         [
+          "Buriat",
+          "language__bxr"
+         ],
+         [
+          "Burmese",
+          "language__my"
+         ],
+         [
+          "Cantonese",
+          "language__yue"
+         ],
+         [
+          "Catalan",
+          "language__ca"
+         ],
+         [
+          "Cebuano",
+          "language__ceb"
+         ],
+         [
+          "Central kurdish",
+          "language__ckb"
+         ],
+         [
+          "Chechen",
+          "language__ce"
+         ],
+         [
+          "Chinese",
+          "language__zh"
+         ],
+         [
+          "Chuvash",
+          "language__cv"
+         ],
+         [
+          "Cornish",
+          "language__kw"
+         ],
+         [
+          "Corsican",
+          "language__co"
+         ],
+         [
+          "Croatian",
+          "language__hr"
+         ],
+         [
+          "Czech",
+          "language__cs"
+         ],
+         [
+          "Danish",
+          "language__da"
+         ],
+         [
+          "Divehi",
+          "language__dv"
+         ],
+         [
+          "Dutch",
+          "language__nl"
+         ],
+         [
+          "Egyptian arabic",
+          "language__arz"
+         ],
+         [
+          "English",
+          "language__en"
+         ],
+         [
+          "Erzya",
+          "language__myv"
+         ],
+         [
+          "Esperanto",
+          "language__eo"
+         ],
+         [
+          "Estonian",
+          "language__et"
+         ],
+         [
+          "Fiji hindi",
+          "language__hif"
+         ],
+         [
+          "Finnish",
+          "language__fi"
+         ],
+         [
+          "French",
+          "language__fr"
+         ],
+         [
+          "Galician",
+          "language__gl"
+         ],
+         [
+          "Georgian",
+          "language__ka"
+         ],
+         [
+          "German",
+          "language__de"
+         ],
+         [
+          "Goan konkani",
+          "language__gom"
+         ],
+         [
+          "Greek",
+          "language__el"
+         ],
+         [
+          "Guarani",
+          "language__gn"
+         ],
+         [
+          "Gujarati",
+          "language__gu"
+         ],
+         [
+          "Haitian creole",
+          "language__ht"
+         ],
+         [
+          "Hebrew",
+          "language__he"
+         ],
+         [
+          "Hindi",
+          "language__hi"
+         ],
+         [
+          "Hungarian",
+          "language__hu"
+         ],
+         [
+          "Icelandic",
+          "language__is"
+         ],
+         [
+          "Ido",
+          "language__io"
+         ],
+         [
+          "Iloko",
+          "language__ilo"
+         ],
+         [
+          "Indonesian",
+          "language__id"
+         ],
+         [
+          "Interlingua",
+          "language__ia"
+         ],
+         [
+          "Interlingue",
+          "language__ie"
+         ],
+         [
+          "Irish",
+          "language__ga"
+         ],
+         [
+          "Italian",
+          "language__it"
+         ],
+         [
+          "Japanese",
+          "language__ja"
+         ],
+         [
+          "Javanese",
+          "language__jv"
+         ],
+         [
+          "Kalmyk",
+          "language__xal"
+         ],
+         [
+          "Kannada",
+          "language__kn"
+         ],
+         [
+          "Karachay-balkar",
+          "language__krc"
+         ],
+         [
+          "Kazakh",
+          "language__kk"
+         ],
+         [
+          "Khmer",
+          "language__km"
+         ],
+         [
+          "Komi",
+          "language__kv"
+         ],
+         [
+          "Korean",
+          "language__ko"
+         ],
+         [
+          "Kurdish",
+          "language__ku"
+         ],
+         [
+          "Kyrgyz",
+          "language__ky"
+         ],
+         [
+          "Lao",
+          "language__lo"
+         ],
+         [
+          "Latin",
+          "language__la"
+         ],
+         [
+          "Latvian",
+          "language__lv"
+         ],
+         [
+          "Lezghian",
+          "language__lez"
+         ],
+         [
+          "Limburgish",
+          "language__li"
+         ],
+         [
+          "Lithuanian",
+          "language__lt"
+         ],
+         [
+          "Lojban",
+          "language__jbo"
+         ],
+         [
+          "Lombard",
+          "language__lmo"
+         ],
+         [
+          "Low german",
+          "language__nds"
+         ],
+         [
+          "Lower sorbian",
+          "language__dsb"
+         ],
+         [
+          "Luxembourgish",
+          "language__lb"
+         ],
+         [
+          "Macedonian",
+          "language__mk"
+         ],
+         [
+          "Maithili",
+          "language__mai"
+         ],
+         [
+          "Malagasy",
+          "language__mg"
+         ],
+         [
+          "Malay",
+          "language__ms"
+         ],
+         [
+          "Malayalam",
+          "language__ml"
+         ],
+         [
+          "Maltese",
+          "language__mt"
+         ],
+         [
+          "Manx",
+          "language__gv"
+         ],
+         [
+          "Marathi",
+          "language__mr"
+         ],
+         [
+          "Mari",
+          "language__mhr"
+         ],
+         [
+          "Mazanderani",
+          "language__mzn"
+         ],
+         [
+          "Minangkabau",
+          "language__min"
+         ],
+         [
+          "Mingrelian",
+          "language__xmf"
+         ],
+         [
+          "Mirandese",
+          "language__mwl"
+         ],
+         [
+          "Mongolian",
+          "language__mn"
+         ],
+         [
+          "Neapolitan",
+          "language__nap"
+         ],
+         [
+          "Nepali",
+          "language__ne"
+         ],
+         [
+          "Newari",
+          "language__new"
+         ],
+         [
+          "Northern frisian",
+          "language__frr"
+         ],
+         [
+          "Northern luri",
+          "language__lrc"
+         ],
+         [
+          "Norwegian",
+          "language__no"
+         ],
+         [
+          "Norwegian nynorsk",
+          "language__nn"
+         ],
+         [
+          "Occitan",
+          "language__oc"
+         ],
+         [
+          "Odia",
+          "language__or"
+         ],
+         [
+          "Ossetic",
+          "language__os"
+         ],
+         [
+          "Palatine german",
+          "language__pfl"
+         ],
+         [
+          "Pampanga",
+          "language__pam"
+         ],
+         [
+          "Pashto",
+          "language__ps"
+         ],
+         [
+          "Persian",
+          "language__fa"
+         ],
+         [
+          "Piedmontese",
+          "language__pms"
+         ],
+         [
+          "Polish",
+          "language__pl"
+         ],
+         [
+          "Portuguese",
+          "language__pt"
+         ],
+         [
+          "Punjabi",
+          "language__pa"
+         ],
+         [
+          "Quechua",
+          "language__qu"
+         ],
+         [
+          "Romanian",
+          "language__ro"
+         ],
+         [
+          "Romansh",
+          "language__rm"
+         ],
+         [
+          "Russian",
+          "language__ru"
+         ],
+         [
+          "Rusyn",
+          "language__rue"
+         ],
+         [
+          "Sanskrit",
+          "language__sa"
+         ],
+         [
+          "Sardinian",
+          "language__sc"
+         ],
+         [
+          "Scots",
+          "language__sco"
+         ],
+         [
+          "Scottish gaelic",
+          "language__gd"
+         ],
+         [
+          "Serbian",
+          "language__sr"
+         ],
+         [
+          "Serbo-croatian",
+          "language__sh"
+         ],
+         [
+          "Sicilian",
+          "language__scn"
+         ],
+         [
+          "Sindhi",
+          "language__sd"
+         ],
+         [
+          "Sinhala",
+          "language__si"
+         ],
+         [
+          "Slovak",
+          "language__sk"
+         ],
+         [
+          "Slovenian",
+          "language__sl"
+         ],
+         [
+          "Somali",
+          "language__so"
+         ],
+         [
+          "Spanish",
+          "language__es"
+         ],
+         [
+          "Sundanese",
+          "language__su"
+         ],
+         [
+          "Swahili",
+          "language__sw"
+         ],
+         [
+          "Swedish",
+          "language__sv"
+         ],
+         [
+          "Tagalog",
+          "language__tl"
+         ],
+         [
+          "Tajik",
+          "language__tg"
+         ],
+         [
+          "Tamil",
+          "language__ta"
+         ],
+         [
+          "Tatar",
+          "language__tt"
+         ],
+         [
+          "Telugu",
+          "language__te"
+         ],
+         [
+          "Thai",
+          "language__th"
+         ],
+         [
+          "Tibetan",
+          "language__bo"
+         ],
+         [
+          "Tosk albanian",
+          "language__als"
+         ],
+         [
+          "Turkish",
+          "language__tr"
+         ],
+         [
+          "Turkmen",
+          "language__tk"
+         ],
+         [
+          "Tuvinian",
+          "language__tyv"
+         ],
+         [
+          "Ukrainian",
+          "language__uk"
+         ],
+         [
+          "Upper sorbian",
+          "language__hsb"
+         ],
+         [
+          "Urdu",
+          "language__ur"
+         ],
+         [
+          "Uyghur",
+          "language__ug"
+         ],
+         [
+          "Uzbek",
+          "language__uz"
+         ],
+         [
+          "Venetian",
+          "language__vec"
+         ],
+         [
+          "Veps",
+          "language__vep"
+         ],
+         [
+          "Vietnamese",
+          "language__vi"
+         ],
+         [
+          "Volapük",
+          "language__vo"
+         ],
+         [
+          "Walloon",
+          "language__wa"
+         ],
+         [
+          "Waray",
+          "language__war"
+         ],
+         [
+          "Welsh",
+          "language__cy"
+         ],
+         [
+          "West flemish",
+          "language__vls"
+         ],
+         [
+          "Western frisian",
+          "language__fy"
+         ],
+         [
+          "Western mari",
+          "language__mrj"
+         ],
+         [
+          "Western panjabi",
+          "language__pnb"
+         ],
+         [
+          "Wu chinese",
+          "language__wuu"
+         ],
+         [
+          "Yakut",
+          "language__sah"
+         ],
+         [
+          "Yiddish",
+          "language__yi"
+         ],
+         [
+          "Yoruba",
+          "language__yo"
+         ],
+         [
+          "Zaza",
+          "language__diq"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Language",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663317975198,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::intelligent_triage_language"
+        },
+        "type": "string",
+        "name": "field_standard::intelligent_triage_language"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Pause messaging reminders",
+        "optional": true,
+        "custom_field_id": 5663317986718,
+        "custom": true,
+        "hint": "Pause messaging reminders",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Pause messaging reminders",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "render_input": null,
+         "parse_output": null,
+         "optional": true,
+         "custom_field_id": 5663317986718,
+         "custom": true,
+         "hint": "Pause messaging reminders",
+         "type": "boolean",
+         "name": "field_standard::pause_messaging_inactivity_reminders"
+        },
+        "type": "boolean",
+        "name": "field_standard::pause_messaging_inactivity_reminders"
+       },
+       {
+        "control_type": "text",
+        "label": "Summary date and time",
+        "optional": true,
+        "custom_field_id": 5663331873182,
+        "custom": true,
+        "hint": "Date and time of the summary with the following format 'yyyy-MM-dd HH:mm:ss UTC'.",
+        "type": "string",
+        "name": "field_standard::ticket_summary_datetime"
+       },
+       {
+        "control_type": "select",
+        "label": "Channel group",
+        "optional": true,
+        "custom_field_id": 5663334491806,
+        "custom": true,
+        "hint": "Identifies in which channel group the ticket resolution happened.",
+        "pick_list": [
+         [
+          "Digital",
+          "zd_channel_group_digital"
+         ],
+         [
+          "Voice",
+          "zd_channel_group_voice"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Channel group",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663334491806,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::resolution_channel_group"
+        },
+        "type": "string",
+        "name": "field_standard::resolution_channel_group"
+       },
+       {
+        "control_type": "text",
+        "label": "Multi-recipient email ID",
+        "optional": true,
+        "custom_field_id": 5663334492318,
+        "custom": true,
+        "hint": "The unique ID for multi-recipient emails",
+        "type": "string",
+        "name": "field_standard::multi_recipient_email_tickets"
+       },
+       {
+        "control_type": "select",
+        "label": "Topic",
+        "optional": true,
+        "custom_field_id": 5663334503710,
+        "custom": true,
+        "hint": "Topic of the ticket conversation between the agent and the end user.",
+        "pick_list": [
+         [
+          "Account::Account activation::Account verification status",
+          "topic__account__activation__waiting"
+         ],
+         [
+          "Account::Account data restrictions::Close or delete account",
+          "topic__account__data_restrictions__delete_account"
+         ],
+         [
+          "Account::Account data restrictions::Delete data",
+          "topic__account__data_restrictions__delete_data"
+         ],
+         [
+          "Account::New account::Create new account",
+          "topic__account__new__creating"
+         ],
+         [
+          "Account::New account::Signup issue",
+          "topic__account__new__signup_issue"
+         ],
+         [
+          "Account::Account update::Change post address",
+          "topic__account__update__address_for_post"
+         ],
+         [
+          "Account::Account update::Change email address",
+          "topic__account__update__email"
+         ],
+         [
+          "Account::Account update::Change name",
+          "topic__account__update__name"
+         ],
+         [
+          "Account::Account update::Change phone number",
+          "topic__account__update__phone"
+         ],
+         [
+          "Account::Account verification::Unable to verify account",
+          "topic__account__verification__unable_to_verify"
+         ],
+         [
+          "Billing::Billing checkout::Payment or checkout issue",
+          "topic__billing__checkout__issue"
+         ],
+         [
+          "Billing::Billing checkout::Payment not recognized",
+          "topic__billing__checkout__payment_not_recognized"
+         ],
+         [
+          "Billing::Discount::Apply promo code, discount or gift card",
+          "topic__billing__discount__apply_promo_code_discount_or_gift_card"
+         ],
+         [
+          "Billing::Discount::Unable to apply promo code, discount, gift card",
+          "topic__billing__discount__cant_apply_promo_code_discount_or_gift_card"
+         ],
+         [
+          "Billing::Discount::Didn't receive gift card or credit",
+          "topic__billing__discount__didnt_get_gift_card_or_credit"
+         ],
+         [
+          "Billing::Discount::Request discount or price match",
+          "topic__billing__discount__request"
+         ],
+         [
+          "Billing::Discount::Request new promo code",
+          "topic__billing__discount__request_new_promo_code"
+         ],
+         [
+          "Billing::Billing documentation::Sending proof of payment",
+          "topic__billing__documentation__sending_proof_of_payment"
+         ],
+         [
+          "Billing::Billing documentation::Sending transaction history or running balance report",
+          "topic__billing__documentation__statement_report"
+         ],
+         [
+          "Billing::Invoice::Request invoice or receipt",
+          "topic__billing__invoice__request"
+         ],
+         [
+          "Billing::Invoice::Sending or submitting invoice",
+          "topic__billing__invoice__submission"
+         ],
+         [
+          "Billing::Invoice::Change invoice or receipt data",
+          "topic__billing__invoice__update_data"
+         ],
+         [
+          "Billing::Payment change::Cancel payment",
+          "topic__billing__payment_change__cancel_payment"
+         ],
+         [
+          "Billing::Payment change::Change payment info or method",
+          "topic__billing__payment_change__method"
+         ],
+         [
+          "Billing::Payment information::Chargeback",
+          "topic__billing__payment_info__chargeback"
+         ],
+         [
+          "Billing::Payment information::Accepted payment methods",
+          "topic__billing__payment_info__how_can_i_pay"
+         ],
+         [
+          "Billing::Payment information::Request for payment confirmation",
+          "topic__billing__payment_info__request_confirmation"
+         ],
+         [
+          "Billing::Price clarification::Price is different than expected",
+          "topic__billing__price_clarification__which_price"
+         ],
+         [
+          "Billing::Refund::Refund request",
+          "topic__billing__refund__request"
+         ],
+         [
+          "Billing::Refund::Refund via specific channel",
+          "topic__billing__refund__request_refund_channel"
+         ],
+         [
+          "Billing::Refund::Waiting for refund",
+          "topic__billing__refund__waiting"
+         ],
+         [
+          "Billing::Refund::Incorrect refund amount",
+          "topic__billing__refund__wrong_amount"
+         ],
+         [
+          "Billing::Subscription cancel::Cancel subscription",
+          "topic__billing__subscription_cancel__request"
+         ],
+         [
+          "Billing::Wrong charge::Incorrect amount charged",
+          "topic__billing__wrong__charge"
+         ],
+         [
+          "Billing::Wrong charge::Unexpected charge question",
+          "topic__billing__wrong__why_charged"
+         ],
+         [
+          "Misc::Communications::Unsubscribe from communications",
+          "topic__misc__communication__unsubscribe"
+         ],
+         [
+          "Misc::Contact::Contact request",
+          "topic__misc__contact__request_contact"
+         ],
+         [
+          "Misc::Contact::Request phone call with agent",
+          "topic__misc__contact__talk_to_agent_over_phone"
+         ],
+         [
+          "Misc::Contact::Request to contact specific person or role",
+          "topic__misc__contact__want_to_contact_this_person"
+         ],
+         [
+          "Misc::Feedback::Complaint",
+          "topic__misc__feedback__complaint"
+         ],
+         [
+          "Misc::Feedback::Customer satisfaction survey",
+          "topic__misc__feedback__customer_satisfaction_survey"
+         ],
+         [
+          "Misc::Feedback::Negative service feedback",
+          "topic__misc__feedback__negative"
+         ],
+         [
+          "Misc::Feedback::Positive service feedback",
+          "topic__misc__feedback__positive"
+         ],
+         [
+          "Misc::Feedback::Suggestion",
+          "topic__misc__feedback__suggestion"
+         ],
+         [
+          "Misc::Image::Image of product with problem",
+          "topic__misc__image__product_issue"
+         ],
+         [
+          "Misc::Intellectual property::Copyright infringement",
+          "topic__misc__intellectual_property__copyright_infringement"
+         ],
+         [
+          "Misc::Job application::Job application",
+          "topic__misc__job_application__new"
+         ],
+         [
+          "Misc::Unable to receive message::Out-of-office reply",
+          "topic__misc__not_received__out_of_office"
+         ],
+         [
+          "Misc::Received message::Confirm if this is a legitimate message",
+          "topic__misc__received__confirm_if_legitimate_message"
+         ],
+         [
+          "Misc::Received message::Contact acknowledgement",
+          "topic__misc__received__contact_acknowledgement"
+         ],
+         [
+          "Misc::Received message::New voicemail message",
+          "topic__misc__received__new_voicemail"
+         ],
+         [
+          "Misc::Received message::Received communication intended for someone else",
+          "topic__misc__received__received_communication_intended_for_someone_else"
+         ],
+         [
+          "Misc::Thanks::Thank you",
+          "topic__misc__thanks__thanks"
+         ],
+         [
+          "Misc::Unsolicited::Event invitation",
+          "topic__misc__unsolicited__event_invitation"
+         ],
+         [
+          "Misc::Unsolicited::Marketing campaign or newsletter",
+          "topic__misc__unsolicited__marketing_or_newsletter"
+         ],
+         [
+          "Misc::Unsolicited::Spam",
+          "topic__misc__unsolicited__spam"
+         ],
+         [
+          "Misc::Video::Video of product with problem",
+          "topic__misc__video__product_issue"
+         ],
+         [
+          "Order::Order availability::Do you sell this product",
+          "topic__order__availability__do_you_sell_this_product"
+         ],
+         [
+          "Order::Order availability::Product stock availability",
+          "topic__order__availability__stock"
+         ],
+         [
+          "Order::Order cancelation::Cancel order",
+          "topic__order__cancellation__cancel"
+         ],
+         [
+          "Order::Order cancelation::Reason for order cancellation",
+          "topic__order__cancellation__why_cancelled"
+         ],
+         [
+          "Order::Delivery information::Where do you ship to",
+          "topic__order__delivery_info__where_do_you_ship_to"
+         ],
+         [
+          "Order::Order documentation::Sending order confirmation",
+          "topic__order__documentation__sending_order_confirmation"
+         ],
+         [
+          "Order::Place new order::Place new order or how to place order",
+          "topic__order__new__place"
+         ],
+         [
+          "Order::Place new order::Quote request",
+          "topic__order__new__quote_request"
+         ],
+         [
+          "Order::Order not delivered::Order delivery is late",
+          "topic__order__not_delivered__late"
+         ],
+         [
+          "Order::Order not delivered::Order not delivered",
+          "topic__order__not_delivered__not_delivered"
+         ],
+         [
+          "Order::Order not delivered::Order returned to sender",
+          "topic__order__not_delivered__returned_to_sender"
+         ],
+         [
+          "Order::Product choice::Which product to buy",
+          "topic__order__product_choice__which_product"
+         ],
+         [
+          "Order::Product details::Request product details",
+          "topic__order__product_details__details"
+         ],
+         [
+          "Order::Product issue::Claim details request",
+          "topic__order__product_issue__additional_claim_details_request"
+         ],
+         [
+          "Order::Product issue::Received item has problem or damage",
+          "topic__order__product_issue__damaged_on_arrival"
+         ],
+         [
+          "Order::Product issue::Replace damaged or defective product",
+          "topic__order__product_issue__need_replacement"
+         ],
+         [
+          "Order::Product issue::Product not working as expected",
+          "topic__order__product_issue__not_working_as_expected"
+         ],
+         [
+          "Order::Product usage::Product instructions",
+          "topic__order__product_usage__how_to_use"
+         ],
+         [
+          "Order::Order return::What is the return policy",
+          "topic__order__return__policy"
+         ],
+         [
+          "Order::Order return::Send return label",
+          "topic__order__return__request_return_label"
+         ],
+         [
+          "Order::Order return::Return status",
+          "topic__order__return__status"
+         ],
+         [
+          "Order::Order return::Exchange items",
+          "topic__order__return__want_exchange"
+         ],
+         [
+          "Order::Order return::Return order",
+          "topic__order__return__want_return"
+         ],
+         [
+          "Order::Order status::Unable to find or view order",
+          "topic__order__status__cant_find_order"
+         ],
+         [
+          "Order::Order status::Tracking information",
+          "topic__order__status__how_to_track"
+         ],
+         [
+          "Order::Order status::Shipping status",
+          "topic__order__status__what_is_status"
+         ],
+         [
+          "Order::Order status::When will order arrive",
+          "topic__order__status__when_arrive"
+         ],
+         [
+          "Order::Order status::When will order be shipped",
+          "topic__order__status__when_is_shipped"
+         ],
+         [
+          "Order::Order update::Change or specify delivery date",
+          "topic__order__update__delivery_date"
+         ],
+         [
+          "Order::Order update::Deliver with drop-off instructions",
+          "topic__order__update__dropoff_instructions"
+         ],
+         [
+          "Order::Order update::Change items or quantity",
+          "topic__order__update__items"
+         ],
+         [
+          "Order::Order update::Send order again",
+          "topic__order__update__request_to_send_again"
+         ],
+         [
+          "Order::Order update::Change shipping address",
+          "topic__order__update__ship_address"
+         ],
+         [
+          "Order::Wrong delivery::Delivered to incorrect address",
+          "topic__order__wrong_delivery__address"
+         ],
+         [
+          "Order::Wrong product::Item missing from order",
+          "topic__order__wrong_product__missing_item"
+         ],
+         [
+          "Order::Wrong product::Received wrong item or size",
+          "topic__order__wrong_product__wrong_item"
+         ],
+         [
+          "Service::Appointment::Appointment confirmation",
+          "topic__service__appointment__confirmation"
+         ],
+         [
+          "Service::Appointment::Schedule appointment",
+          "topic__service__appointment__new"
+         ],
+         [
+          "Service::Service information::Available services",
+          "topic__service__info__do_you_provide_this_service"
+         ],
+         [
+          "Software::Software connection::Connection issue",
+          "topic__software__connection__issue"
+         ],
+         [
+          "Software::Feature feedback::Feature not working",
+          "topic__software__feature_feedback__not_working"
+         ],
+         [
+          "Software::Feature missing::Unable to find feature",
+          "topic__software__feature_missing__cant_find"
+         ],
+         [
+          "Software::Software information::Question about functionality",
+          "topic__software__info__does_software_do"
+         ],
+         [
+          "Software::Software information::Software usage instructions",
+          "topic__software__info__how_to_use"
+         ],
+         [
+          "Software::Generic error::Software error",
+          "topic__software__issue_generic__error"
+         ],
+         [
+          "Software::Login issues::Unable to login",
+          "topic__software__login_issues__cant_login"
+         ],
+         [
+          "Software::Login issues::ID or email address not recognized",
+          "topic__software__login_issues__id_not_recognized"
+         ],
+         [
+          "Software::Login issues::Unable to reset password",
+          "topic__software__login_issues__password_cant_reset"
+         ],
+         [
+          "Software::Login issues::Forgot password",
+          "topic__software__login_issues__password_forgot"
+         ],
+         [
+          "Software::Login issues::Reset password",
+          "topic__software__login_issues__password_request_reset"
+         ],
+         [
+          "Software::Notifications::Login from new device",
+          "topic__software__notifications__login_from_new_device"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Topic",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663334503710,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::intelligent_triage_intent"
+        },
+        "type": "string",
+        "name": "field_standard::intelligent_triage_intent"
+       },
+       {
+        "control_type": "select",
+        "label": "Topic confidence",
+        "optional": true,
+        "custom_field_id": 5663334504350,
+        "custom": true,
+        "hint": "Topic confidence of the ticket conversation between the agent and the end user.",
+        "pick_list": [
+         [
+          "Low",
+          "topic_confidence__low"
+         ],
+         [
+          "Medium",
+          "topic_confidence__medium"
+         ],
+         [
+          "High",
+          "topic_confidence__high"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Topic confidence",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663334504350,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::intelligent_triage_intent_confidence"
+        },
+        "type": "string",
+        "name": "field_standard::intelligent_triage_intent_confidence"
+       },
+       {
+        "control_type": "select",
+        "label": "Sentiment confidence",
+        "optional": true,
+        "custom_field_id": 5663334505118,
+        "custom": true,
+        "hint": "Sentiment confidence of the ticket conversation between the agent and the end user.",
+        "pick_list": [
+         [
+          "Low",
+          "sentiment_confidence__low"
+         ],
+         [
+          "Medium",
+          "sentiment_confidence__medium"
+         ],
+         [
+          "High",
+          "sentiment_confidence__high"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Sentiment confidence",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663334505118,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::intelligent_triage_sentiment_confidence"
+        },
+        "type": "string",
+        "name": "field_standard::intelligent_triage_sentiment_confidence"
+       },
+       {
+        "control_type": "select",
+        "label": "Language confidence",
+        "optional": true,
+        "custom_field_id": 5663334506014,
+        "custom": true,
+        "hint": "Language confidence of the ticket conversation between the agent and the end user.",
+        "pick_list": [
+         [
+          "Low",
+          "language_confidence__low"
+         ],
+         [
+          "Medium",
+          "language_confidence__medium"
+         ],
+         [
+          "High",
+          "language_confidence__high"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Language confidence",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663334506014,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::intelligent_triage_language_confidence"
+        },
+        "type": "string",
+        "name": "field_standard::intelligent_triage_language_confidence"
+       },
+       {
+        "control_type": "text",
+        "label": "Summary",
+        "optional": true,
+        "custom_field_id": 5663348668318,
+        "custom": true,
+        "hint": "Summary of the ticket conversation between the agent and the end user.",
+        "type": "string",
+        "name": "field_standard::ticket_summary"
+       },
+       {
+        "control_type": "text",
+        "label": "Summary agent ID",
+        "optional": true,
+        "custom_field_id": 5663348669086,
+        "custom": true,
+        "hint": "Agent ID that generated the summary.",
+        "type": "string",
+        "name": "field_standard::ticket_summary_agent_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Summary locale",
+        "optional": true,
+        "custom_field_id": 5663348669854,
+        "custom": true,
+        "hint": "Locale of the summary with format 'en-US', 'fr-FR', etc.",
+        "type": "string",
+        "name": "field_standard::ticket_summary_locale"
+       },
+       {
+        "control_type": "select",
+        "label": "Approval status",
+        "optional": true,
+        "custom_field_id": 5663352531870,
+        "custom": true,
+        "hint": "Approval status",
+        "pick_list": [
+         [
+          "Pending",
+          "zd_es_approval_pending"
+         ],
+         [
+          "Approved",
+          "zd_es_approval_approved"
+         ],
+         [
+          "Rejected",
+          "zd_es_approval_rejected"
+         ],
+         [
+          "Withdrawn",
+          "zd_es_approval_withdrawn"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Approval status",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663352531870,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::approval_workflow_status"
+        },
+        "type": "string",
+        "name": "field_standard::approval_workflow_status"
+       },
+       {
+        "control_type": "select",
+        "label": "Required tasks",
+        "optional": true,
+        "custom_field_id": 5663365514014,
+        "custom": true,
+        "hint": "Shows whether required task lists are complete. The ticket cannot be solved until all required tasks are done or when no tasks are required.",
+        "pick_list": [
+         [
+          "Not required",
+          "zd_es_required_tasks_not_required"
+         ],
+         [
+          "Complete",
+          "zd_es_required_tasks_complete"
+         ],
+         [
+          "Incomplete",
+          "zd_es_required_tasks_incomplete"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Required tasks",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 5663365514014,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_standard::required_tasks"
+        },
+        "type": "string",
+        "name": "field_standard::required_tasks"
+       }
+      ],
+      "label": "Ticket custom fields",
+      "type": "object",
+      "name": "ticket_fields"
+     },
+     {
+      "control_type": "text",
+      "label": "Result type",
+      "type": "string",
+      "name": "result_type"
+     }
+    ],
+    "type": "array"
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "control_type": "select",
+    "hint": "Search by ticket status",
+    "label": "Status",
+    "name": "status",
+    "optional": true,
+    "pick_list": [
+     [
+      "New",
+      "new"
+     ],
+     [
+      "Open",
+      "open"
+     ],
+     [
+      "Pending",
+      "pending"
+     ],
+     [
+      "Hold",
+      "hold"
+     ],
+     [
+      "Solved",
+      "solved"
+     ],
+     [
+      "Closed",
+      "closed"
+     ]
+    ],
+    "sticky": true,
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Status",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "sticky": true,
+     "type": "string",
+     "name": "status"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string"
+   },
+   {
+    "control_type": "select",
+    "hint": "Search by type of support ticket",
+    "label": "Type",
+    "name": "ticket_type",
+    "optional": true,
+    "pick_list": [
+     [
+      "Problem",
+      "problem"
+     ],
+     [
+      "Incident",
+      "incident"
+     ],
+     [
+      "Question",
+      "question"
+     ],
+     [
+      "Task",
+      "task"
+     ]
+    ],
+    "sticky": true,
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Ticket type",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "sticky": true,
+     "type": "string",
+     "name": "ticket_type"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string"
+   },
+   {
+    "control_type": "select",
+    "hint": "Search by ticket priority",
+    "label": "Priority",
+    "name": "priority",
+    "optional": true,
+    "pick_list": [
+     [
+      "Urgent",
+      "urgent"
+     ],
+     [
+      "High",
+      "high"
+     ],
+     [
+      "Normal",
+      "normal"
+     ],
+     [
+      "Low",
+      "low"
+     ]
+    ],
+    "sticky": true,
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Priority",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "sticky": true,
+     "type": "string",
+     "name": "priority"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search by subject of ticket",
+    "label": "Subject",
+    "name": "subject",
+    "optional": true,
+    "sticky": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search by description",
+    "label": "Description",
+    "name": "description",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Requester name, email or the 'me' keyword",
+    "label": "Requester",
+    "name": "requester",
+    "optional": true,
+    "sticky": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Submitter name, email or the 'me' keyword",
+    "label": "Submitter",
+    "name": "submitter",
+    "optional": true,
+    "sticky": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Assignee name, email or the 'me' keyword",
+    "label": "Assignee",
+    "name": "assignee",
+    "optional": true,
+    "sticky": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Name or ID of the organization",
+    "label": "Organization name or ID",
+    "name": "organization",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search by comma separated list of tags",
+    "label": "Tags",
+    "name": "tags_string",
+    "optional": true,
+    "sticky": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Source of the ticket",
+    "label": "Channel",
+    "name": "via",
+    "optional": true,
+    "toggle_field": {
+     "control_type": "select",
+     "label": "Channel",
+     "toggle_hint": "Enter channel",
+     "optional": true,
+     "hint": "Source of the ticket",
+     "pick_list": [
+      [
+       "Email",
+       "mail"
+      ],
+      [
+       "Get satisfaction",
+       "get_satisfaction"
+      ],
+      [
+       "Feedback tab",
+       "dropbox"
+      ],
+      [
+       "Chat",
+       "chat"
+      ],
+      [
+       "Twitter direct message",
+       "twitter_dm"
+      ],
+      [
+       "Twitter favourite",
+       "twitter_fav"
+      ],
+      [
+       "Twitter",
+       "twitter"
+      ],
+      [
+       "Voicemail",
+       "voicemail"
+      ],
+      [
+       "Inbound phone call",
+       "phone_call_inbound"
+      ],
+      [
+       "Outbound phone call",
+       "phone_call_outbound"
+      ],
+      [
+       "Phone",
+       "phone"
+      ],
+      [
+       "Text message",
+       "sms"
+      ],
+      [
+       "API call",
+       "api"
+      ],
+      [
+       "LogMein",
+       "logmein"
+      ],
+      [
+       "Facebook post",
+       "facebook_post"
+      ],
+      [
+       "Facebook message",
+       "facebook_message"
+      ],
+      [
+       "Facebook",
+       "facebook"
+      ]
+     ],
+     "toggle_to_secondary_hint": "Enter channel",
+     "toggle_to_primary_hint": "Select channel",
+     "type": "string",
+     "name": "via"
+    },
+    "toggle_hint": "Select channel",
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search who have added comments to tickets. Specify name, email, user ID, phone number or the 'me' keyword",
+    "label": "Commenter",
+    "name": "commenter",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search who have been CC'd on tickets. Specify name, email, user ID, phone number or the 'me' keyword",
+    "label": "CC",
+    "name": "cc",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search for a specific Brand on a ticket.",
+    "label": "Brand",
+    "name": "brand",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search for all tickets created with a particular ticket form.",
+    "label": "Form",
+    "name": "form",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search for all tickets created with a particular recipient.",
+    "label": "Recipient",
+    "name": "recipient",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search tickets assigned to agents who are members of the group.",
+    "label": "Group",
+    "name": "group",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "text",
+    "hint": "Search by details",
+    "label": "Details",
+    "name": "details",
+    "optional": true,
+    "type": "string"
+   },
+   {
+    "control_type": "checkbox",
+    "hint": "search for tickets with attachments.",
+    "label": "Has attachment",
+    "name": "has_attachment",
+    "optional": true,
+    "parse_output": "boolean_conversion",
+    "toggle_field": {
+     "label": "Has attachment",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "hint": "search for tickets with attachments.",
+     "type": "boolean",
+     "name": "has_attachment"
+    },
+    "toggle_hint": "Select from option list",
+    "type": "boolean",
+    "render_input": "boolean_conversion"
+   },
+   {
+    "control_type": "text",
+    "custom": true,
+    "hint": "Request ticket status",
+    "label": "Ticket status",
+    "name": "field_5663334475294",
+    "optional": true,
+    "type": "string",
+    "custom_field_id": 5663334475294
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Identifies whether a ticket was resolved automatically or with agent assistance.",
+    "label": "Resolution type",
+    "name": "field_standard::resolution_type",
+    "optional": true,
+    "pick_list": [
+     [
+      "Automated",
+      "zd_automated_resolution"
+     ],
+     [
+      "Assisted",
+      "zd_assisted_resolution"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Resolution type",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663317926430,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::resolution_type"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663317926430
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "The tier that a resolution was grouped into",
+    "label": "Resolution tier",
+    "name": "field_standard::resolution_tier",
+    "optional": true,
+    "pick_list": [
+     [
+      "Non-automated",
+      "zd_resolution_tier_non_automated"
+     ],
+     [
+      "Assisted escalation",
+      "zd_resolution_tier_assisted_escalation"
+     ],
+     [
+      "Contained resolution",
+      "zd_resolution_tier_contained_resolution"
+     ],
+     [
+      "Verified resolution",
+      "zd_resolution_tier_core_resolution"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Resolution tier",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663317927070,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::resolution_tier"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663317927070
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Sentiment of the ticket conversation between the agent and the end user.",
+    "label": "Sentiment",
+    "name": "field_standard::intelligent_triage_sentiment",
+    "optional": true,
+    "pick_list": [
+     [
+      "Very positive",
+      "sentiment__very_positive"
+     ],
+     [
+      "Positive",
+      "sentiment__positive"
+     ],
+     [
+      "Neutral",
+      "sentiment__neutral"
+     ],
+     [
+      "Negative",
+      "sentiment__negative"
+     ],
+     [
+      "Very negative",
+      "sentiment__very_negative"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Sentiment",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663317952798,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::intelligent_triage_sentiment"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663317952798
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Language of the ticket conversation between the agent and the end user.",
+    "label": "Language",
+    "name": "field_standard::intelligent_triage_language",
+    "optional": true,
+    "pick_list": [
+     [
+      "Afrikaans",
+      "language__af"
+     ],
+     [
+      "Albanian",
+      "language__sq"
+     ],
+     [
+      "Amharic",
+      "language__am"
+     ],
+     [
+      "Arabic",
+      "language__ar"
+     ],
+     [
+      "Aragonese",
+      "language__an"
+     ],
+     [
+      "Armenian",
+      "language__hy"
+     ],
+     [
+      "Assamese",
+      "language__as"
+     ],
+     [
+      "Asturian",
+      "language__ast"
+     ],
+     [
+      "Avaric",
+      "language__av"
+     ],
+     [
+      "Azerbaijani",
+      "language__az"
+     ],
+     [
+      "Bangla",
+      "language__bn"
+     ],
+     [
+      "Bashkir",
+      "language__ba"
+     ],
+     [
+      "Basque",
+      "language__eu"
+     ],
+     [
+      "Bavarian",
+      "language__bar"
+     ],
+     [
+      "Belarusian",
+      "language__be"
+     ],
+     [
+      "Bhojpuri",
+      "language__bh"
+     ],
+     [
+      "Bikol",
+      "language__bcl"
+     ],
+     [
+      "Bishnupriya",
+      "language__bpy"
+     ],
+     [
+      "Bosnian",
+      "language__bs"
+     ],
+     [
+      "Breton",
+      "language__br"
+     ],
+     [
+      "Bulgarian",
+      "language__bg"
+     ],
+     [
+      "Buriat",
+      "language__bxr"
+     ],
+     [
+      "Burmese",
+      "language__my"
+     ],
+     [
+      "Cantonese",
+      "language__yue"
+     ],
+     [
+      "Catalan",
+      "language__ca"
+     ],
+     [
+      "Cebuano",
+      "language__ceb"
+     ],
+     [
+      "Central kurdish",
+      "language__ckb"
+     ],
+     [
+      "Chechen",
+      "language__ce"
+     ],
+     [
+      "Chinese",
+      "language__zh"
+     ],
+     [
+      "Chuvash",
+      "language__cv"
+     ],
+     [
+      "Cornish",
+      "language__kw"
+     ],
+     [
+      "Corsican",
+      "language__co"
+     ],
+     [
+      "Croatian",
+      "language__hr"
+     ],
+     [
+      "Czech",
+      "language__cs"
+     ],
+     [
+      "Danish",
+      "language__da"
+     ],
+     [
+      "Divehi",
+      "language__dv"
+     ],
+     [
+      "Dutch",
+      "language__nl"
+     ],
+     [
+      "Egyptian arabic",
+      "language__arz"
+     ],
+     [
+      "English",
+      "language__en"
+     ],
+     [
+      "Erzya",
+      "language__myv"
+     ],
+     [
+      "Esperanto",
+      "language__eo"
+     ],
+     [
+      "Estonian",
+      "language__et"
+     ],
+     [
+      "Fiji hindi",
+      "language__hif"
+     ],
+     [
+      "Finnish",
+      "language__fi"
+     ],
+     [
+      "French",
+      "language__fr"
+     ],
+     [
+      "Galician",
+      "language__gl"
+     ],
+     [
+      "Georgian",
+      "language__ka"
+     ],
+     [
+      "German",
+      "language__de"
+     ],
+     [
+      "Goan konkani",
+      "language__gom"
+     ],
+     [
+      "Greek",
+      "language__el"
+     ],
+     [
+      "Guarani",
+      "language__gn"
+     ],
+     [
+      "Gujarati",
+      "language__gu"
+     ],
+     [
+      "Haitian creole",
+      "language__ht"
+     ],
+     [
+      "Hebrew",
+      "language__he"
+     ],
+     [
+      "Hindi",
+      "language__hi"
+     ],
+     [
+      "Hungarian",
+      "language__hu"
+     ],
+     [
+      "Icelandic",
+      "language__is"
+     ],
+     [
+      "Ido",
+      "language__io"
+     ],
+     [
+      "Iloko",
+      "language__ilo"
+     ],
+     [
+      "Indonesian",
+      "language__id"
+     ],
+     [
+      "Interlingua",
+      "language__ia"
+     ],
+     [
+      "Interlingue",
+      "language__ie"
+     ],
+     [
+      "Irish",
+      "language__ga"
+     ],
+     [
+      "Italian",
+      "language__it"
+     ],
+     [
+      "Japanese",
+      "language__ja"
+     ],
+     [
+      "Javanese",
+      "language__jv"
+     ],
+     [
+      "Kalmyk",
+      "language__xal"
+     ],
+     [
+      "Kannada",
+      "language__kn"
+     ],
+     [
+      "Karachay-balkar",
+      "language__krc"
+     ],
+     [
+      "Kazakh",
+      "language__kk"
+     ],
+     [
+      "Khmer",
+      "language__km"
+     ],
+     [
+      "Komi",
+      "language__kv"
+     ],
+     [
+      "Korean",
+      "language__ko"
+     ],
+     [
+      "Kurdish",
+      "language__ku"
+     ],
+     [
+      "Kyrgyz",
+      "language__ky"
+     ],
+     [
+      "Lao",
+      "language__lo"
+     ],
+     [
+      "Latin",
+      "language__la"
+     ],
+     [
+      "Latvian",
+      "language__lv"
+     ],
+     [
+      "Lezghian",
+      "language__lez"
+     ],
+     [
+      "Limburgish",
+      "language__li"
+     ],
+     [
+      "Lithuanian",
+      "language__lt"
+     ],
+     [
+      "Lojban",
+      "language__jbo"
+     ],
+     [
+      "Lombard",
+      "language__lmo"
+     ],
+     [
+      "Low german",
+      "language__nds"
+     ],
+     [
+      "Lower sorbian",
+      "language__dsb"
+     ],
+     [
+      "Luxembourgish",
+      "language__lb"
+     ],
+     [
+      "Macedonian",
+      "language__mk"
+     ],
+     [
+      "Maithili",
+      "language__mai"
+     ],
+     [
+      "Malagasy",
+      "language__mg"
+     ],
+     [
+      "Malay",
+      "language__ms"
+     ],
+     [
+      "Malayalam",
+      "language__ml"
+     ],
+     [
+      "Maltese",
+      "language__mt"
+     ],
+     [
+      "Manx",
+      "language__gv"
+     ],
+     [
+      "Marathi",
+      "language__mr"
+     ],
+     [
+      "Mari",
+      "language__mhr"
+     ],
+     [
+      "Mazanderani",
+      "language__mzn"
+     ],
+     [
+      "Minangkabau",
+      "language__min"
+     ],
+     [
+      "Mingrelian",
+      "language__xmf"
+     ],
+     [
+      "Mirandese",
+      "language__mwl"
+     ],
+     [
+      "Mongolian",
+      "language__mn"
+     ],
+     [
+      "Neapolitan",
+      "language__nap"
+     ],
+     [
+      "Nepali",
+      "language__ne"
+     ],
+     [
+      "Newari",
+      "language__new"
+     ],
+     [
+      "Northern frisian",
+      "language__frr"
+     ],
+     [
+      "Northern luri",
+      "language__lrc"
+     ],
+     [
+      "Norwegian",
+      "language__no"
+     ],
+     [
+      "Norwegian nynorsk",
+      "language__nn"
+     ],
+     [
+      "Occitan",
+      "language__oc"
+     ],
+     [
+      "Odia",
+      "language__or"
+     ],
+     [
+      "Ossetic",
+      "language__os"
+     ],
+     [
+      "Palatine german",
+      "language__pfl"
+     ],
+     [
+      "Pampanga",
+      "language__pam"
+     ],
+     [
+      "Pashto",
+      "language__ps"
+     ],
+     [
+      "Persian",
+      "language__fa"
+     ],
+     [
+      "Piedmontese",
+      "language__pms"
+     ],
+     [
+      "Polish",
+      "language__pl"
+     ],
+     [
+      "Portuguese",
+      "language__pt"
+     ],
+     [
+      "Punjabi",
+      "language__pa"
+     ],
+     [
+      "Quechua",
+      "language__qu"
+     ],
+     [
+      "Romanian",
+      "language__ro"
+     ],
+     [
+      "Romansh",
+      "language__rm"
+     ],
+     [
+      "Russian",
+      "language__ru"
+     ],
+     [
+      "Rusyn",
+      "language__rue"
+     ],
+     [
+      "Sanskrit",
+      "language__sa"
+     ],
+     [
+      "Sardinian",
+      "language__sc"
+     ],
+     [
+      "Scots",
+      "language__sco"
+     ],
+     [
+      "Scottish gaelic",
+      "language__gd"
+     ],
+     [
+      "Serbian",
+      "language__sr"
+     ],
+     [
+      "Serbo-croatian",
+      "language__sh"
+     ],
+     [
+      "Sicilian",
+      "language__scn"
+     ],
+     [
+      "Sindhi",
+      "language__sd"
+     ],
+     [
+      "Sinhala",
+      "language__si"
+     ],
+     [
+      "Slovak",
+      "language__sk"
+     ],
+     [
+      "Slovenian",
+      "language__sl"
+     ],
+     [
+      "Somali",
+      "language__so"
+     ],
+     [
+      "Spanish",
+      "language__es"
+     ],
+     [
+      "Sundanese",
+      "language__su"
+     ],
+     [
+      "Swahili",
+      "language__sw"
+     ],
+     [
+      "Swedish",
+      "language__sv"
+     ],
+     [
+      "Tagalog",
+      "language__tl"
+     ],
+     [
+      "Tajik",
+      "language__tg"
+     ],
+     [
+      "Tamil",
+      "language__ta"
+     ],
+     [
+      "Tatar",
+      "language__tt"
+     ],
+     [
+      "Telugu",
+      "language__te"
+     ],
+     [
+      "Thai",
+      "language__th"
+     ],
+     [
+      "Tibetan",
+      "language__bo"
+     ],
+     [
+      "Tosk albanian",
+      "language__als"
+     ],
+     [
+      "Turkish",
+      "language__tr"
+     ],
+     [
+      "Turkmen",
+      "language__tk"
+     ],
+     [
+      "Tuvinian",
+      "language__tyv"
+     ],
+     [
+      "Ukrainian",
+      "language__uk"
+     ],
+     [
+      "Upper sorbian",
+      "language__hsb"
+     ],
+     [
+      "Urdu",
+      "language__ur"
+     ],
+     [
+      "Uyghur",
+      "language__ug"
+     ],
+     [
+      "Uzbek",
+      "language__uz"
+     ],
+     [
+      "Venetian",
+      "language__vec"
+     ],
+     [
+      "Veps",
+      "language__vep"
+     ],
+     [
+      "Vietnamese",
+      "language__vi"
+     ],
+     [
+      "Volapük",
+      "language__vo"
+     ],
+     [
+      "Walloon",
+      "language__wa"
+     ],
+     [
+      "Waray",
+      "language__war"
+     ],
+     [
+      "Welsh",
+      "language__cy"
+     ],
+     [
+      "West flemish",
+      "language__vls"
+     ],
+     [
+      "Western frisian",
+      "language__fy"
+     ],
+     [
+      "Western mari",
+      "language__mrj"
+     ],
+     [
+      "Western panjabi",
+      "language__pnb"
+     ],
+     [
+      "Wu chinese",
+      "language__wuu"
+     ],
+     [
+      "Yakut",
+      "language__sah"
+     ],
+     [
+      "Yiddish",
+      "language__yi"
+     ],
+     [
+      "Yoruba",
+      "language__yo"
+     ],
+     [
+      "Zaza",
+      "language__diq"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Language",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663317975198,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::intelligent_triage_language"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663317975198
+   },
+   {
+    "control_type": "checkbox",
+    "custom": true,
+    "hint": "Pause messaging reminders",
+    "label": "Pause messaging reminders",
+    "name": "field_standard::pause_messaging_inactivity_reminders",
+    "optional": true,
+    "toggle_field": {
+     "label": "Pause messaging reminders",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "render_input": null,
+     "parse_output": null,
+     "optional": true,
+     "custom_field_id": 5663317986718,
+     "custom": true,
+     "hint": "Pause messaging reminders",
+     "type": "boolean",
+     "name": "field_standard::pause_messaging_inactivity_reminders"
+    },
+    "toggle_hint": "Select from option list",
+    "type": "boolean",
+    "custom_field_id": 5663317986718
+   },
+   {
+    "control_type": "text",
+    "custom": true,
+    "hint": "Date and time of the summary with the following format 'yyyy-MM-dd HH:mm:ss UTC'.",
+    "label": "Summary date and time",
+    "name": "field_standard::ticket_summary_datetime",
+    "optional": true,
+    "type": "string",
+    "custom_field_id": 5663331873182
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Identifies in which channel group the ticket resolution happened.",
+    "label": "Channel group",
+    "name": "field_standard::resolution_channel_group",
+    "optional": true,
+    "pick_list": [
+     [
+      "Digital",
+      "zd_channel_group_digital"
+     ],
+     [
+      "Voice",
+      "zd_channel_group_voice"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Channel group",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663334491806,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::resolution_channel_group"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663334491806
+   },
+   {
+    "control_type": "text",
+    "custom": true,
+    "hint": "The unique ID for multi-recipient emails",
+    "label": "Multi-recipient email ID",
+    "name": "field_standard::multi_recipient_email_tickets",
+    "optional": true,
+    "type": "string",
+    "custom_field_id": 5663334492318
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Topic of the ticket conversation between the agent and the end user.",
+    "label": "Topic",
+    "name": "field_standard::intelligent_triage_intent",
+    "optional": true,
+    "pick_list": [
+     [
+      "Account::Account activation::Account verification status",
+      "topic__account__activation__waiting"
+     ],
+     [
+      "Account::Account data restrictions::Close or delete account",
+      "topic__account__data_restrictions__delete_account"
+     ],
+     [
+      "Account::Account data restrictions::Delete data",
+      "topic__account__data_restrictions__delete_data"
+     ],
+     [
+      "Account::New account::Create new account",
+      "topic__account__new__creating"
+     ],
+     [
+      "Account::New account::Signup issue",
+      "topic__account__new__signup_issue"
+     ],
+     [
+      "Account::Account update::Change post address",
+      "topic__account__update__address_for_post"
+     ],
+     [
+      "Account::Account update::Change email address",
+      "topic__account__update__email"
+     ],
+     [
+      "Account::Account update::Change name",
+      "topic__account__update__name"
+     ],
+     [
+      "Account::Account update::Change phone number",
+      "topic__account__update__phone"
+     ],
+     [
+      "Account::Account verification::Unable to verify account",
+      "topic__account__verification__unable_to_verify"
+     ],
+     [
+      "Billing::Billing checkout::Payment or checkout issue",
+      "topic__billing__checkout__issue"
+     ],
+     [
+      "Billing::Billing checkout::Payment not recognized",
+      "topic__billing__checkout__payment_not_recognized"
+     ],
+     [
+      "Billing::Discount::Apply promo code, discount or gift card",
+      "topic__billing__discount__apply_promo_code_discount_or_gift_card"
+     ],
+     [
+      "Billing::Discount::Unable to apply promo code, discount, gift card",
+      "topic__billing__discount__cant_apply_promo_code_discount_or_gift_card"
+     ],
+     [
+      "Billing::Discount::Didn't receive gift card or credit",
+      "topic__billing__discount__didnt_get_gift_card_or_credit"
+     ],
+     [
+      "Billing::Discount::Request discount or price match",
+      "topic__billing__discount__request"
+     ],
+     [
+      "Billing::Discount::Request new promo code",
+      "topic__billing__discount__request_new_promo_code"
+     ],
+     [
+      "Billing::Billing documentation::Sending proof of payment",
+      "topic__billing__documentation__sending_proof_of_payment"
+     ],
+     [
+      "Billing::Billing documentation::Sending transaction history or running balance report",
+      "topic__billing__documentation__statement_report"
+     ],
+     [
+      "Billing::Invoice::Request invoice or receipt",
+      "topic__billing__invoice__request"
+     ],
+     [
+      "Billing::Invoice::Sending or submitting invoice",
+      "topic__billing__invoice__submission"
+     ],
+     [
+      "Billing::Invoice::Change invoice or receipt data",
+      "topic__billing__invoice__update_data"
+     ],
+     [
+      "Billing::Payment change::Cancel payment",
+      "topic__billing__payment_change__cancel_payment"
+     ],
+     [
+      "Billing::Payment change::Change payment info or method",
+      "topic__billing__payment_change__method"
+     ],
+     [
+      "Billing::Payment information::Chargeback",
+      "topic__billing__payment_info__chargeback"
+     ],
+     [
+      "Billing::Payment information::Accepted payment methods",
+      "topic__billing__payment_info__how_can_i_pay"
+     ],
+     [
+      "Billing::Payment information::Request for payment confirmation",
+      "topic__billing__payment_info__request_confirmation"
+     ],
+     [
+      "Billing::Price clarification::Price is different than expected",
+      "topic__billing__price_clarification__which_price"
+     ],
+     [
+      "Billing::Refund::Refund request",
+      "topic__billing__refund__request"
+     ],
+     [
+      "Billing::Refund::Refund via specific channel",
+      "topic__billing__refund__request_refund_channel"
+     ],
+     [
+      "Billing::Refund::Waiting for refund",
+      "topic__billing__refund__waiting"
+     ],
+     [
+      "Billing::Refund::Incorrect refund amount",
+      "topic__billing__refund__wrong_amount"
+     ],
+     [
+      "Billing::Subscription cancel::Cancel subscription",
+      "topic__billing__subscription_cancel__request"
+     ],
+     [
+      "Billing::Wrong charge::Incorrect amount charged",
+      "topic__billing__wrong__charge"
+     ],
+     [
+      "Billing::Wrong charge::Unexpected charge question",
+      "topic__billing__wrong__why_charged"
+     ],
+     [
+      "Misc::Communications::Unsubscribe from communications",
+      "topic__misc__communication__unsubscribe"
+     ],
+     [
+      "Misc::Contact::Contact request",
+      "topic__misc__contact__request_contact"
+     ],
+     [
+      "Misc::Contact::Request phone call with agent",
+      "topic__misc__contact__talk_to_agent_over_phone"
+     ],
+     [
+      "Misc::Contact::Request to contact specific person or role",
+      "topic__misc__contact__want_to_contact_this_person"
+     ],
+     [
+      "Misc::Feedback::Complaint",
+      "topic__misc__feedback__complaint"
+     ],
+     [
+      "Misc::Feedback::Customer satisfaction survey",
+      "topic__misc__feedback__customer_satisfaction_survey"
+     ],
+     [
+      "Misc::Feedback::Negative service feedback",
+      "topic__misc__feedback__negative"
+     ],
+     [
+      "Misc::Feedback::Positive service feedback",
+      "topic__misc__feedback__positive"
+     ],
+     [
+      "Misc::Feedback::Suggestion",
+      "topic__misc__feedback__suggestion"
+     ],
+     [
+      "Misc::Image::Image of product with problem",
+      "topic__misc__image__product_issue"
+     ],
+     [
+      "Misc::Intellectual property::Copyright infringement",
+      "topic__misc__intellectual_property__copyright_infringement"
+     ],
+     [
+      "Misc::Job application::Job application",
+      "topic__misc__job_application__new"
+     ],
+     [
+      "Misc::Unable to receive message::Out-of-office reply",
+      "topic__misc__not_received__out_of_office"
+     ],
+     [
+      "Misc::Received message::Confirm if this is a legitimate message",
+      "topic__misc__received__confirm_if_legitimate_message"
+     ],
+     [
+      "Misc::Received message::Contact acknowledgement",
+      "topic__misc__received__contact_acknowledgement"
+     ],
+     [
+      "Misc::Received message::New voicemail message",
+      "topic__misc__received__new_voicemail"
+     ],
+     [
+      "Misc::Received message::Received communication intended for someone else",
+      "topic__misc__received__received_communication_intended_for_someone_else"
+     ],
+     [
+      "Misc::Thanks::Thank you",
+      "topic__misc__thanks__thanks"
+     ],
+     [
+      "Misc::Unsolicited::Event invitation",
+      "topic__misc__unsolicited__event_invitation"
+     ],
+     [
+      "Misc::Unsolicited::Marketing campaign or newsletter",
+      "topic__misc__unsolicited__marketing_or_newsletter"
+     ],
+     [
+      "Misc::Unsolicited::Spam",
+      "topic__misc__unsolicited__spam"
+     ],
+     [
+      "Misc::Video::Video of product with problem",
+      "topic__misc__video__product_issue"
+     ],
+     [
+      "Order::Order availability::Do you sell this product",
+      "topic__order__availability__do_you_sell_this_product"
+     ],
+     [
+      "Order::Order availability::Product stock availability",
+      "topic__order__availability__stock"
+     ],
+     [
+      "Order::Order cancelation::Cancel order",
+      "topic__order__cancellation__cancel"
+     ],
+     [
+      "Order::Order cancelation::Reason for order cancellation",
+      "topic__order__cancellation__why_cancelled"
+     ],
+     [
+      "Order::Delivery information::Where do you ship to",
+      "topic__order__delivery_info__where_do_you_ship_to"
+     ],
+     [
+      "Order::Order documentation::Sending order confirmation",
+      "topic__order__documentation__sending_order_confirmation"
+     ],
+     [
+      "Order::Place new order::Place new order or how to place order",
+      "topic__order__new__place"
+     ],
+     [
+      "Order::Place new order::Quote request",
+      "topic__order__new__quote_request"
+     ],
+     [
+      "Order::Order not delivered::Order delivery is late",
+      "topic__order__not_delivered__late"
+     ],
+     [
+      "Order::Order not delivered::Order not delivered",
+      "topic__order__not_delivered__not_delivered"
+     ],
+     [
+      "Order::Order not delivered::Order returned to sender",
+      "topic__order__not_delivered__returned_to_sender"
+     ],
+     [
+      "Order::Product choice::Which product to buy",
+      "topic__order__product_choice__which_product"
+     ],
+     [
+      "Order::Product details::Request product details",
+      "topic__order__product_details__details"
+     ],
+     [
+      "Order::Product issue::Claim details request",
+      "topic__order__product_issue__additional_claim_details_request"
+     ],
+     [
+      "Order::Product issue::Received item has problem or damage",
+      "topic__order__product_issue__damaged_on_arrival"
+     ],
+     [
+      "Order::Product issue::Replace damaged or defective product",
+      "topic__order__product_issue__need_replacement"
+     ],
+     [
+      "Order::Product issue::Product not working as expected",
+      "topic__order__product_issue__not_working_as_expected"
+     ],
+     [
+      "Order::Product usage::Product instructions",
+      "topic__order__product_usage__how_to_use"
+     ],
+     [
+      "Order::Order return::What is the return policy",
+      "topic__order__return__policy"
+     ],
+     [
+      "Order::Order return::Send return label",
+      "topic__order__return__request_return_label"
+     ],
+     [
+      "Order::Order return::Return status",
+      "topic__order__return__status"
+     ],
+     [
+      "Order::Order return::Exchange items",
+      "topic__order__return__want_exchange"
+     ],
+     [
+      "Order::Order return::Return order",
+      "topic__order__return__want_return"
+     ],
+     [
+      "Order::Order status::Unable to find or view order",
+      "topic__order__status__cant_find_order"
+     ],
+     [
+      "Order::Order status::Tracking information",
+      "topic__order__status__how_to_track"
+     ],
+     [
+      "Order::Order status::Shipping status",
+      "topic__order__status__what_is_status"
+     ],
+     [
+      "Order::Order status::When will order arrive",
+      "topic__order__status__when_arrive"
+     ],
+     [
+      "Order::Order status::When will order be shipped",
+      "topic__order__status__when_is_shipped"
+     ],
+     [
+      "Order::Order update::Change or specify delivery date",
+      "topic__order__update__delivery_date"
+     ],
+     [
+      "Order::Order update::Deliver with drop-off instructions",
+      "topic__order__update__dropoff_instructions"
+     ],
+     [
+      "Order::Order update::Change items or quantity",
+      "topic__order__update__items"
+     ],
+     [
+      "Order::Order update::Send order again",
+      "topic__order__update__request_to_send_again"
+     ],
+     [
+      "Order::Order update::Change shipping address",
+      "topic__order__update__ship_address"
+     ],
+     [
+      "Order::Wrong delivery::Delivered to incorrect address",
+      "topic__order__wrong_delivery__address"
+     ],
+     [
+      "Order::Wrong product::Item missing from order",
+      "topic__order__wrong_product__missing_item"
+     ],
+     [
+      "Order::Wrong product::Received wrong item or size",
+      "topic__order__wrong_product__wrong_item"
+     ],
+     [
+      "Service::Appointment::Appointment confirmation",
+      "topic__service__appointment__confirmation"
+     ],
+     [
+      "Service::Appointment::Schedule appointment",
+      "topic__service__appointment__new"
+     ],
+     [
+      "Service::Service information::Available services",
+      "topic__service__info__do_you_provide_this_service"
+     ],
+     [
+      "Software::Software connection::Connection issue",
+      "topic__software__connection__issue"
+     ],
+     [
+      "Software::Feature feedback::Feature not working",
+      "topic__software__feature_feedback__not_working"
+     ],
+     [
+      "Software::Feature missing::Unable to find feature",
+      "topic__software__feature_missing__cant_find"
+     ],
+     [
+      "Software::Software information::Question about functionality",
+      "topic__software__info__does_software_do"
+     ],
+     [
+      "Software::Software information::Software usage instructions",
+      "topic__software__info__how_to_use"
+     ],
+     [
+      "Software::Generic error::Software error",
+      "topic__software__issue_generic__error"
+     ],
+     [
+      "Software::Login issues::Unable to login",
+      "topic__software__login_issues__cant_login"
+     ],
+     [
+      "Software::Login issues::ID or email address not recognized",
+      "topic__software__login_issues__id_not_recognized"
+     ],
+     [
+      "Software::Login issues::Unable to reset password",
+      "topic__software__login_issues__password_cant_reset"
+     ],
+     [
+      "Software::Login issues::Forgot password",
+      "topic__software__login_issues__password_forgot"
+     ],
+     [
+      "Software::Login issues::Reset password",
+      "topic__software__login_issues__password_request_reset"
+     ],
+     [
+      "Software::Notifications::Login from new device",
+      "topic__software__notifications__login_from_new_device"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Topic",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663334503710,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::intelligent_triage_intent"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663334503710
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Topic confidence of the ticket conversation between the agent and the end user.",
+    "label": "Topic confidence",
+    "name": "field_standard::intelligent_triage_intent_confidence",
+    "optional": true,
+    "pick_list": [
+     [
+      "Low",
+      "topic_confidence__low"
+     ],
+     [
+      "Medium",
+      "topic_confidence__medium"
+     ],
+     [
+      "High",
+      "topic_confidence__high"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Topic confidence",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663334504350,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::intelligent_triage_intent_confidence"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663334504350
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Sentiment confidence of the ticket conversation between the agent and the end user.",
+    "label": "Sentiment confidence",
+    "name": "field_standard::intelligent_triage_sentiment_confidence",
+    "optional": true,
+    "pick_list": [
+     [
+      "Low",
+      "sentiment_confidence__low"
+     ],
+     [
+      "Medium",
+      "sentiment_confidence__medium"
+     ],
+     [
+      "High",
+      "sentiment_confidence__high"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Sentiment confidence",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663334505118,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::intelligent_triage_sentiment_confidence"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663334505118
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Language confidence of the ticket conversation between the agent and the end user.",
+    "label": "Language confidence",
+    "name": "field_standard::intelligent_triage_language_confidence",
+    "optional": true,
+    "pick_list": [
+     [
+      "Low",
+      "language_confidence__low"
+     ],
+     [
+      "Medium",
+      "language_confidence__medium"
+     ],
+     [
+      "High",
+      "language_confidence__high"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Language confidence",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663334506014,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::intelligent_triage_language_confidence"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663334506014
+   },
+   {
+    "control_type": "text",
+    "custom": true,
+    "hint": "Summary of the ticket conversation between the agent and the end user.",
+    "label": "Summary",
+    "name": "field_standard::ticket_summary",
+    "optional": true,
+    "type": "string",
+    "custom_field_id": 5663348668318
+   },
+   {
+    "control_type": "text",
+    "custom": true,
+    "hint": "Agent ID that generated the summary.",
+    "label": "Summary agent ID",
+    "name": "field_standard::ticket_summary_agent_id",
+    "optional": true,
+    "type": "string",
+    "custom_field_id": 5663348669086
+   },
+   {
+    "control_type": "text",
+    "custom": true,
+    "hint": "Locale of the summary with format 'en-US', 'fr-FR', etc.",
+    "label": "Summary locale",
+    "name": "field_standard::ticket_summary_locale",
+    "optional": true,
+    "type": "string",
+    "custom_field_id": 5663348669854
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Approval status",
+    "label": "Approval status",
+    "name": "field_standard::approval_workflow_status",
+    "optional": true,
+    "pick_list": [
+     [
+      "Pending",
+      "zd_es_approval_pending"
+     ],
+     [
+      "Approved",
+      "zd_es_approval_approved"
+     ],
+     [
+      "Rejected",
+      "zd_es_approval_rejected"
+     ],
+     [
+      "Withdrawn",
+      "zd_es_approval_withdrawn"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Approval status",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663352531870,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::approval_workflow_status"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663352531870
+   },
+   {
+    "control_type": "select",
+    "custom": true,
+    "hint": "Shows whether required task lists are complete. The ticket cannot be solved until all required tasks are done or when no tasks are required.",
+    "label": "Required tasks",
+    "name": "field_standard::required_tasks",
+    "optional": true,
+    "pick_list": [
+     [
+      "Not required",
+      "zd_es_required_tasks_not_required"
+     ],
+     [
+      "Complete",
+      "zd_es_required_tasks_complete"
+     ],
+     [
+      "Incomplete",
+      "zd_es_required_tasks_incomplete"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Required tasks",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom_field_id": 5663365514014,
+     "custom": true,
+     "hint": "Enter the <b>tag value</b> of the option",
+     "type": "string",
+     "name": "field_standard::required_tasks"
+    },
+    "toggle_hint": "Select from list",
+    "type": "string",
+    "custom_field_id": 5663365514014
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "slack_bot",
+    "name": "get_user_by_email",
+    "as": "c2d836fc",
+    "keyword": "action",
+    "input": {
+     "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"zendesk\",\"line\":\"5dc794fa\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},{\"path_element_type\":\"join\",\"action\":\"get_user_by_id\",\"src_key\":\"assignee_id\",\"dst_key\":\"id\",\"args\":{}},\"email\"]}')}"
+    },
+    "uuid": "6e6e29b0-9434-47f8-a4b6-cb2bafe815c8",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "as": "bc05a2ae",
+    "keyword": "foreach",
+    "repeat_mode": "simple",
+    "clear_scope": "false",
+    "input": {},
+    "block": [
+     {
+      "number": 3,
+      "provider": "workato_genie",
+      "name": "assign_task_to_genie",
+      "as": "ae8e8b40",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "genie_handle": "Agent Conan (0 - Agent Conan)"
+      },
+      "toggleCfg": {
+       "genie_handle": true
+      },
+      "input": {
+       "genie_handle": "gin-AbcsEFWa-LBTbYP-CD",
+       "task_instructions": "TICKET ID: #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"bc05a2ae\",\"path\":[\"id\"]}')}\nAnalyze the complete Zendesk conversation for the provided ticket.\n\nIdentify the customer's current issue and latest request. Review the conversation chronologically and use the available knowledge base to identify relevant technical information.\n\nDetermine the most recent customer reply and use its provided date/time to calculate how much time has elapsed since the customer last responded.\n\nReturn:\n\nA short summary of the issue.\nThe customer's latest request.\n2 to 4 key points from the conversation that are relevant to resolving the issue.\nThe date and time of the customer's most recent reply.\nThe elapsed time since the customer's most recent reply return only the number of hour.\nThe recommended next investigation or support action.\nA short professional draft response to the customer.\n\nBase your analysis only on the ticket conversation and available knowledge. Clearly distinguish confirmed information from possible causes. Do not invent technical findings, claim a root cause without evidence, or make promises about fixes or timelines.",
+       "structured_output": "[{\"name\":\"ticket_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Ticket ID\"},{\"name\":\"issue_summary\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Issue summary\"},{\"name\":\"latest_customer_request\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Latest customer request\"},{\"name\":\"key_findings\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Key findings\"},{\"name\":\"recommended_next_step\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Recommended next step\"},{\"name\":\"suggested_response\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Suggested response\"},{\"name\":\"confidence\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Confidence\"},{\"name\":\"elapse_time\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Elapse time\"}]",
+       "custom_metadata": [
+        {
+         "key": "ticket_id",
+         "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"zendesk\",\"line\":\"5dc794fa\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"id\"]}')}"
+        }
+       ]
+      },
+      "extended_output_schema": [
+       {
+        "label": "Structured output",
+        "name": "structured_output",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Ticket ID",
+          "name": "ticket_id",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Issue summary",
+          "name": "issue_summary",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Latest customer request",
+          "name": "latest_customer_request",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Key findings",
+          "name": "key_findings",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Recommended next step",
+          "name": "recommended_next_step",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Suggested response",
+          "name": "suggested_response",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Confidence",
+          "name": "confidence",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Elapse time",
+          "name": "elapse_time",
+          "type": "string",
+          "optional": true
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "d6fd49c2-517c-4a79-b9e7-3798cfb78bf9",
+      "title": null,
+      "description": "Assign a task to <span class=\"provider\">Agent Conan</span> to process autonomously"
+     },
+     {
+      "number": 4,
+      "provider": "slack_bot",
+      "name": "post_bot_message",
+      "as": "1b0374c5",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "channel": {
+        "ids": [
+         "C07HAP67E4C"
+        ],
+        "titles": [
+         "tickets"
+        ]
+       }
+      },
+      "toggleCfg": {
+       "channel": true,
+       "blocks.8.style": true
+      },
+      "input": {
+       "blocks": [
+        {
+         "button_type": "continue_flow",
+         "block_type": "section_with_text",
+         "section_text": ":wave: Hey! <@#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"c2d836fc\",\"path\":[\"id\"]}')}>,"
+        },
+        {
+         "button_type": "continue_flow",
+         "block_type": "divider"
+        },
+        {
+         "button_type": "continue_flow",
+         "block_type": "section_with_text",
+         "section_text": ":red_circle: *Ticket needs your reply — #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_genie\",\"line\":\"ae8e8b40\",\"path\":[\"structured_output\",\"elapse_time\"]}')} hrs since customer responded*"
+        },
+        {
+         "button_type": "continue_flow",
+         "block_type": "context",
+         "elements": [
+          {
+           "type": "text",
+           "text": " 🎫 *Ticket #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_genie\",\"line\":\"ae8e8b40\",\"path\":[\"structured_output\",\"ticket_id\"]}')}*"
+          }
+         ]
+        },
+        {
+         "button_type": "continue_flow",
+         "block_type": "divider"
+        },
+        {
+         "button_type": "continue_flow",
+         "block_type": "section_with_text",
+         "section_text": "📌 *Here's what they're asking about:*\n\n #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_genie\",\"line\":\"ae8e8b40\",\"path\":[\"structured_output\",\"key_findings\"]}')}\n "
+        },
+        {
+         "button_type": "continue_flow",
+         "block_type": "divider"
+        },
+        {
+         "button_type": "continue_flow",
+         "block_type": "section_with_text",
+         "section_text": "✍️ *Here's a starting point if it helps:*\n> `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_genie\",\"line\":\"ae8e8b40\",\"path\":[\"structured_output\",\"suggested_response\"]}')}`"
+        },
+        {
+         "button_type": "url_button",
+         "block_type": "section_with_button_with_long_action",
+         "section_text": "*_Ready to reply?_*",
+         "button_title": "Jump in →",
+         "url": "https://workato-47018.zendesk.com/agent/tickets/#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_genie\",\"line\":\"ae8e8b40\",\"path\":[\"structured_output\",\"ticket_id\"]}')}",
+         "style": "primary"
+        }
+       ],
+       "channel": "C045E9Q049J"
+      },
+      "uuid": "a291541b-8906-44fb-8ed5-c1b76320c5f0",
+      "skip": false,
+      "title": null,
+      "description": "Post <span class=\"provider\">message</span> as <span class=\"provider\">Slack Workbot</span>"
+     }
+    ],
+    "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"zendesk\",\"line\":\"5dc794fa\",\"path\":[\"records\"]}')}",
+    "uuid": "7415e4af-ee0c-447d-a26b-438f494a5c44"
+   },
+   {
+    "number": 5,
+    "provider": "logger",
+    "name": "log_message",
+    "as": "d1cba649",
+    "keyword": "action",
+    "input": {
+     "user_logs_enabled": "false",
+     "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_genie\",\"line\":\"ae8e8b40\",\"path\":[\"structured_output\"]}')"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "switch",
+      "default": false,
+      "disable_formula": true,
+      "extends_schema": true,
+      "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+      "label": "Send to Workato log service",
+      "name": "user_logs_enabled",
+      "optional": true,
+      "type": "string"
+     }
+    ],
+    "uuid": "de8b6754-9ebf-440f-8edd-e89d6c1360a5",
+    "title": null,
+    "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>"
+   }
+  ],
+  "uuid": "98912546-3806-4377-bf7e-483fa5aadf91",
+  "title": "New/updated tickets",
+  "description": null,
+  "param": {}
+ }
+}

@@ -1,0 +1,1156 @@
+{
+ "id": 382660,
+ "name": "Part 2.2:  Get List of Salesforce Opportunities related to Account with index",
+ "description": "1. Workbot will monitor the Slack channel and activate every time a Salesforce Account URL is mentioned. \n2. Workbot will prompt you to choose between viewing your Cases or Opportunities related to that Account. \n3. Choose the number and where you want to start with in your list of cases/opportunities.  Workbot will fetch them for you and you can view them in Slack.\n\n**Notes**\n- This recipe works with another recipe. Clone and run [Slack Workbot shows Salesforce Account details when you post a URL in Slack](https://www.workato.com/recipes/382662-part-2-1-print-list-of-salesforce-cases-with-start_index-and-print_count-by-account) to use this recipe.\n- Workbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "salesforce",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "salesforce",
+  "slack_bot"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "opportunity",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "CRM",
+  "Marketing"
+ ],
+ "copy_count": 3938,
+ "curated": false,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2018-06-28T23:45:06.990-07:00",
+ "source_url": "https://app.workato.com/recipes/382660?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "salesforce.search_sobjects_soql",
+  "slack_bot.post_bot_reply_v2",
+  "slack_bot.post_bot_reply_v2",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">salesforce list_by_account_with_start_ix_with_print_count opportunity</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Salesforce"
+  },
+  "toggleCfg": {
+   "domain": true,
+   "name": false,
+   "scope": true
+  },
+  "input": {
+   "domain": "salesforce",
+   "name": "list_by_account_with_start_ix_with_print_count",
+   "scope": "opportunity",
+   "parameters": "[{\"name\":\"account_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"},{\"name\":\"start_ix\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"},{\"name\":\"print_count\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"}]",
+   "description": "internal command, do not use",
+   "hide_from_help": "true"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Account ID",
+      "name": "account_id",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Start ix",
+      "name": "start_ix",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Print count",
+      "name": "print_count",
+      "type": "string",
+      "optional": false
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "salesforce",
+      "name": "search_sobjects_soql",
+      "as": "search_sobjects_soql",
+      "title": "Search Opportunities using SOQL query WHERE clause",
+      "description": "Search <span class=\"provider\">Opportunities</span> using SOQL query WHERE clause in <span class=\"provider\">Salesforce</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "sobject_name": "Opportunity"
+      },
+      "toggleCfg": {},
+      "input": {
+       "sobject_name": "Opportunity",
+       "query": "=\"AccountId = '_('data.slack_bot.bot_command_v2.parameters.account_id')' ORDER BY LastModifiedDate DESC NULLS LAST\""
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "Opportunity",
+        "label": "Opportunities",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Account ID",
+          "foreign_key": "Account",
+          "fetch_with": "get_custom_object(id, sobject_name: Account)",
+          "join_point_label": "Account",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "AccountId"
+         },
+         {
+          "name": "get_custom_object+AccountId",
+          "type": "object",
+          "label": "Account",
+          "fetch_with": "get_custom_object(AccountId>id, sobject_name: Account)",
+          "join_point": true,
+          "properties": []
+         },
+         {
+          "control_type": "number",
+          "label": "Amount",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "number",
+          "name": "Amount"
+         },
+         {
+          "control_type": "text",
+          "label": "Campaign ID",
+          "foreign_key": "Campaign",
+          "fetch_with": "get_custom_object(id, sobject_name: Campaign)",
+          "join_point_label": "Campaign",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "CampaignId"
+         },
+         {
+          "name": "get_custom_object+CampaignId",
+          "type": "object",
+          "label": "Campaign",
+          "fetch_with": "get_custom_object(CampaignId>id, sobject_name: Campaign)",
+          "join_point": true,
+          "properties": []
+         },
+         {
+          "control_type": "date",
+          "label": "Close Date",
+          "parse_output": "parse_iso8601_date",
+          "render_input": "render_iso8601_date",
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "date_time",
+          "name": "CloseDate"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Closed",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Closed",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": false,
+           "sfdc_updateable": false,
+           "type": "boolean",
+           "name": "IsClosed"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "boolean",
+          "name": "IsClosed"
+         },
+         {
+          "control_type": "text",
+          "label": "Created By ID",
+          "foreign_key": "User",
+          "fetch_with": "get_custom_object(id, sobject_name: User)",
+          "join_point_label": "Created by",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "CreatedById"
+         },
+         {
+          "name": "get_custom_object+CreatedById",
+          "type": "object",
+          "label": "Created by",
+          "fetch_with": "get_custom_object(CreatedById>id, sobject_name: User)",
+          "join_point": true,
+          "properties": []
+         },
+         {
+          "control_type": "date_time",
+          "label": "Created Date",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "CreatedDate"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Deleted",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Deleted",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": false,
+           "sfdc_updateable": false,
+           "type": "boolean",
+           "name": "IsDeleted"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "boolean",
+          "name": "IsDeleted"
+         },
+         {
+          "control_type": "text-area",
+          "label": "Description",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "Description"
+         },
+         {
+          "control_type": "number",
+          "label": "Expected Amount",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "number",
+          "name": "ExpectedRevenue"
+         },
+         {
+          "control_type": "text",
+          "label": "Fiscal Period",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "Fiscal"
+         },
+         {
+          "control_type": "number",
+          "label": "Fiscal Quarter",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "integer",
+          "name": "FiscalQuarter"
+         },
+         {
+          "control_type": "number",
+          "label": "Fiscal Year",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "integer",
+          "name": "FiscalYear"
+         },
+         {
+          "control_type": "select",
+          "label": "Forecast Category",
+          "pick_list": [
+           [
+            "Omitted",
+            "Omitted"
+           ],
+           [
+            "Pipeline",
+            "Pipeline"
+           ],
+           [
+            "Best Case",
+            "BestCase"
+           ],
+           [
+            "Commit",
+            "Forecast"
+           ],
+           [
+            "Closed",
+            "Closed"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Forecast Category",
+           "toggle_hint": "Enter custom value",
+           "custom": false,
+           "sfdc_createable": false,
+           "sfdc_updateable": false,
+           "type": "string",
+           "name": "ForecastCategory"
+          },
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "ForecastCategory"
+         },
+         {
+          "control_type": "select",
+          "label": "Forecast Category",
+          "pick_list": [
+           [
+            "Omitted",
+            "Omitted"
+           ],
+           [
+            "Pipeline",
+            "Pipeline"
+           ],
+           [
+            "Best Case",
+            "Best Case"
+           ],
+           [
+            "Commit",
+            "Commit"
+           ],
+           [
+            "Closed",
+            "Closed"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Forecast Category",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "string",
+           "name": "ForecastCategoryName"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "ForecastCategoryName"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Has Line Item",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Has Line Item",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": false,
+           "sfdc_updateable": false,
+           "type": "boolean",
+           "name": "HasOpportunityLineItem"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "boolean",
+          "name": "HasOpportunityLineItem"
+         },
+         {
+          "control_type": "date",
+          "label": "Last Activity",
+          "parse_output": "parse_iso8601_date",
+          "render_input": "render_iso8601_date",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "LastActivityDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Last Modified By ID",
+          "foreign_key": "User",
+          "fetch_with": "get_custom_object(id, sobject_name: User)",
+          "join_point_label": "Last modified by",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "LastModifiedById"
+         },
+         {
+          "name": "get_custom_object+LastModifiedById",
+          "type": "object",
+          "label": "Last modified by",
+          "fetch_with": "get_custom_object(LastModifiedById>id, sobject_name: User)",
+          "join_point": true,
+          "properties": []
+         },
+         {
+          "control_type": "date_time",
+          "label": "Last Modified Date",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "LastModifiedDate"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Last Referenced Date",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "LastReferencedDate"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Last Viewed Date",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "LastViewedDate"
+         },
+         {
+          "control_type": "select",
+          "label": "Lead Source",
+          "pick_list": [
+           [
+            "Web",
+            "Web"
+           ],
+           [
+            "Phone Inquiry",
+            "Phone Inquiry"
+           ],
+           [
+            "Partner Referral",
+            "Partner Referral"
+           ],
+           [
+            "Purchased List",
+            "Purchased List"
+           ],
+           [
+            "Other",
+            "Other"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Lead Source",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "string",
+           "name": "LeadSource"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "LeadSource"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "event_title": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "Name"
+         },
+         {
+          "control_type": "text",
+          "label": "Next Step",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "NextStep"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity ID",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "string",
+          "name": "Id"
+         },
+         {
+          "control_type": "select",
+          "label": "Opportunity Type",
+          "pick_list": [
+           [
+            "Existing Customer - Upgrade",
+            "Existing Customer - Upgrade"
+           ],
+           [
+            "Existing Customer - Replacement",
+            "Existing Customer - Replacement"
+           ],
+           [
+            "Existing Customer - Downgrade",
+            "Existing Customer - Downgrade"
+           ],
+           [
+            "New Customer",
+            "New Customer"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Opportunity Type",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "string",
+           "name": "Type"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "Type"
+         },
+         {
+          "control_type": "text",
+          "label": "Owner ID",
+          "foreign_key": "User",
+          "fetch_with": "get_custom_object(id, sobject_name: User)",
+          "join_point_label": "Owner",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "OwnerId"
+         },
+         {
+          "name": "get_custom_object+OwnerId",
+          "type": "object",
+          "label": "Owner",
+          "fetch_with": "get_custom_object(OwnerId>id, sobject_name: User)",
+          "join_point": true,
+          "properties": []
+         },
+         {
+          "control_type": "text",
+          "label": "Price Book ID",
+          "foreign_key": "Pricebook2",
+          "fetch_with": "get_custom_object(id, sobject_name: Pricebook2)",
+          "join_point_label": "Pricebook 2",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "Pricebook2Id"
+         },
+         {
+          "name": "get_custom_object+Pricebook2Id",
+          "type": "object",
+          "label": "Pricebook 2",
+          "fetch_with": "get_custom_object(Pricebook2Id>id, sobject_name: Pricebook2)",
+          "join_point": true,
+          "properties": []
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Private",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Private",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "boolean",
+           "name": "IsPrivate"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "boolean",
+          "name": "IsPrivate"
+         },
+         {
+          "control_type": "text",
+          "label": "Probability (%)",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "Probability"
+         },
+         {
+          "control_type": "number",
+          "label": "Quantity",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "number",
+          "name": "TotalOpportunityQuantity"
+         },
+         {
+          "control_type": "select",
+          "label": "Stage",
+          "pick_list": [
+           [
+            "Prospecting",
+            "Prospecting"
+           ],
+           [
+            "Qualification",
+            "Qualification"
+           ],
+           [
+            "Needs Analysis",
+            "Needs Analysis"
+           ],
+           [
+            "Value Proposition",
+            "Value Proposition"
+           ],
+           [
+            "Id. Decision Makers",
+            "Id. Decision Makers"
+           ],
+           [
+            "Perception Analysis",
+            "Perception Analysis"
+           ],
+           [
+            "Proposal/Price Quote",
+            "Proposal/Price Quote"
+           ],
+           [
+            "Negotiation/Review",
+            "Negotiation/Review"
+           ],
+           [
+            "Closed Won",
+            "Closed Won"
+           ],
+           [
+            "Closed Lost",
+            "Closed Lost"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Stage",
+           "toggle_hint": "Enter custom value",
+           "custom": false,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "string",
+           "name": "StageName"
+          },
+          "custom": false,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "StageName"
+         },
+         {
+          "control_type": "date_time",
+          "label": "System Modstamp",
+          "parse_output": "parse_iso8601_timestamp",
+          "render_input": "render_iso8601_timestamp",
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "date_time",
+          "name": "SystemModstamp"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Won",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Won",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "custom": false,
+           "sfdc_createable": false,
+           "sfdc_updateable": false,
+           "type": "boolean",
+           "name": "IsWon"
+          },
+          "optional": true,
+          "custom": false,
+          "sfdc_createable": false,
+          "sfdc_updateable": false,
+          "type": "boolean",
+          "name": "IsWon"
+         },
+         {
+          "control_type": "text",
+          "label": "Current Generator(s)",
+          "optional": true,
+          "custom": true,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "CurrentGenerators__c"
+         },
+         {
+          "control_type": "select",
+          "label": "Delivery/Installation Status",
+          "pick_list": [
+           [
+            "In progress",
+            "In progress"
+           ],
+           [
+            "Yet to begin",
+            "Yet to begin"
+           ],
+           [
+            "Completed",
+            "Completed"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Delivery/Installation Status",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom": true,
+           "sfdc_createable": true,
+           "sfdc_updateable": true,
+           "type": "string",
+           "name": "DeliveryInstallationStatus__c"
+          },
+          "optional": true,
+          "custom": true,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "DeliveryInstallationStatus__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Main Competitor(s)",
+          "optional": true,
+          "custom": true,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "MainCompetitors__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Order Number",
+          "optional": true,
+          "custom": true,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "OrderNumber__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Tracking Number",
+          "optional": true,
+          "custom": true,
+          "sfdc_createable": true,
+          "sfdc_updateable": true,
+          "type": "string",
+          "name": "TrackingNumber__c"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "Total size",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "totalSize"
+           },
+           {
+            "name": "records",
+            "type": "array",
+            "of": "object",
+            "label": "Files",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "ID",
+              "type": "string",
+              "name": "Id"
+             },
+             {
+              "control_type": "number",
+              "label": "Content size",
+              "parse_output": "integer_conversion",
+              "type": "integer",
+              "name": "ContentSize"
+             },
+             {
+              "control_type": "url",
+              "label": "Content URL",
+              "type": "string",
+              "name": "ContentUrl"
+             },
+             {
+              "control_type": "text",
+              "label": "File extension",
+              "type": "string",
+              "name": "FileExtension"
+             },
+             {
+              "control_type": "text",
+              "label": "File type",
+              "type": "string",
+              "name": "FileType"
+             },
+             {
+              "control_type": "text",
+              "label": "Parent ID",
+              "type": "string",
+              "name": "ParentId"
+             },
+             {
+              "control_type": "text",
+              "label": "Record type",
+              "type": "string",
+              "name": "RecordType"
+             },
+             {
+              "control_type": "text",
+              "label": "Title",
+              "type": "string",
+              "name": "Title"
+             }
+            ]
+           }
+          ],
+          "label": "Combined attachments",
+          "sfdc_field_type": "CombinedAttachment",
+          "type": "object",
+          "name": "CombinedAttachments"
+         }
+        ]
+       }
+      ],
+      "visible_config_fields": [
+       "sobject_name",
+       "query"
+      ],
+      "uuid": "6ba69b6e-48eb-444d-b0a6-8c5a4e96f6b6"
+     },
+     {
+      "number": 3,
+      "as": "foreach",
+      "keyword": "foreach",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "clear_scope": "false",
+      "input": {},
+      "block": [
+       {
+        "number": 4,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "greater_than",
+           "lhs": "=_('data.foreach.foreach.index', 'foreach_meta')+1",
+           "rhs": "=_('data.slack_bot.bot_command_v2.parameters.start_ix')"
+          },
+          {
+           "operand": "less_than",
+           "lhs": "=_('data.foreach.foreach.index', 'foreach_meta')",
+           "rhs": "=_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i + _('data.slack_bot.bot_command_v2.parameters.print_count').to_i"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 5,
+          "provider": "slack_bot",
+          "name": "post_bot_reply_v2",
+          "as": "post_bot_reply_v2",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "text": "=\"Opportunity #{_('data.foreach.foreach.index', 'foreach_meta')+1} of _('data.foreach.foreach.size', 'foreach_meta')\"",
+           "message": {
+            "title": ":+1: Salesforce Opportunity: #{_('data.foreach.foreach.Name')}",
+            "title_link": "https://ap2.salesforce.com/#{_('data.foreach.foreach.Id')}",
+            "color": "good"
+           },
+           "attachment_fields": [
+            {
+             "title": "Type",
+             "value": "#{_('data.foreach.foreach.Type')}"
+            },
+            {
+             "title": "Stage",
+             "value": "#{_('data.foreach.foreach.StageName')}"
+            },
+            {
+             "title": "Probablity",
+             "value": "#{_('data.foreach.foreach.Probability')}"
+            },
+            {
+             "title": ":moneybag: Value",
+             "value": "=\"$#{_('data.foreach.foreach.Amount').present? ? _('data.foreach.foreach.Amount') : 0}\""
+            },
+            {
+             "title": ":writing_hand: Last Activity",
+             "value": "=_('data.foreach.foreach.LastModifiedDate').to_date"
+            }
+           ]
+          },
+          "uuid": "c57e534b-d363-45c0-86ff-3fde8898fe41",
+          "title": null,
+          "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+         }
+        ],
+        "uuid": "3e3179a8-2850-41c0-aa12-f244a1d201a0"
+       },
+       {
+        "number": 6,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "greater_than",
+           "lhs": "=_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i + _('data.slack_bot.bot_command_v2.parameters.print_count').to_i+1",
+           "rhs": "#{_('data.foreach.foreach.size', 'foreach_meta')}"
+          },
+          {
+           "operand": "equals_to",
+           "lhs": "=_('data.foreach.foreach.index', 'foreach_meta')+1",
+           "rhs": "#{_('data.foreach.foreach.size', 'foreach_meta')}"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 7,
+          "keyword": "stop",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "stop_with_error": "false"
+          },
+          "uuid": "1317be52-0cdb-4e80-a76c-2d74ee992a94"
+         }
+        ],
+        "uuid": "bc382f04-2e36-40da-965a-dea90e77de55"
+       }
+      ],
+      "source": "#{_('data.salesforce.search_sobjects_soql.Opportunity')}",
+      "uuid": "c0bf8458-a78d-4cda-a90f-f8918de98e0f"
+     },
+     {
+      "number": 8,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "less_than",
+         "lhs": "=_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i+ _('data.slack_bot.bot_command_v2.parameters.print_count').to_i",
+         "rhs": "=_('data.salesforce.search_sobjects_soql.Opportunity.first.____Size', 'list_meta', '____Size', 'data.salesforce.search_sobjects_soql.Opportunity')"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 9,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply_v2__1",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {
+         "attachment_buttons.0.bot_command": false
+        },
+        "input": {
+         "text": "=\"See  more Opportunities (#{_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i+_('data.slack_bot.bot_command_v2.parameters.print_count').to_i+1}\"+((_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i+_('data.slack_bot.bot_command_v2.parameters.print_count').to_i+1) == _('data.salesforce.search_sobjects_soql.Opportunity.first.____Size', 'list_meta', '____Size', 'data.salesforce.search_sobjects_soql.Opportunity') ? \"\" : \"-#{(_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i+_('data.slack_bot.bot_command_v2.parameters.print_count').to_i*2)>_('data.salesforce.search_sobjects_soql.Opportunity.first.____Size', 'list_meta', '____Size', 'data.salesforce.search_sobjects_soql.Opportunity') ? _('data.salesforce.search_sobjects_soql.Opportunity.first.____Size', 'list_meta', '____Size', 'data.salesforce.search_sobjects_soql.Opportunity') : (_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i+_('data.slack_bot.bot_command_v2.parameters.print_count').to_i*2)}\") + \" of _('data.salesforce.search_sobjects_soql.Opportunity.first.____Size', 'list_meta', '____Size', 'data.salesforce.search_sobjects_soql.Opportunity'))\"",
+         "attachment_buttons": [
+          {
+           "title": "Show more ....",
+           "bot_command": "salesforce list_by_account_with_start_ix_with_print_count opportunity",
+           "params": "=\"account_id:_('data.slack_bot.bot_command_v2.parameters.account_id') print_count: _('data.slack_bot.bot_command_v2.parameters.print_count') start_ix: #{_('data.slack_bot.bot_command_v2.parameters.start_ix').to_i+_('data.slack_bot.bot_command_v2.parameters.print_count').to_i}\""
+          }
+         ]
+        },
+        "uuid": "579315a2-d6f2-4426-90cc-b1af43abba80",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       }
+      ],
+      "uuid": "6c8c2165-3fef-4468-95a3-1e2ea03f7c82"
+     },
+     {
+      "number": 10,
+      "as": "catch",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {},
+      "block": [
+       {
+        "number": 11,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply_v2__2",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "text": "Recipe Error",
+         "message": {
+          "attachment_text": "#{_('data.catch.catch.type')}\n#{_('data.catch.catch.message')}",
+          "color": "danger",
+          "title": ":x: Workbot ran into an error",
+          "title_link": "#{_('data.workato.job_context.recipe_url')}"
+         }
+        },
+        "uuid": "1572222c-f837-4961-a145-4e347076d75a",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       }
+      ],
+      "uuid": "e57c3392-e73a-46be-8c76-36bd16a5e58f"
+     }
+    ],
+    "uuid": "891c8604-8ad0-4d81-8cd3-a9f43f8f72c8"
+   }
+  ],
+  "uuid": "e8172a40-db66-4b1d-ab04-ac91d6392652",
+  "param": {}
+ }
+}

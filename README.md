@@ -28,6 +28,11 @@ skills, and knowledge bases directly in your Workato platform.
 | `kb/INDEX.md`, `kb/index/*.md` | Table of contents by docs section (Recipes, Connectors, MCP, Agent Studio, ...) |
 | `kb/search.py` | Fast local full-text search (SQLite FTS5, no dependencies) |
 | `kb/sync.py` | Incremental sync from docs.workato.com (`llms.txt`, `llms-full.txt`, sitemap) |
+| `kb/connectors/` | Live connector catalog from the workspace (324 connectors, 913 triggers, 3,161 actions with schemas) |
+| `kb/patterns/` | `RECIPE_JSON_SPEC.md` plus Workato Labs recipe skills and lint rules (MIT, attributed) |
+| `kb/examples/`, `kb/community/` | 309 real recipes (Labs samples and templates, workspace, community library), indexed by step |
+| `.claude/agents/` | Virtual Workato team agents (see `docs/agent-team.md`) |
+| `docs/` | Architecture, lifecycle, team design, recipe-accuracy research |
 | `kb/CHANGELOG.md`, `kb/last_sync.json` | What changed in the docs on each sync |
 | `.github/workflows/sync-workato-docs.yml` | Daily GitHub Action that keeps `kb/` current |
 | `CLAUDE.md` | Working rules for Claude: research in KB → check API contract → plan → confirm → validate → build |

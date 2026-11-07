@@ -1,0 +1,5311 @@
+{
+ "name": "google_drive",
+ "title": "Google Drive",
+ "requires_connection": true,
+ "categories": [
+  "Document/File",
+  "Sales Enablement"
+ ],
+ "aliases": [
+  "Google Drive"
+ ],
+ "triggers": [
+  {
+   "name": "new_activity",
+   "title": "New activity",
+   "description": "New activity in Google Drive",
+   "help": "Trigger can be used to monitor one or more activities within a parent folder.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folderId",
+      "type": "string"
+     },
+     "hint": "The parent folder which needs to be monitored for activities. Note that the subfolders are monitored too. Either the drive or drive.readonly scope is necessary to populate the picklist. If neither is …"
+    },
+    {
+     "name": "start_time",
+     "type": "date_time",
+     "label": "Start time",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up activity from this specified date and time. Defaults to fetching activity an hour ago if left blank."
+    },
+    {
+     "name": "event",
+     "type": "string",
+     "label": "Activity to monitor",
+     "control_type": "multiselect",
+     "required": true,
+     "options": [
+      "CREATE",
+      "EDIT",
+      "MOVE",
+      "RENAME",
+      "DELETE",
+      "RESTORE",
+      "PERMISSION_CHANGE"
+     ],
+     "hint": "Choose one or more activities to monitor from."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text"
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text"
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "properties": [
+      {
+       "name": "teamDrive",
+       "type": "object",
+       "label": "Team drive",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "title",
+         "type": "string",
+         "label": "Title",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "domain",
+       "type": "object",
+       "label": "Domain",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "legacyId",
+         "type": "string",
+         "label": "Legacy ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "drive",
+       "type": "object",
+       "label": "Drive",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "title",
+         "type": "string",
+         "label": "Title",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "actions",
+     "type": "array",
+     "label": "Actions",
+     "of": "object",
+     "properties": [
+      {
+       "name": "detail",
+       "type": "object",
+       "label": "Detail",
+       "properties": [
+        {
+         "name": "rename",
+         "type": "object",
+         "label": "Rename",
+         "properties": [
+          {
+           "name": "oldTitle",
+           "type": "string",
+           "label": "Old title",
+           "control_type": "text"
+          },
+          {
+           "name": "newTitle",
+           "type": "string",
+           "label": "New title",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "move",
+         "type": "object",
+         "label": "Move",
+         "properties": [
+          {
+           "name": "addedParents",
+           "type": "array",
+           "label": "Added parents",
+           "of": "object",
+           "properties": [
+            {
+             "name": "driveItem",
+             "type": "object",
+             "label": "Drive item",
+             "properties": [
+              {
+               "name": "title",
+               "type": "string",
+               "label": "Title",
+               "control_type": "text"
+              },
+              {
+               "name": "name",
+               "type": "string",
+               "label": "Name",
+               "control_type": "text"
+              },
+              {
+               "name": "folder",
+               "type": "object",
+               "label": "Folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFolder",
+               "type": "object",
+               "label": "Drive folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "file",
+               "type": "object",
+               "label": "File",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFile",
+               "type": "object",
+               "label": "Drive file",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              }
+             ]
+            },
+            {
+             "name": "drive",
+             "type": "object",
+             "label": "Drive",
+             "properties": [
+              {
+               "name": "title",
+               "type": "string",
+               "label": "Title",
+               "control_type": "text"
+              },
+              {
+               "name": "name",
+               "type": "string",
+               "label": "Name",
+               "control_type": "text"
+              },
+              {
+               "name": "folder",
+               "type": "object",
+               "label": "Folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFolder",
+               "type": "object",
+               "label": "Drive folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "file",
+               "type": "object",
+               "label": "File",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFile",
+               "type": "object",
+               "label": "Drive file",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "removedParents",
+           "type": "array",
+           "label": "Removed parents",
+           "of": "object",
+           "properties": [
+            {
+             "name": "driveItem",
+             "type": "object",
+             "label": "Drive item",
+             "properties": [
+              {
+               "name": "title",
+               "type": "string",
+               "label": "Title",
+               "control_type": "text"
+              },
+              {
+               "name": "name",
+               "type": "string",
+               "label": "Name",
+               "control_type": "text"
+              },
+              {
+               "name": "folder",
+               "type": "object",
+               "label": "Folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFolder",
+               "type": "object",
+               "label": "Drive folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "file",
+               "type": "object",
+               "label": "File",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFile",
+               "type": "object",
+               "label": "Drive file",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              }
+             ]
+            },
+            {
+             "name": "drive",
+             "type": "object",
+             "label": "Drive",
+             "properties": [
+              {
+               "name": "title",
+               "type": "string",
+               "label": "Title",
+               "control_type": "text"
+              },
+              {
+               "name": "name",
+               "type": "string",
+               "label": "Name",
+               "control_type": "text"
+              },
+              {
+               "name": "folder",
+               "type": "object",
+               "label": "Folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFolder",
+               "type": "object",
+               "label": "Drive folder",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "file",
+               "type": "object",
+               "label": "File",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "driveFile",
+               "type": "object",
+               "label": "Drive file",
+               "properties": [
+                {
+                 "name": "type",
+                 "type": "string",
+                 "label": "Type",
+                 "control_type": "text"
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "permissionChange",
+         "type": "object",
+         "label": "Permission change",
+         "properties": [
+          {
+           "name": "addedPermissions",
+           "type": "array",
+           "label": "Added permissions",
+           "of": "object",
+           "properties": [
+            {
+             "name": "role",
+             "type": "string",
+             "label": "Role",
+             "control_type": "text"
+            },
+            {
+             "name": "user",
+             "type": "object",
+             "label": "User",
+             "properties": [
+              {
+               "name": "knownUser",
+               "type": "object",
+               "label": "Known user",
+               "properties": [
+                {
+                 "name": "personName",
+                 "type": "string",
+                 "label": "Person name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "isCurrentUser",
+                 "type": "number",
+                 "label": "Is current user",
+                 "control_type": "number"
+                }
+               ]
+              },
+              {
+               "name": "deletedUser",
+               "type": "object",
+               "label": "Deleted user",
+               "properties": [
+                {
+                 "name": "personName",
+                 "type": "string",
+                 "label": "Person name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "isCurrentUser",
+                 "type": "number",
+                 "label": "Is current user",
+                 "control_type": "number"
+                }
+               ]
+              },
+              {
+               "name": "unknownUser",
+               "type": "object",
+               "label": "Unknown user",
+               "properties": [
+                {
+                 "name": "personName",
+                 "type": "string",
+                 "label": "Person name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "isCurrentUser",
+                 "type": "number",
+                 "label": "Is current user",
+                 "control_type": "number"
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "removedPermissions",
+           "type": "array",
+           "label": "Removed permissions",
+           "of": "object",
+           "properties": [
+            {
+             "name": "role",
+             "type": "string",
+             "label": "Role",
+             "control_type": "text"
+            },
+            {
+             "name": "user",
+             "type": "object",
+             "label": "User",
+             "properties": [
+              {
+               "name": "knownUser",
+               "type": "object",
+               "label": "Known user",
+               "properties": [
+                {
+                 "name": "personName",
+                 "type": "string",
+                 "label": "Person name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "isCurrentUser",
+                 "type": "number",
+                 "label": "Is current user",
+                 "control_type": "number"
+                }
+               ]
+              },
+              {
+               "name": "deletedUser",
+               "type": "object",
+               "label": "Deleted user",
+               "properties": [
+                {
+                 "name": "personName",
+                 "type": "string",
+                 "label": "Person name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "isCurrentUser",
+                 "type": "number",
+                 "label": "Is current user",
+                 "control_type": "number"
+                }
+               ]
+              },
+              {
+               "name": "unknownUser",
+               "type": "object",
+               "label": "Unknown user",
+               "properties": [
+                {
+                 "name": "personName",
+                 "type": "string",
+                 "label": "Person name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "isCurrentUser",
+                 "type": "number",
+                 "label": "Is current user",
+                 "control_type": "number"
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "comment",
+         "type": "object",
+         "label": "Comment",
+         "properties": [
+          {
+           "name": "mentionedUsers",
+           "type": "array",
+           "label": "Mentioned users",
+           "of": "object",
+           "properties": [
+            {
+             "name": "knownUser",
+             "type": "object",
+             "label": "Known user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "deletedUser",
+             "type": "object",
+             "label": "Deleted user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "unknownUser",
+             "type": "object",
+             "label": "Unknown user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "post",
+           "type": "object",
+           "label": "Post",
+           "properties": [
+            {
+             "name": "subtype",
+             "type": "string",
+             "label": "Subtype",
+             "control_type": "text"
+            }
+           ]
+          },
+          {
+           "name": "assignment",
+           "type": "object",
+           "label": "Assignment",
+           "properties": [
+            {
+             "name": "subtype",
+             "type": "string",
+             "label": "Subtype",
+             "control_type": "text"
+            },
+            {
+             "name": "knownUser",
+             "type": "object",
+             "label": "Known user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "deletedUser",
+             "type": "object",
+             "label": "Deleted user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "unknownUser",
+             "type": "object",
+             "label": "Unknown user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "suggestion",
+           "type": "object",
+           "label": "Suggestion",
+           "properties": [
+            {
+             "name": "subtype",
+             "type": "string",
+             "label": "Subtype",
+             "control_type": "text"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "reference",
+         "type": "object",
+         "label": "Reference",
+         "properties": [
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "settingsChange",
+         "type": "object",
+         "label": "Settings change",
+         "properties": [
+          {
+           "name": "restrictionChanges",
+           "type": "array",
+           "label": "Restriction changes",
+           "of": "object",
+           "properties": [
+            {
+             "name": "feature",
+             "type": "string",
+             "label": "Feature",
+             "control_type": "text"
+            },
+            {
+             "name": "newRestriction",
+             "type": "string",
+             "label": "New restriction",
+             "control_type": "text"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "edit",
+         "type": "number",
+         "label": "Edit",
+         "control_type": "number"
+        },
+        {
+         "name": "dlpChange",
+         "type": "object",
+         "label": "Dlp change",
+         "properties": [
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "create",
+         "type": "object",
+         "label": "Create",
+         "properties": [
+          {
+           "name": "new",
+           "type": "number",
+           "label": "New",
+           "control_type": "number"
+          },
+          {
+           "name": "upload",
+           "type": "number",
+           "label": "Upload",
+           "control_type": "number"
+          },
+          {
+           "name": "copy",
+           "type": "object",
+           "label": "Copy",
+           "properties": [
+            {
+             "name": "originalObject",
+             "type": "object",
+             "label": "Original object",
+             "properties": [
+              {
+               "name": "driveItem",
+               "type": "object",
+               "label": "Drive item",
+               "properties": [
+                {
+                 "name": "name",
+                 "type": "string",
+                 "label": "Name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "title",
+                 "type": "string",
+                 "label": "Title",
+                 "control_type": "text"
+                }
+               ]
+              },
+              {
+               "name": "drive",
+               "type": "object",
+               "label": "Drive",
+               "properties": [
+                {
+                 "name": "name",
+                 "type": "string",
+                 "label": "Name",
+                 "control_type": "text"
+                },
+                {
+                 "name": "title",
+                 "type": "string",
+                 "label": "Title",
+                 "control_type": "text"
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "delete",
+         "type": "object",
+         "label": "Delete",
+         "properties": [
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "restore",
+         "type": "object",
+         "label": "Restore",
+         "properties": [
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "actors",
+     "type": "array",
+     "label": "Actors",
+     "of": "object",
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "properties": [
+        {
+         "name": "knownUser",
+         "type": "object",
+         "label": "Known user",
+         "properties": [
+          {
+           "name": "personName",
+           "type": "string",
+           "label": "Person name",
+           "control_type": "text"
+          },
+          {
+           "name": "isCurrentUser",
+           "type": "number",
+           "label": "Is current user",
+           "control_type": "number"
+          }
+         ]
+        },
+        {
+         "name": "deletedUser",
+         "type": "object",
+         "label": "Deleted user",
+         "properties": [
+          {
+           "name": "personName",
+           "type": "string",
+           "label": "Person name",
+           "control_type": "text"
+          },
+          {
+           "name": "isCurrentUser",
+           "type": "number",
+           "label": "Is current user",
+           "control_type": "number"
+          }
+         ]
+        },
+        {
+         "name": "unknownUser",
+         "type": "object",
+         "label": "Unknown user",
+         "properties": [
+          {
+           "name": "personName",
+           "type": "string",
+           "label": "Person name",
+           "control_type": "text"
+          },
+          {
+           "name": "isCurrentUser",
+           "type": "number",
+           "label": "Is current user",
+           "control_type": "number"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "primaryActionDetail",
+     "type": "object",
+     "label": "Primary action detail",
+     "properties": [
+      {
+       "name": "rename",
+       "type": "object",
+       "label": "Rename",
+       "properties": [
+        {
+         "name": "oldTitle",
+         "type": "string",
+         "label": "Old title",
+         "control_type": "text"
+        },
+        {
+         "name": "newTitle",
+         "type": "string",
+         "label": "New title",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "move",
+       "type": "object",
+       "label": "Move",
+       "properties": [
+        {
+         "name": "addedParents",
+         "type": "array",
+         "label": "Added parents",
+         "of": "object",
+         "properties": [
+          {
+           "name": "driveItem",
+           "type": "object",
+           "label": "Drive item",
+           "properties": [
+            {
+             "name": "title",
+             "type": "string",
+             "label": "Title",
+             "control_type": "text"
+            },
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text"
+            },
+            {
+             "name": "folder",
+             "type": "object",
+             "label": "Folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFolder",
+             "type": "object",
+             "label": "Drive folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "file",
+             "type": "object",
+             "label": "File",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFile",
+             "type": "object",
+             "label": "Drive file",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "drive",
+           "type": "object",
+           "label": "Drive",
+           "properties": [
+            {
+             "name": "title",
+             "type": "string",
+             "label": "Title",
+             "control_type": "text"
+            },
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text"
+            },
+            {
+             "name": "folder",
+             "type": "object",
+             "label": "Folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFolder",
+             "type": "object",
+             "label": "Drive folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "file",
+             "type": "object",
+             "label": "File",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFile",
+             "type": "object",
+             "label": "Drive file",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "removedParents",
+         "type": "array",
+         "label": "Removed parents",
+         "of": "object",
+         "properties": [
+          {
+           "name": "driveItem",
+           "type": "object",
+           "label": "Drive item",
+           "properties": [
+            {
+             "name": "title",
+             "type": "string",
+             "label": "Title",
+             "control_type": "text"
+            },
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text"
+            },
+            {
+             "name": "folder",
+             "type": "object",
+             "label": "Folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFolder",
+             "type": "object",
+             "label": "Drive folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "file",
+             "type": "object",
+             "label": "File",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFile",
+             "type": "object",
+             "label": "Drive file",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "drive",
+           "type": "object",
+           "label": "Drive",
+           "properties": [
+            {
+             "name": "title",
+             "type": "string",
+             "label": "Title",
+             "control_type": "text"
+            },
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text"
+            },
+            {
+             "name": "folder",
+             "type": "object",
+             "label": "Folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFolder",
+             "type": "object",
+             "label": "Drive folder",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "file",
+             "type": "object",
+             "label": "File",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "driveFile",
+             "type": "object",
+             "label": "Drive file",
+             "properties": [
+              {
+               "name": "type",
+               "type": "string",
+               "label": "Type",
+               "control_type": "text"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "permissionChange",
+       "type": "object",
+       "label": "Permission change",
+       "properties": [
+        {
+         "name": "addedPermissions",
+         "type": "array",
+         "label": "Added permissions",
+         "of": "object",
+         "properties": [
+          {
+           "name": "role",
+           "type": "string",
+           "label": "Role",
+           "control_type": "text"
+          },
+          {
+           "name": "user",
+           "type": "object",
+           "label": "User",
+           "properties": [
+            {
+             "name": "knownUser",
+             "type": "object",
+             "label": "Known user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "deletedUser",
+             "type": "object",
+             "label": "Deleted user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "unknownUser",
+             "type": "object",
+             "label": "Unknown user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "removedPermissions",
+         "type": "array",
+         "label": "Removed permissions",
+         "of": "object",
+         "properties": [
+          {
+           "name": "role",
+           "type": "string",
+           "label": "Role",
+           "control_type": "text"
+          },
+          {
+           "name": "user",
+           "type": "object",
+           "label": "User",
+           "properties": [
+            {
+             "name": "knownUser",
+             "type": "object",
+             "label": "Known user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "deletedUser",
+             "type": "object",
+             "label": "Deleted user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            },
+            {
+             "name": "unknownUser",
+             "type": "object",
+             "label": "Unknown user",
+             "properties": [
+              {
+               "name": "personName",
+               "type": "string",
+               "label": "Person name",
+               "control_type": "text"
+              },
+              {
+               "name": "isCurrentUser",
+               "type": "number",
+               "label": "Is current user",
+               "control_type": "number"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "comment",
+       "type": "object",
+       "label": "Comment",
+       "properties": [
+        {
+         "name": "mentionedUsers",
+         "type": "array",
+         "label": "Mentioned users",
+         "of": "object",
+         "properties": [
+          {
+           "name": "knownUser",
+           "type": "object",
+           "label": "Known user",
+           "properties": [
+            {
+             "name": "personName",
+             "type": "string",
+             "label": "Person name",
+             "control_type": "text"
+            },
+            {
+             "name": "isCurrentUser",
+             "type": "number",
+             "label": "Is current user",
+             "control_type": "number"
+            }
+           ]
+          },
+          {
+           "name": "deletedUser",
+           "type": "object",
+           "label": "Deleted user",
+           "properties": [
+            {
+             "name": "personName",
+             "type": "string",
+             "label": "Person name",
+             "control_type": "text"
+            },
+            {
+             "name": "isCurrentUser",
+             "type": "number",
+             "label": "Is current user",
+             "control_type": "number"
+            }
+           ]
+          },
+          {
+           "name": "unknownUser",
+           "type": "object",
+           "label": "Unknown user",
+           "properties": [
+            {
+             "name": "personName",
+             "type": "string",
+             "label": "Person name",
+             "control_type": "text"
+            },
+            {
+             "name": "isCurrentUser",
+             "type": "number",
+             "label": "Is current user",
+             "control_type": "number"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "post",
+         "type": "object",
+         "label": "Post",
+         "properties": [
+          {
+           "name": "subtype",
+           "type": "string",
+           "label": "Subtype",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "assignment",
+         "type": "object",
+         "label": "Assignment",
+         "properties": [
+          {
+           "name": "subtype",
+           "type": "string",
+           "label": "Subtype",
+           "control_type": "text"
+          },
+          {
+           "name": "knownUser",
+           "type": "object",
+           "label": "Known user",
+           "properties": [
+            {
+             "name": "personName",
+             "type": "string",
+             "label": "Person name",
+             "control_type": "text"
+            },
+            {
+             "name": "isCurrentUser",
+             "type": "number",
+             "label": "Is current user",
+             "control_type": "number"
+            }
+           ]
+          },
+          {
+           "name": "deletedUser",
+           "type": "object",
+           "label": "Deleted user",
+           "properties": [
+            {
+             "name": "personName",
+             "type": "string",
+             "label": "Person name",
+             "control_type": "text"
+            },
+            {
+             "name": "isCurrentUser",
+             "type": "number",
+             "label": "Is current user",
+             "control_type": "number"
+            }
+           ]
+          },
+          {
+           "name": "unknownUser",
+           "type": "object",
+           "label": "Unknown user",
+           "properties": [
+            {
+             "name": "personName",
+             "type": "string",
+             "label": "Person name",
+             "control_type": "text"
+            },
+            {
+             "name": "isCurrentUser",
+             "type": "number",
+             "label": "Is current user",
+             "control_type": "number"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "suggestion",
+         "type": "object",
+         "label": "Suggestion",
+         "properties": [
+          {
+           "name": "subtype",
+           "type": "string",
+           "label": "Subtype",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "reference",
+       "type": "object",
+       "label": "Reference",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "settingsChange",
+       "type": "object",
+       "label": "Settings change",
+       "properties": [
+        {
+         "name": "restrictionChanges",
+         "type": "array",
+         "label": "Restriction changes",
+         "of": "object",
+         "properties": [
+          {
+           "name": "feature",
+           "type": "string",
+           "label": "Feature",
+           "control_type": "text"
+          },
+          {
+           "name": "newRestriction",
+           "type": "string",
+           "label": "New restriction",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "edit",
+       "type": "number",
+       "label": "Edit",
+       "control_type": "number"
+      },
+      {
+       "name": "dlpChange",
+       "type": "object",
+       "label": "Dlp change",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "create",
+       "type": "object",
+       "label": "Create",
+       "properties": [
+        {
+         "name": "new",
+         "type": "number",
+         "label": "New",
+         "control_type": "number"
+        },
+        {
+         "name": "upload",
+         "type": "number",
+         "label": "Upload",
+         "control_type": "number"
+        },
+        {
+         "name": "copy",
+         "type": "object",
+         "label": "Copy",
+         "properties": [
+          {
+           "name": "originalObject",
+           "type": "object",
+           "label": "Original object",
+           "properties": [
+            {
+             "name": "driveItem",
+             "type": "object",
+             "label": "Drive item",
+             "properties": [
+              {
+               "name": "name",
+               "type": "string",
+               "label": "Name",
+               "control_type": "text"
+              },
+              {
+               "name": "title",
+               "type": "string",
+               "label": "Title",
+               "control_type": "text"
+              }
+             ]
+            },
+            {
+             "name": "drive",
+             "type": "object",
+             "label": "Drive",
+             "properties": [
+              {
+               "name": "name",
+               "type": "string",
+               "label": "Name",
+               "control_type": "text"
+              },
+              {
+               "name": "title",
+               "type": "string",
+               "label": "Title",
+               "control_type": "text"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "delete",
+       "type": "object",
+       "label": "Delete",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "restore",
+       "type": "object",
+       "label": "Restore",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "driveFile",
+     "type": "object",
+     "label": "Drive file",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "timestamp",
+     "type": "date_time",
+     "label": "Timestamp",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "new_csv_file_batch",
+   "title": "New CSV file",
+   "description": "New CSV file in Google Drive",
+   "help": "Trigger will not pick up newly uploaded versions of the same file. Checks selected folder for CSV files every {{authUser.membership.poll_interval}} minutes. CSV lines are delivered in batches of 1000 by default, maximum is 1000.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up files created from specified time. Defaults to fetching files created an hour ago if left blank. Once recipe has been run or tested, value cannot …"
+    },
+    {
+     "name": "parents",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "parents",
+      "type": "string"
+     },
+     "hint": "Select the parent folder. The uploaded file will be saved under My Drive if not specified. Either the drive or drive.readonly scope is necessary to populate the picklist. If neither is selected on the…"
+    },
+    {
+     "name": "sample_csv_file",
+     "type": "string",
+     "label": "Sample CSV file",
+     "control_type": "tree",
+     "pick_list": "files",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_names",
+      "type": "string"
+     },
+     "hint": "Required : Select a CSV file for Workato to understand the data columns in your files. Otherwise, toggle to provide column names manually. Either the drive or drive.readonly scope is necessary to popu…"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "comma",
+      "space",
+      "tab",
+      "colon",
+      "semicolon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "The character used to separate column values within each CSV line."
+    },
+    {
+     "name": "header_fl",
+     "type": "boolean",
+     "label": "Contains header line?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "header_fl",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes if the first CSV line is a header line, containing column names. which needs to be excluded in the output."
+    },
+    {
+     "name": "csv_batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 1000,
+     "hint": "Number of CSV rows per batch. Instead of reading rows one by one, Workato reads a batch of CSV rows at a time to increase throughput. Learn more"
+    },
+    {
+     "name": "expected_encoding",
+     "type": "string",
+     "label": "Expected encoding",
+     "control_type": "select",
+     "default": "UTF-8",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "toggle_field": {
+      "name": "expected_encoding",
+      "type": "string"
+     },
+     "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed."
+    }
+   ],
+   "output": [
+    {
+     "name": "event",
+     "type": "object",
+     "label": "Event",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mimeType",
+       "type": "string",
+       "label": "MIME type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "starred",
+       "type": "boolean",
+       "label": "Starred",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "starred",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "trashed",
+       "type": "boolean",
+       "label": "Trashed",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "trashed",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "explicitlyTrashed",
+       "type": "boolean",
+       "label": "Explicitly trashed",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "explicitlyTrashed",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "parents",
+       "type": "array",
+       "label": "Parents",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "version",
+       "type": "integer",
+       "label": "Version",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "webContentLink",
+       "type": "string",
+       "label": "Web content link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "webViewLink",
+       "type": "string",
+       "label": "Web view link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "iconLink",
+       "type": "string",
+       "label": "Icon link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "thumbnailLink",
+       "type": "string",
+       "label": "Thumbnail link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "viewedByMe",
+       "type": "boolean",
+       "label": "Viewed by me",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "viewedByMe",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "viewedByMeTime",
+       "type": "date_time",
+       "label": "Viewed by me time",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdTime",
+       "type": "date_time",
+       "label": "Created time",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "modifiedTime",
+       "type": "date_time",
+       "label": "Modified time",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "modifiedByMeTime",
+       "type": "date_time",
+       "label": "Modified by me time",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sharingUser",
+       "type": "object",
+       "label": "Sharing user",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "permissionId",
+         "type": "string",
+         "label": "Permission ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "photoLink",
+         "type": "string",
+         "label": "Photo link",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "me",
+         "type": "boolean",
+         "label": "Me",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "me",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "owners",
+       "type": "array",
+       "label": "Owners",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "permissionId",
+         "type": "string",
+         "label": "Permission ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "photoLink",
+         "type": "string",
+         "label": "Photo link",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "me",
+         "type": "boolean",
+         "label": "Me",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "me",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "lastModifyingUser",
+       "type": "object",
+       "label": "Last modifying user",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "permissionId",
+         "type": "string",
+         "label": "Permission ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "photoLink",
+         "type": "string",
+         "label": "Photo link",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "me",
+         "type": "boolean",
+         "label": "Me",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "me",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "shared",
+       "type": "boolean",
+       "label": "Shared",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "shared",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "ownedByMe",
+       "type": "boolean",
+       "label": "Owned by me",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "ownedByMe",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "viewersCanCopyContent",
+       "type": "boolean",
+       "label": "Viewers can copy content",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "viewersCanCopyContent",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "writersCanShare",
+       "type": "boolean",
+       "label": "Writers can share",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "writersCanShare",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "originalFilename",
+       "type": "string",
+       "label": "Original filename",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fullFileExtension",
+       "type": "string",
+       "label": "Full file extension",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fileExtension",
+       "type": "string",
+       "label": "File extension",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "md5Checksum",
+       "type": "string",
+       "label": "Md 5 checksum",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "size",
+       "type": "number",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "quotaBytesUsed",
+       "type": "number",
+       "label": "Quota bytes used",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "headRevisionId",
+       "type": "string",
+       "label": "Head revision ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "error",
+     "type": "string",
+     "label": "Error message",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_file_in_subfolder",
+   "title": "New file or folder in folder hierarchy",
+   "description": "New file or folder in folder hierarchy in Google Drive",
+   "help": "Checks periodically for new files or folders created in a specified folder and its subfolders. Each new file and folder generates a new job.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folderId",
+      "type": "string"
+     },
+     "hint": "Select the folder to monitor for new files or folders. All subfolders will be monitored as well. Either the drive or drive.readonly scope is necessary to populate the picklist. If neither is selected …"
+    },
+    {
+     "name": "chunk_size",
+     "type": "integer",
+     "label": "Chunk size (KB)",
+     "control_type": "integer",
+     "hint": "Configure this to optimize throughput. Larger chunk size will increase throughput, but may hit API limit. Default to 1024 KB. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "is_folder",
+     "type": "boolean",
+     "label": "Is folder",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_folder",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "is_google_file",
+     "type": "boolean",
+     "label": "Is google file",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_google_file",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "is_other_file",
+     "type": "boolean",
+     "label": "Is other file",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_other_file",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "fileContent",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "MIME type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "starred",
+     "type": "boolean",
+     "label": "Starred",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "starred",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "trashed",
+     "type": "boolean",
+     "label": "Trashed",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "trashed",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "explicitlyTrashed",
+     "type": "boolean",
+     "label": "Explicitly trashed",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "explicitlyTrashed",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "parents",
+     "type": "array",
+     "label": "Parents",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "version",
+     "type": "integer",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webContentLink",
+     "type": "string",
+     "label": "Web content link",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webViewLink",
+     "type": "string",
+     "label": "Web view link",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "iconLink",
+     "type": "string",
+     "label": "Icon link",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "thumbnailLink",
+     "type": "string",
+     "label": "Thumbnail link",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "viewedByMe",
+     "type": "boolean",
+     "label": "Viewed by me",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "viewedByMe",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "viewedByMeTime",
+     "type": "date_time",
+     "label": "Viewed by me time",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdTime",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedTime",
+     "type": "date_time",
+     "label": "Modified time",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedByMeTime",
+     "type": "date_time",
+     "label": "Modified by me time",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sharingUser",
+     "type": "object",
+     "label": "Sharing user",
+     "required": true,
+     "properties": [
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "permissionId",
+       "type": "string",
+       "label": "Permission ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "photoLink",
+       "type": "string",
+       "label": "Photo link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "me",
+       "type": "boolean",
+       "label": "Me",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "me",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "owners",
+     "type": "array",
+     "label": "Owners",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "permissionId",
+       "type": "string",
+       "label": "Permission ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "photoLink",
+       "type": "string",
+       "label": "Photo link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "me",
+       "type": "boolean",
+       "label": "Me",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "me",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "lastModifyingUser",
+     "type": "object",
+     "label": "Last modifying user",
+     "required": true,
+     "properties": [
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "permissionId",
+       "type": "string",
+       "label": "Permission ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "photoLink",
+       "type": "string",
+       "label": "Photo link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "me",
+       "type": "boolean",
+       "label": "Me",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "me",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "shared",
+     "type": "boolean",
+     "label": "Shared",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "shared",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "ownedByMe",
+     "type": "boolean",
+     "label": "Owned by me",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "ownedByMe",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "viewersCanCopyContent",
+     "type": "boolean",
+     "label": "Viewers can copy content",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "viewersCanCopyContent",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "writersCanShare",
+     "type": "boolean",
+     "label": "Writers can share",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "writersCanShare",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "originalFilename",
+     "type": "string",
+     "label": "Original filename",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fullFileExtension",
+     "type": "string",
+     "label": "Full file extension",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fileExtension",
+     "type": "string",
+     "label": "File extension",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "md5Checksum",
+     "type": "string",
+     "label": "Md 5 checksum",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "quotaBytesUsed",
+     "type": "number",
+     "label": "Quota bytes used",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "headRevisionId",
+     "type": "string",
+     "label": "Head revision ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_file_or_folder",
+   "title": "New file or folder",
+   "description": "New file or folder in Google Drive",
+   "help": "Triggers immediately in real-time when new file or folder is created in a specified folder. Sub-folders will not be monitored. Learn more",
+   "input": [
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folderId",
+      "type": "string"
+     },
+     "hint": "Select the folder to monitor for new files or folders. Sub-folders will not be monitored. Either the drive or drive.readonly scope is necessary to populate the picklist. If neither is selected on the …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up new files or folders created from this specified date and time. Defaults to fetching files or folders created an hour ago if left blank. Once reci…"
+    },
+    {
+     "name": "chunk_size",
+     "type": "string",
+     "label": "Chunk size (KB)",
+     "control_type": "text",
+     "hint": "Configure this to optimize throughput. Larger chunk size will increase throughput, but may hit API limit. Default to 1024 KB. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "is_folder",
+     "type": "number",
+     "label": "Is folder",
+     "control_type": "number"
+    },
+    {
+     "name": "is_google_file",
+     "type": "number",
+     "label": "Is google file",
+     "control_type": "number"
+    },
+    {
+     "name": "is_other_file",
+     "type": "number",
+     "label": "Is other file",
+     "control_type": "number"
+    },
+    {
+     "name": "fileContent",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "starred",
+     "type": "number",
+     "label": "Starred",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "trashed",
+     "type": "number",
+     "label": "Trashed",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "explicitlyTrashed",
+     "type": "number",
+     "label": "Explicitly trashed",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "parents",
+     "type": "array",
+     "label": "Parents",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "version",
+     "type": "integer",
+     "label": "Version",
+     "control_type": "number"
+    },
+    {
+     "name": "webContentLink",
+     "type": "string",
+     "label": "Web content link",
+     "control_type": "text"
+    },
+    {
+     "name": "webViewLink",
+     "type": "string",
+     "label": "Web view link",
+     "control_type": "text"
+    },
+    {
+     "name": "iconLink",
+     "type": "string",
+     "label": "Icon link",
+     "control_type": "text"
+    },
+    {
+     "name": "thumbnailLink",
+     "type": "string",
+     "label": "Thumbnail link",
+     "control_type": "text"
+    },
+    {
+     "name": "viewedByMe",
+     "type": "number",
+     "label": "Viewed by me",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "viewedByMeTime",
+     "type": "date_time",
+     "label": "Viewed by me time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "createdTime",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "modifiedTime",
+     "type": "date_time",
+     "label": "Modified time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "modifiedByMeTime",
+     "type": "date_time",
+     "label": "Modified by me time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "sharingUser",
+     "type": "object",
+     "label": "Sharing user",
+     "properties": [
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text"
+      },
+      {
+       "name": "permissionId",
+       "type": "string",
+       "label": "Permission ID",
+       "control_type": "text"
+      },
+      {
+       "name": "photoLink",
+       "type": "string",
+       "label": "Photo link",
+       "control_type": "text"
+      },
+      {
+       "name": "me",
+       "type": "number",
+       "label": "Me",
+       "control_type": "checkbox"
+      }
+     ]
+    },
+    {
+     "name": "owners",
+     "type": "array",
+     "label": "Owners",
+     "of": "object",
+     "properties": [
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text"
+      },
+      {
+       "name": "permissionId",
+       "type": "string",
+       "label": "Permission ID",
+       "control_type": "text"
+      },
+      {
+       "name": "photoLink",
+       "type": "string",
+       "label": "Photo link",
+       "control_type": "text"
+      },
+      {
+       "name": "me",
+       "type": "number",
+       "label": "Me",
+       "control_type": "checkbox"
+      }
+     ]
+    },
+    {
+     "name": "lastModifyingUser",
+     "type": "object",
+     "label": "Last modifying user",
+     "properties": [
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text"
+      },
+      {
+       "name": "permissionId",
+       "type": "string",
+       "label": "Permission ID",
+       "control_type": "text"
+      },
+      {
+       "name": "photoLink",
+       "type": "string",
+       "label": "Photo link",
+       "control_type": "text"
+      },
+      {
+       "name": "me",
+       "type": "number",
+       "label": "Me",
+       "control_type": "checkbox"
+      }
+     ]
+    },
+    {
+     "name": "shared",
+     "type": "number",
+     "label": "Shared",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "ownedByMe",
+     "type": "number",
+     "label": "Owned by me",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "viewersCanCopyContent",
+     "type": "number",
+     "label": "Viewers can copy content",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "writersCanShare",
+     "type": "number",
+     "label": "Writers can share",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "originalFilename",
+     "type": "string",
+     "label": "Original filename",
+     "control_type": "text"
+    },
+    {
+     "name": "fullFileExtension",
+     "type": "string",
+     "label": "Full file extension",
+     "control_type": "text"
+    },
+    {
+     "name": "fileExtension",
+     "type": "string",
+     "label": "File extension",
+     "control_type": "text"
+    },
+    {
+     "name": "md5Checksum",
+     "type": "string",
+     "label": "Md 5 checksum",
+     "control_type": "text"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number"
+    },
+    {
+     "name": "quotaBytesUsed",
+     "type": "integer",
+     "label": "Quota bytes used",
+     "control_type": "number"
+    },
+    {
+     "name": "headRevisionId",
+     "type": "string",
+     "label": "Head revision ID",
+     "control_type": "text"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Google Drive (Custom)",
+   "help": "Build your own Google Drive action with a HTTP request. The request will be authorized under your Google Drive connection OAuth scopes.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_permission",
+   "title": "Add permission to a file",
+   "description": "Add permission to a particular file in Google Drive",
+   "help": "This action adds permission to a particular file in Google Drive. Permissions are useful to transfer file ownership or to share a file to additional users, groups, domain or to anyone.",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of a file's shareable link provided by Drive."
+    },
+    {
+     "name": "role",
+     "type": "string",
+     "label": "Role",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "owner",
+      "organizer",
+      "fileOrganizer",
+      "writer",
+      "commenter",
+      "reader"
+     ],
+     "toggle_field": {
+      "name": "role",
+      "type": "string"
+     },
+     "hint": "The role granted by this permission."
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Share with",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "user",
+      "group",
+      "domain",
+      "anyone"
+     ],
+     "toggle_field": {
+      "name": "type",
+      "type": "string"
+     },
+     "hint": "When creating a permission, if this is set to a user or group, you must provide the email address for the user or group. When it is set to domain, you must provide a domain"
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text",
+     "hint": "Email address of the specific user or group to which the permission refers to. Required if Share with is selected as a user or group."
+    },
+    {
+     "name": "domain",
+     "type": "string",
+     "label": "Domain",
+     "control_type": "text",
+     "hint": "Domain to which the permission refers to. Required if Share with is selected as domain."
+    },
+    {
+     "name": "allowFileDiscovery",
+     "type": "number",
+     "label": "Allow file discovery?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "allowFileDiscovery",
+      "type": "string"
+     },
+     "hint": "Whether the permission allows the file to be discovered through search. This is only applicable for permissions of type domain or anyone . Defaults to true ."
+    },
+    {
+     "name": "sendNotificationEmail",
+     "type": "number",
+     "label": "Send notifications",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "sendNotificationEmail",
+      "type": "string"
+     },
+     "hint": "Whether to send notification to the user or the group about the permission. Not applicable if the file is shared to domain or anyone. Defaults to true for users and groups."
+    },
+    {
+     "name": "emailMessage",
+     "type": "string",
+     "label": "Notification message",
+     "control_type": "text",
+     "hint": "A plain text custom message to include in the notification email."
+    },
+    {
+     "name": "transferOwnership",
+     "type": "number",
+     "label": "Transfer ownership",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "transferOwnership",
+      "type": "string"
+     },
+     "hint": "Transfer ownership of the file to the user provided. Requires Share with to be set to user and Role to be set as owner . Defaults to false ."
+    },
+    {
+     "name": "moveToNewOwnersRoot",
+     "type": "number",
+     "label": "Move file to root of the user",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "moveToNewOwnersRoot",
+      "type": "string"
+     },
+     "hint": "Moves the file to the new owner’s root folder. Requires “Transfer ownership” to be set to true. Default is set to false."
+    },
+    {
+     "name": "useDomainAdminAccess",
+     "type": "number",
+     "label": "Use domain admin access?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "useDomainAdminAccess",
+      "type": "string"
+     },
+     "hint": "Issues the request with Domain Admin Access if the user who is connected is the Domain Admin. Useful in setting permissions for Shared Drive files, wherein the user is the admin of the domain owning t…"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Permission ID",
+     "control_type": "text"
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text"
+    },
+    {
+     "name": "domain",
+     "type": "string",
+     "label": "Domain",
+     "control_type": "text"
+    },
+    {
+     "name": "role",
+     "type": "string",
+     "label": "Role",
+     "control_type": "text"
+    },
+    {
+     "name": "view",
+     "type": "string",
+     "label": "View",
+     "control_type": "text"
+    },
+    {
+     "name": "allowFileDiscovery",
+     "type": "number",
+     "label": "Allow file discovery",
+     "control_type": "number"
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "photoLink",
+     "type": "string",
+     "label": "Photo link",
+     "control_type": "text"
+    },
+    {
+     "name": "teamDrivePermissionDetails",
+     "type": "array",
+     "label": "Team drive permission details",
+     "of": "object",
+     "properties": [
+      {
+       "name": "teamDrivePermissionType",
+       "type": "string",
+       "label": "Team drive permission type",
+       "control_type": "text"
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "inheritedFrom",
+       "type": "string",
+       "label": "Inherited from",
+       "control_type": "text"
+      },
+      {
+       "name": "inherited",
+       "type": "number",
+       "label": "Inherited",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "permissionDetails",
+     "type": "array",
+     "label": "Permission details",
+     "of": "object",
+     "properties": [
+      {
+       "name": "permissionType",
+       "type": "string",
+       "label": "Permission type",
+       "control_type": "text"
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "inheritedFrom",
+       "type": "string",
+       "label": "Inherited from",
+       "control_type": "text"
+      },
+      {
+       "name": "inherited",
+       "type": "number",
+       "label": "Inherited",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "deleted",
+     "type": "number",
+     "label": "Deleted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "copy_file",
+   "title": "Copy file",
+   "description": "Copy a file in Google Drive",
+   "help": "This action copies a file from source folder to destination folder in Google Drive. Copying folders is not allowed in Google Drive.",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of the shareable link ."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "hint": "Define new file name for the copied file."
+    },
+    {
+     "name": "parents",
+     "type": "string",
+     "label": "Destination folder",
+     "control_type": "tree",
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "parents",
+      "type": "string"
+     },
+     "hint": "Select the folder to place the copied file in. By default the file will be copied within the same folder in which the source file resides. Either the drive or drive.readonly scope is necessary to popu…"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "File ID",
+     "control_type": "text"
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text"
+    },
+    {
+     "name": "parents",
+     "type": "array",
+     "label": "Parents",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_folder",
+   "title": "Create folder",
+   "description": "Create folder in Google Drive",
+   "help": "This action creates a new folder in Google Drive. Learn more",
+   "input": [
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folderId",
+      "type": "string"
+     },
+     "hint": "Select parent folder to create new folder in. Either the drive or drive.readonly scope is necessary to populate the picklist. If neither is selected on the connection setup page, the picklist will not…"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of new folder"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "delete_file",
+   "title": "Delete file",
+   "description": "Delete a file from Google Drive",
+   "help": "Note that this action deletes the file PERMANENTLY in Google Drive and the file does not go into trash.",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of the shareable link ."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "string",
+     "label": "Success",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "download_file_contents",
+   "title": "Download file",
+   "description": "Download file contents from Google Drive",
+   "help": "This action downloads contents of a file in Google Drive. File contents can be used in subsequent recipe steps to upload the file into another app. There is no fixed limit on file size. Maximum file size depends on if the upload can finish within the job timeout limit. Only binary files can be downl…",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of the shareable link ."
+    },
+    {
+     "name": "chunk_size",
+     "type": "string",
+     "label": "Chunk size (KB)",
+     "control_type": "text",
+     "hint": "Configure this to optimize throughput. Larger chunk size will increase throughput, but may hit API limit. Default to 1024 KB. Learn more"
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": [
+    {
+     "name": "payload",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "export_file",
+   "title": "Export file",
+   "description": "Export a file in Google Drive",
+   "help": "This action can be used to export Google files in other MIME types, for example Google sheets to Excel format. The file content can be used in subsequent recipe steps to upload the file into another app. It can support maximum file size of 10MB .",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of a file's shareable link provided by Drive."
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "MIME type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.oasis.opendocument.text",
+      "application/rtf",
+      "application/pdf",
+      "text/plain",
+      "application/zip",
+      "application/epub+zip",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/x-vnd.oasis.opendocument.spreadsheet",
+      "text/csv",
+      "text/tab-separated-values",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.oasis.opendocument.presentation",
+      "image/jpeg",
+      "image/png",
+      "image/svg+xml",
+      "application/pdf",
+      "image/jpeg",
+      "image/png",
+      "image/svg+xml",
+      "application/vnd.google-apps.script+json"
+     ],
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "mimeType",
+      "type": "string"
+     },
+     "hint": "Eg: text/csv. Supported MIME types can be found here . Learn more about specific limitations due to the API limitations when using this MIME type feature."
+    }
+   ],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text"
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_permission",
+   "title": "Get permission of a file",
+   "description": "Get permission of a particular file in Google Drive",
+   "help": "This action obtains details of a particular file and a permission in Google Drive. Permissions showcase the file ownership and the sharing details of the file with additional users, groups, domain or with anyone.",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of a file's shareable link provided by Drive."
+    },
+    {
+     "name": "permission",
+     "type": "string",
+     "label": "Permission",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "permission",
+      "type": "string"
+     },
+     "hint": "Permission ID can be obtained from list permissions action."
+    },
+    {
+     "name": "useDomainAdminAccess",
+     "type": "number",
+     "label": "Use domain admin access?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "useDomainAdminAccess",
+      "type": "string"
+     },
+     "hint": "Issues the request with Domain Admin Access if the user who is connected is the Domain Admin. Useful in setting permissions for Shared Drive files, wherein the user is the admin of the domain owning t…"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Permission ID",
+     "control_type": "text"
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text"
+    },
+    {
+     "name": "domain",
+     "type": "string",
+     "label": "Domain",
+     "control_type": "text"
+    },
+    {
+     "name": "role",
+     "type": "string",
+     "label": "Role",
+     "control_type": "text"
+    },
+    {
+     "name": "view",
+     "type": "string",
+     "label": "View",
+     "control_type": "text"
+    },
+    {
+     "name": "allowFileDiscovery",
+     "type": "number",
+     "label": "Allow file discovery",
+     "control_type": "number"
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "photoLink",
+     "type": "string",
+     "label": "Photo link",
+     "control_type": "text"
+    },
+    {
+     "name": "teamDrivePermissionDetails",
+     "type": "array",
+     "label": "Team drive permission details",
+     "of": "object",
+     "properties": [
+      {
+       "name": "teamDrivePermissionType",
+       "type": "string",
+       "label": "Team drive permission type",
+       "control_type": "text"
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "inheritedFrom",
+       "type": "string",
+       "label": "Inherited from",
+       "control_type": "text"
+      },
+      {
+       "name": "inherited",
+       "type": "number",
+       "label": "Inherited",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "permissionDetails",
+     "type": "array",
+     "label": "Permission details",
+     "of": "object",
+     "properties": [
+      {
+       "name": "permissionType",
+       "type": "string",
+       "label": "Permission type",
+       "control_type": "text"
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "inheritedFrom",
+       "type": "string",
+       "label": "Inherited from",
+       "control_type": "text"
+      },
+      {
+       "name": "inherited",
+       "type": "number",
+       "label": "Inherited",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "deleted",
+     "type": "number",
+     "label": "Deleted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "list_permission",
+   "title": "List permissions of a file",
+   "description": "List permissions of a particular file in Google Drive",
+   "help": "This action is to list all permissions associated with a particular file in Google Drive. Permissions showcase the file ownership and the sharing details of the file with additional users, groups, domain or with anyone.",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of the shareable link ."
+    },
+    {
+     "name": "pageSize",
+     "type": "integer",
+     "label": "Maximum results",
+     "control_type": "integer",
+     "hint": "Enter a value for maximum results to be returned per page. Default maximum is 100"
+    },
+    {
+     "name": "pageToken",
+     "type": "integer",
+     "label": "Page token",
+     "control_type": "integer",
+     "hint": "Token to specify the next page in a query. This can be found from the “nextPageToken” value in the output of an earlier 'List permissions' action. If the page token is null, there are no more pages."
+    },
+    {
+     "name": "useDomainAdminAccess",
+     "type": "number",
+     "label": "Use domain admin access?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "useDomainAdminAccess",
+      "type": "string"
+     },
+     "hint": "Issues the request with Domain Admin Access if the user who is connected is the Domain Admin. Useful in setting permissions for Shared Drive files, wherein the user is the admin of the domain owning t…"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "nextPageToken",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text"
+    },
+    {
+     "name": "permissions",
+     "type": "array",
+     "label": "Permissions",
+     "of": "object",
+     "properties": [
+      {
+       "name": "kind",
+       "type": "string",
+       "label": "Kind",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Permission ID",
+       "control_type": "text"
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text"
+      },
+      {
+       "name": "domain",
+       "type": "string",
+       "label": "Domain",
+       "control_type": "text"
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "view",
+       "type": "string",
+       "label": "View",
+       "control_type": "text"
+      },
+      {
+       "name": "allowFileDiscovery",
+       "type": "number",
+       "label": "Allow file discovery",
+       "control_type": "number"
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "photoLink",
+       "type": "string",
+       "label": "Photo link",
+       "control_type": "text"
+      },
+      {
+       "name": "teamDrivePermissionDetails",
+       "type": "array",
+       "label": "Team drive permission details",
+       "of": "object",
+       "properties": [
+        {
+         "name": "teamDrivePermissionType",
+         "type": "string",
+         "label": "Team drive permission type",
+         "control_type": "text"
+        },
+        {
+         "name": "role",
+         "type": "string",
+         "label": "Role",
+         "control_type": "text"
+        },
+        {
+         "name": "inheritedFrom",
+         "type": "string",
+         "label": "Inherited from",
+         "control_type": "text"
+        },
+        {
+         "name": "inherited",
+         "type": "number",
+         "label": "Inherited",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "permissionDetails",
+       "type": "array",
+       "label": "Permission details",
+       "of": "object",
+       "properties": [
+        {
+         "name": "permissionType",
+         "type": "string",
+         "label": "Permission type",
+         "control_type": "text"
+        },
+        {
+         "name": "role",
+         "type": "string",
+         "label": "Role",
+         "control_type": "text"
+        },
+        {
+         "name": "inheritedFrom",
+         "type": "string",
+         "label": "Inherited from",
+         "control_type": "text"
+        },
+        {
+         "name": "inherited",
+         "type": "number",
+         "label": "Inherited",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "deleted",
+       "type": "number",
+       "label": "Deleted",
+       "control_type": "number"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "move_rename_file",
+   "title": "Rename or move file/folder",
+   "description": "Rename/move file or folder in Google Drive",
+   "help": "This action renames or moves a file/folder in Google Drive. If you want to rename, specified the Name field. If you want to move, specified the Parent folder field. Moving folder from your drive to Shared drive is not supported currently by Google Drive, only moving files is supported. Learn more",
+   "input": [
+    {
+     "name": "file_id",
+     "type": "string",
+     "label": "File or folder ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "For folder ID, click on the required folder and folder ID can be found at the end of URL. For file ID, right click on the file and select Get shareable link . The link is enabled if the Link sharing i…"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "hint": "New name of the file or folder."
+    },
+    {
+     "name": "parents",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "parents",
+      "type": "string"
+     },
+     "hint": "Select the parent folder. Either the drive or drive.readonly scope is necessary to populate the picklist. If neither is selected on the connection setup page, the picklist will not populate due to sco…"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "File ID",
+     "control_type": "text"
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text"
+    },
+    {
+     "name": "parents",
+     "type": "array",
+     "label": "Parents",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "remove_permission",
+   "title": "Remove permissions from a file",
+   "description": "Remove permission from a particular file in Google Drive",
+   "help": "This action removes a permission associated with a particular file in Google Drive. Permissions showcase the file ownership and the sharing details of the file with additional users, groups, domain or with anyone.",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of the shareable link ."
+    },
+    {
+     "name": "permission",
+     "type": "string",
+     "label": "Permission",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "permission",
+      "type": "string"
+     },
+     "hint": "Permission ID can be obtained using the List permissions action. In the select permission option, permissions are listed in the role - type - email address format. For example, owner - user - name@com…"
+    },
+    {
+     "name": "enforceExpansiveAccess",
+     "type": "number",
+     "label": "Enforce expansive access",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "enforceExpansiveAccess",
+      "type": "string"
+     },
+     "hint": "Whether to enforce the expansive access model."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "string",
+     "label": "Success",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "search_file_or_folder",
+   "title": "Search files or folders",
+   "description": "Search files or folders in Google Drive",
+   "help": "This action retrieves a list of files or folders that matches your search criteria. Learn more",
+   "input": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Files or folders",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Files",
+      "Folders"
+     ],
+     "hint": "Select whether to search for files or for folders"
+    },
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folderId",
+      "type": "string"
+     },
+     "hint": "Narrows down the search to within this folder. Matching files/folders in sub-folders will not be fetched. Leave blank to search through My Drive. Either the drive or drive.readonly scope is necessary …"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "hint": "Fetches files or folders whose names partially matches this given name"
+    },
+    {
+     "name": "modifiedTimeAfter",
+     "type": "string",
+     "label": "Modified after",
+     "control_type": "date_time",
+     "hint": "Fetch files modified after this date"
+    },
+    {
+     "name": "trashed",
+     "type": "string",
+     "label": "Trashed files?",
+     "control_type": "checkbox",
+     "hint": "Set to Yes to fetch trashed files or folders. Leave blank to fetch all files or folders."
+    },
+    {
+     "name": "starred",
+     "type": "string",
+     "label": "Starred files?",
+     "control_type": "checkbox",
+     "hint": "Set to Yes to fetch starred files or folders. Leave blank to fetch all files or folders."
+    },
+    {
+     "name": "owners",
+     "type": "string",
+     "label": "Owner email",
+     "control_type": "text",
+     "hint": "Fetches files or folders belonging to this user"
+    },
+    {
+     "name": "writers",
+     "type": "string",
+     "label": "Writer email",
+     "control_type": "text",
+     "hint": "Fetches files or folders this user has permissions to edit"
+    },
+    {
+     "name": "readers",
+     "type": "string",
+     "label": "Reader email",
+     "control_type": "text",
+     "hint": "Fetches files or folders this user has permissions to read"
+    },
+    {
+     "name": "sharedWithMe",
+     "type": "string",
+     "label": "Shared with me?",
+     "control_type": "checkbox",
+     "hint": "Fetch files shared with the connected user"
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "hint": "Query for filtering the search results. Refer this guide for the supported syntax. Use this field to specify an exact query based on which the files need to be fetched. “Name”, “Modified after”, “Tras…"
+    },
+    {
+     "name": "pageToken",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "The token for continuing a previous list request on the next page. This should be set to the value of nextPageToken from the previous response."
+    },
+    {
+     "name": "pageSize",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "hint": "The maximum number of files to return per page. Partial or empty result pages are possible even before the end of the files list has been reached. Acceptable values are 1 to 100, inclusive. Default is…"
+    }
+   ],
+   "output": [
+    {
+     "name": "nextPageToken",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text"
+    },
+    {
+     "name": "incompleteSearch",
+     "type": "number",
+     "label": "Incomplete search",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "mimeType",
+       "type": "string",
+       "label": "Mime type",
+       "control_type": "text"
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "starred",
+       "type": "number",
+       "label": "Starred",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "trashed",
+       "type": "number",
+       "label": "Trashed",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "explicitlyTrashed",
+       "type": "number",
+       "label": "Explicitly trashed",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "parents",
+       "type": "array",
+       "label": "Parents",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "version",
+       "type": "integer",
+       "label": "Version",
+       "control_type": "number"
+      },
+      {
+       "name": "webContentLink",
+       "type": "string",
+       "label": "Web content link",
+       "control_type": "text"
+      },
+      {
+       "name": "webViewLink",
+       "type": "string",
+       "label": "Web view link",
+       "control_type": "text"
+      },
+      {
+       "name": "iconLink",
+       "type": "string",
+       "label": "Icon link",
+       "control_type": "text"
+      },
+      {
+       "name": "thumbnailLink",
+       "type": "string",
+       "label": "Thumbnail link",
+       "control_type": "text"
+      },
+      {
+       "name": "viewedByMe",
+       "type": "number",
+       "label": "Viewed by me",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "viewedByMeTime",
+       "type": "date_time",
+       "label": "Viewed by me time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "createdTime",
+       "type": "date_time",
+       "label": "Created time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "modifiedTime",
+       "type": "date_time",
+       "label": "Modified time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "modifiedByMeTime",
+       "type": "date_time",
+       "label": "Modified by me time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "sharingUser",
+       "type": "object",
+       "label": "Sharing user",
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text"
+        },
+        {
+         "name": "permissionId",
+         "type": "string",
+         "label": "Permission ID",
+         "control_type": "text"
+        },
+        {
+         "name": "photoLink",
+         "type": "string",
+         "label": "Photo link",
+         "control_type": "text"
+        },
+        {
+         "name": "me",
+         "type": "number",
+         "label": "Me",
+         "control_type": "checkbox"
+        }
+       ]
+      },
+      {
+       "name": "owners",
+       "type": "array",
+       "label": "Owners",
+       "of": "object",
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text"
+        },
+        {
+         "name": "permissionId",
+         "type": "string",
+         "label": "Permission ID",
+         "control_type": "text"
+        },
+        {
+         "name": "photoLink",
+         "type": "string",
+         "label": "Photo link",
+         "control_type": "text"
+        },
+        {
+         "name": "me",
+         "type": "number",
+         "label": "Me",
+         "control_type": "checkbox"
+        }
+       ]
+      },
+      {
+       "name": "lastModifyingUser",
+       "type": "object",
+       "label": "Last modifying user",
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text"
+        },
+        {
+         "name": "permissionId",
+         "type": "string",
+         "label": "Permission ID",
+         "control_type": "text"
+        },
+        {
+         "name": "photoLink",
+         "type": "string",
+         "label": "Photo link",
+         "control_type": "text"
+        },
+        {
+         "name": "me",
+         "type": "number",
+         "label": "Me",
+         "control_type": "checkbox"
+        }
+       ]
+      },
+      {
+       "name": "shared",
+       "type": "number",
+       "label": "Shared",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "ownedByMe",
+       "type": "number",
+       "label": "Owned by me",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "viewersCanCopyContent",
+       "type": "number",
+       "label": "Viewers can copy content",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "writersCanShare",
+       "type": "number",
+       "label": "Writers can share",
+       "control_type": "checkbox"
+      },
+      {
+       "name": "originalFilename",
+       "type": "string",
+       "label": "Original filename",
+       "control_type": "text"
+      },
+      {
+       "name": "fullFileExtension",
+       "type": "string",
+       "label": "Full file extension",
+       "control_type": "text"
+      },
+      {
+       "name": "fileExtension",
+       "type": "string",
+       "label": "File extension",
+       "control_type": "text"
+      },
+      {
+       "name": "md5Checksum",
+       "type": "string",
+       "label": "Md 5 checksum",
+       "control_type": "text"
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "number"
+      },
+      {
+       "name": "quotaBytesUsed",
+       "type": "integer",
+       "label": "Quota bytes used",
+       "control_type": "number"
+      },
+      {
+       "name": "headRevisionId",
+       "type": "string",
+       "label": "Head revision ID",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_permission",
+   "title": "Update permission of a file",
+   "description": "Update permission of a particular file in Google Drive",
+   "help": "This action updates permission to a particular file in Google Drive. Permissions are useful to transfer file ownership or to share a file to additional users, groups, domain or to anyone.",
+   "input": [
+    {
+     "name": "fileId",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fileId",
+      "type": "string"
+     },
+     "hint": "File ID can be found in the output of other triggers/actions of Google Drive connector, or at the end of a file's shareable link provided by Drive."
+    },
+    {
+     "name": "permission",
+     "type": "string",
+     "label": "Permission",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "permission",
+      "type": "string"
+     },
+     "hint": "Permission ID can be obtained using the List permissions action."
+    },
+    {
+     "name": "role",
+     "type": "string",
+     "label": "Role",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "owner",
+      "organizer",
+      "fileOrganizer",
+      "writer",
+      "commenter",
+      "reader"
+     ],
+     "toggle_field": {
+      "name": "role",
+      "type": "string"
+     },
+     "hint": "The role granted by this permission."
+    },
+    {
+     "name": "useDomainAdminAccess",
+     "type": "number",
+     "label": "Use domain admin access?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "useDomainAdminAccess",
+      "type": "string"
+     },
+     "hint": "Issues the request with Domain Admin Access if the user who is connected is the Domain Admin. Useful in setting permissions for Shared Drive files, wherein the user is the admin of the domain owning t…"
+    },
+    {
+     "name": "transferOwnership",
+     "type": "number",
+     "label": "Transfer ownership",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "transferOwnership",
+      "type": "string"
+     },
+     "hint": "Transfer ownership of the file to the user email provided. For this the permission should have been shared with a user and the role should be set to owner . Defaults to false ."
+    },
+    {
+     "name": "removeExpiration",
+     "type": "number",
+     "label": "Remove expiration",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "removeExpiration",
+      "type": "string"
+     },
+     "hint": "Whether to remove the expiration date."
+    },
+    {
+     "name": "enforceExpansiveAccess",
+     "type": "number",
+     "label": "Enforce expansive access",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "enforceExpansiveAccess",
+      "type": "string"
+     },
+     "hint": "Whether to enforce the expansive access model."
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Permission ID",
+     "control_type": "text"
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text"
+    },
+    {
+     "name": "domain",
+     "type": "string",
+     "label": "Domain",
+     "control_type": "text"
+    },
+    {
+     "name": "role",
+     "type": "string",
+     "label": "Role",
+     "control_type": "text"
+    },
+    {
+     "name": "view",
+     "type": "string",
+     "label": "View",
+     "control_type": "text"
+    },
+    {
+     "name": "allowFileDiscovery",
+     "type": "number",
+     "label": "Allow file discovery",
+     "control_type": "number"
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "photoLink",
+     "type": "string",
+     "label": "Photo link",
+     "control_type": "text"
+    },
+    {
+     "name": "teamDrivePermissionDetails",
+     "type": "array",
+     "label": "Team drive permission details",
+     "of": "object",
+     "properties": [
+      {
+       "name": "teamDrivePermissionType",
+       "type": "string",
+       "label": "Team drive permission type",
+       "control_type": "text"
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "inheritedFrom",
+       "type": "string",
+       "label": "Inherited from",
+       "control_type": "text"
+      },
+      {
+       "name": "inherited",
+       "type": "number",
+       "label": "Inherited",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "permissionDetails",
+     "type": "array",
+     "label": "Permission details",
+     "of": "object",
+     "properties": [
+      {
+       "name": "permissionType",
+       "type": "string",
+       "label": "Permission type",
+       "control_type": "text"
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "inheritedFrom",
+       "type": "string",
+       "label": "Inherited from",
+       "control_type": "text"
+      },
+      {
+       "name": "inherited",
+       "type": "number",
+       "label": "Inherited",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "deleted",
+     "type": "number",
+     "label": "Deleted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "upload_file_stream",
+   "title": "Upload file",
+   "description": "Upload file to Google Drive",
+   "help": "This action uploads a file to Google Drive using multipart streaming upload. There is no fixed limit on file size. Maximum file size depends on if the upload can finish within the job timeout limit.",
+   "input": [
+    {
+     "name": "fileContent",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "Contents of the file to upload."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "hint": "Name of the uploaded file. If not specified, the uploaded file will be named as Untitled ."
+    },
+    {
+     "name": "parents",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "parents",
+      "type": "string"
+     },
+     "hint": "Select the parent folder. The uploaded file will be saved under My Drive if not specified. Either the drive or drive.readonly scope is necessary to populate the picklist. If neither is selected on the…"
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Upload file MIME type",
+     "control_type": "select",
+     "options": [
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.oasis.opendocument.text",
+      "application/rtf",
+      "application/pdf",
+      "text/plain",
+      "text/csv",
+      "application/zip",
+      "application/epub+zip",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/x-vnd.oasis.opendocument.spreadsheet",
+      "text/csv",
+      "text/tab-separated-values",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.oasis.opendocument.presentation",
+      "image/svg+xml",
+      "application/pdf",
+      "image/jpeg",
+      "image/png",
+      "image/svg+xml",
+      "application/json",
+      "application/vnd.google-apps.script+json"
+     ],
+     "toggle_field": {
+      "name": "mimeType",
+      "type": "string"
+     },
+     "hint": "This is the actual MIME type of the file which is being uploaded. Eg: image/jpeg . Google Drive will automatically detect an appropriate value from uploaded content if no value is provided."
+    },
+    {
+     "name": "targetMimeType",
+     "type": "string",
+     "label": "Target MIME type",
+     "control_type": "select",
+     "options": [
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.oasis.opendocument.text",
+      "application/rtf",
+      "application/pdf",
+      "text/plain",
+      "application/zip",
+      "application/epub+zip",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/x-vnd.oasis.opendocument.spreadsheet",
+      "text/csv",
+      "text/tab-separated-values",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.oasis.opendocument.presentation",
+      "image/svg+xml",
+      "application/pdf",
+      "image/jpeg",
+      "image/png",
+      "image/svg+xml",
+      "application/vnd.google-apps.script+json",
+      "application/vnd.google-apps.document",
+      "application/vnd.google-apps.spreadsheet",
+      "application/vnd.google-apps.presentation",
+      "application/vnd.google-apps.drawing",
+      "application/vnd.google-apps.script"
+     ],
+     "toggle_field": {
+      "name": "targetMimeType",
+      "type": "string"
+     },
+     "hint": "Learn more about specific limitations due to the API limitations when using this MIME type feature."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Description of the file."
+    },
+    {
+     "name": "starred",
+     "type": "boolean",
+     "label": "Starred",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "starred",
+      "type": "boolean"
+     },
+     "hint": "Whether the file should be \"Starred\" in Google Drive. Defaults to No if not specified."
+    },
+    {
+     "name": "viewersCanCopyContent",
+     "type": "boolean",
+     "label": "Viewers can copy content",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "viewersCanCopyContent",
+      "type": "boolean"
+     },
+     "hint": "Whether users with “View” access can copy the file contents. Defaults to Yes if not specified."
+    },
+    {
+     "name": "writersCanShare",
+     "type": "boolean",
+     "label": "Writers can share",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "writersCanShare",
+      "type": "boolean"
+     },
+     "hint": "Whether users with “Edit” access can share the file. Defaults to Yes if not specified. This field only works with My Drive but not Shared Drive ."
+    },
+    {
+     "name": "chunk_size",
+     "type": "string",
+     "label": "Chunk size (KB)",
+     "control_type": "text",
+     "hint": "Configure this to optimize throughput. Larger chunk size will increase throughput, but may hit API limit. Default to 1024 KB. Ensure that your chunk size is larger than 256KB, and it's in multiples of…"
+    },
+    {
+     "name": "copyRequiresWriterPermission",
+     "type": "boolean",
+     "label": "Copy requires writer permission",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "copyRequiresWriterPermission",
+      "type": "boolean"
+     },
+     "hint": "Whether the options to copy, print, or download this file, should be disabled for readers and commenters. Defaults to No if not specified."
+    },
+    {
+     "name": "properties",
+     "type": "array",
+     "label": "Properties",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "A collection of arbitrary key-value pairs which are visible to all."
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parents",
+     "type": "array",
+     "label": "Parents",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "starred",
+     "type": "boolean",
+     "label": "Starred",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "starred",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "viewersCanCopyContent",
+     "type": "boolean",
+     "label": "Viewers can copy content",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "viewersCanCopyContent",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "writersCanShare",
+     "type": "boolean",
+     "label": "Writers can share",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "writersCanShare",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "properties",
+     "type": "array",
+     "label": "Properties",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "webViewLink",
+     "type": "string",
+     "label": "Web view link",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

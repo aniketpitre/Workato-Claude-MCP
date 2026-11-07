@@ -1,0 +1,651 @@
+{
+ "name": "workato_genie",
+ "title": "Workato Genie",
+ "requires_connection": false,
+ "categories": [
+  "Artificial Intelligence"
+ ],
+ "aliases": [
+  "Workato Genie",
+  "genie",
+  "agent",
+  "ai"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "assign_task_to_genie",
+   "title": "Assign task to genie",
+   "description": "Assign a task to a genie to process autonomously",
+   "help": "Assigns a task for your genie to process autonomously. The output includes the genie's final response and a log of all actions performed. Knowledge base retrieval is limited to public documents.",
+   "input": [
+    {
+     "name": "genie_handle",
+     "type": "string",
+     "label": "Genie",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "genies_for_task_picklist",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "genie_handle",
+      "type": "string"
+     },
+     "hint": "The genie to assign the task to. Note: supported only for genies whose skills don't require runtime user connections or confirmations. {{#if input.genie_handle}}View selected genie here {{/if}}"
+    },
+    {
+     "name": "task_instructions",
+     "type": "string",
+     "label": "Task description to genie",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "The task description the genie will receive. Include clear instructions to ensure the genie understands how to process this task. Learn More"
+    },
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Additional context for genie",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "file_contents",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Add up to 10 files your genie can access when handling the task, in addition to public documents in its knowledge bases."
+    },
+    {
+     "name": "conversation_id",
+     "type": "string",
+     "label": "Conversation ID",
+     "control_type": "text",
+     "hint": "Accepts a conversation ID from a previous task assignment. If provided, the genie processes the task with its prior context and continues the same conversation."
+    },
+    {
+     "name": "custom_metadata",
+     "type": "array",
+     "label": "Task metadata",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true,
+       "hint": "Enter the name without any space or special characters. Each key must be unique."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true,
+       "hint": "Enter the value for the custom metadata"
+      }
+     ],
+     "hint": "Provide metadata in this task run that can be used in any skills the genie calls. This metadata is stable and excluded from the Genie context. You must define the metadata in the skill triggers as wel…"
+    },
+    {
+     "name": "structured_output",
+     "type": "string",
+     "label": "Configure genie output for usage in this recipe",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Allow the genie to output structured data rather than plain text for use in subsequent recipe steps"
+    }
+   ],
+   "output": [
+    {
+     "name": "response",
+     "type": "string",
+     "label": "Response",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "conversation_id",
+     "type": "string",
+     "label": "Conversation ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "genie_run_id",
+     "type": "string",
+     "label": "Genie run ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "artifacts",
+     "type": "array",
+     "label": "Tool calls",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "index",
+       "type": "integer",
+       "label": "Index",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "timestamp",
+       "type": "date_time",
+       "label": "Timestamp",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "input",
+       "type": "string",
+       "label": "Skill/RAG Tool Input",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "output",
+       "type": "string",
+       "label": "Skill/RAG Tool Output",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "ai_responses",
+     "type": "array",
+     "label": "History",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "llm_call_id",
+       "type": "string",
+       "label": "LLM call ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "message",
+       "type": "object",
+       "label": "Message",
+       "required": true,
+       "properties": [
+        {
+         "name": "llm_call_id",
+         "type": "string",
+         "label": "LLM call ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "file",
+         "type": "string",
+         "label": "File",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "tool_calls",
+       "type": "array",
+       "label": "Tool calls",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "call_id",
+         "type": "string",
+         "label": "Call ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "label",
+         "type": "string",
+         "label": "Label",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "args",
+         "type": "string",
+         "label": "Args",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "skill_id",
+         "type": "string",
+         "label": "Skill ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "input_data",
+         "type": "string",
+         "label": "Input data",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "timestamp",
+         "type": "string",
+         "label": "Timestamp",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "result",
+         "type": "object",
+         "label": "Result",
+         "required": true,
+         "properties": [
+          {
+           "name": "status",
+           "type": "string",
+           "label": "Status",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "timestamp",
+           "type": "string",
+           "label": "Timestamp",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content",
+           "type": "string",
+           "label": "Content",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_request",
+   "title": "Create approval request",
+   "description": "Create a new approval request",
+   "help": "Use this action to create a new approval request in the specified data table. The information from this request will be shared with the user assigned to the approval task.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Request data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "environment_tables_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select TABLE_NAME_PLACEHOLDER. {{/if}}"
+    },
+    {
+     "name": "creator_id",
+     "type": "string",
+     "label": "Created by",
+     "control_type": "text",
+     "required": true,
+     "hint": "Specify the User ID of the user that has initiated the request. The user must exist here"
+    }
+   ],
+   "output": [
+    {
+     "name": "request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "creator_id",
+     "type": "string",
+     "label": "Creator ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_task",
+   "title": "Assign task to user",
+   "description": "Assign a task to a user and wait for completion",
+   "help": "Use this action to assign a task to a user. The assignee will receive a prompt to approve or reject the request. The skill will wait until the task is completed or expires.",
+   "input": [
+    {
+     "name": "chat_trigger_handle",
+     "type": "string",
+     "label": "Genie",
+     "control_type": "select",
+     "pick_list": "genies_and_triggers_flat",
+     "hint": "The genie to process the event. For a genie with chat triggers, pick the interface that should handle it."
+    },
+    {
+     "name": "genie_id",
+     "type": "string",
+     "label": "Genie (legacy)",
+     "control_type": "text",
+     "visible_if": "false"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Request data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "environment_tables_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select TABLE_NAME_PLACEHOLDER. {{/if}}"
+    },
+    {
+     "name": "request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Choose an approval request (defined in Create request action Request ID) to create a user task for. Use a datapill or enter the exact Request ID."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Task name",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Describe what the assignee needs to do. Use datapills to personalize the message."
+    },
+    {
+     "name": "assignee_email",
+     "type": "string",
+     "label": "Assignee",
+     "control_type": "email",
+     "required": true,
+     "hint": "Specify the user (identified by email address) to assign the task to. The user must exist here ."
+    },
+    {
+     "name": "expires_in",
+     "type": "integer",
+     "label": "Time to complete task",
+     "control_type": "select",
+     "required": true,
+     "default": 10080,
+     "hint": "Tasks expire if they aren't completed within the specified timeframe. The maximum value is 30 days."
+    },
+    {
+     "name": "call_id",
+     "type": "string",
+     "label": "Call ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Use call_id from start genie trigger"
+    },
+    {
+     "name": "requester_conversation_id",
+     "type": "string",
+     "label": "Requester conversation ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Use conversation_id from start genie trigger"
+    },
+    {
+     "name": "creator_id",
+     "type": "string",
+     "label": "Created by",
+     "control_type": "text",
+     "required": true,
+     "hint": "Specify the User ID of the user that has initiated the request. The user must exist here"
+    }
+   ],
+   "output": [
+    {
+     "name": "task",
+     "type": "object",
+     "label": "Task",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Task ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Task name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "is_approved",
+       "type": "boolean",
+       "label": "Is Approved",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_approved",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "is_rejected",
+       "type": "boolean",
+       "label": "Is Rejected",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_rejected",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "is_expired",
+       "type": "boolean",
+       "label": "Is Expired",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_expired",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "created_at",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "completed_at",
+       "type": "date_time",
+       "label": "Completed at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "completed_by",
+       "type": "object",
+       "label": "Completed by",
+       "required": true,
+       "properties": [
+        {
+         "name": "user_id",
+         "type": "string",
+         "label": "User ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "user_name",
+         "type": "string",
+         "label": "User name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "reason",
+       "type": "string",
+       "label": "Reason",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "send_business_event",
+   "title": "Send business event",
+   "description": "Send business event to Genie",
+   "help": "Sends an event to the Genie to handle. The Genie will attempt to perform the task and send a summary to the user. If the user is not in Workato Users or does not have access to the Genie, this action will fail.",
+   "input": [
+    {
+     "name": "chat_trigger_handle",
+     "type": "string",
+     "label": "Genie",
+     "control_type": "select",
+     "pick_list": "genies_and_triggers_flat",
+     "hint": "The genie to process the event. For a genie with chat triggers, pick the interface that should handle it."
+    },
+    {
+     "name": "genie_id",
+     "type": "string",
+     "label": "Genie (legacy)",
+     "control_type": "text",
+     "visible_if": "false"
+    },
+    {
+     "name": "user_email",
+     "type": "string",
+     "label": "User email",
+     "control_type": "text",
+     "required": true,
+     "hint": "The email of the user that the Genie should work on this event with. User must be active and assigned access to this Genie."
+    },
+    {
+     "name": "notification_text",
+     "type": "string",
+     "label": "Notification to user",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "The notification sent to the user before the Genie starts processing the event"
+    },
+    {
+     "name": "business_event_data",
+     "type": "string",
+     "label": "Business event data",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "The event data from the application. Your Genie will attempt to handle the event and send a summary to the user"
+    },
+    {
+     "name": "prompt",
+     "type": "string",
+     "label": "Prompt",
+     "control_type": "text-area",
+     "visible_if": "false",
+     "hint": "Appended before the event data. This is optional and overrides Workato's standard prompt."
+    },
+    {
+     "name": "conversation_id",
+     "type": "string",
+     "label": "Conversation ID",
+     "control_type": "text",
+     "hint": "When provided, this will continue a previous conversation between the user and genie."
+    }
+   ],
+   "output": [
+    {
+     "name": "conversation_id",
+     "type": "string",
+     "label": "Conversation ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique identifier for the conversation."
+    }
+   ]
+  }
+ ]
+}

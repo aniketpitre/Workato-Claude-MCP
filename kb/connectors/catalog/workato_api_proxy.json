@@ -1,0 +1,384 @@
+{
+ "name": "workato_api_proxy",
+ "title": "API proxy by Workato",
+ "requires_connection": false,
+ "categories": [
+  "API tool",
+  "Workato"
+ ],
+ "aliases": [
+  "API proxy by Workato",
+  "endpoint",
+  "api",
+  "service"
+ ],
+ "triggers": [
+  {
+   "name": "receive_request",
+   "title": "New API proxy request",
+   "description": "New API proxy request",
+   "help": "Define the request and response schema for the API proxy endpoint.",
+   "input": [
+    {
+     "name": "request_schema",
+     "type": "object",
+     "label": "Request",
+     "required": true,
+     "properties": [
+      {
+       "name": "method",
+       "type": "string",
+       "label": "Method",
+       "control_type": "select",
+       "required": true,
+       "default": "GET",
+       "options": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "Endpoint path",
+       "control_type": "text",
+       "required": true,
+       "hint": "Define the endpoint path to be appended to the proxy base URL. It can include path parameters. Learn more."
+      },
+      {
+       "name": "url_preview",
+       "type": "string",
+       "label": "Proxy URL Preview",
+       "control_type": "custom",
+       "required": true
+      },
+      {
+       "name": "path_params",
+       "type": "string",
+       "label": "Path parameters",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Request content type",
+       "control_type": "select",
+       "required": true,
+       "visible_if": "input.request_schema.method != 'GET'",
+       "default": "application/json",
+       "options": [
+        "application/json",
+        "text/plain",
+        "application/xml",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data",
+        "application/octet-stream"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "json_body",
+       "type": "string",
+       "label": "Request body",
+       "control_type": "schema-designer",
+       "visible_if": "input.request_schema.method != 'GET' && input.request_schema.content_type == 'application/json'",
+       "extends_schema": true
+      },
+      {
+       "name": "xml_body",
+       "type": "string",
+       "label": "Request body",
+       "control_type": "schema-designer",
+       "visible_if": "input.request_schema.method != 'GET' && input.request_schema.content_type == 'application/xml'",
+       "extends_schema": true
+      },
+      {
+       "name": "url_encoded_body",
+       "type": "string",
+       "label": "Request body",
+       "control_type": "schema-designer",
+       "visible_if": "input.request_schema.method != 'GET' && input.request_schema.content_type == 'application/x-www-form-urlencoded'",
+       "extends_schema": true
+      },
+      {
+       "name": "parameters",
+       "type": "string",
+       "label": "Request query parameters",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "headers",
+       "type": "string",
+       "label": "Request headers",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      }
+     ]
+    },
+    {
+     "name": "response_schema",
+     "type": "object",
+     "label": "Response schema",
+     "required": true,
+     "properties": [
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Response content type",
+       "control_type": "select",
+       "required": true,
+       "default": "application/json",
+       "options": [
+        "application/json",
+        "text/plain",
+        "application/xml",
+        "application/octet-stream"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "headers",
+       "type": "string",
+       "label": "Response headers",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "responses",
+       "type": "array",
+       "label": "Responses",
+       "required": true,
+       "extends_schema": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "extends_schema": true
+        },
+        {
+         "name": "http_status_code",
+         "type": "string",
+         "label": "HTTP status code",
+         "control_type": "select",
+         "required": true,
+         "pick_list": "response_code_pick_list"
+        },
+        {
+         "name": "json_body",
+         "type": "string",
+         "label": "Response body",
+         "control_type": "schema-designer",
+         "visible_if": "input.response_schema.content_type == 'application/json'"
+        },
+        {
+         "name": "xml_body",
+         "type": "string",
+         "label": "Response body",
+         "control_type": "schema-designer",
+         "visible_if": "input.response_schema.content_type == 'application/xml'"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "context",
+     "type": "object",
+     "label": "Context",
+     "required": true,
+     "properties": [
+      {
+       "name": "calling_ip",
+       "type": "string",
+       "label": "Calling IP address",
+       "control_type": "text"
+      },
+      {
+       "name": "access_profile",
+       "type": "object",
+       "label": "Access profile",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Access profile ID",
+         "control_type": "integer"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Access profile name",
+         "control_type": "text"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Access profile authentication type",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "client",
+       "type": "object",
+       "label": "API client",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "API client ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "API client name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "jwt_payload",
+       "type": "object",
+       "label": "JWT claims",
+       "required": true,
+       "properties": [
+        {
+         "name": "iat",
+         "type": "date_time",
+         "label": "Issued At",
+         "control_type": "integer"
+        },
+        {
+         "name": "nbf",
+         "type": "date_time",
+         "label": "Not Before",
+         "control_type": "integer"
+        },
+        {
+         "name": "exp",
+         "type": "date_time",
+         "label": "Expiration Time",
+         "control_type": "integer"
+        },
+        {
+         "name": "aud",
+         "type": "string",
+         "label": "Audience",
+         "control_type": "text"
+        },
+        {
+         "name": "jti",
+         "type": "string",
+         "label": "JWT ID",
+         "control_type": "text"
+        },
+        {
+         "name": "iss",
+         "type": "string",
+         "label": "Issuer",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "introspect",
+       "type": "object",
+       "label": "Token introspection",
+       "required": true,
+       "properties": [
+        {
+         "name": "payload",
+         "type": "object",
+         "label": "Response Body",
+         "required": true,
+         "properties": [
+          {
+           "name": "active",
+           "type": "boolean",
+           "label": "Active",
+           "control_type": "checkbox",
+           "toggle_field": {
+            "name": "active",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "scope",
+           "type": "string",
+           "label": "Scope",
+           "control_type": "text"
+          },
+          {
+           "name": "client_id",
+           "type": "string",
+           "label": "Client ID",
+           "control_type": "text"
+          },
+          {
+           "name": "username",
+           "type": "string",
+           "label": "Username",
+           "control_type": "text"
+          },
+          {
+           "name": "token_type",
+           "type": "string",
+           "label": "Token type",
+           "control_type": "text"
+          },
+          {
+           "name": "exp",
+           "type": "string",
+           "label": "Exp",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "forward_request",
+   "title": "Forward request to target",
+   "description": "Forward GET request to target",
+   "help": "Choose what to do with the API proxy request before sending it to the target. Configure the target response schema to enable response transformation.",
+   "input": [],
+   "output": [
+    {
+     "name": "status_code",
+     "type": "string",
+     "label": "Status code",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "return_response",
+   "title": "Return response",
+   "description": "Return response without transformation",
+   "help": "Choose what to do with the target response before returning it to the client.",
+   "input": [],
+   "output": []
+  }
+ ]
+}

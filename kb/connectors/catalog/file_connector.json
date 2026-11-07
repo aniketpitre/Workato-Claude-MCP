@@ -1,0 +1,371 @@
+{
+ "name": "file_connector",
+ "title": "File tools by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Document/File",
+  "Marketing",
+  "Utilities",
+  "Workato"
+ ],
+ "aliases": [
+  "File tools by Workato",
+  "utility",
+  "workato",
+  "file",
+  "utilities",
+  "zip",
+  "unzip",
+  "compress",
+  "uncompress",
+  "Files by workato",
+  "files",
+  "image",
+  "images"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "compress_file",
+   "title": "Compress files",
+   "description": "Compress multiple files into one file",
+   "help": "Use this action to compress multiple files into one file. Compressed file contents will be returned using the chosen compression format.",
+   "input": [
+    {
+     "name": "compression_format",
+     "type": "string",
+     "label": "Compression format",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "zip",
+     "pick_list": "compression_format_list",
+     "hint": "Defaults to Zip if left blank."
+    },
+    {
+     "name": "archive_format",
+     "type": "string",
+     "label": "Archive format",
+     "control_type": "select",
+     "visible_if": "input.compression_format == \"gzip\"",
+     "default": "tar",
+     "pick_list": "archive_format_list",
+     "hint": "An archive format is required to combine multiple files into one archive file before compression."
+    },
+    {
+     "name": "password",
+     "type": "string",
+     "label": "Password",
+     "control_type": "text",
+     "visible_if": "input.compression_format == \"zip\"",
+     "hint": "Set a password if encryption is required."
+    },
+    {
+     "name": "unicode_names",
+     "type": "boolean",
+     "label": "Unicode encoding for filenames",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "unicode_names",
+      "type": "boolean"
+     },
+     "hint": "Set Yes if you are zipping non-english filenames and want to open them on Windows OS. Defaults to No if empty"
+    },
+    {
+     "name": "file_list",
+     "type": "array",
+     "label": "File list",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "file_name",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "required": true,
+       "hint": "File name including extension. E.g. jan_report.csv"
+      },
+      {
+       "name": "file_contents",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "compressed_file_contents",
+     "type": "string",
+     "label": "Compressed file contents",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "convert_html_to_markdown",
+   "title": "Convert HTML to Markdown",
+   "description": "Convert HTML to Markdown",
+   "help": "Convert HTML content to Markdown format. Dangerous tags and attributes are automatically stripped during conversion.",
+   "input": [
+    {
+     "name": "html_content",
+     "type": "string",
+     "label": "HTML content",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "HTML content to convert to Markdown format"
+    }
+   ],
+   "output": [
+    {
+     "name": "markdown_content",
+     "type": "string",
+     "label": "Markdown content",
+     "control_type": "text-area",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "read_file",
+   "title": "Get file from URL",
+   "description": "Get file from URL",
+   "help": "Get file contents from URL. Supports text and binary. Use streaming for files larger than 1024 MB .",
+   "input": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "Must be a publicly accessible URL"
+    },
+    {
+     "name": "base64_encode",
+     "type": "boolean",
+     "label": "Base64 encoding",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "base64_encode",
+      "type": "boolean"
+     },
+     "hint": "Select Yes when the downstream action expects Base64 encoded value"
+    },
+    {
+     "name": "include_line_breaks",
+     "type": "boolean",
+     "label": "Include line breaks?",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "include_line_breaks",
+      "type": "boolean"
+     },
+     "hint": "Select No to remove line breaks from the file content. Defaults to Yes if left blank."
+    },
+    {
+     "name": "is_large",
+     "type": "boolean",
+     "label": "Enable file streaming?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "is_large",
+      "type": "boolean"
+     },
+     "hint": "Select Yes when the file you are trying to download has a file size larger than 200MB."
+    },
+    {
+     "name": "file_size",
+     "type": "string",
+     "label": "File size",
+     "control_type": "text",
+     "visible_if": "input.is_large == 'true'",
+     "hint": "Provide file size (in bytes)."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": [
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "transform_image",
+   "title": "Transform image file",
+   "description": "Transform image file",
+   "help": "Use this action to convert an image file to required type/size. Maximum file size is 50 MB . Action will fail if file is larger.",
+   "input": [
+    {
+     "name": "input_image",
+     "type": "string",
+     "label": "Input image",
+     "control_type": "text",
+     "required": true,
+     "hint": "Image file content"
+    },
+    {
+     "name": "convert_to_type",
+     "type": "string",
+     "label": "Convert to",
+     "control_type": "select",
+     "options": [
+      "png",
+      "jpg"
+     ]
+    },
+    {
+     "name": "resize_to",
+     "type": "object",
+     "label": "Resize",
+     "properties": [
+      {
+       "name": "width",
+       "type": "string",
+       "label": "Width",
+       "control_type": "text",
+       "required": true,
+       "hint": "In pixel"
+      },
+      {
+       "name": "height",
+       "type": "string",
+       "label": "Height",
+       "control_type": "text",
+       "required": true,
+       "hint": "In pixel"
+      },
+      {
+       "name": "pad_image",
+       "type": "boolean",
+       "label": "Strict resize?",
+       "control_type": "checkbox",
+       "required": true,
+       "hint": "Resize maintains the aspect ratio and the resized image might be smaller than the specified size. To resize the image to exact measurement, set the flag to \"Yes\". When set to \"Yes\", Workato resizes th…"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "transformed_image",
+     "type": "string",
+     "label": "Transformed image",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "uncompress_file",
+   "title": "Uncompress a file",
+   "description": "Uncompress a file",
+   "help": "Uncompress a file and extract its contents. Supported file formats are .zip and .tar.gz . Maximum compressed file size allowed is 500 MB . Action will fail if the file is larger.",
+   "input": [
+    {
+     "name": "compression_format",
+     "type": "string",
+     "label": "Compression format",
+     "control_type": "select",
+     "pick_list": "compression_format_list",
+     "extends_schema": true,
+     "hint": "Defaults to Zip if left blank."
+    },
+    {
+     "name": "password",
+     "type": "string",
+     "label": "Password",
+     "control_type": "text",
+     "visible_if": "input.compression_format == \"zip\"",
+     "hint": "Provide the password if archive is encrypted."
+    },
+    {
+     "name": "archive_format",
+     "type": "string",
+     "label": "Archive format",
+     "control_type": "select",
+     "visible_if": "input.compression_format == \"gzip\"",
+     "pick_list": "archive_format_list",
+     "extends_schema": true,
+     "hint": "An archive format is required to combine multiple files into one archive file before compression.Use Tar to unarchive .gzip.tar files and None to unarchive .gzip files. Default is set to Tar if no val…"
+    },
+    {
+     "name": "file_contents",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "file_list",
+     "type": "array",
+     "label": "File list",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "file_name",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "file_contents",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "file_size",
+       "type": "integer",
+       "label": "File size",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "file_directory",
+       "type": "string",
+       "label": "File directory",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

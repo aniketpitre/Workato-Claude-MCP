@@ -1,0 +1,1298 @@
+{
+ "id": 56482412,
+ "name": "US Manual Trigger DELETE",
+ "description": null,
+ "applications": [
+  "clock",
+  "workato_variable",
+  "workato_recipe_function",
+  "workato_pub_sub",
+  "workato_db_table"
+ ],
+ "action_applications": [
+  "workato_variable",
+  "workato_recipe_function",
+  "workato_pub_sub",
+  "workato_db_table"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "12934"
+ ],
+ "categories": [
+  "Recipe Tools",
+  "Marketing"
+ ],
+ "copy_count": 5,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2024-12-05T22:49:18.068-08:00",
+ "source_url": "https://app.workato.com/recipes/56482412?community=us",
+ "steps": [
+  "clock.scheduled_event",
+  "workato_variable.declare_variable",
+  "workato_recipe_function.call_recipe",
+  "workato_variable.update_variables",
+  "workato_variable.declare_variable",
+  "workato_variable.update_variables",
+  "workato_variable.declare_variable",
+  "workato_recipe_function.call_recipe",
+  "workato_variable.update_variables",
+  "workato_pub_sub.publish_to_topic",
+  "workato_db_table.add_record"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "scheduled_event",
+  "as": "6c42337b",
+  "title": null,
+  "description": "<span class=\"provider\">Trigger</span> every 1 hours",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "time_unit": "Hours"
+  },
+  "input": {
+   "time_unit": "hours",
+   "trigger_every": "1"
+  },
+  "extended_input_schema": [
+   {
+    "control_type": "integer",
+    "default": "5",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Define repeating schedule. Enter whole numbers only.\n                        This field can be set to a minimum of 5 minutes.",
+    "label": "Trigger every",
+    "name": "trigger_every",
+    "optional": false,
+    "suffix": {
+     "text": "hours"
+    },
+    "type": "string"
+   },
+   {
+    "control_type": "select",
+    "hint": "Select the timezone to use. Leave it blank to use <b>{{authUser.account_timezone}}</b>",
+    "label": "Timezone",
+    "name": "timezone",
+    "optional": true,
+    "pick_list": "timezone_id_global_pick_list",
+    "pick_list_connection_less": true,
+    "type": "string"
+   },
+   {
+    "control_type": "date_time",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+    "label": "Start after",
+    "name": "start_after",
+    "optional": true,
+    "parse_output": "date_time_conversion",
+    "since_field": true,
+    "type": "date_time",
+    "ignore_timezone": true,
+    "render_input": "date_time_conversion"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "bf8b23b8",
+    "title": "  Create variables Request ID, Request Timestamp, Finalized Request Id?, Key ID, Signature, Payload (JSON)",
+    "description": "Create variables <span class=\"provider\">Request ID</span>, <span class=\"provider\">Request Timestamp</span>, <span class=\"provider\">Finalized Request Id?</span>, <span class=\"provider\">Key ID</span>, <span class=\"provider\">Signature</span>, <span class=\"provider\">Payload (JSON)</span>",
+    "keyword": "action",
+    "toggleCfg": {
+     "variables.data.finalized_request_id": true
+    },
+    "input": {
+     "variables": {
+      "schema": "[{\"control_type\":\"text\",\"label\":\"Request ID\",\"name\":\"request_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Request ID\"}},{\"control_type\":\"text\",\"label\":\"Request Timestamp\",\"name\":\"request_timestamp\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Request Timestamp\"}},{\"control_type\":\"checkbox\",\"label\":\"Finalized Request Id?\",\"render_input\":{},\"parse_output\":{},\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Finalized Request Id?\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"finalized_request_id\",\"type\":\"boolean\",\"optional\":true,\"details\":{\"real_name\":\"Finalized Request Id?\"}},\"name\":\"finalized_request_id\",\"type\":\"boolean\",\"optional\":true,\"details\":{\"real_name\":\"Finalized Request Id?\"}},{\"control_type\":\"text\",\"label\":\"Key ID\",\"name\":\"key_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Key ID\"}},{\"control_type\":\"text\",\"label\":\"Signature\",\"name\":\"Signature\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Signature\"}},{\"control_type\":\"text\",\"label\":\"Payload (JSON)\",\"name\":\"payload_json\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Payload (JSON)\"}}]",
+      "data": {
+       "request_timestamp": "=now.in_time_zone(\"America/Los_Angeles\")",
+       "request_id": "=workato.uuid",
+       "finalized_request_id": "false"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "label": "Request ID",
+      "name": "request_id",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "Request ID"
+      }
+     },
+     {
+      "control_type": "text",
+      "label": "Request Timestamp",
+      "name": "request_timestamp",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "Request Timestamp"
+      }
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Finalized Request Id?",
+      "name": "finalized_request_id",
+      "optional": true,
+      "parse_output": {},
+      "toggle_field": {
+       "label": "Finalized Request Id?",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "name": "finalized_request_id",
+       "type": "boolean",
+       "optional": true,
+       "details": {
+        "real_name": "Finalized Request Id?"
+       }
+      },
+      "toggle_hint": "Select from option list",
+      "type": "boolean",
+      "details": {
+       "real_name": "Finalized Request Id?"
+      },
+      "render_input": {}
+     },
+     {
+      "control_type": "text",
+      "label": "Key ID",
+      "name": "key_id",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "Key ID"
+      }
+     },
+     {
+      "control_type": "text",
+      "label": "Signature",
+      "name": "Signature",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "Signature"
+      }
+     },
+     {
+      "control_type": "text",
+      "label": "Payload (JSON)",
+      "name": "payload_json",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "Payload (JSON)"
+      }
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_field_label": "Add a variable",
+      "control_type": "form-schema-builder",
+      "empty_schema_title": "Add variables by giving them a name, type and default value",
+      "exclude_fields": [
+       "hint"
+      ],
+      "item_label": "variable",
+      "label": "Variables",
+      "mark_as_required": true,
+      "name": "variables",
+      "ngIf": "!input.name",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Request ID",
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "Request ID"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Request Timestamp",
+          "name": "request_timestamp",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "Request Timestamp"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Finalized Request Id?",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Finalized Request Id?",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "name": "finalized_request_id",
+           "type": "boolean",
+           "optional": true,
+           "details": {
+            "real_name": "Finalized Request Id?"
+           }
+          },
+          "name": "finalized_request_id",
+          "type": "boolean",
+          "optional": true,
+          "details": {
+           "real_name": "Finalized Request Id?"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Key ID",
+          "name": "key_id",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "Key ID"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Signature",
+          "name": "Signature",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "Signature"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Payload (JSON)",
+          "name": "payload_json",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "Payload (JSON)"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "name",
+     "type",
+     "variables.data.request_timestamp",
+     "variables",
+     "variables.schema",
+     "variables.data",
+     "variables.data.Signature",
+     "variables.data.request_id",
+     "variables.data.key_id",
+     "variables.data.request_generated",
+     "variables.data.default_error_message",
+     "variables.data.finalized_request_id",
+     "variables.data.payload_md_5_hex_digest",
+     "variables.data.payload_json"
+    ],
+    "comment": "Initial variables set up",
+    "uuid": "7a94c1ff-9d6b-42f4-89bb-623e65e58b2a",
+    "skip": false
+   },
+   {
+    "number": 2,
+    "provider": "workato_recipe_function",
+    "name": "call_recipe",
+    "as": "16e6c489",
+    "title": null,
+    "description": "Call <span class=\"provider\">[SEC] LF | Retrieve Key ID</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "flow_id": "[SEC] LF | Retrieve Key ID"
+    },
+    "input": {
+     "flow_id": "50417980",
+     "parameters": {
+      "datacenter": "US",
+      "request_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bf8b23b8\",\"path\":[\"request_id\"]}')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Result",
+      "name": "result",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Key ID",
+        "name": "key_id",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "Key arn",
+        "name": "key_arn",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "label": "Parameters",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Datacenter",
+        "name": "datacenter",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "Request ID",
+        "name": "request_id",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "comment": "Retrieve key ID for appropriate DC",
+    "uuid": "39968aa6-2a6a-4293-9acc-0a493d91395d",
+    "skip": false
+   },
+   {
+    "number": 3,
+    "provider": "workato_variable",
+    "name": "update_variables",
+    "as": "cca5a48f",
+    "title": null,
+    "description": "Update variables <span class=\"provider\">Key ID</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "name": [
+      {
+       "label": "Key ID (step 3)",
+       "value": "7a94c1ff-9d6b-42f4-89bb-623e65e58b2a:bf8b23b8:key_id"
+      }
+     ]
+    },
+    "input": {
+     "name": "7a94c1ff-9d6b-42f4-89bb-623e65e58b2a:bf8b23b8:key_id",
+     "key_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"16e6c489\",\"path\":[\"result\",\"key_id\"]}')}"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+      "label": "Key ID",
+      "name": "key_id",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "strip_interpolation": true
+     }
+    ],
+    "uuid": "16464049-78f1-4ae5-836c-a257af5ded2c",
+    "skip": false
+   },
+   {
+    "number": 4,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "51461d55",
+    "title": "  Create variables Request ID, Key ID, Command, Created At, Workspace",
+    "description": "Create variables <span class=\"provider\">Request ID</span>, <span class=\"provider\">Key ID</span>, <span class=\"provider\">Command</span>, <span class=\"provider\">Created At</span>, <span class=\"provider\">Workspace</span>",
+    "keyword": "action",
+    "toggleCfg": {
+     "variables.data.command": true
+    },
+    "input": {
+     "variables": {
+      "schema": "[{\"control_type\":\"text\",\"label\":\"Request ID\",\"name\":\"request_id\",\"type\":\"string\",\"optional\":true,\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true,\"parent\":[\"variables\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Key ID\",\"name\":\"key_id\",\"type\":\"string\",\"optional\":true,\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true,\"parent\":[\"variables\",\"data\"]},{\"control_type\":\"select\",\"label\":\"Command\",\"default\":\"delete\",\"name\":\"command\",\"type\":\"string\",\"optional\":true,\"hint\":\"Defaults to nil if not supplied.\",\"pick_list\":[[\"Create\",\"create\"],[\"Update\",\"update\"],[\"Get\",\"get\"],[\"Delete\",\"delete\"]],\"toggle_hint\":\"Select an option\",\"toggle_field\":{\"name\":\"command\",\"type\":\"string\",\"optional\":false,\"default\":\"update\",\"label\":\"Command\",\"hint\":\"Can be inferred as the specific HTTP method, in terms of operation to be carried out. Accepted values: <b>create</b>, <b>update</b> or <b>get</b> only. Refer to guide here for more information on executing these commands\",\"control_type\":\"text\",\"toggle_hint\":\"Enter custom value\",\"parent\":[\"variables\",\"data\"]},\"sticky\":true,\"parent\":[\"variables\",\"data\"]},{\"control_type\":\"date_time\",\"label\":\"Created At\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"created_at\",\"type\":\"date_time\",\"optional\":true,\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true,\"parent\":[\"variables\",\"data\"]},{\"properties\":[{\"control_type\":\"integer\",\"label\":\"Workspace ID\",\"parse_output\":\"integer_conversion\",\"hint\":\"Defaults to nil if not supplied.\",\"name\":\"workspace_id\",\"optional\":true,\"type\":\"integer\",\"render_input\":\"integer_conversion\",\"sticky\":true,\"parent\":[\"variables\",\"data\",\"workspace\"]}],\"label\":\"Workspace\",\"name\":\"workspace\",\"type\":\"object\",\"hint\":\"Defaults to nil if not supplied.\",\"optional\":true,\"sticky\":true,\"parent\":[\"variables\",\"data\"]}]",
+      "data": {
+       "command": "delete",
+       "request_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bf8b23b8\",\"path\":[\"request_id\"]}')}",
+       "created_at": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bf8b23b8\",\"path\":[\"request_timestamp\"]}')",
+       "workspace": {
+        "workspace_id": "4845928"
+       },
+       "key_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bf8b23b8\",\"path\":[\"key_id\"]}')}"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "hint": "Defaults to nil if not supplied.",
+      "label": "Request ID",
+      "name": "request_id",
+      "optional": true,
+      "sticky": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "hint": "Defaults to nil if not supplied.",
+      "label": "Key ID",
+      "name": "key_id",
+      "optional": true,
+      "sticky": true,
+      "type": "string"
+     },
+     {
+      "control_type": "select",
+      "default": "delete",
+      "hint": "Defaults to nil if not supplied.",
+      "label": "Command",
+      "name": "command",
+      "optional": true,
+      "pick_list": [
+       [
+        "Create",
+        "create"
+       ],
+       [
+        "Update",
+        "update"
+       ],
+       [
+        "Get",
+        "get"
+       ],
+       [
+        "Delete",
+        "delete"
+       ]
+      ],
+      "sticky": true,
+      "toggle_field": {
+       "name": "command",
+       "type": "string",
+       "optional": false,
+       "default": "update",
+       "label": "Command",
+       "hint": "Can be inferred as the specific HTTP method, in terms of operation to be carried out. Accepted values: <b>create</b>, <b>update</b> or <b>get</b> only. Refer to guide here for more information on executing these commands",
+       "control_type": "text",
+       "toggle_hint": "Enter custom value",
+       "parent": [
+        "variables",
+        "data"
+       ]
+      },
+      "toggle_hint": "Select an option",
+      "type": "string"
+     },
+     {
+      "control_type": "date_time",
+      "hint": "Defaults to nil if not supplied.",
+      "label": "Created At",
+      "name": "created_at",
+      "optional": true,
+      "parse_output": "date_time_conversion",
+      "sticky": true,
+      "type": "date_time",
+      "render_input": "date_time_conversion"
+     },
+     {
+      "hint": "Defaults to nil if not supplied.",
+      "label": "Workspace",
+      "name": "workspace",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Workspace ID",
+        "parse_output": "integer_conversion",
+        "hint": "Defaults to nil if not supplied.",
+        "name": "workspace_id",
+        "optional": true,
+        "type": "integer",
+        "render_input": "integer_conversion",
+        "sticky": true,
+        "parent": [
+         "variables",
+         "data",
+         "workspace"
+        ]
+       }
+      ],
+      "sticky": true,
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_field_label": "Add a variable",
+      "control_type": "form-schema-builder",
+      "empty_schema_title": "Add variables by giving them a name, type and default value",
+      "exclude_fields": [
+       "hint"
+      ],
+      "item_label": "variable",
+      "label": "Variables",
+      "mark_as_required": true,
+      "name": "variables",
+      "ngIf": "!input.name",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Request ID",
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true,
+          "parent": [
+           "variables",
+           "data"
+          ]
+         },
+         {
+          "control_type": "text",
+          "label": "Key ID",
+          "name": "key_id",
+          "type": "string",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true,
+          "parent": [
+           "variables",
+           "data"
+          ]
+         },
+         {
+          "control_type": "select",
+          "label": "Command",
+          "default": "delete",
+          "name": "command",
+          "type": "string",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "pick_list": [
+           [
+            "Create",
+            "create"
+           ],
+           [
+            "Update",
+            "update"
+           ],
+           [
+            "Get",
+            "get"
+           ],
+           [
+            "Delete",
+            "delete"
+           ]
+          ],
+          "toggle_hint": "Select an option",
+          "toggle_field": {
+           "name": "command",
+           "type": "string",
+           "optional": false,
+           "default": "update",
+           "label": "Command",
+           "hint": "Can be inferred as the specific HTTP method, in terms of operation to be carried out. Accepted values: <b>create</b>, <b>update</b> or <b>get</b> only. Refer to guide here for more information on executing these commands",
+           "control_type": "text",
+           "toggle_hint": "Enter custom value",
+           "parent": [
+            "variables",
+            "data"
+           ]
+          },
+          "sticky": true,
+          "parent": [
+           "variables",
+           "data"
+          ]
+         },
+         {
+          "control_type": "date_time",
+          "label": "Created At",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "name": "created_at",
+          "type": "date_time",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true,
+          "parent": [
+           "variables",
+           "data"
+          ]
+         },
+         {
+          "properties": [
+           {
+            "control_type": "integer",
+            "label": "Workspace ID",
+            "parse_output": "integer_conversion",
+            "hint": "Defaults to nil if not supplied.",
+            "name": "workspace_id",
+            "optional": true,
+            "type": "integer",
+            "render_input": "integer_conversion",
+            "sticky": true,
+            "parent": [
+             "variables",
+             "data",
+             "workspace"
+            ]
+           }
+          ],
+          "label": "Workspace",
+          "name": "workspace",
+          "type": "object",
+          "hint": "Defaults to nil if not supplied.",
+          "optional": true,
+          "sticky": true,
+          "parent": [
+           "variables",
+           "data"
+          ]
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.request_id",
+     "variables.data.key_id",
+     "variables.data.command",
+     "variables.data.created_at",
+     "variables.data.workspace",
+     "variables",
+     "variables.schema",
+     "variables.data",
+     "variables.data.workspace.email",
+     "variables.data.workspace.name",
+     "variables.data.workspace.workspace_type",
+     "variables.data.workspace.membership_id",
+     "variables.data.workspace.membership_label",
+     "variables.data.workspace.trial",
+     "variables.data.workspace.trial_duration",
+     "variables.data.workspace.billing_start_date",
+     "variables.data.workspace.ad_hoc_features",
+     "variables.data.workspace.ad_hoc_adapters",
+     "variables.data.workspace.plan_addons",
+     "variables.data.workspace.limits",
+     "variables.data.workspace.limits.custom_action_limit",
+     "variables.data.workspace.limits.billable_flow_limit",
+     "variables.data.workspace.limits.data_retention_policy",
+     "variables.data.workspace.limits.max_account_property",
+     "variables.data.workspace.limits.max_flows",
+     "variables.data.workspace.limits.max_hvr_tier1",
+     "variables.data.workspace.limits.max_hvr_tier2",
+     "variables.data.workspace.limits.max_hvr_tier3",
+     "variables.data.workspace.limits.max_lookup_table",
+     "variables.data.workspace.limits.max_personalized_connection",
+     "variables.data.workspace.limits.max_project_property",
+     "variables.data.workspace.limits.max_shared_account",
+     "variables.data.workspace.limits.max_topic",
+     "variables.data.workspace.limits.max_managed_user_grant",
+     "variables.data.workspace.limits.max_workato_schema",
+     "variables.data.workspace.limits.max_workato_template",
+     "variables.data.workspace.limits.max_worker_concurrency",
+     "variables.data.workspace.limits.max_workflow_app_user",
+     "variables.data.workspace.limits.max_secure_gateway_tunnel",
+     "variables.data.workspace.limits.opa_limit",
+     "variables.data.workspace.limits.shared_account_limit",
+     "variables.data.workspace.limits.workbots_limit",
+     "variables.data.workspace.federated_account",
+     "variables.data.workspace.federated_account.workspaces_limit",
+     "variables.data.workspace.federated_account.custom_action_limit",
+     "variables.data.workspace.federated_account.billable_flow_limit",
+     "variables.data.workspace.federated_account.saml_linking_enabled",
+     "variables.data.workspace.federated_account.opa_limit",
+     "variables.data.workspace.federated_account.max_additional_worker_concurrency",
+     "variables.data.attributes",
+     "variables.data.ownership_type",
+     "variables.data.workspace.workspace_id",
+     "variables.data.workspace.limits.federated_account",
+     "variables.data.workspace.limits.federated_account.workspaces_limit",
+     "variables.data.workspace.limits.federated_account.custom_action_limit",
+     "variables.data.workspace.limits.federated_account.billable_flow_limit",
+     "variables.data.workspace.limits.federated_account.saml_linking_enabled",
+     "variables.data.workspace.limits.federated_account.opa_limit",
+     "variables.data.workspace.limits.federated_account.max_additional_worker_concurrency",
+     "workspace.workspace_id",
+     "variables.data.command1",
+     "workspace.name",
+     "workspace.workspace_type"
+    ],
+    "comment": "Manual test changes made here",
+    "uuid": "41e5ba23-a564-4a01-aa9d-08615605b6ed",
+    "skip": false
+   },
+   {
+    "number": 5,
+    "provider": "workato_variable",
+    "name": "update_variables",
+    "as": "58e6a6ab",
+    "title": null,
+    "description": "Update variables <span class=\"provider\">Payload (JSON)</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "name": [
+      {
+       "label": "Payload (JSON) (step 3)",
+       "value": "7a94c1ff-9d6b-42f4-89bb-623e65e58b2a:bf8b23b8:payload_json"
+      }
+     ]
+    },
+    "input": {
+     "name": "7a94c1ff-9d6b-42f4-89bb-623e65e58b2a:bf8b23b8:payload_json",
+     "payload_json": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51461d55\",\"path\":[]}').to_json .to_s"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+      "label": "Payload (JSON)",
+      "name": "payload_json",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "strip_interpolation": true
+     }
+    ],
+    "comment": "Update Step 3 Payload",
+    "uuid": "e9b6c59e-b239-4327-907c-f52bf4bc4dfe",
+    "skip": false
+   },
+   {
+    "number": 6,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "ca2684aa",
+    "title": "  Create variable Payload Digest",
+    "description": "Create variable <span class=\"provider\">Payload Digest</span>",
+    "keyword": "action",
+    "input": {
+     "variables": {
+      "schema": "[{\"name\":\"payload_digest\",\"type\":\"string\",\"optional\":true,\"label\":\"Payload Digest\",\"details\":{\"real_name\":\"Payload Digest\"},\"control_type\":\"text\"}]",
+      "data": {
+       "payload_digest": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bf8b23b8\",\"path\":[\"payload_json\"]}').encode_sha512"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "label": "Payload Digest",
+      "name": "payload_digest",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "Payload Digest"
+      }
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_field_label": "Add a variable",
+      "control_type": "form-schema-builder",
+      "empty_schema_title": "Add variables by giving them a name, type and default value",
+      "exclude_fields": [
+       "hint"
+      ],
+      "item_label": "variable",
+      "label": "Variables",
+      "mark_as_required": true,
+      "name": "variables",
+      "ngIf": "!input.name",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Payload Digest",
+          "name": "payload_digest",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "Payload Digest"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.payload_digest"
+    ],
+    "comment": "Create payload digest for signing",
+    "uuid": "70dab89e-fcf8-4d18-b581-ec13704fb4b5",
+    "skip": false
+   },
+   {
+    "number": 7,
+    "provider": "workato_recipe_function",
+    "name": "call_recipe",
+    "as": "7999c045",
+    "title": null,
+    "description": "Call <span class=\"provider\">[SEC] LF | Sign Request</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "flow_id": "[SEC] LF | Sign Request"
+    },
+    "input": {
+     "flow_id": "50417982",
+     "parameters": {
+      "payload_digest": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca2684aa\",\"path\":[\"payload_digest\"]}')}",
+      "key_arn": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"16e6c489\",\"path\":[\"result\",\"key_arn\"]}')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Result",
+      "name": "result",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Signature",
+        "name": "signature",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "label": "Parameters",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Payload Digest",
+        "name": "payload_digest",
+        "type": "string",
+        "optional": false,
+        "hint": "A digest of the payload to be signed"
+       },
+       {
+        "control_type": "text",
+        "label": "Key ARN",
+        "name": "key_arn",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "9fadfd47-8a3b-4986-932c-ff945155886a",
+    "skip": false
+   },
+   {
+    "number": 8,
+    "provider": "workato_variable",
+    "name": "update_variables",
+    "as": "93e71400",
+    "title": null,
+    "description": "Update variables <span class=\"provider\">Signature</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "name": [
+      {
+       "label": "Signature (step 3)",
+       "value": "7a94c1ff-9d6b-42f4-89bb-623e65e58b2a:bf8b23b8:Signature"
+      }
+     ]
+    },
+    "input": {
+     "name": "7a94c1ff-9d6b-42f4-89bb-623e65e58b2a:bf8b23b8:Signature",
+     "Signature": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"7999c045\",\"path\":[\"result\",\"signature\"]}')}"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+      "label": "Signature",
+      "name": "Signature",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "strip_interpolation": true
+     }
+    ],
+    "uuid": "8a4807e9-8e50-4d77-872c-374eb6fa6595",
+    "skip": false
+   },
+   {
+    "number": 9,
+    "provider": "workato_pub_sub",
+    "name": "publish_to_topic",
+    "as": "39c8c4f9",
+    "title": null,
+    "description": "Publish a <span class=\"provider\">message</span> to <span class=\"provider\">[WRKSM] US | Request</span> Event topic",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "topic_id": "[WRKSM] US | Request"
+    },
+    "input": {
+     "topic_id": "36438",
+     "message": {
+      "signature": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bf8b23b8\",\"path\":[\"Signature\"]}')}",
+      "payload": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bf8b23b8\",\"path\":[\"payload_json\"]}')}"
+     }
+    },
+    "extended_input_schema": [
+     {
+      "label": "Message",
+      "name": "message",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Signature",
+        "name": "signature",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Payload",
+        "name": "payload",
+        "optional": false,
+        "type": "string"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "8cf600f0-b527-4703-9233-7bbba256435e",
+    "skip": false
+   },
+   {
+    "number": 10,
+    "provider": "workato_db_table",
+    "name": "add_record",
+    "as": "7dfe9df9",
+    "title": null,
+    "description": "Create a new record in <span class=\"provider\">a data table</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table_id": "Request Tracker"
+    },
+    "input": {
+     "table_id": "12934",
+     "parameters": {
+      "ceee53eb_b2fa_43f3_9183_67806d12df22": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51461d55\",\"path\":[\"request_id\"]}')}",
+      "84d95a84_6303_4515_9541_50f3d0d0a4a0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51461d55\",\"path\":[\"command\"]}')}",
+      "cc04d816_2e22_4431_a8d4_bd849e49c1a1": "US",
+      "c552e87b_72d4_4c61_9d27_79fe66c6e4e9": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+      "141ecbaf_5f41_4958_84bb_10844ef97752": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}').in_time_zone(\"Asia/Singapore\")"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Record",
+      "name": "record",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Record ID",
+        "type": "string",
+        "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Timestamp",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "141ecbaf_5f41_4958_84bb_10844ef97752"
+       },
+       {
+        "control_type": "text",
+        "label": "Request ID",
+        "type": "string",
+        "name": "ceee53eb_b2fa_43f3_9183_67806d12df22"
+       },
+       {
+        "control_type": "text",
+        "label": "Command",
+        "type": "string",
+        "name": "84d95a84_6303_4515_9541_50f3d0d0a4a0"
+       },
+       {
+        "control_type": "text",
+        "label": "DC",
+        "type": "string",
+        "name": "cc04d816_2e22_4431_a8d4_bd849e49c1a1"
+       },
+       {
+        "control_type": "text",
+        "label": "Email",
+        "type": "string",
+        "name": "639141b4_9522_408e_b51e_bd6dc52ccd29"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "type": "string",
+        "name": "eaac7c27_d37f_4bf6_99e2_57324599d348"
+       },
+       {
+        "control_type": "text",
+        "label": "Workspace ID",
+        "type": "string",
+        "name": "b2f81d7a_cc64_436a_9e91_2ed9fc1ce9a1"
+       },
+       {
+        "control_type": "text",
+        "label": "Request Job ID",
+        "type": "string",
+        "name": "c552e87b_72d4_4c61_9d27_79fe66c6e4e9"
+       },
+       {
+        "control_type": "text",
+        "label": "Response Job ID",
+        "type": "string",
+        "name": "b3c70820_e964_4049_b5ae_915e11fa3b4c"
+       },
+       {
+        "control_type": "text",
+        "label": "Response Payload",
+        "type": "string",
+        "name": "781cf7f2_df67_4338_bdf7_9105c6d062b0"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Fill the fields for the new record",
+      "label": "New record fields",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "date_time",
+        "label": "Timestamp",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "placeholder": "1970-01-01T00:00:00+00:00",
+        "optional": true,
+        "sticky": true,
+        "type": "date_time",
+        "name": "141ecbaf_5f41_4958_84bb_10844ef97752"
+       },
+       {
+        "control_type": "text",
+        "label": "Request ID",
+        "optional": false,
+        "sticky": true,
+        "type": "string",
+        "name": "ceee53eb_b2fa_43f3_9183_67806d12df22"
+       },
+       {
+        "control_type": "text",
+        "label": "Command",
+        "optional": false,
+        "sticky": true,
+        "type": "string",
+        "name": "84d95a84_6303_4515_9541_50f3d0d0a4a0"
+       },
+       {
+        "control_type": "text",
+        "label": "DC",
+        "optional": false,
+        "sticky": true,
+        "type": "string",
+        "name": "cc04d816_2e22_4431_a8d4_bd849e49c1a1"
+       },
+       {
+        "control_type": "text",
+        "label": "Email",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "639141b4_9522_408e_b51e_bd6dc52ccd29"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "eaac7c27_d37f_4bf6_99e2_57324599d348"
+       },
+       {
+        "control_type": "text",
+        "label": "Workspace ID",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "b2f81d7a_cc64_436a_9e91_2ed9fc1ce9a1"
+       },
+       {
+        "control_type": "text",
+        "label": "Request Job ID",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "c552e87b_72d4_4c61_9d27_79fe66c6e4e9"
+       },
+       {
+        "control_type": "text",
+        "label": "Response Job ID",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "b3c70820_e964_4049_b5ae_915e11fa3b4c"
+       },
+       {
+        "control_type": "text",
+        "label": "Response Payload",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "781cf7f2_df67_4338_bdf7_9105c6d062b0"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "table_id",
+     "parameters",
+     "parameters.ceee53eb_b2fa_43f3_9183_67806d12df22",
+     "parameters.84d95a84_6303_4515_9541_50f3d0d0a4a0",
+     "parameters.cc04d816_2e22_4431_a8d4_bd849e49c1a1",
+     "parameters.b2f81d7a_cc64_436a_9e91_2ed9fc1ce9a1",
+     "parameters.c552e87b_72d4_4c61_9d27_79fe66c6e4e9",
+     "output_format",
+     "parameters.b3c70820_e964_4049_b5ae_915e11fa3b4c",
+     "parameters.781cf7f2_df67_4338_bdf7_9105c6d062b0"
+    ],
+    "comment": "Create record in Data Table",
+    "uuid": "deea8da4-0490-4497-8ccd-4cb200910274",
+    "skip": false
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_0",
+    "label": "Request ID"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Status"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "Workspace ID"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Workspace Name"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workspace_management_connector_18826_1720579634\",\"line\":\"55ff0906\",\"path\":[\"request_id\"]}')}",
+   "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workspace_management_connector_18826_1720579634\",\"line\":\"55ff0906\",\"path\":[\"status\"]}')}",
+   "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workspace_management_connector_18826_1720579634\",\"line\":\"55ff0906\",\"path\":[\"workspace\",\"workspace_id\"]}')}",
+   "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workspace_management_connector_18826_1720579634\",\"line\":\"55ff0906\",\"path\":[\"workspace\",\"name\"]}')}"
+  },
+  "uuid": "9f333086-9691-457d-85b6-29d5652c03b4",
+  "unfinished": false,
+  "param": {}
+ }
+}

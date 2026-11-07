@@ -1,0 +1,549 @@
+{
+ "name": "zuora",
+ "title": "Zuora",
+ "requires_connection": true,
+ "categories": null,
+ "aliases": [
+  "Zuora"
+ ],
+ "triggers": [
+  {
+   "name": "new_updated_order",
+   "title": "New/updated order",
+   "description": "New or updated order in Zuora",
+   "help": "Triggers when an order is created or updated in Zuora. Note: The custom fields can't be retrieved when connection is established through Basic authentication type.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get orders created or updated since given date/time. Leave empty to get orders created or updated one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_record",
+   "title": "New/updated record",
+   "description": "New or updated records in Zuora",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "query_objects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom object, e.g. Account, to fetch the records from."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Zuora (Custom)",
+   "help": "Build your own Zuora action with a HTTP request. The request will be authorized with your Zuora connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_custom_object",
+   "title": "Create custom record",
+   "description": "Create custom record in Zuora",
+   "help": "Creates a record in Zuora. This action will work only with OAuth 2.0 authentication type.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Custom object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "custom_object",
+     "extends_schema": true,
+     "hint": "Select the custom object."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_record",
+   "title": "Create record",
+   "description": "Create record in Zuora",
+   "help": "Creates an record in Zuora.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "create_objects",
+     "extends_schema": true,
+     "hint": "Select an object to create."
+    }
+   ],
+   "output": [
+    {
+     "name": "Success",
+     "type": "number",
+     "label": "Success",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "Id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "Errors",
+     "type": "array",
+     "label": "Errors",
+     "of": "object",
+     "properties": [
+      {
+       "name": "Code",
+       "type": "string",
+       "label": "Code",
+       "control_type": "text"
+      },
+      {
+       "name": "Message",
+       "type": "string",
+       "label": "Message",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_custom_object_record",
+   "title": "Get custom record",
+   "description": "Get custom record in Zuora",
+   "help": "Retrieve the details of any custom record via its ID. This action will work only with OAuth 2.0 authentication type.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Custom object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "custom_object",
+     "extends_schema": true,
+     "hint": "Select the custom object."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_object",
+   "title": "Get record",
+   "description": "Get record by ID in Zuora",
+   "help": "Retrieve details of an object by its ID.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "subscription",
+      "account",
+      "product_rate_plan"
+     ],
+     "extends_schema": true,
+     "hint": "Select the object."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_order",
+   "title": "Get order by order number",
+   "description": "Get order in Zuora by order number",
+   "help": "Retrieve details of an order from Zuora by providing order number. Note: The custom fields can't be retrieved when connection is established through Basic authentication type.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Order number",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide order number. For ex: O-00000059"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_subscriptions",
+   "title": "Get orders by subscription number",
+   "description": "Get orders by subscription number in Zuora",
+   "help": "Retrieve details of an order from Zuora by providing subscription number. Note: The custom fields can't be retrieved when connection is established through Basic authentication type.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Subscription number",
+     "control_type": "text",
+     "required": true,
+     "hint": "The number of the subscription to retrieve orders for. For example, A-S00000001"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "query_records",
+   "title": "Query records",
+   "description": "Query records using ZOQL in Zuora",
+   "help": "Query records using ZOQL. The Zuora Object Query Language (ZOQL) is a simple SQL-like query language used to search and filter records in Zuora. Basic knowledge and experience with SQL is required to work with ZOQL. No joins, aggregate functions, wildcards and order by statements are supported in ZO…",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "query_objects",
+     "extends_schema": true,
+     "hint": "Select the object that should be queried."
+    },
+    {
+     "name": "query_string",
+     "type": "string",
+     "label": "ZOQL query",
+     "control_type": "text",
+     "required": true,
+     "hint": "The full ZOQL expression that specifies the object to query, the fields to retrieve, and any filters. Find more information here ."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 200,
+     "hint": "The size of the query result to be returned. Maximum is 2000."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_records",
+   "title": "Search records",
+   "description": "Search records in Zuora",
+   "help": "Search will return results that match all your search criteria. A maximum of 200 records will be fetched.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "query_objects",
+     "extends_schema": true,
+     "hint": "Select an object to search."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_custom_object",
+   "title": "Update custom record",
+   "description": "Update custom record in Zuora",
+   "help": "Updates record in Zuora. This action will work only with OAuth 2.0 authentication type.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Custom object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "custom_object",
+     "extends_schema": true,
+     "hint": "Select the custom object."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_order_triggerdate",
+   "title": "Update order trigger date",
+   "description": "Update trigger date for pending order in Zuora",
+   "help": "Updates the triggering dates for any of the order actions. Learn more .",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Order number",
+     "control_type": "text",
+     "required": true,
+     "hint": "Order number of a pending order in which you are to update an order action's triggering dates."
+    },
+    {
+     "name": "subscriptions",
+     "type": "array",
+     "label": "Subscriptions",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "subscriptionNumber",
+       "type": "string",
+       "label": "Subscription number",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "orderActions",
+       "type": "array",
+       "label": "Order actions",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "sequence",
+         "type": "integer",
+         "label": "Sequence",
+         "control_type": "integer",
+         "required": true,
+         "hint": "Identifies which order action will have its triggering dates updated. You can find sequence number from the get order action."
+        },
+        {
+         "name": "triggerDates",
+         "type": "array",
+         "label": "Trigger dates",
+         "of": "object",
+         "properties": [
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "hint": "Name of the trigger date of the order action. Allowed values are ServiceActivation , CustomerAcceptance"
+          },
+          {
+           "name": "triggerDate",
+           "type": "date_time",
+           "label": "Trigger date",
+           "control_type": "date",
+           "hint": "Trigger date in YYYY-MM-DD format. The date you are to set as the service activation date or the customer acceptance date."
+          }
+         ]
+        },
+        {
+         "name": "charges",
+         "type": "array",
+         "label": "Charges",
+         "of": "object",
+         "properties": [
+          {
+           "name": "chargeNumber",
+           "type": "string",
+           "label": "Charge number",
+           "control_type": "text",
+           "hint": "Charge number of the charge which needs the triggering date to be provided."
+          },
+          {
+           "name": "specificTriggerDate",
+           "type": "date_time",
+           "label": "Specific trigger date",
+           "control_type": "date",
+           "hint": "Date in YYYY-MM-DD format. The specific trigger date you are to set for the charge."
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "string",
+     "label": "Success",
+     "control_type": "text"
+    },
+    {
+     "name": "orderNumber",
+     "type": "string",
+     "label": "Order number",
+     "control_type": "text"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    },
+    {
+     "name": "accountNumber",
+     "type": "string",
+     "label": "Account number",
+     "control_type": "text"
+    },
+    {
+     "name": "subscriptions",
+     "type": "array",
+     "label": "Subscriptions",
+     "of": "object",
+     "properties": [
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      },
+      {
+       "name": "subscriptionNumber",
+       "type": "string",
+       "label": "Subscription number",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_record",
+   "title": "Update record",
+   "description": "Update record in Zuora",
+   "help": "Updates an record in Zuora.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "update_objects",
+     "extends_schema": true,
+     "hint": "Select an object to update."
+    }
+   ],
+   "output": [
+    {
+     "name": "Success",
+     "type": "number",
+     "label": "Success",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "Id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "Errors",
+     "type": "array",
+     "label": "Errors",
+     "of": "object",
+     "properties": [
+      {
+       "name": "Code",
+       "type": "string",
+       "label": "Code",
+       "control_type": "text"
+      },
+      {
+       "name": "Message",
+       "type": "string",
+       "label": "Message",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

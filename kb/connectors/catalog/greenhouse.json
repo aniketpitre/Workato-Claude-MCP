@@ -1,0 +1,631 @@
+{
+ "name": "greenhouse",
+ "title": "Greenhouse",
+ "requires_connection": true,
+ "categories": [
+  "Customer Service"
+ ],
+ "aliases": [
+  "Greenhouse"
+ ],
+ "triggers": [
+  {
+   "name": "new_event",
+   "title": "New event",
+   "description": "New object in Greenhouse",
+   "help": "Triggers when webhooks sent from Greenhouse. First, select a Greenhouse object, then select the event you want to trigger this recipe and configure these webhooks in Greenhouse to match the webhook URL endpoint given below. Connect to Greenhouse to get endpoint URL for Greenhouse.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event category",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "objects",
+     "extends_schema": true,
+     "hint": "Select the object type from picklist."
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "events",
+     "extends_schema": true,
+     "hint": "Select specific event."
+    },
+    {
+     "name": "webhook_secret_key",
+     "type": "string",
+     "label": "Secret key",
+     "control_type": "password",
+     "required_when_visible": true,
+     "hint": "Provide a randomly generated value at least 32 characters in length. Use this secret key to setup the webhook in Greenhouse. Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_object_v3",
+   "title": "New object (v3)",
+   "description": "New object in Greenhouse using v3",
+   "help": "Triggers when a new object is created in Greenhouse using v3.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "candidates",
+      "applications",
+      "interviews"
+     ],
+     "extends_schema": true,
+     "hint": "Select the object to poll (same choices as the v2 New object trigger, using Harvest v3)."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created one hour ago. Once recipe has been run or tested, value canno…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_objects_batch_v3",
+   "title": "New/updated object (v3)",
+   "description": "New/updated object in Greenhouse using v3",
+   "help": "Triggers when the selected object in Greenhouse using v3 is created or updated.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "candidates",
+      "applications",
+      "job_posts",
+      "jobs",
+      "offers",
+      "interviews",
+      "scorecards"
+     ],
+     "extends_schema": true,
+     "hint": "Select the object to poll (same choices as the v2 New/updated object trigger, using Harvest v3)."
+    },
+    {
+     "name": "from",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 500,
+     "hint": "Maximum number of records per trigger event. Minimum is 1, maximum is 500 , default is 500 ."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Greenhouse (Custom)",
+   "help": "Build your own Greenhouse action with a HTTP request. The request will be authorized with your Greenhouse connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_attachment_v3",
+   "title": "Create attachment (v3)",
+   "description": "Create attachment in Greenhouse using v3 endpoint",
+   "help": "Create an attachment for an application using the Greenhouse v3 endpoint. This action is available for OAuth 2.0 connections only.",
+   "input": [
+    {
+     "name": "application_id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "Filename",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Attachment type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "application_attachment_types",
+     "toggle_field": {
+      "name": "type",
+      "type": "string"
+     }
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "hint": "Map the raw file contents. Use this field or provide URL."
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "File URL",
+     "control_type": "text",
+     "hint": "Provide the URL to the file. Use this field or provide file content."
+    },
+    {
+     "name": "visibility",
+     "type": "string",
+     "label": "Visibility",
+     "control_type": "select",
+     "pick_list": "visibilities",
+     "toggle_field": {
+      "name": "visibility",
+      "type": "string"
+     },
+     "hint": "The visibility setting on the attachment."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Attachment ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "application_id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "candidate_id",
+     "type": "integer",
+     "label": "Candidate ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text"
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "Filename",
+     "control_type": "text"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_object_v3_post",
+   "title": "Create object (v3)",
+   "description": "Create an object in Greenhouse",
+   "help": "Create a candidate, application, note, education, employment record, job, or user using Greenhouse v3 endpoints. This action is available for OAuth 2.0 connections only.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "candidate",
+      "candidate_note",
+      "candidate_education",
+      "candidate_employment",
+      "candidate_application",
+      "job",
+      "user"
+     ],
+     "extends_schema": true,
+     "hint": "Select object type for v3 POST endpoint."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "mark_candidate_hire_v3",
+   "title": "Mark candidate as hired (v3)",
+   "description": "Mark candidate as hired in Greenhouse using v3 endpoint",
+   "help": "Mark an application as hired using the Greenhouse v3 endpoint. This action is available for OAuth 2.0 connections only.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "start_date",
+     "type": "date_time",
+     "label": "Start date",
+     "control_type": "date_time",
+     "hint": "Start date of the employee."
+    },
+    {
+     "name": "opening_id",
+     "type": "integer",
+     "label": "Opening ID",
+     "control_type": "integer",
+     "hint": "Opening ID to fill with this hire."
+    },
+    {
+     "name": "close_reason_id",
+     "type": "string",
+     "label": "Close Reason",
+     "control_type": "select",
+     "pick_list": "close_reasons",
+     "toggle_field": {
+      "name": "close_reason_id",
+      "type": "string"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "hired",
+     "type": "number",
+     "label": "Hired",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "move_application_v3",
+   "title": "Move application (v3)",
+   "description": "Move application in Greenhouse using v3 OAuth endpoint",
+   "help": "Move an application to a different stage within the same job or transfer it to another job using the Greenhouse v3 endpoint. This action is available for OAuth 2.0 connections only.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "from_stage_id",
+     "type": "integer",
+     "label": "From stage ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "The ID of the stage the application is currently in."
+    },
+    {
+     "name": "to_stage_id",
+     "type": "integer",
+     "label": "To stage ID",
+     "control_type": "integer",
+     "hint": "The ID of the stage to move the application to."
+    },
+    {
+     "name": "to_job_id",
+     "type": "integer",
+     "label": "To job ID",
+     "control_type": "integer",
+     "hint": "Provide to transfer the application to another job."
+    },
+    {
+     "name": "email_from_user_id",
+     "type": "integer",
+     "label": "Email from user ID",
+     "control_type": "integer",
+     "hint": "User ID used as the sender for move notification email."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "moved",
+     "type": "number",
+     "label": "Moved",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "reject_application_v3",
+   "title": "Reject application (v3)",
+   "description": "Reject application in Greenhouse using v3 endpoint",
+   "help": "Reject an application using the Greenhouse v3 endpoint. This action is available for OAuth 2.0 connections only.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "rejection_reason_id",
+     "type": "string",
+     "label": "Rejection reason ID",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "rejection_reasons",
+     "toggle_field": {
+      "name": "rejection_reason_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "hint": "Notes on why this application is rejected. This will be added to the activity feed."
+    },
+    {
+     "name": "send_email_at",
+     "type": "date_time",
+     "label": "Send email at",
+     "control_type": "date_time",
+     "hint": "When present, rejection email can be sent at this time."
+    },
+    {
+     "name": "email_template_id",
+     "type": "string",
+     "label": "Email template ID",
+     "control_type": "select",
+     "pick_list": "email_template",
+     "toggle_field": {
+      "name": "email_template_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "email_from_user_id",
+     "type": "integer",
+     "label": "Email from user ID",
+     "control_type": "integer",
+     "hint": "User ID to use as sender for rejection email."
+    },
+    {
+     "name": "custom_fields",
+     "type": "array",
+     "label": "Custom fields",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name_key",
+       "type": "string",
+       "label": "Name key",
+       "control_type": "text"
+      },
+      {
+       "name": "custom_field_id",
+       "type": "integer",
+       "label": "Custom field ID",
+       "control_type": "integer"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Application ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "rejected",
+     "type": "number",
+     "label": "Rejected",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "search_object_v3",
+   "title": "Search objects (v3)",
+   "description": "Search objects from selected Greenhouse v3 endpoint",
+   "help": "Search for candidates, applications, jobs, users, etc in Greenhouse v3 API.",
+   "input": [
+    {
+     "name": "endpoint",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "applications",
+      "application_stages",
+      "job_interview_stages",
+      "candidates",
+      "interviews",
+      "attachments",
+      "jobs",
+      "job_posts",
+      "job_hiring_managers",
+      "job_owners",
+      "openings",
+      "close_reasons",
+      "offers",
+      "sources",
+      "users",
+      "user_emails",
+      "departments",
+      "offices",
+      "custom_fields",
+      "custom_field_options",
+      "custom_field_offices",
+      "custom_field_departments",
+      "referrers",
+      "prospect_pools",
+      "scorecards"
+     ],
+     "extends_schema": true,
+     "hint": "Select the object type from picklist."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_object_v3_patch",
+   "title": "Update object (v3)",
+   "description": "Update an object in Greenhouse",
+   "help": "Update a candidate, application, job, or user using Greenhouse v3 endpoints. This action is available for OAuth 2.0 connections only.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "candidate",
+      "candidate_application",
+      "job",
+      "user"
+     ],
+     "extends_schema": true,
+     "hint": "Select object type for v3 PATCH endpoint."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

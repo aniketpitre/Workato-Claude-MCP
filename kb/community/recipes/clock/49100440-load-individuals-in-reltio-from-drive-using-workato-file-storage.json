@@ -1,0 +1,2256 @@
+{
+ "id": 49100440,
+ "name": "Load Individuals in Reltio from Drive using Workato File Storage",
+ "description": "The recipe is used to load data for Individual entity types in Reltio. The recipes executes the data load process  using the Workato File Storage. This recipe is a long running recipe does not stop after 90 minutes. It can load data from a file upto 1 GB.\n Note there is an additional recipe required. So if you decide to use this recipe search for the dependent recipe 'Function_Load_Individuals' in the Community Library and install that too.\nKey features of this recipes:\n1. Process data file upto 1GB of data per job\n2. Uses the File Storage that allows for large number of records to be processed. Tested with 1 million records in one file\n3. The function Function_Load_Individuals performs complex transformation as well as after the batch load into Reltio tracks the failed records.",
+ "applications": [
+  "clock",
+  "amazon_s3",
+  "google_drive",
+  "workato_files",
+  "workato_variable",
+  "workato_transformations",
+  "csv_parser",
+  "workato_list",
+  "workato_recipe_function"
+ ],
+ "action_applications": [
+  "amazon_s3",
+  "google_drive",
+  "workato_files",
+  "workato_variable",
+  "workato_transformations",
+  "csv_parser",
+  "workato_list",
+  "workato_recipe_function"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [],
+ "categories": [
+  "Recipe Tools",
+  "Marketing",
+  "Developer Tool",
+  "Document/File",
+  "Sales Enablement",
+  "Data Parser",
+  "Utilities"
+ ],
+ "copy_count": 26,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2024-06-24T05:13:47.379-07:00",
+ "source_url": "https://app.workato.com/recipes/49100440?community=us",
+ "steps": [
+  "clock.scheduled_event",
+  "amazon_s3.list_bucket",
+  "google_drive.download_file_contents",
+  "workato_files.store_file",
+  "workato_variable.declare_variable",
+  "workato_transformations.query_data",
+  "csv_parser.parse_csv",
+  "workato_variable.update_variables",
+  "workato_variable.declare_variable",
+  "workato_list.create_list",
+  "workato_variable.update_variables",
+  "workato_transformations.query_data",
+  "csv_parser.parse_csv",
+  "workato_recipe_function.call_recipe_async"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "scheduled_event",
+  "as": "b7b55e2c",
+  "title": null,
+  "description": "<span class=\"provider\">Trigger</span> on a <span class=\"provider\">custom schedule</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "time_unit": "Custom schedule",
+   "timezone": "Asia/Kolkata (+05:30)"
+  },
+  "input": {
+   "time_unit": "custom_schedule",
+   "timezone": "Asia/Kolkata",
+   "cron_expression": "31 14 22 JUN 6"
+  },
+  "extended_input_schema": [
+   {
+    "control_type": "cron",
+    "enforce_template_mode": true,
+    "hint": "                        Cron expressions are written as: <b>[minute]  [hour]  [day of month]  [month]  [day of week]</b>.\n                        <a href=\"https://crontab.guru/\" target=\"_blank\">Learn more</a>\n",
+    "label": "Cron expression",
+    "name": "cron_expression",
+    "optional": false,
+    "type": "string"
+   },
+   {
+    "control_type": "select",
+    "hint": "Select the timezone to use. Leave it blank to use <b>{{authUser.timezone}}</b>",
+    "label": "Timezone",
+    "name": "timezone",
+    "optional": true,
+    "pick_list": "timezone_id_global_pick_list",
+    "pick_list_connection_less": true,
+    "type": "string"
+   },
+   {
+    "control_type": "date_time",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+    "label": "Start after",
+    "name": "start_after",
+    "optional": true,
+    "parse_output": "date_time_conversion",
+    "since_field": true,
+    "type": "date_time",
+    "ignore_timezone": true,
+    "render_input": "date_time_conversion"
+   }
+  ],
+  "visible_config_fields": [
+   "time_unit",
+   "timezone"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "amazon_s3",
+    "name": "list_bucket",
+    "as": "6c2f48a7",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "prefix": {
+      "ids": [
+       "universal_person_2_5_0/"
+      ],
+      "titles": [
+       "universal_person_2_5_0/"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "fetch_owner": true,
+     "prefix": true
+    },
+    "input": {
+     "include_subfolders": "true",
+     "max_keys": "1000",
+     "fetch_owner": "false",
+     "prefix": "universal_person_2_5_0/"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "tree",
+      "hint": "Choose the folder path to monitor. Leave it blank if all files/objects are to be monitored.",
+      "label": "Folder",
+      "name": "prefix",
+      "optional": true,
+      "pick_list": "folders_tree",
+      "pick_list_unlinked_params": {
+       "bucket": "bucket",
+       "region": "region"
+      },
+      "sticky": true,
+      "toggle_field": {
+       "name": "prefix",
+       "optional": true,
+       "label": "Folder name",
+       "toggle_hint": "Enter folder name",
+       "type": "string",
+       "control_type": "text",
+       "hint": "Enter the path to monitor. Specify a folder or sub-folder path with a “/” at the end. For ex. <b>folder/subfolder1/</b>."
+      },
+      "toggle_hint": "Select a folder",
+      "tree_options": {
+       "selectable_folder": true
+      },
+      "type": "string"
+     },
+     {
+      "control_type": "checkbox",
+      "default": true,
+      "hint": "Select this option if you wish to monitor files/objects of sub-folders present in the source folder. Defaults to <b>No</b> if <b>Restrict to Path</b> is specified in connection. Otherwise, defaults to <b>Yes</b>.",
+      "label": "Include Sub-Folders?",
+      "name": "include_subfolders",
+      "optional": true,
+      "parse_output": "boolean_conversion",
+      "type": "number",
+      "render_input": "boolean_conversion"
+     },
+     {
+      "control_type": "integer",
+      "default": 1000,
+      "hint": "Set maximum number of objects to be retrieved. If left unspecified, this value defaults to <b>1000</b>. Maximum allowed size is <b>1000<b>.",
+      "label": "Response size",
+      "name": "max_keys",
+      "optional": true,
+      "parse_output": "integer_conversion",
+      "sticky": false,
+      "type": "integer",
+      "render_input": "integer_conversion"
+     },
+     {
+      "control_type": "text",
+      "hint": "Set this to any key in the specified bucket. Only objects after this key will be returned in the response. Note that for objects within sub-folders, the key value should include the path from the bucket root. For example, if <b>Folder</b> input is set to <b>test_dir/inner_dir/</b>, then this value should be set to <b>test_dir/inner_dir/<key-name></b>",
+      "label": "Start after",
+      "name": "start_after",
+      "optional": true,
+      "sticky": false,
+      "type": "string"
+     },
+     {
+      "control_type": "checkbox",
+      "default": false,
+      "hint": "Set this field to <b>Yes</b> to retrieve the owner information for each object in the response. Defaults to <b>No</b>.",
+      "label": "Fetch owner?",
+      "name": "fetch_owner",
+      "optional": true,
+      "parse_output": "float_conversion",
+      "sticky": false,
+      "toggle_field": {
+       "name": "fetch_owner",
+       "optional": true,
+       "label": "Fetch owner?",
+       "sticky": false,
+       "type": "string",
+       "control_type": "text",
+       "render_input": "boolean_conversion",
+       "toggle_hint": "Enter custom value",
+       "hint": "Set this field to <b>true</b> to retrieve the owner info for each object in the response. Defaults to <b>false</b>."
+      },
+      "toggle_hint": "Select from list",
+      "type": "number",
+      "render_input": "boolean_conversion"
+     },
+     {
+      "control_type": "text",
+      "hint": "Specify the <b>Next page token</b> from the output of a previous <b>List files in bucket</b> action to retrieve the next set of objects.",
+      "label": "Next page token",
+      "name": "continuation_token",
+      "optional": true,
+      "sticky": false,
+      "type": "string"
+     }
+    ],
+    "uuid": "164c34fe-e74c-4def-91fc-c52d69ec8713",
+    "skip": true
+   },
+   {
+    "number": 2,
+    "provider": "google_drive",
+    "name": "download_file_contents",
+    "as": "ef01bce5",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "fileId": {
+      "ids": [
+       "0ALPWua04mmrhUk9PVA",
+       "1qq_702EPrh_HzoKSoNzatv1sjpp6EmdN",
+       "1yFJ1sNxdLPIFizW7w0Ay_Myo2X3AzlHp",
+       "1MjJez_E6ZTMJrTsUZkAVk6A-W7G0qW3K"
+      ],
+      "titles": [
+       "My Drive",
+       "fivebyfive",
+       "Output_1_1_0",
+       "file_00.csv"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "fileId": false
+    },
+    "input": {
+     "fileId": "1MjJez_E6ZTMJrTsUZkAVk6A-W7G0qW3K"
+    },
+    "uuid": "bb6d6313-f4cc-4fca-8e05-91ff7c339d56",
+    "skip": false,
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 3,
+    "provider": "workato_files",
+    "name": "store_file",
+    "as": "ac480c76",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "file_path": {
+      "ids": [
+       "/"
+      ],
+      "titles": [
+       "Root directory"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "file_path": true,
+     "is_csv_file": true,
+     "csv_has_header": true
+    },
+    "input": {
+     "file_name": "large_file_ #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}.csv",
+     "file_path": "/",
+     "content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_drive\",\"line\":\"ef01bce5\",\"path\":[\"payload\"]}')}",
+     "is_csv_file": "true",
+     "schema_type": "auto",
+     "csv_has_header": "true",
+     "csv_delimiter": "comma",
+     "csv_quote": "double",
+     "encoding": "UTF-8",
+     "schema": "[{\"control_type\":\"text\",\"label\":\"UP ID\",\"type\":\"string\",\"name\":\"UP_ID\"},{\"control_type\":\"text\",\"label\":\"FIRST NAME\",\"type\":\"string\",\"name\":\"FIRST_NAME\"},{\"control_type\":\"text\",\"label\":\"LAST NAME\",\"type\":\"string\",\"name\":\"LAST_NAME\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL\",\"type\":\"string\",\"name\":\"BUSINESS_EMAIL\"},{\"control_type\":\"text\",\"label\":\"PROGRAMMATIC BUSINESS EMAILS\",\"type\":\"string\",\"name\":\"PROGRAMMATIC_BUSINESS_EMAILS\"},{\"control_type\":\"text\",\"label\":\"MOBILE PHONE\",\"type\":\"string\",\"name\":\"MOBILE_PHONE\"},{\"control_type\":\"text\",\"label\":\"DIRECT NUMBER\",\"type\":\"string\",\"name\":\"DIRECT_NUMBER\"},{\"control_type\":\"text\",\"label\":\"PERSONAL PHONE\",\"type\":\"string\",\"name\":\"PERSONAL_PHONE\"},{\"control_type\":\"text\",\"label\":\"LINKEDIN URL\",\"type\":\"string\",\"name\":\"LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS\",\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS 2\",\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PERSONAL CITY\",\"type\":\"string\",\"name\":\"PERSONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PERSONAL STATE\",\"type\":\"string\",\"name\":\"PERSONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP\",\"type\":\"string\",\"name\":\"PERSONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP 4\",\"type\":\"string\",\"name\":\"PERSONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS\",\"type\":\"string\",\"name\":\"PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"ADDITIONAL PERSONAL EMAILS\",\"type\":\"string\",\"name\":\"ADDITIONAL_PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"GENDER\",\"type\":\"string\",\"name\":\"GENDER\"},{\"control_type\":\"text\",\"label\":\"AGE RANGE\",\"type\":\"string\",\"name\":\"AGE_RANGE\"},{\"control_type\":\"text\",\"label\":\"MARRIED\",\"type\":\"string\",\"name\":\"MARRIED\"},{\"control_type\":\"text\",\"label\":\"CHILDREN\",\"type\":\"string\",\"name\":\"CHILDREN\"},{\"control_type\":\"text\",\"label\":\"INCOME RANGE\",\"type\":\"string\",\"name\":\"INCOME_RANGE\"},{\"control_type\":\"text\",\"label\":\"NET WORTH\",\"type\":\"string\",\"name\":\"NET_WORTH\"},{\"control_type\":\"text\",\"label\":\"HOMEOWNER\",\"type\":\"string\",\"name\":\"HOMEOWNER\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE\",\"type\":\"string\",\"name\":\"JOB_TITLE\"},{\"control_type\":\"text\",\"label\":\"SENIORITY LEVEL\",\"type\":\"string\",\"name\":\"SENIORITY_LEVEL\"},{\"control_type\":\"text\",\"label\":\"DEPARTMENT\",\"type\":\"string\",\"name\":\"DEPARTMENT\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS 2\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL CITY\",\"type\":\"string\",\"name\":\"PROFESSIONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL STATE\",\"type\":\"string\",\"name\":\"PROFESSIONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP 4\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"COMPANY NAME\",\"type\":\"string\",\"name\":\"COMPANY_NAME\"},{\"control_type\":\"text\",\"label\":\"COMPANY DOMAIN\",\"type\":\"string\",\"name\":\"COMPANY_DOMAIN\"},{\"control_type\":\"text\",\"label\":\"COMPANY PHONE\",\"type\":\"string\",\"name\":\"COMPANY_PHONE\"},{\"control_type\":\"text\",\"label\":\"COMPANY SIC\",\"type\":\"string\",\"name\":\"COMPANY_SIC\"},{\"control_type\":\"text\",\"label\":\"COMPANY ADDRESS\",\"type\":\"string\",\"name\":\"COMPANY_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"COMPANY CITY\",\"type\":\"string\",\"name\":\"COMPANY_CITY\"},{\"control_type\":\"text\",\"label\":\"COMPANY STATE\",\"type\":\"string\",\"name\":\"COMPANY_STATE\"},{\"control_type\":\"text\",\"label\":\"COMPANY ZIP\",\"type\":\"string\",\"name\":\"COMPANY_ZIP\"},{\"control_type\":\"text\",\"label\":\"COMPANY LINKEDIN URL\",\"type\":\"string\",\"name\":\"COMPANY_LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"COMPANY REVENUE\",\"type\":\"string\",\"name\":\"COMPANY_REVENUE\"},{\"control_type\":\"text\",\"label\":\"COMPANY EMPLOYEE COUNT\",\"type\":\"string\",\"name\":\"COMPANY_EMPLOYEE_COUNT\"},{\"control_type\":\"text\",\"label\":\"PRIMARY INDUSTRY\",\"type\":\"string\",\"name\":\"PRIMARY_INDUSTRY\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL VALIDATION STATUS\",\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL LAST SEEN\",\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS VALIDATION STATUS\",\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS LAST SEEN\",\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"COMPANY LAST UPDATED\",\"type\":\"string\",\"name\":\"COMPANY_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE LAST UPDATED\",\"type\":\"string\",\"name\":\"JOB_TITLE_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"LAST UPDATED\",\"type\":\"string\",\"name\":\"LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"WORK HISTORY\",\"type\":\"string\",\"name\":\"WORK_HISTORY\"},{\"control_type\":\"text\",\"label\":\"EDUCATION HISTORY\",\"type\":\"string\",\"name\":\"EDUCATION_HISTORY\"},{\"control_type\":\"text\",\"label\":\"CC ID\",\"type\":\"string\",\"name\":\"CC_ID\"},{\"control_type\":\"text\",\"label\":\"COMPANY DESCRIPTION\",\"type\":\"string\",\"name\":\"COMPANY_DESCRIPTION\"},{\"control_type\":\"text\",\"label\":\"RELATED DOMAINS\",\"type\":\"string\",\"name\":\"RELATED_DOMAINS\"},{\"control_type\":\"text\",\"label\":\"SOCIAL CONNECTIONS\",\"type\":\"string\",\"name\":\"SOCIAL_CONNECTIONS\"},{\"control_type\":\"text\",\"label\":\"DPV CODE\",\"type\":\"string\",\"name\":\"DPV_CODE\"}]"
+    },
+    "comment": "Load large file to filestorage",
+    "uuid": "e1c2a6ad-6a1d-419d-96a6-5c24b8336232"
+   },
+   {
+    "number": 4,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "bca60db3",
+    "title": "  Create variables Offset, Count, Total Records",
+    "description": "Create variables <span class=\"provider\">Offset</span>, <span class=\"provider\">Count</span>, <span class=\"provider\">Total Records</span>",
+    "keyword": "action",
+    "input": {
+     "variables": {
+      "schema": "[{\"name\":\"Offset\",\"type\":\"integer\",\"optional\":true,\"label\":\"Offset\",\"details\":{\"real_name\":\"Offset\"},\"control_type\":\"integer\"},{\"name\":\"Count\",\"type\":\"integer\",\"optional\":true,\"label\":\"Count\",\"details\":{\"real_name\":\"Count\"},\"control_type\":\"integer\"},{\"name\":\"total_records\",\"type\":\"integer\",\"optional\":true,\"label\":\"Total Records\",\"details\":{\"real_name\":\"Total Records\"},\"control_type\":\"integer\"}]",
+      "data": {
+       "Count": "1000",
+       "Offset": "0"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "integer",
+      "label": "Offset",
+      "name": "Offset",
+      "optional": true,
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "details": {
+       "real_name": "Offset"
+      }
+     },
+     {
+      "control_type": "integer",
+      "label": "Count",
+      "name": "Count",
+      "optional": true,
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "details": {
+       "real_name": "Count"
+      }
+     },
+     {
+      "control_type": "integer",
+      "label": "Total Records",
+      "name": "total_records",
+      "optional": true,
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "details": {
+       "real_name": "Total Records"
+      }
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_field_label": "Add a variable",
+      "control_type": "form-schema-builder",
+      "empty_schema_title": "Add variables by giving them a name, type and default value",
+      "exclude_fields": [
+       "hint"
+      ],
+      "item_label": "variable",
+      "label": "Variables",
+      "mark_as_required": true,
+      "name": "variables",
+      "ngIf": "!input.name",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "integer",
+          "label": "Offset",
+          "parse_output": "integer_conversion",
+          "name": "Offset",
+          "type": "integer",
+          "optional": true,
+          "details": {
+           "real_name": "Offset"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         },
+         {
+          "control_type": "integer",
+          "label": "Count",
+          "parse_output": "integer_conversion",
+          "name": "Count",
+          "type": "integer",
+          "optional": true,
+          "details": {
+           "real_name": "Count"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         },
+         {
+          "control_type": "integer",
+          "label": "Total Records",
+          "parse_output": "integer_conversion",
+          "name": "total_records",
+          "type": "integer",
+          "optional": true,
+          "details": {
+           "real_name": "Total Records"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.Offset",
+     "variables",
+     "variables.schema",
+     "variables.data",
+     "variables.data.Count",
+     "variables.data.total_records"
+    ],
+    "comment": "Customise the Count variable to define how many records you want in each CSV file.",
+    "uuid": "5ecfcab9-24e9-4c93-9623-ab23e8a49640",
+    "skip": false
+   },
+   {
+    "number": 5,
+    "provider": "workato_transformations",
+    "name": "query_data",
+    "as": "00b7524b",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "output.wf_file_path": {
+      "ids": [
+       "/",
+       "/Processed"
+      ],
+      "titles": [
+       "Root directory",
+       "Processed"
+      ]
+     },
+     "output.csv_delimiter": "comma",
+     "sources.0.data_source_type": "FileStorage file"
+    },
+    "toggleCfg": {
+     "output.csv_include_header": true,
+     "sources.0.csv_ignore_header": true,
+     "output.wf_file_path": true,
+     "sources.0.wf_file_path": true
+    },
+    "input": {
+     "output": {
+      "type": "content_stream",
+      "csv_include_header": "true",
+      "csv_delimiter": "comma",
+      "csv_quote_style": "necessary",
+      "csv_quote": "double",
+      "wf_file_path": "/Processed"
+     },
+     "sources": [
+      {
+       "csv_ignore_header": "false",
+       "csv_delimiter": "comma",
+       "table_name": "source",
+       "data_source_type": "wf_file",
+       "wf_file_path": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_files\",\"line\":\"ac480c76\",\"path\":[\"path\"]}')}",
+       "table_schema": "[{\"control_type\":\"text\",\"label\":\"UP ID\",\"optional\":true,\"type\":\"string\",\"name\":\"UP_ID\"},{\"control_type\":\"text\",\"label\":\"FIRST NAME\",\"optional\":true,\"type\":\"string\",\"name\":\"FIRST_NAME\"},{\"control_type\":\"text\",\"label\":\"LAST NAME\",\"optional\":true,\"type\":\"string\",\"name\":\"LAST_NAME\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL\",\"optional\":true,\"type\":\"string\",\"name\":\"BUSINESS_EMAIL\"},{\"control_type\":\"text\",\"label\":\"PROGRAMMATIC BUSINESS EMAILS\",\"optional\":true,\"type\":\"string\",\"name\":\"PROGRAMMATIC_BUSINESS_EMAILS\"},{\"control_type\":\"text\",\"label\":\"MOBILE PHONE\",\"optional\":true,\"type\":\"string\",\"name\":\"MOBILE_PHONE\"},{\"control_type\":\"text\",\"label\":\"DIRECT NUMBER\",\"optional\":true,\"type\":\"string\",\"name\":\"DIRECT_NUMBER\"},{\"control_type\":\"text\",\"label\":\"PERSONAL PHONE\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_PHONE\"},{\"control_type\":\"text\",\"label\":\"LINKEDIN URL\",\"optional\":true,\"type\":\"string\",\"name\":\"LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS 2\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PERSONAL CITY\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PERSONAL STATE\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP 4\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"ADDITIONAL PERSONAL EMAILS\",\"optional\":true,\"type\":\"string\",\"name\":\"ADDITIONAL_PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"GENDER\",\"optional\":true,\"type\":\"string\",\"name\":\"GENDER\"},{\"control_type\":\"text\",\"label\":\"AGE RANGE\",\"optional\":true,\"type\":\"string\",\"name\":\"AGE_RANGE\"},{\"control_type\":\"text\",\"label\":\"MARRIED\",\"optional\":true,\"type\":\"string\",\"name\":\"MARRIED\"},{\"control_type\":\"text\",\"label\":\"CHILDREN\",\"optional\":true,\"type\":\"string\",\"name\":\"CHILDREN\"},{\"control_type\":\"text\",\"label\":\"INCOME RANGE\",\"optional\":true,\"type\":\"string\",\"name\":\"INCOME_RANGE\"},{\"control_type\":\"text\",\"label\":\"NET WORTH\",\"optional\":true,\"type\":\"string\",\"name\":\"NET_WORTH\"},{\"control_type\":\"text\",\"label\":\"HOMEOWNER\",\"optional\":true,\"type\":\"string\",\"name\":\"HOMEOWNER\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE\",\"optional\":true,\"type\":\"string\",\"name\":\"JOB_TITLE\"},{\"control_type\":\"text\",\"label\":\"SENIORITY LEVEL\",\"optional\":true,\"type\":\"string\",\"name\":\"SENIORITY_LEVEL\"},{\"control_type\":\"text\",\"label\":\"DEPARTMENT\",\"optional\":true,\"type\":\"string\",\"name\":\"DEPARTMENT\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS 2\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL CITY\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL STATE\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP 4\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"COMPANY NAME\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_NAME\"},{\"control_type\":\"text\",\"label\":\"COMPANY DOMAIN\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_DOMAIN\"},{\"control_type\":\"text\",\"label\":\"COMPANY PHONE\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_PHONE\"},{\"control_type\":\"text\",\"label\":\"COMPANY SIC\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_SIC\"},{\"control_type\":\"text\",\"label\":\"COMPANY ADDRESS\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"COMPANY CITY\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_CITY\"},{\"control_type\":\"text\",\"label\":\"COMPANY STATE\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_STATE\"},{\"control_type\":\"text\",\"label\":\"COMPANY ZIP\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_ZIP\"},{\"control_type\":\"text\",\"label\":\"COMPANY LINKEDIN URL\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"COMPANY REVENUE\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_REVENUE\"},{\"control_type\":\"text\",\"label\":\"COMPANY EMPLOYEE COUNT\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_EMPLOYEE_COUNT\"},{\"control_type\":\"text\",\"label\":\"PRIMARY INDUSTRY\",\"optional\":true,\"type\":\"string\",\"name\":\"PRIMARY_INDUSTRY\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL VALIDATION STATUS\",\"optional\":true,\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL LAST SEEN\",\"optional\":true,\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS VALIDATION STATUS\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS LAST SEEN\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"COMPANY LAST UPDATED\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE LAST UPDATED\",\"optional\":true,\"type\":\"string\",\"name\":\"JOB_TITLE_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"LAST UPDATED\",\"optional\":true,\"type\":\"string\",\"name\":\"LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"WORK HISTORY\",\"optional\":true,\"type\":\"string\",\"name\":\"WORK_HISTORY\"},{\"control_type\":\"text\",\"label\":\"EDUCATION HISTORY\",\"optional\":true,\"type\":\"string\",\"name\":\"EDUCATION_HISTORY\"},{\"control_type\":\"text\",\"label\":\"CC ID\",\"optional\":true,\"type\":\"string\",\"name\":\"CC_ID\"},{\"control_type\":\"text\",\"label\":\"COMPANY DESCRIPTION\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_DESCRIPTION\"},{\"control_type\":\"text\",\"label\":\"RELATED DOMAINS\",\"optional\":true,\"type\":\"string\",\"name\":\"RELATED_DOMAINS\"},{\"control_type\":\"text\",\"label\":\"SOCIAL CONNECTIONS\",\"optional\":true,\"type\":\"string\",\"name\":\"SOCIAL_CONNECTIONS\"},{\"control_type\":\"text\",\"label\":\"DPV CODE\",\"optional\":true,\"type\":\"string\",\"name\":\"DPV_CODE\"}]",
+       "file_format": "csv"
+      }
+     ],
+     "query": {
+      "sql_select_query": "select count (8) as count from 'source'"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "integer",
+      "hint": "Number of lines in the resulting CSV",
+      "label": "Number of rows",
+      "name": "result_lines",
+      "parse_output": "integer_conversion",
+      "type": "integer"
+     },
+     {
+      "control_type": "number",
+      "hint": "Content size in bytes",
+      "label": "Content size (bytes)",
+      "name": "size",
+      "parse_output": "integer_conversion",
+      "type": "integer"
+     },
+     {
+      "control_type": "text",
+      "hint": "CSV contents (conditional, based on output type selected)",
+      "label": "CSV contents",
+      "name": "content",
+      "type": "string"
+     },
+     {
+      "control_type": "string",
+      "label": "Query execution time",
+      "name": "query_execution_time",
+      "type": "string"
+     },
+     {
+      "control_type": "string",
+      "label": "Total processing time",
+      "name": "total_processing_time",
+      "type": "string"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_item_label": "Add data source",
+      "empty_list_text": "At least one data-source must be provided.",
+      "empty_list_title": "Multiple data-sources can be added to perform `join` operations.",
+      "enforce_template_mode": true,
+      "hint": "Specify data-sources to perform SQL over them",
+      "initially_expanded": true,
+      "item_label": "Source",
+      "label": "Data Sources",
+      "list_mode": "static",
+      "name": "sources",
+      "of": "object",
+      "overridden_value": [
+       {
+        "csv_ignore_header": "false",
+        "csv_delimiter": "comma",
+        "table_name": "source",
+        "data_source_type": "wf_file",
+        "wf_file_path": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_files\",\"line\":\"ac480c76\",\"path\":[\"path\"]}')}",
+        "table_schema": "[{\"control_type\":\"text\",\"label\":\"No\",\"optional\":true,\"type\":\"string\",\"name\":\"No\"},{\"control_type\":\"text\",\"label\":\"Name\",\"optional\":true,\"type\":\"string\",\"name\":\"Name\"}]",
+        "file_format": "csv",
+        "prev_file_path": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_files\",\"line\":\"ac480c76\",\"path\":[\"path\"]}')}"
+       }
+      ],
+      "override": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Data source name",
+        "sticky": true,
+        "support_pills": false,
+        "extends_schema": false,
+        "optional": false,
+        "hint": "Provide an alias name for the data source. E.g: contacts, orders. This name is to be used in the query.",
+        "type": "string",
+        "name": "table_name"
+       },
+       {
+        "control_type": "select",
+        "label": "Data source type",
+        "extends_schema": true,
+        "change_on_blur": true,
+        "pick_list": "data_sources_list",
+        "hint": "                   Provide the data source type. To pass file content directly from upstream action/trigger chooser Content Stream.\n                   You can also refer to a file in Workato FileStorage or a table from Data tables.\n",
+        "type": "string",
+        "name": "data_source_type"
+       },
+       {
+        "control_type": "text-area",
+        "label": "Content input stream",
+        "sticky": true,
+        "strip_interpolation": true,
+        "change_on_blur": true,
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type === 'content_stream'",
+        "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type !== 'content_stream'",
+        "optional": true,
+        "hint": "Pass the contents or file contents reference pill here from an upstream action or trigger.",
+        "type": "string",
+        "name": "source_stream"
+       },
+       {
+        "control_type": "text",
+        "label": "FileStorage file",
+        "sticky": true,
+        "change_on_blur": true,
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type === 'wf_file'",
+        "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type !== 'wf_file'",
+        "extends_schema": true,
+        "optional": true,
+        "mark_as_required": true,
+        "toggle_hint": "Enter file path",
+        "toggle_field": {
+         "control_type": "tree",
+         "label": "FileStorage file",
+         "toggle_hint": "Choose a file",
+         "tree_options": {
+          "selectable_folder": false
+         },
+         "pick_list": "wf_files_list",
+         "extends_schema": true,
+         "toggle_to_primary_hint": "Enter file path",
+         "toggle_to_secondary_hint": "Choose a file",
+         "hint": "Choose the file to fetch the data",
+         "type": "string",
+         "name": "wf_file_path"
+        },
+        "hint": "                   Provide the FileStorage file full path here to fetch the data. For example, “samplepath/filename.csv”.\n",
+        "type": "string",
+        "name": "wf_file_path"
+       },
+       {
+        "control_type": "select",
+        "label": "Data table",
+        "pick_list": "current_user_table_list",
+        "extends_schema": true,
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type === 'wdb_table'",
+        "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table'",
+        "optional": true,
+        "hint": "Select a data table to fetch the data.",
+        "type": "string",
+        "name": "table_id"
+       },
+       {
+        "control_type": "select",
+        "label": "File format",
+        "extends_schema": true,
+        "change_on_blur": true,
+        "default": "csv",
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table'",
+        "optional": true,
+        "sticky": true,
+        "pick_list": [
+         [
+          "CSV",
+          "csv"
+         ],
+         [
+          "Excel",
+          "excel"
+         ]
+        ],
+        "hint": "Choose the data format . Today CSV and Excel file formats are supported.",
+        "type": "string",
+        "name": "file_format"
+       },
+       {
+        "control_type": "text",
+        "label": "Worksheet",
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+        "optionalExpression": "parentInput.file_format && parentInput.file_format !== 'excel'",
+        "optional": true,
+        "mark_as_required": true,
+        "extends_schema": false,
+        "hint": "Provide the sheet name from the Excel file where the data is available.",
+        "type": "string",
+        "name": "excel_sheet_name"
+       },
+       {
+        "control_type": "text",
+        "label": "Range",
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+        "optionalExpression": "parentInput.file_format && parentInput.file_format !== 'excel'",
+        "optional": true,
+        "mark_as_required": true,
+        "extends_schema": false,
+        "hint": "Provide the cell range of the data. e.g A5:F2000. Make sure to ignore the header row while providing the range.",
+        "type": "string",
+        "name": "excel_range"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "Data schema",
+        "sample_data_type": "csv",
+        "add_field_label": "Add column name",
+        "exclude_fields": [
+         "hint",
+         "parentId"
+        ],
+        "exclude_fields_types": [
+         "array",
+         "object"
+        ],
+        "empty_schema_title": "Provide column names in your CSV.",
+        "empty_schema_message": "<button type=\"button\" data-action=\"generateSchema\">Use a sample CSV file</button> to input all column names at once.",
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+        "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type === 'wdb_table' || parentInput.file_format !== 'csv'",
+        "optional": true,
+        "mark_as_required": true,
+        "enforce_generated_schema_fields_optional": true,
+        "hint": "                   Describe the schema of the CSV columns of the data source.\n                   The schema will be matched to the order of the columns coming from the source from left to right.\n",
+        "type": "string",
+        "name": "table_schema"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "Data schema",
+        "sample_data_type": "excel",
+        "add_field_label": "Add column name",
+        "exclude_fields": [
+         "hint",
+         "parentId"
+        ],
+        "exclude_fields_types": [
+         "array",
+         "object"
+        ],
+        "empty_schema_title": "Provide column names in your data source.",
+        "empty_schema_message": "Provide all column names within the selected range",
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+        "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type === 'wdb_table' || parentInput.file_format !== 'excel'",
+        "optional": true,
+        "mark_as_required": true,
+        "enforce_generated_schema_fields_optional": true,
+        "hint": "                   Describe the schema of the columns of the data source.\n                   The schema will be matched to the order of the columns coming from the source from left to right.\n",
+        "type": "string",
+        "name": "excel_table_schema"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Ignore header row",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Ignore header row",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "sticky": true,
+         "optional": true,
+         "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+         "hint": "Set to <b>Yes</b> if the CSV contents contain a header row that needs to be ignored. Default is set to No.",
+         "default": false,
+         "type": "boolean",
+         "name": "csv_ignore_header"
+        },
+        "sticky": true,
+        "optional": true,
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+        "hint": "Set to <b>Yes</b> if the CSV contents contain a header row that needs to be ignored. Default is set to No.",
+        "default": "false",
+        "type": "boolean",
+        "name": "csv_ignore_header"
+       },
+       {
+        "control_type": "select",
+        "label": "Column delimiter",
+        "pick_list": "csv_delimiters",
+        "sticky": true,
+        "optional": true,
+        "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+        "hint": "Select the character that separates columns in the CSV contents. Default is set to comma.",
+        "default": "comma",
+        "type": "string",
+        "name": "csv_delimiter"
+       }
+      ],
+      "sticky": true,
+      "type": "array"
+     },
+     {
+      "initially_expanded": true,
+      "label": "Query",
+      "name": "query",
+      "optional": false,
+      "override": true,
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [],
+          "label": "Data",
+          "optional": true,
+          "sticky": true,
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "label": "Query parameters",
+        "control_type": "form-schema-builder",
+        "item_label": "parameter",
+        "exclude_fields": [
+         "hint"
+        ],
+        "optional": true,
+        "override": true,
+        "sticky": true,
+        "schema_field_name_regex": [
+         "^[a-zA-Z][\\w]*$",
+         "Query parameter names only allow alphanumerical symbols and underscore (_)"
+        ],
+        "force_name_label_equality": true,
+        "hint": "Add the parameters to be used in the WHERE condition of the query below. e.g. id.\nNext, add the actual parameter value, which can be static or datapills.\nSelect the closest corresponding data type that your database is expecting for the bind variable\n",
+        "type": "object",
+        "name": "parameters"
+       },
+       {
+        "control_type": "code",
+        "label": "SQL query",
+        "language": "sql",
+        "sql_mime_type": "x-sql",
+        "support_pills": true,
+        "allow_formula_mode": true,
+        "sticky": true,
+        "optional": false,
+        "hint": "                       Add SQL select statement to query one or more data sources.\n                       Joins and more complex functions are also supported, more details available <a href=\"https://docs.workato.com/features/sql-transformations-query-setting.html\" target=\"_blank\">here</a>.\n                       To add parameters in the WHERE condition, use bind variables notation, e.g. id = @id, where id denotes the field name from the parameters section above.\n",
+        "type": "string",
+        "name": "sql_select_query"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "comment": "Query for smaller subsets using offset and limit and upload smaller files to another directory in filestorage",
+    "uuid": "1e6bf136-e78f-4108-bc9c-1c90f9d5643d",
+    "skip": false
+   },
+   {
+    "number": 6,
+    "provider": "csv_parser",
+    "name": "parse_csv",
+    "as": "8bb2fc38",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "input": {
+     "col_sep": ",",
+     "skip_first_line": "true",
+     "column_value_by": "index",
+     "quote_char": "\"",
+     "csv_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_transformations\",\"line\":\"00b7524b\",\"path\":[\"content\"]}')}",
+     "header_schema": "[{\"name\":\"count\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Count\"}]"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Lines",
+      "name": "lines",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "count",
+        "type": "string",
+        "name": "column_0"
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "uuid": "1ef93760-ee7d-4711-b861-96ad7041afb9",
+    "skip": false
+   },
+   {
+    "number": 7,
+    "provider": "workato_variable",
+    "name": "update_variables",
+    "as": "7625110f",
+    "title": null,
+    "description": "Update variables <span class=\"provider\">Total Records</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "name": [
+      {
+       "label": "Total Records (step 5)",
+       "value": "5ecfcab9-24e9-4c93-9623-ab23e8a49640:bca60db3:total_records"
+      }
+     ]
+    },
+    "input": {
+     "name": "5ecfcab9-24e9-4c93-9623-ab23e8a49640:bca60db3:total_records",
+     "total_records": "=_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"8bb2fc38\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_0\"]}').to_i"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "integer",
+      "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+      "label": "Total Records",
+      "name": "total_records",
+      "optional": true,
+      "parse_output": "integer_conversion",
+      "sticky": true,
+      "type": "integer",
+      "strip_interpolation": true
+     }
+    ],
+    "comment": "Query the dataset for total no of records",
+    "uuid": "c6d02322-9fe4-4823-b322-6bd1d8d7bc07",
+    "skip": false
+   },
+   {
+    "number": 8,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "68439512",
+    "title": "  Create variable No of pages",
+    "description": "Create variable <span class=\"provider\">No of pages</span>",
+    "keyword": "action",
+    "input": {
+     "variables": {
+      "schema": "[{\"name\":\"no_of_pages\",\"type\":\"integer\",\"optional\":true,\"label\":\"No of pages\",\"details\":{\"real_name\":\"No of pages\"},\"control_type\":\"integer\"}]",
+      "data": {
+       "no_of_pages": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"total_records\"]}')%_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Count\"]}') == 0)? (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"total_records\"]}')/_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Count\"]}')) : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"total_records\"]}')/_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Count\"]}') + 1)"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "integer",
+      "label": "No of pages",
+      "name": "no_of_pages",
+      "optional": true,
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "details": {
+       "real_name": "No of pages"
+      }
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_field_label": "Add a variable",
+      "control_type": "form-schema-builder",
+      "empty_schema_title": "Add variables by giving them a name, type and default value",
+      "exclude_fields": [
+       "hint"
+      ],
+      "item_label": "variable",
+      "label": "Variables",
+      "mark_as_required": true,
+      "name": "variables",
+      "ngIf": "!input.name",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "integer",
+          "label": "No of pages",
+          "parse_output": "integer_conversion",
+          "name": "no_of_pages",
+          "type": "integer",
+          "optional": true,
+          "details": {
+           "real_name": "No of pages"
+          },
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.no_of_pages"
+    ],
+    "comment": "Calculate the no of iterations required to paginate",
+    "uuid": "ac3af274-392b-4365-924f-167fd21b3a86",
+    "skip": false
+   },
+   {
+    "number": 9,
+    "provider": "workato_list",
+    "name": "create_list",
+    "as": "8dd81d4a",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "input": {
+     "size": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"68439512\",\"path\":[\"no_of_pages\"]}')}"
+    },
+    "uuid": "a4efe86c-49a3-49c9-a25c-c19c3503ee29",
+    "skip": false
+   },
+   {
+    "number": 10,
+    "as": "1d16d49d",
+    "keyword": "foreach",
+    "repeat_mode": "simple",
+    "clear_scope": "false",
+    "input": {},
+    "block": [
+     {
+      "number": 11,
+      "provider": "workato_variable",
+      "name": "update_variables",
+      "as": "a30b2746",
+      "title": null,
+      "description": "Update variables <span class=\"provider\">Offset</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "name": [
+        {
+         "label": "Offset (step 5)",
+         "value": "5ecfcab9-24e9-4c93-9623-ab23e8a49640:bca60db3:Offset"
+        }
+       ]
+      },
+      "input": {
+       "name": "5ecfcab9-24e9-4c93-9623-ab23e8a49640:bca60db3:Offset",
+       "Offset": "=_dp('{\"pill_type\":\"foreach_meta\",\"provider\":\"foreach\",\"line\":\"1d16d49d\",\"key\":\"index\"}') == 0 ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Offset\"]}') : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Offset\"]}') + _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Count\"]}'))"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "integer",
+        "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+        "label": "Offset",
+        "name": "Offset",
+        "optional": true,
+        "parse_output": "integer_conversion",
+        "sticky": true,
+        "type": "integer",
+        "strip_interpolation": true
+       }
+      ],
+      "comment": "Update offset for every iteration",
+      "uuid": "8a6e2687-b265-46a2-be29-21b8eff769a5",
+      "skip": false
+     },
+     {
+      "number": 12,
+      "provider": "workato_transformations",
+      "name": "query_data",
+      "as": "98bf78a6",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "output.wf_file_path": {
+        "ids": [
+         "/",
+         "/Processed"
+        ],
+        "titles": [
+         "Root directory",
+         "Processed"
+        ]
+       },
+       "output.csv_delimiter": "comma",
+       "sources.0.data_source_type": "FileStorage file"
+      },
+      "toggleCfg": {
+       "output.csv_include_header": true,
+       "sources.0.csv_ignore_header": true,
+       "output.wf_file_path": true,
+       "sources.0.wf_file_path": true
+      },
+      "input": {
+       "output": {
+        "type": "content_stream",
+        "csv_include_header": "true",
+        "csv_delimiter": "comma",
+        "csv_quote_style": "necessary",
+        "csv_quote": "double",
+        "wf_file_path": "/Processed"
+       },
+       "sources": [
+        {
+         "csv_ignore_header": "false",
+         "csv_delimiter": "comma",
+         "table_name": "source",
+         "data_source_type": "wf_file",
+         "wf_file_path": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_files\",\"line\":\"ac480c76\",\"path\":[\"path\"]}')}",
+         "table_schema": "[{\"control_type\":\"text\",\"label\":\"UP ID\",\"optional\":true,\"type\":\"string\",\"name\":\"UP_ID\"},{\"control_type\":\"text\",\"label\":\"FIRST NAME\",\"optional\":true,\"type\":\"string\",\"name\":\"FIRST_NAME\"},{\"control_type\":\"text\",\"label\":\"LAST NAME\",\"optional\":true,\"type\":\"string\",\"name\":\"LAST_NAME\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL\",\"optional\":true,\"type\":\"string\",\"name\":\"BUSINESS_EMAIL\"},{\"control_type\":\"text\",\"label\":\"PROGRAMMATIC BUSINESS EMAILS\",\"optional\":true,\"type\":\"string\",\"name\":\"PROGRAMMATIC_BUSINESS_EMAILS\"},{\"control_type\":\"text\",\"label\":\"MOBILE PHONE\",\"optional\":true,\"type\":\"string\",\"name\":\"MOBILE_PHONE\"},{\"control_type\":\"text\",\"label\":\"DIRECT NUMBER\",\"optional\":true,\"type\":\"string\",\"name\":\"DIRECT_NUMBER\"},{\"control_type\":\"text\",\"label\":\"PERSONAL PHONE\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_PHONE\"},{\"control_type\":\"text\",\"label\":\"LINKEDIN URL\",\"optional\":true,\"type\":\"string\",\"name\":\"LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS 2\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PERSONAL CITY\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PERSONAL STATE\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP 4\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"ADDITIONAL PERSONAL EMAILS\",\"optional\":true,\"type\":\"string\",\"name\":\"ADDITIONAL_PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"GENDER\",\"optional\":true,\"type\":\"string\",\"name\":\"GENDER\"},{\"control_type\":\"text\",\"label\":\"AGE RANGE\",\"optional\":true,\"type\":\"string\",\"name\":\"AGE_RANGE\"},{\"control_type\":\"text\",\"label\":\"MARRIED\",\"optional\":true,\"type\":\"string\",\"name\":\"MARRIED\"},{\"control_type\":\"text\",\"label\":\"CHILDREN\",\"optional\":true,\"type\":\"string\",\"name\":\"CHILDREN\"},{\"control_type\":\"text\",\"label\":\"INCOME RANGE\",\"optional\":true,\"type\":\"string\",\"name\":\"INCOME_RANGE\"},{\"control_type\":\"text\",\"label\":\"NET WORTH\",\"optional\":true,\"type\":\"string\",\"name\":\"NET_WORTH\"},{\"control_type\":\"text\",\"label\":\"HOMEOWNER\",\"optional\":true,\"type\":\"string\",\"name\":\"HOMEOWNER\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE\",\"optional\":true,\"type\":\"string\",\"name\":\"JOB_TITLE\"},{\"control_type\":\"text\",\"label\":\"SENIORITY LEVEL\",\"optional\":true,\"type\":\"string\",\"name\":\"SENIORITY_LEVEL\"},{\"control_type\":\"text\",\"label\":\"DEPARTMENT\",\"optional\":true,\"type\":\"string\",\"name\":\"DEPARTMENT\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS 2\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL CITY\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL STATE\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP 4\",\"optional\":true,\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"COMPANY NAME\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_NAME\"},{\"control_type\":\"text\",\"label\":\"COMPANY DOMAIN\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_DOMAIN\"},{\"control_type\":\"text\",\"label\":\"COMPANY PHONE\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_PHONE\"},{\"control_type\":\"text\",\"label\":\"COMPANY SIC\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_SIC\"},{\"control_type\":\"text\",\"label\":\"COMPANY ADDRESS\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"COMPANY CITY\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_CITY\"},{\"control_type\":\"text\",\"label\":\"COMPANY STATE\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_STATE\"},{\"control_type\":\"text\",\"label\":\"COMPANY ZIP\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_ZIP\"},{\"control_type\":\"text\",\"label\":\"COMPANY LINKEDIN URL\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"COMPANY REVENUE\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_REVENUE\"},{\"control_type\":\"text\",\"label\":\"COMPANY EMPLOYEE COUNT\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_EMPLOYEE_COUNT\"},{\"control_type\":\"text\",\"label\":\"PRIMARY INDUSTRY\",\"optional\":true,\"type\":\"string\",\"name\":\"PRIMARY_INDUSTRY\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL VALIDATION STATUS\",\"optional\":true,\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL LAST SEEN\",\"optional\":true,\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS VALIDATION STATUS\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS LAST SEEN\",\"optional\":true,\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"COMPANY LAST UPDATED\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE LAST UPDATED\",\"optional\":true,\"type\":\"string\",\"name\":\"JOB_TITLE_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"LAST UPDATED\",\"optional\":true,\"type\":\"string\",\"name\":\"LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"WORK HISTORY\",\"optional\":true,\"type\":\"string\",\"name\":\"WORK_HISTORY\"},{\"control_type\":\"text\",\"label\":\"EDUCATION HISTORY\",\"optional\":true,\"type\":\"string\",\"name\":\"EDUCATION_HISTORY\"},{\"control_type\":\"text\",\"label\":\"CC ID\",\"optional\":true,\"type\":\"string\",\"name\":\"CC_ID\"},{\"control_type\":\"text\",\"label\":\"COMPANY DESCRIPTION\",\"optional\":true,\"type\":\"string\",\"name\":\"COMPANY_DESCRIPTION\"},{\"control_type\":\"text\",\"label\":\"RELATED DOMAINS\",\"optional\":true,\"type\":\"string\",\"name\":\"RELATED_DOMAINS\"},{\"control_type\":\"text\",\"label\":\"SOCIAL CONNECTIONS\",\"optional\":true,\"type\":\"string\",\"name\":\"SOCIAL_CONNECTIONS\"},{\"control_type\":\"text\",\"label\":\"DPV CODE\",\"optional\":true,\"type\":\"string\",\"name\":\"DPV_CODE\"}]",
+         "file_format": "csv"
+        }
+       ],
+       "query": {
+        "sql_select_query": "select UP_ID,\nFIRST_NAME,\nLAST_NAME,\nBUSINESS_EMAIL,\nPROGRAMMATIC_BUSINESS_EMAILS,\nMOBILE_PHONE,\nDIRECT_NUMBER,\nPERSONAL_PHONE,\nLINKEDIN_URL,\nPERSONAL_ADDRESS,\nPERSONAL_ADDRESS_2,\nPERSONAL_CITY,\nPERSONAL_STATE,\nPERSONAL_ZIP,\nPERSONAL_ZIP4,\nPERSONAL_EMAILS,\nADDITIONAL_PERSONAL_EMAILS,\nGENDER,\nAGE_RANGE,\nMARRIED,\nCHILDREN,\nINCOME_RANGE,\nNET_WORTH,\nHOMEOWNER,\nJOB_TITLE,\nSENIORITY_LEVEL,\nDEPARTMENT,\nPROFESSIONAL_ADDRESS,\nPROFESSIONAL_ADDRESS_2,\nPROFESSIONAL_CITY,\nPROFESSIONAL_STATE,\nPROFESSIONAL_ZIP,\nPROFESSIONAL_ZIP4,\nCOMPANY_NAME,\nCOMPANY_DOMAIN,\nCOMPANY_PHONE,\nCOMPANY_SIC,\nCOMPANY_ADDRESS,\nCOMPANY_CITY,\nCOMPANY_STATE,\nCOMPANY_ZIP,\nCOMPANY_LINKEDIN_URL,\nCOMPANY_REVENUE,\nCOMPANY_EMPLOYEE_COUNT,\nPRIMARY_INDUSTRY,\nBUSINESS_EMAIL_VALIDATION_STATUS,\nBUSINESS_EMAIL_LAST_SEEN,\nPERSONAL_EMAILS_VALIDATION_STATUS,\nPERSONAL_EMAILS_LAST_SEEN,\nCOMPANY_LAST_UPDATED,\nJOB_TITLE_LAST_UPDATED,\nLAST_UPDATED,\nCC_ID,\nRELATED_DOMAINS,\nSOCIAL_CONNECTIONS,\nDPV_CODE from 'source' limit #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Count\"]}')} offset #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bca60db3\",\"path\":[\"Offset\"]}')}"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "integer",
+        "hint": "Number of lines in the resulting CSV",
+        "label": "Number of rows",
+        "name": "result_lines",
+        "parse_output": "integer_conversion",
+        "type": "integer"
+       },
+       {
+        "control_type": "number",
+        "hint": "Content size in bytes",
+        "label": "Content size (bytes)",
+        "name": "size",
+        "parse_output": "integer_conversion",
+        "type": "integer"
+       },
+       {
+        "control_type": "text",
+        "hint": "CSV contents (conditional, based on output type selected)",
+        "label": "CSV contents",
+        "name": "content",
+        "type": "string"
+       },
+       {
+        "control_type": "string",
+        "label": "Query execution time",
+        "name": "query_execution_time",
+        "type": "string"
+       },
+       {
+        "control_type": "string",
+        "label": "Total processing time",
+        "name": "total_processing_time",
+        "type": "string"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_item_label": "Add data source",
+        "empty_list_text": "At least one data-source must be provided.",
+        "empty_list_title": "Multiple data-sources can be added to perform `join` operations.",
+        "enforce_template_mode": true,
+        "hint": "Specify data-sources to perform SQL over them",
+        "initially_expanded": true,
+        "item_label": "Source",
+        "label": "Data Sources",
+        "list_mode": "static",
+        "name": "sources",
+        "of": "object",
+        "overridden_value": [
+         {
+          "csv_ignore_header": "false",
+          "csv_delimiter": "comma",
+          "table_name": "source",
+          "data_source_type": "wf_file",
+          "wf_file_path": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_files\",\"line\":\"ac480c76\",\"path\":[\"path\"]}')}",
+          "table_schema": "[{\"control_type\":\"text\",\"label\":\"No\",\"optional\":true,\"type\":\"string\",\"name\":\"No\"},{\"control_type\":\"text\",\"label\":\"Name\",\"optional\":true,\"type\":\"string\",\"name\":\"Name\"}]",
+          "file_format": "csv",
+          "prev_file_path": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_files\",\"line\":\"ac480c76\",\"path\":[\"path\"]}')}"
+         }
+        ],
+        "override": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Data source name",
+          "sticky": true,
+          "support_pills": false,
+          "extends_schema": false,
+          "optional": false,
+          "hint": "Provide an alias name for the data source. E.g: contacts, orders. This name is to be used in the query.",
+          "type": "string",
+          "name": "table_name"
+         },
+         {
+          "control_type": "select",
+          "label": "Data source type",
+          "extends_schema": true,
+          "change_on_blur": true,
+          "pick_list": "data_sources_list",
+          "hint": "                   Provide the data source type. To pass file content directly from upstream action/trigger chooser Content Stream.\n                   You can also refer to a file in Workato FileStorage or a table from Data tables.\n",
+          "type": "string",
+          "name": "data_source_type"
+         },
+         {
+          "control_type": "text-area",
+          "label": "Content input stream",
+          "sticky": true,
+          "strip_interpolation": true,
+          "change_on_blur": true,
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type === 'content_stream'",
+          "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type !== 'content_stream'",
+          "optional": true,
+          "hint": "Pass the contents or file contents reference pill here from an upstream action or trigger.",
+          "type": "string",
+          "name": "source_stream"
+         },
+         {
+          "control_type": "text",
+          "label": "FileStorage file",
+          "sticky": true,
+          "change_on_blur": true,
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type === 'wf_file'",
+          "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type !== 'wf_file'",
+          "extends_schema": true,
+          "optional": true,
+          "mark_as_required": true,
+          "toggle_hint": "Enter file path",
+          "toggle_field": {
+           "control_type": "tree",
+           "label": "FileStorage file",
+           "toggle_hint": "Choose a file",
+           "tree_options": {
+            "selectable_folder": false
+           },
+           "pick_list": "wf_files_list",
+           "extends_schema": true,
+           "toggle_to_primary_hint": "Enter file path",
+           "toggle_to_secondary_hint": "Choose a file",
+           "hint": "Choose the file to fetch the data",
+           "type": "string",
+           "name": "wf_file_path"
+          },
+          "hint": "                   Provide the FileStorage file full path here to fetch the data. For example, “samplepath/filename.csv”.\n",
+          "type": "string",
+          "name": "wf_file_path"
+         },
+         {
+          "control_type": "select",
+          "label": "Data table",
+          "pick_list": "current_user_table_list",
+          "extends_schema": true,
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type === 'wdb_table'",
+          "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table'",
+          "optional": true,
+          "hint": "Select a data table to fetch the data.",
+          "type": "string",
+          "name": "table_id"
+         },
+         {
+          "control_type": "select",
+          "label": "File format",
+          "extends_schema": true,
+          "change_on_blur": true,
+          "default": "csv",
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table'",
+          "optional": true,
+          "sticky": true,
+          "pick_list": [
+           [
+            "CSV",
+            "csv"
+           ],
+           [
+            "Excel",
+            "excel"
+           ]
+          ],
+          "hint": "Choose the data format . Today CSV and Excel file formats are supported.",
+          "type": "string",
+          "name": "file_format"
+         },
+         {
+          "control_type": "text",
+          "label": "Worksheet",
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+          "optionalExpression": "parentInput.file_format && parentInput.file_format !== 'excel'",
+          "optional": true,
+          "mark_as_required": true,
+          "extends_schema": false,
+          "hint": "Provide the sheet name from the Excel file where the data is available.",
+          "type": "string",
+          "name": "excel_sheet_name"
+         },
+         {
+          "control_type": "text",
+          "label": "Range",
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+          "optionalExpression": "parentInput.file_format && parentInput.file_format !== 'excel'",
+          "optional": true,
+          "mark_as_required": true,
+          "extends_schema": false,
+          "hint": "Provide the cell range of the data. e.g A5:F2000. Make sure to ignore the header row while providing the range.",
+          "type": "string",
+          "name": "excel_range"
+         },
+         {
+          "control_type": "schema-designer",
+          "label": "Data schema",
+          "sample_data_type": "csv",
+          "add_field_label": "Add column name",
+          "exclude_fields": [
+           "hint",
+           "parentId"
+          ],
+          "exclude_fields_types": [
+           "array",
+           "object"
+          ],
+          "empty_schema_title": "Provide column names in your CSV.",
+          "empty_schema_message": "<button type=\"button\" data-action=\"generateSchema\">Use a sample CSV file</button> to input all column names at once.",
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+          "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type === 'wdb_table' || parentInput.file_format !== 'csv'",
+          "optional": true,
+          "mark_as_required": true,
+          "enforce_generated_schema_fields_optional": true,
+          "hint": "                   Describe the schema of the CSV columns of the data source.\n                   The schema will be matched to the order of the columns coming from the source from left to right.\n",
+          "type": "string",
+          "name": "table_schema"
+         },
+         {
+          "control_type": "schema-designer",
+          "label": "Data schema",
+          "sample_data_type": "excel",
+          "add_field_label": "Add column name",
+          "exclude_fields": [
+           "hint",
+           "parentId"
+          ],
+          "exclude_fields_types": [
+           "array",
+           "object"
+          ],
+          "empty_schema_title": "Provide column names in your data source.",
+          "empty_schema_message": "Provide all column names within the selected range",
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+          "optionalExpression": "parentInput.data_source_type && parentInput.data_source_type === 'wdb_table' || parentInput.file_format !== 'excel'",
+          "optional": true,
+          "mark_as_required": true,
+          "enforce_generated_schema_fields_optional": true,
+          "hint": "                   Describe the schema of the columns of the data source.\n                   The schema will be matched to the order of the columns coming from the source from left to right.\n",
+          "type": "string",
+          "name": "excel_table_schema"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Ignore header row",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Ignore header row",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "sticky": true,
+           "optional": true,
+           "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+           "hint": "Set to <b>Yes</b> if the CSV contents contain a header row that needs to be ignored. Default is set to No.",
+           "default": false,
+           "type": "boolean",
+           "name": "csv_ignore_header"
+          },
+          "sticky": true,
+          "optional": true,
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+          "hint": "Set to <b>Yes</b> if the CSV contents contain a header row that needs to be ignored. Default is set to No.",
+          "default": "false",
+          "type": "boolean",
+          "name": "csv_ignore_header"
+         },
+         {
+          "control_type": "select",
+          "label": "Column delimiter",
+          "pick_list": "csv_delimiters",
+          "sticky": true,
+          "optional": true,
+          "ngIf": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+          "hint": "Select the character that separates columns in the CSV contents. Default is set to comma.",
+          "default": "comma",
+          "type": "string",
+          "name": "csv_delimiter"
+         }
+        ],
+        "sticky": true,
+        "type": "array"
+       },
+       {
+        "initially_expanded": true,
+        "label": "Query",
+        "name": "query",
+        "optional": false,
+        "override": true,
+        "properties": [
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Schema",
+            "extends_schema": true,
+            "broadcast_change_event": true,
+            "type": "string",
+            "name": "schema"
+           },
+           {
+            "properties": [],
+            "label": "Data",
+            "optional": true,
+            "sticky": true,
+            "type": "object",
+            "name": "data"
+           }
+          ],
+          "label": "Query parameters",
+          "control_type": "form-schema-builder",
+          "item_label": "parameter",
+          "exclude_fields": [
+           "hint"
+          ],
+          "optional": true,
+          "override": true,
+          "sticky": true,
+          "schema_field_name_regex": [
+           "^[a-zA-Z][\\w]*$",
+           "Query parameter names only allow alphanumerical symbols and underscore (_)"
+          ],
+          "force_name_label_equality": true,
+          "hint": "Add the parameters to be used in the WHERE condition of the query below. e.g. id.\nNext, add the actual parameter value, which can be static or datapills.\nSelect the closest corresponding data type that your database is expecting for the bind variable\n",
+          "type": "object",
+          "name": "parameters"
+         },
+         {
+          "control_type": "code",
+          "label": "SQL query",
+          "language": "sql",
+          "sql_mime_type": "x-sql",
+          "support_pills": true,
+          "allow_formula_mode": true,
+          "sticky": true,
+          "optional": false,
+          "hint": "                       Add SQL select statement to query one or more data sources.\n                       Joins and more complex functions are also supported, more details available <a href=\"https://docs.workato.com/features/sql-transformations-query-setting.html\" target=\"_blank\">here</a>.\n                       To add parameters in the WHERE condition, use bind variables notation, e.g. id = @id, where id denotes the field name from the parameters section above.\n",
+          "type": "string",
+          "name": "sql_select_query"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "comment": "Query for smaller subsets using offset and limit and upload smaller files to another directory in filestorage",
+      "uuid": "502db29a-0b10-415e-aa15-57fb3801872e"
+     },
+     {
+      "number": 13,
+      "provider": "csv_parser",
+      "name": "parse_csv",
+      "as": "28aaa907",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "input": {
+       "col_sep": ",",
+       "skip_first_line": "true",
+       "column_value_by": "index",
+       "quote_char": "\"",
+       "csv_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_transformations\",\"line\":\"98bf78a6\",\"path\":[\"content\"]}')}",
+       "header_schema": "[{\"control_type\":\"text\",\"label\":\"UP ID\",\"type\":\"string\",\"name\":\"UP_ID\"},{\"control_type\":\"text\",\"label\":\"FIRST NAME\",\"type\":\"string\",\"name\":\"FIRST_NAME\"},{\"control_type\":\"text\",\"label\":\"LAST NAME\",\"type\":\"string\",\"name\":\"LAST_NAME\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL\",\"type\":\"string\",\"name\":\"BUSINESS_EMAIL\"},{\"control_type\":\"text\",\"label\":\"PROGRAMMATIC BUSINESS EMAILS\",\"type\":\"string\",\"name\":\"PROGRAMMATIC_BUSINESS_EMAILS\"},{\"control_type\":\"text\",\"label\":\"MOBILE PHONE\",\"type\":\"string\",\"name\":\"MOBILE_PHONE\"},{\"control_type\":\"text\",\"label\":\"DIRECT NUMBER\",\"type\":\"string\",\"name\":\"DIRECT_NUMBER\"},{\"control_type\":\"text\",\"label\":\"PERSONAL PHONE\",\"type\":\"string\",\"name\":\"PERSONAL_PHONE\"},{\"control_type\":\"text\",\"label\":\"LINKEDIN URL\",\"type\":\"string\",\"name\":\"LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS\",\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ADDRESS 2\",\"type\":\"string\",\"name\":\"PERSONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PERSONAL CITY\",\"type\":\"string\",\"name\":\"PERSONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PERSONAL STATE\",\"type\":\"string\",\"name\":\"PERSONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP\",\"type\":\"string\",\"name\":\"PERSONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PERSONAL ZIP 4\",\"type\":\"string\",\"name\":\"PERSONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS\",\"type\":\"string\",\"name\":\"PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"ADDITIONAL PERSONAL EMAILS\",\"type\":\"string\",\"name\":\"ADDITIONAL_PERSONAL_EMAILS\"},{\"control_type\":\"text\",\"label\":\"GENDER\",\"type\":\"string\",\"name\":\"GENDER\"},{\"control_type\":\"text\",\"label\":\"AGE RANGE\",\"type\":\"string\",\"name\":\"AGE_RANGE\"},{\"control_type\":\"text\",\"label\":\"MARRIED\",\"type\":\"string\",\"name\":\"MARRIED\"},{\"control_type\":\"text\",\"label\":\"CHILDREN\",\"type\":\"string\",\"name\":\"CHILDREN\"},{\"control_type\":\"text\",\"label\":\"INCOME RANGE\",\"type\":\"string\",\"name\":\"INCOME_RANGE\"},{\"control_type\":\"text\",\"label\":\"NET WORTH\",\"type\":\"string\",\"name\":\"NET_WORTH\"},{\"control_type\":\"text\",\"label\":\"HOMEOWNER\",\"type\":\"string\",\"name\":\"HOMEOWNER\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE\",\"type\":\"string\",\"name\":\"JOB_TITLE\"},{\"control_type\":\"text\",\"label\":\"SENIORITY LEVEL\",\"type\":\"string\",\"name\":\"SENIORITY_LEVEL\"},{\"control_type\":\"text\",\"label\":\"DEPARTMENT\",\"type\":\"string\",\"name\":\"DEPARTMENT\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ADDRESS 2\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ADDRESS_2\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL CITY\",\"type\":\"string\",\"name\":\"PROFESSIONAL_CITY\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL STATE\",\"type\":\"string\",\"name\":\"PROFESSIONAL_STATE\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP\"},{\"control_type\":\"text\",\"label\":\"PROFESSIONAL ZIP 4\",\"type\":\"string\",\"name\":\"PROFESSIONAL_ZIP4\"},{\"control_type\":\"text\",\"label\":\"COMPANY NAME\",\"type\":\"string\",\"name\":\"COMPANY_NAME\"},{\"control_type\":\"text\",\"label\":\"COMPANY DOMAIN\",\"type\":\"string\",\"name\":\"COMPANY_DOMAIN\"},{\"control_type\":\"text\",\"label\":\"COMPANY PHONE\",\"type\":\"string\",\"name\":\"COMPANY_PHONE\"},{\"control_type\":\"text\",\"label\":\"COMPANY SIC\",\"type\":\"string\",\"name\":\"COMPANY_SIC\"},{\"control_type\":\"text\",\"label\":\"COMPANY ADDRESS\",\"type\":\"string\",\"name\":\"COMPANY_ADDRESS\"},{\"control_type\":\"text\",\"label\":\"COMPANY CITY\",\"type\":\"string\",\"name\":\"COMPANY_CITY\"},{\"control_type\":\"text\",\"label\":\"COMPANY STATE\",\"type\":\"string\",\"name\":\"COMPANY_STATE\"},{\"control_type\":\"text\",\"label\":\"COMPANY ZIP\",\"type\":\"string\",\"name\":\"COMPANY_ZIP\"},{\"control_type\":\"text\",\"label\":\"COMPANY LINKEDIN URL\",\"type\":\"string\",\"name\":\"COMPANY_LINKEDIN_URL\"},{\"control_type\":\"text\",\"label\":\"COMPANY REVENUE\",\"type\":\"string\",\"name\":\"COMPANY_REVENUE\"},{\"control_type\":\"text\",\"label\":\"COMPANY EMPLOYEE COUNT\",\"type\":\"string\",\"name\":\"COMPANY_EMPLOYEE_COUNT\"},{\"control_type\":\"text\",\"label\":\"PRIMARY INDUSTRY\",\"type\":\"string\",\"name\":\"PRIMARY_INDUSTRY\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL VALIDATION STATUS\",\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"BUSINESS EMAIL LAST SEEN\",\"type\":\"string\",\"name\":\"BUSINESS_EMAIL_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS VALIDATION STATUS\",\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_VALIDATION_STATUS\"},{\"control_type\":\"text\",\"label\":\"PERSONAL EMAILS LAST SEEN\",\"type\":\"string\",\"name\":\"PERSONAL_EMAILS_LAST_SEEN\"},{\"control_type\":\"text\",\"label\":\"COMPANY LAST UPDATED\",\"type\":\"string\",\"name\":\"COMPANY_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"JOB TITLE LAST UPDATED\",\"type\":\"string\",\"name\":\"JOB_TITLE_LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"LAST UPDATED\",\"type\":\"string\",\"name\":\"LAST_UPDATED\"},{\"control_type\":\"text\",\"label\":\"CC ID\",\"type\":\"string\",\"name\":\"CC_ID\"},{\"control_type\":\"text\",\"label\":\"RELATED DOMAINS\",\"type\":\"string\",\"name\":\"RELATED_DOMAINS\"},{\"control_type\":\"text\",\"label\":\"SOCIAL CONNECTIONS\",\"type\":\"string\",\"name\":\"SOCIAL_CONNECTIONS\"},{\"control_type\":\"text\",\"label\":\"DPV CODE\",\"type\":\"string\",\"name\":\"DPV_CODE\"}]"
+      },
+      "extended_output_schema": [
+       {
+        "label": "Lines",
+        "name": "lines",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "UP_ID",
+          "type": "string",
+          "name": "column_0"
+         },
+         {
+          "control_type": "text",
+          "label": "FIRST_NAME",
+          "type": "string",
+          "name": "column_1"
+         },
+         {
+          "control_type": "text",
+          "label": "LAST_NAME",
+          "type": "string",
+          "name": "column_2"
+         },
+         {
+          "control_type": "text",
+          "label": "BUSINESS_EMAIL",
+          "type": "string",
+          "name": "column_3"
+         },
+         {
+          "control_type": "text",
+          "label": "PROGRAMMATIC_BUSINESS_EMAILS",
+          "type": "string",
+          "name": "column_4"
+         },
+         {
+          "control_type": "text",
+          "label": "MOBILE_PHONE",
+          "type": "string",
+          "name": "column_5"
+         },
+         {
+          "control_type": "text",
+          "label": "DIRECT_NUMBER",
+          "type": "string",
+          "name": "column_6"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_PHONE",
+          "type": "string",
+          "name": "column_7"
+         },
+         {
+          "control_type": "text",
+          "label": "LINKEDIN_URL",
+          "type": "string",
+          "name": "column_8"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_ADDRESS",
+          "type": "string",
+          "name": "column_9"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_ADDRESS_2",
+          "type": "string",
+          "name": "column_10"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_CITY",
+          "type": "string",
+          "name": "column_11"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_STATE",
+          "type": "string",
+          "name": "column_12"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_ZIP",
+          "type": "string",
+          "name": "column_13"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_ZIP4",
+          "type": "string",
+          "name": "column_14"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_EMAILS",
+          "type": "string",
+          "name": "column_15"
+         },
+         {
+          "control_type": "text",
+          "label": "ADDITIONAL_PERSONAL_EMAILS",
+          "type": "string",
+          "name": "column_16"
+         },
+         {
+          "control_type": "text",
+          "label": "GENDER",
+          "type": "string",
+          "name": "column_17"
+         },
+         {
+          "control_type": "text",
+          "label": "AGE_RANGE",
+          "type": "string",
+          "name": "column_18"
+         },
+         {
+          "control_type": "text",
+          "label": "MARRIED",
+          "type": "string",
+          "name": "column_19"
+         },
+         {
+          "control_type": "text",
+          "label": "CHILDREN",
+          "type": "string",
+          "name": "column_20"
+         },
+         {
+          "control_type": "text",
+          "label": "INCOME_RANGE",
+          "type": "string",
+          "name": "column_21"
+         },
+         {
+          "control_type": "text",
+          "label": "NET_WORTH",
+          "type": "string",
+          "name": "column_22"
+         },
+         {
+          "control_type": "text",
+          "label": "HOMEOWNER",
+          "type": "string",
+          "name": "column_23"
+         },
+         {
+          "control_type": "text",
+          "label": "JOB_TITLE",
+          "type": "string",
+          "name": "column_24"
+         },
+         {
+          "control_type": "text",
+          "label": "SENIORITY_LEVEL",
+          "type": "string",
+          "name": "column_25"
+         },
+         {
+          "control_type": "text",
+          "label": "DEPARTMENT",
+          "type": "string",
+          "name": "column_26"
+         },
+         {
+          "control_type": "text",
+          "label": "PROFESSIONAL_ADDRESS",
+          "type": "string",
+          "name": "column_27"
+         },
+         {
+          "control_type": "text",
+          "label": "PROFESSIONAL_ADDRESS_2",
+          "type": "string",
+          "name": "column_28"
+         },
+         {
+          "control_type": "text",
+          "label": "PROFESSIONAL_CITY",
+          "type": "string",
+          "name": "column_29"
+         },
+         {
+          "control_type": "text",
+          "label": "PROFESSIONAL_STATE",
+          "type": "string",
+          "name": "column_30"
+         },
+         {
+          "control_type": "text",
+          "label": "PROFESSIONAL_ZIP",
+          "type": "string",
+          "name": "column_31"
+         },
+         {
+          "control_type": "text",
+          "label": "PROFESSIONAL_ZIP4",
+          "type": "string",
+          "name": "column_32"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_NAME",
+          "type": "string",
+          "name": "column_33"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_DOMAIN",
+          "type": "string",
+          "name": "column_34"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_PHONE",
+          "type": "string",
+          "name": "column_35"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_SIC",
+          "type": "string",
+          "name": "column_36"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_ADDRESS",
+          "type": "string",
+          "name": "column_37"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_CITY",
+          "type": "string",
+          "name": "column_38"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_STATE",
+          "type": "string",
+          "name": "column_39"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_ZIP",
+          "type": "string",
+          "name": "column_40"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_LINKEDIN_URL",
+          "type": "string",
+          "name": "column_41"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_REVENUE",
+          "type": "string",
+          "name": "column_42"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_EMPLOYEE_COUNT",
+          "type": "string",
+          "name": "column_43"
+         },
+         {
+          "control_type": "text",
+          "label": "PRIMARY_INDUSTRY",
+          "type": "string",
+          "name": "column_44"
+         },
+         {
+          "control_type": "text",
+          "label": "BUSINESS_EMAIL_VALIDATION_STATUS",
+          "type": "string",
+          "name": "column_45"
+         },
+         {
+          "control_type": "text",
+          "label": "BUSINESS_EMAIL_LAST_SEEN",
+          "type": "string",
+          "name": "column_46"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_EMAILS_VALIDATION_STATUS",
+          "type": "string",
+          "name": "column_47"
+         },
+         {
+          "control_type": "text",
+          "label": "PERSONAL_EMAILS_LAST_SEEN",
+          "type": "string",
+          "name": "column_48"
+         },
+         {
+          "control_type": "text",
+          "label": "COMPANY_LAST_UPDATED",
+          "type": "string",
+          "name": "column_49"
+         },
+         {
+          "control_type": "text",
+          "label": "JOB_TITLE_LAST_UPDATED",
+          "type": "string",
+          "name": "column_50"
+         },
+         {
+          "control_type": "text",
+          "label": "LAST_UPDATED",
+          "type": "string",
+          "name": "column_51"
+         },
+         {
+          "control_type": "text",
+          "label": "CC_ID",
+          "type": "string",
+          "name": "column_52"
+         },
+         {
+          "control_type": "text",
+          "label": "RELATED_DOMAINS",
+          "type": "string",
+          "name": "column_53"
+         },
+         {
+          "control_type": "text",
+          "label": "SOCIAL_CONNECTIONS",
+          "type": "string",
+          "name": "column_54"
+         },
+         {
+          "control_type": "text",
+          "label": "DPV_CODE",
+          "type": "string",
+          "name": "column_55"
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "uuid": "d3e79b07-f473-46df-9890-a6bb93d0d627"
+     },
+     {
+      "number": 14,
+      "provider": "workato_recipe_function",
+      "name": "call_recipe_async",
+      "as": "4a77a471",
+      "title": null,
+      "description": "Call <span class=\"provider\">Function_Load_Individuals</span> (async)",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "flow_id": "Function_Load_Individuals"
+      },
+      "input": {
+       "flow_id": "49100438",
+       "parameters": {
+        "individuals": {
+         "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\"]}')}",
+         "UP_ID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_0\"]}')}",
+         "FIRST_NAME": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_1\"]}')}",
+         "LAST_NAME": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_2\"]}')}",
+         "BUSINESS_EMAIL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_3\"]}')}",
+         "PROGRAMMATIC_BUSINESS_EMAILS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_4\"]}')}",
+         "MOBILE_PHONE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_5\"]}')}",
+         "DIRECT_NUMBER": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_6\"]}')}",
+         "PERSONAL_PHONE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_7\"]}')}",
+         "LINKEDIN_URL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_8\"]}')}",
+         "PERSONAL_ADDRESS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_9\"]}')}",
+         "PERSONAL_ADDRESS_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_10\"]}')}",
+         "PERSONAL_CITY": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_11\"]}')}",
+         "PERSONAL_STATE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_12\"]}')}",
+         "PERSONAL_ZIP": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_13\"]}')}",
+         "PERSONAL_ZIP4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_14\"]}')}",
+         "PERSONAL_EMAILS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_15\"]}')}",
+         "ADDITIONAL_PERSONAL_EMAILS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_16\"]}')}",
+         "GENDER": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_17\"]}')}",
+         "AGE_RANGE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_18\"]}')}",
+         "MARRIED": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_19\"]}')}",
+         "CHILDREN": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_20\"]}')}",
+         "INCOME_RANGE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_21\"]}')}",
+         "NET_WORTH": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_22\"]}')}",
+         "HOMEOWNER": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_23\"]}')}",
+         "JOB_TITLE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_24\"]}')}",
+         "SENIORITY_LEVEL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_25\"]}')}",
+         "DEPARTMENT": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_26\"]}')}",
+         "PROFESSIONAL_ADDRESS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_27\"]}')}",
+         "PROFESSIONAL_ADDRESS_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_28\"]}')}",
+         "PROFESSIONAL_CITY": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_29\"]}')}",
+         "PROFESSIONAL_STATE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_30\"]}')}",
+         "PROFESSIONAL_ZIP": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_31\"]}')}",
+         "PROFESSIONAL_ZIP4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_32\"]}')}",
+         "COMPANY_NAME": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_33\"]}')}",
+         "COMPANY_DOMAIN": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_34\"]}')}",
+         "COMPANY_PHONE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_35\"]}')}",
+         "COMPANY_SIC": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_36\"]}')}",
+         "COMPANY_ADDRESS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_37\"]}')}",
+         "COMPANY_CITY": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_38\"]}')}",
+         "COMPANY_STATE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_39\"]}')}",
+         "COMPANY_ZIP": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_40\"]}')}",
+         "COMPANY_LINKEDIN_URL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_41\"]}')}",
+         "COMPANY_REVENUE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_42\"]}')}",
+         "COMPANY_EMPLOYEE_COUNT": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_43\"]}')}",
+         "PRIMARY_INDUSTRY": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_44\"]}')}",
+         "BUSINESS_EMAIL_VALIDATION_STATUS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_45\"]}')}",
+         "BUSINESS_EMAIL_LAST_SEEN": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_46\"]}')}",
+         "PERSONAL_EMAILS_VALIDATION_STATUS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_47\"]}')}",
+         "PERSONAL_EMAILS_LAST_SEEN": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_48\"]}')}",
+         "COMPANY_LAST_UPDATED": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_49\"]}')}",
+         "JOB_TITLE_LAST_UPDATED": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_50\"]}')}",
+         "LAST_UPDATED": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_51\"]}')}",
+         "CC_ID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_52\"]}')}",
+         "RELATED_DOMAINS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_53\"]}')}",
+         "SOCIAL_CONNECTIONS": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_54\"]}')}",
+         "DPV_CODE": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"28aaa907\",\"path\":[\"lines\",{\"path_element_type\":\"current_item\"},\"column_55\"]}')}"
+        }
+       }
+      },
+      "extended_input_schema": [
+       {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+         {
+          "name": "individuals",
+          "type": "array",
+          "of": "object",
+          "label": "individuals",
+          "optional": false,
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "UP ID",
+            "type": "string",
+            "name": "UP_ID"
+           },
+           {
+            "control_type": "text",
+            "label": "FIRST NAME",
+            "type": "string",
+            "name": "FIRST_NAME"
+           },
+           {
+            "control_type": "text",
+            "label": "LAST NAME",
+            "type": "string",
+            "name": "LAST_NAME"
+           },
+           {
+            "control_type": "text",
+            "label": "BUSINESS EMAIL",
+            "type": "string",
+            "name": "BUSINESS_EMAIL"
+           },
+           {
+            "control_type": "text",
+            "label": "PROGRAMMATIC BUSINESS EMAILS",
+            "type": "string",
+            "name": "PROGRAMMATIC_BUSINESS_EMAILS"
+           },
+           {
+            "control_type": "text",
+            "label": "MOBILE PHONE",
+            "type": "string",
+            "name": "MOBILE_PHONE"
+           },
+           {
+            "control_type": "text",
+            "label": "DIRECT NUMBER",
+            "type": "string",
+            "name": "DIRECT_NUMBER"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL PHONE",
+            "type": "string",
+            "name": "PERSONAL_PHONE"
+           },
+           {
+            "control_type": "text",
+            "label": "LINKEDIN URL",
+            "type": "string",
+            "name": "LINKEDIN_URL"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL ADDRESS",
+            "type": "string",
+            "name": "PERSONAL_ADDRESS"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL ADDRESS 2",
+            "type": "string",
+            "name": "PERSONAL_ADDRESS_2"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL CITY",
+            "type": "string",
+            "name": "PERSONAL_CITY"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL STATE",
+            "type": "string",
+            "name": "PERSONAL_STATE"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL ZIP",
+            "type": "string",
+            "name": "PERSONAL_ZIP"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL ZIP 4",
+            "type": "string",
+            "name": "PERSONAL_ZIP4"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL EMAILS",
+            "type": "string",
+            "name": "PERSONAL_EMAILS"
+           },
+           {
+            "control_type": "text",
+            "label": "ADDITIONAL PERSONAL EMAILS",
+            "type": "string",
+            "name": "ADDITIONAL_PERSONAL_EMAILS"
+           },
+           {
+            "control_type": "text",
+            "label": "GENDER",
+            "type": "string",
+            "name": "GENDER"
+           },
+           {
+            "control_type": "text",
+            "label": "AGE RANGE",
+            "type": "string",
+            "name": "AGE_RANGE"
+           },
+           {
+            "control_type": "text",
+            "label": "MARRIED",
+            "type": "string",
+            "name": "MARRIED"
+           },
+           {
+            "control_type": "text",
+            "label": "CHILDREN",
+            "type": "string",
+            "name": "CHILDREN"
+           },
+           {
+            "control_type": "text",
+            "label": "INCOME RANGE",
+            "type": "string",
+            "name": "INCOME_RANGE"
+           },
+           {
+            "control_type": "text",
+            "label": "NET WORTH",
+            "type": "string",
+            "name": "NET_WORTH"
+           },
+           {
+            "control_type": "text",
+            "label": "HOMEOWNER",
+            "type": "string",
+            "name": "HOMEOWNER"
+           },
+           {
+            "control_type": "text",
+            "label": "JOB TITLE",
+            "type": "string",
+            "name": "JOB_TITLE"
+           },
+           {
+            "control_type": "text",
+            "label": "SENIORITY LEVEL",
+            "type": "string",
+            "name": "SENIORITY_LEVEL"
+           },
+           {
+            "control_type": "text",
+            "label": "DEPARTMENT",
+            "type": "string",
+            "name": "DEPARTMENT"
+           },
+           {
+            "control_type": "text",
+            "label": "PROFESSIONAL ADDRESS",
+            "type": "string",
+            "name": "PROFESSIONAL_ADDRESS"
+           },
+           {
+            "control_type": "text",
+            "label": "PROFESSIONAL ADDRESS 2",
+            "type": "string",
+            "name": "PROFESSIONAL_ADDRESS_2"
+           },
+           {
+            "control_type": "text",
+            "label": "PROFESSIONAL CITY",
+            "type": "string",
+            "name": "PROFESSIONAL_CITY"
+           },
+           {
+            "control_type": "text",
+            "label": "PROFESSIONAL STATE",
+            "type": "string",
+            "name": "PROFESSIONAL_STATE"
+           },
+           {
+            "control_type": "text",
+            "label": "PROFESSIONAL ZIP",
+            "type": "string",
+            "name": "PROFESSIONAL_ZIP"
+           },
+           {
+            "control_type": "text",
+            "label": "PROFESSIONAL ZIP 4",
+            "type": "string",
+            "name": "PROFESSIONAL_ZIP4"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY NAME",
+            "type": "string",
+            "name": "COMPANY_NAME"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY DOMAIN",
+            "type": "string",
+            "name": "COMPANY_DOMAIN"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY PHONE",
+            "type": "string",
+            "name": "COMPANY_PHONE"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY SIC",
+            "type": "string",
+            "name": "COMPANY_SIC"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY ADDRESS",
+            "type": "string",
+            "name": "COMPANY_ADDRESS"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY CITY",
+            "type": "string",
+            "name": "COMPANY_CITY"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY STATE",
+            "type": "string",
+            "name": "COMPANY_STATE"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY ZIP",
+            "type": "string",
+            "name": "COMPANY_ZIP"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY LINKEDIN URL",
+            "type": "string",
+            "name": "COMPANY_LINKEDIN_URL"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY REVENUE",
+            "type": "string",
+            "name": "COMPANY_REVENUE"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY EMPLOYEE COUNT",
+            "type": "string",
+            "name": "COMPANY_EMPLOYEE_COUNT"
+           },
+           {
+            "control_type": "text",
+            "label": "PRIMARY INDUSTRY",
+            "type": "string",
+            "name": "PRIMARY_INDUSTRY"
+           },
+           {
+            "control_type": "text",
+            "label": "BUSINESS EMAIL VALIDATION STATUS",
+            "type": "string",
+            "name": "BUSINESS_EMAIL_VALIDATION_STATUS"
+           },
+           {
+            "control_type": "text",
+            "label": "BUSINESS EMAIL LAST SEEN",
+            "type": "string",
+            "name": "BUSINESS_EMAIL_LAST_SEEN"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL EMAILS VALIDATION STATUS",
+            "type": "string",
+            "name": "PERSONAL_EMAILS_VALIDATION_STATUS"
+           },
+           {
+            "control_type": "text",
+            "label": "PERSONAL EMAILS LAST SEEN",
+            "type": "string",
+            "name": "PERSONAL_EMAILS_LAST_SEEN"
+           },
+           {
+            "control_type": "text",
+            "label": "COMPANY LAST UPDATED",
+            "type": "string",
+            "name": "COMPANY_LAST_UPDATED"
+           },
+           {
+            "control_type": "text",
+            "label": "JOB TITLE LAST UPDATED",
+            "type": "string",
+            "name": "JOB_TITLE_LAST_UPDATED"
+           },
+           {
+            "control_type": "text",
+            "label": "LAST UPDATED",
+            "type": "string",
+            "name": "LAST_UPDATED"
+           },
+           {
+            "control_type": "text",
+            "label": "CC ID",
+            "type": "string",
+            "name": "CC_ID"
+           },
+           {
+            "control_type": "text",
+            "label": "RELATED DOMAINS",
+            "type": "string",
+            "name": "RELATED_DOMAINS"
+           },
+           {
+            "control_type": "text",
+            "label": "SOCIAL CONNECTIONS",
+            "type": "string",
+            "name": "SOCIAL_CONNECTIONS"
+           },
+           {
+            "control_type": "text",
+            "label": "DPV CODE",
+            "type": "string",
+            "name": "DPV_CODE"
+           }
+          ]
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "51413b84-e81b-4b54-9984-5e333538cc57"
+     }
+    ],
+    "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_list\",\"line\":\"8dd81d4a\",\"path\":[\"list\"]}')}",
+    "uuid": "786244fc-7672-4b7a-b3a7-5dcd76c78f7c"
+   }
+  ],
+  "uuid": "6a9de8a2-f678-4c24-9944-ac491a352d78",
+  "unfinished": false,
+  "param": {}
+ }
+}

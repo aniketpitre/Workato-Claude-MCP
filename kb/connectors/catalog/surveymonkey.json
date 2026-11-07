@@ -1,0 +1,5517 @@
+{
+ "name": "surveymonkey",
+ "title": "SurveyMonkey",
+ "requires_connection": true,
+ "categories": [
+  "Marketing"
+ ],
+ "aliases": [
+  "SurveyMonkey",
+  "surveys"
+ ],
+ "triggers": [
+  {
+   "name": "new_survey_response",
+   "title": "Completed survey response",
+   "description": "Completed response for survey on SurveyMonkey",
+   "help": "Requires account plan with \"Extract data\" capability. Checks for new responses every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "survey_pick_list",
+     "extends_schema": true,
+     "hint": "Select survey"
+    }
+   ],
+   "output": [
+    {
+     "name": "survey_name",
+     "type": "string",
+     "label": "Survey name",
+     "control_type": "text"
+    },
+    {
+     "name": "first_name",
+     "type": "string",
+     "label": "Respondent first name",
+     "control_type": "text"
+    },
+    {
+     "name": "last_name",
+     "type": "string",
+     "label": "Respondent last name",
+     "control_type": "text"
+    },
+    {
+     "name": "email",
+     "type": "string",
+     "label": "Respondent email",
+     "control_type": "text"
+    },
+    {
+     "name": "respondent_id",
+     "type": "string",
+     "label": "Recipient ID",
+     "control_type": "text"
+    },
+    {
+     "name": "analysis_url",
+     "type": "string",
+     "label": "Analysis URL",
+     "control_type": "url"
+    },
+    {
+     "name": "custom_id",
+     "type": "string",
+     "label": "Custom ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "collection_mode",
+     "type": "string",
+     "label": "Collection mode",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "edit_url",
+     "type": "string",
+     "label": "Edit URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Respondent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "response_status",
+     "type": "string",
+     "label": "Response status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "collector_id",
+     "type": "string",
+     "label": "Collector ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "date_start",
+     "type": "date_time",
+     "label": "Date started responding",
+     "control_type": "date_time"
+    },
+    {
+     "name": "date_modified",
+     "type": "date_time",
+     "label": "Date last changed responses",
+     "control_type": "date_time"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in SurveyMonkey (Custom)",
+   "help": "Build your own SurveyMonkey action with a HTTP request. The request will be authorized under your SurveyMonkey connection OAuth scopes: Scopes survey:read, collectors:read, collectors:write, contacts:read, respons:read, response details:read, webhook:read, webhook:write, user:read",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_contacts",
+   "title": "Add contacts",
+   "description": "Add contacts to a SurveyMonkey contact list",
+   "help": "Adds one or more contacts to an existing contact list. Each contact requires an email. Partial successes are reported per contact.",
+   "input": [
+    {
+     "name": "contact_list_id",
+     "type": "string",
+     "label": "Contact list ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the contact list to add contacts to."
+    },
+    {
+     "name": "contacts",
+     "type": "array",
+     "label": "Contacts",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      }
+     ],
+     "hint": "Each contact must include an email, and may include first_name and last_name."
+    }
+   ],
+   "output": [
+    {
+     "name": "succeeded",
+     "type": "array",
+     "label": "Succeeded",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Contact ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "invalids",
+     "type": "array",
+     "label": "Invalid contacts",
+     "of": "object",
+     "properties": [
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "existing",
+     "type": "array",
+     "label": "Already existing",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Contact ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "add_page",
+   "title": "Add page",
+   "description": "Add a page to a SurveyMonkey survey",
+   "help": "Adds a new page to an existing survey. Use Get survey details first to see current pages and positions.",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey to add the page to."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Page title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Page description",
+     "control_type": "text"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "hint": "1-based position for the page. Appended at the end if omitted."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Page ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Page title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "question_count",
+     "type": "integer",
+     "label": "Question count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "add_question",
+   "title": "Add question",
+   "description": "Add a question to a SurveyMonkey survey page",
+   "help": "Adds a question to a page. Either specify a question family and answer choices, or supply a Question bank question ID from List question bank questions .",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey."
+    },
+    {
+     "name": "page_id",
+     "type": "string",
+     "label": "Page ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the page to add the question to. Obtain from Get survey details or Add page ."
+    },
+    {
+     "name": "family",
+     "type": "string",
+     "label": "Question family",
+     "control_type": "select",
+     "options": [
+      "single_choice",
+      "multiple_choice",
+      "matrix",
+      "open_ended",
+      "demographic",
+      "datetime",
+      "presentation"
+     ],
+     "toggle_field": {
+      "name": "family",
+      "type": "string"
+     },
+     "hint": "Question type. Required unless using a question bank question."
+    },
+    {
+     "name": "subtype",
+     "type": "string",
+     "label": "Subtype",
+     "control_type": "text",
+     "hint": "Required for custom questions. Valid values per family: single_choice → vertical, horiz, menu; multiple_choice → vertical; matrix → single, rating, ranking, menu, multi; open_ended → single, multi, nu…"
+    },
+    {
+     "name": "heading",
+     "type": "string",
+     "label": "Question text",
+     "control_type": "text",
+     "hint": "The question text shown to respondents. Required unless using a question bank question."
+    },
+    {
+     "name": "image_url",
+     "type": "string",
+     "label": "Heading image URL",
+     "control_type": "text",
+     "hint": "Required for presentation/image . Optional for image-based question variants."
+    },
+    {
+     "name": "answers",
+     "type": "object",
+     "label": "Answers",
+     "properties": [
+      {
+       "name": "rows",
+       "type": "array",
+       "label": "Rows",
+       "of": "object",
+       "properties": [
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "required": true,
+         "hint": "Row label text. Required."
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer",
+         "hint": "1-based position of this row."
+        }
+       ],
+       "hint": "Row items (matrix, open_ended/multi/numerical, datetime). Each row requires a text label."
+      },
+      {
+       "name": "choices",
+       "type": "array",
+       "label": "Choices",
+       "of": "object",
+       "properties": [
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "hint": "Choice label. Required for single_choice, multiple_choice, matrix. Optional for demographic (defaults to type)."
+        },
+        {
+         "name": "image_url",
+         "type": "string",
+         "label": "Image URL",
+         "control_type": "text",
+         "hint": "Required for image_choice display type."
+        },
+        {
+         "name": "weight",
+         "type": "integer",
+         "label": "Weight",
+         "control_type": "integer",
+         "hint": "For matrix/rating: weight value of this choice. Required for rating subtype."
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer",
+         "hint": "1-based position of this choice."
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Field type",
+         "control_type": "select",
+         "options": [
+          "name",
+          "company",
+          "address",
+          "address2",
+          "city",
+          "state",
+          "zip",
+          "country",
+          "email",
+          "phone",
+          "address1_label",
+          "address2_label",
+          "city_label",
+          "state_label",
+          "zip_label",
+          "country_label",
+          "phone_number",
+          "email_address",
+          "first_name",
+          "last_name",
+          "middle_name",
+          "title",
+          "suffix"
+         ],
+         "toggle_field": {
+          "name": "type",
+          "type": "string"
+         },
+         "hint": "For demographic only — the field this choice represents. Values depend on subtype."
+        },
+        {
+         "name": "visible",
+         "type": "boolean",
+         "label": "Visible",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "visible",
+          "type": "boolean"
+         },
+         "hint": "For demographic: whether this field is shown to respondents."
+        },
+        {
+         "name": "required",
+         "type": "boolean",
+         "label": "Required",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "required",
+          "type": "boolean"
+         },
+         "hint": "For demographic subtypes such as international, us, and address: whether this field must be filled in. Do not use for phone, email, or name."
+        },
+        {
+         "name": "options",
+         "type": "object",
+         "label": "Options",
+         "properties": [
+          {
+           "name": "placeholder_text",
+           "type": "string",
+           "label": "Placeholder text",
+           "control_type": "text"
+          },
+          {
+           "name": "default_country",
+           "type": "string",
+           "label": "Default country",
+           "control_type": "text"
+          }
+         ]
+        }
+       ],
+       "hint": "Choice items (single_choice, multiple_choice, matrix, demographic). For matrix/rating: also include weight. For image_choice: include image URL. For demographic: include type, visible, required."
+      },
+      {
+       "name": "other",
+       "type": "array",
+       "label": "Other",
+       "of": "object",
+       "properties": [
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text"
+        },
+        {
+         "name": "num_chars",
+         "type": "integer",
+         "label": "Num chars",
+         "control_type": "integer"
+        },
+        {
+         "name": "num_lines",
+         "type": "integer",
+         "label": "Num lines",
+         "control_type": "integer"
+        }
+       ],
+       "hint": "Optional other-answer configuration for choice and matrix questions."
+      },
+      {
+       "name": "cols",
+       "type": "array",
+       "label": "Cols",
+       "of": "object",
+       "properties": [
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "required": true,
+         "hint": "Column header label. Required."
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer",
+         "hint": "1-based position of this column."
+        },
+        {
+         "name": "choices",
+         "type": "array",
+         "label": "Choices",
+         "of": "object",
+         "properties": [
+          {
+           "name": "text",
+           "type": "string",
+           "label": "Text",
+           "control_type": "text",
+           "required": true,
+           "hint": "Choice text. Required."
+          },
+          {
+           "name": "visible",
+           "type": "boolean",
+           "label": "Visible",
+           "control_type": "checkbox",
+           "toggle_field": {
+            "name": "visible",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "position",
+           "type": "integer",
+           "label": "Position",
+           "control_type": "integer",
+           "required": true,
+           "hint": "Position of this choice within the column. Required."
+          }
+         ],
+         "hint": "Dropdown options within this column. Each needs text and position."
+        }
+       ],
+       "hint": "For matrix/menu only: column definitions. Each column has a text label and its own dropdown choices."
+      }
+     ],
+     "hint": "Answer structure — varies by family: single_choice / multiple_choice : choices. matrix/single or multi : rows + choices. matrix/rating : rows + choices with weight. matrix/ranking : rows. matrix/menu …"
+    },
+    {
+     "name": "display_options",
+     "type": "object",
+     "label": "Display options",
+     "properties": [
+      {
+       "name": "display_type",
+       "type": "string",
+       "label": "Display type",
+       "control_type": "text"
+      }
+     ],
+     "hint": "Optional display settings such as image_choice, slider, file_upload, emoji, or star."
+    },
+    {
+     "name": "validation",
+     "type": "object",
+     "label": "Validation",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Validation type",
+       "control_type": "select",
+       "options": [
+        "date_us",
+        "date_intl",
+        "integer"
+       ],
+       "toggle_field": {
+        "name": "type",
+        "type": "string"
+       },
+       "hint": "date_us / date_intl for datetime; integer for open_ended/numerical; integer for slider."
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Error message",
+       "control_type": "text",
+       "hint": "Message shown to respondents when validation fails."
+      },
+      {
+       "name": "sum",
+       "type": "integer",
+       "label": "Required sum",
+       "control_type": "integer",
+       "hint": "For open_ended/numerical: all textbox values must add up to this number."
+      },
+      {
+       "name": "sum_text",
+       "type": "string",
+       "label": "Sum error message",
+       "control_type": "text",
+       "hint": "For open_ended/numerical: message shown when values do not sum correctly."
+      },
+      {
+       "name": "min",
+       "type": "integer",
+       "label": "Minimum value",
+       "control_type": "integer",
+       "hint": "For slider: minimum allowed value."
+      },
+      {
+       "name": "max",
+       "type": "integer",
+       "label": "Maximum value",
+       "control_type": "integer",
+       "hint": "For slider: maximum allowed value."
+      }
+     ],
+     "hint": "Required for datetime . Optional for open_ended/numerical and slider ."
+    },
+    {
+     "name": "forced_ranking",
+     "type": "boolean",
+     "label": "Forced ranking?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "forced_ranking",
+      "type": "boolean"
+     },
+     "hint": "Optional for matrix single/rating questions."
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "hint": "1-based position on the page. Appended at the end if omitted."
+    },
+    {
+     "name": "question_bank",
+     "type": "object",
+     "label": "Question bank",
+     "properties": [
+      {
+       "name": "question_bank_question_id",
+       "type": "string",
+       "label": "Question bank question ID",
+       "control_type": "text",
+       "hint": "The question_id returned by List question bank questions ."
+      },
+      {
+       "name": "modifier_options",
+       "type": "object",
+       "label": "Modifier options",
+       "properties": [
+        {
+         "name": "entries",
+         "type": "array",
+         "label": "Entries",
+         "of": "object",
+         "properties": [
+          {
+           "name": "modifier_options_id",
+           "type": "string",
+           "label": "Modifier option ID",
+           "control_type": "text",
+           "hint": "Returned by List question bank questions ."
+          },
+          {
+           "name": "value",
+           "type": "string",
+           "label": "Value",
+           "control_type": "text",
+           "hint": "Leave blank to send null."
+          }
+         ]
+        }
+       ],
+       "hint": "List of modifier option IDs and values. Leave value blank to send null."
+      },
+      {
+       "name": "is_custom",
+       "type": "boolean",
+       "label": "Is custom?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "is_custom",
+        "type": "boolean"
+       },
+       "hint": "Defaults to false."
+      }
+     ],
+     "hint": "Use a question bank question instead of specifying family, subtype, heading, and answers."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Question ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "family",
+     "type": "string",
+     "label": "Question family",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "subtype",
+     "type": "string",
+     "label": "Question subtype",
+     "control_type": "text"
+    },
+    {
+     "name": "heading",
+     "type": "string",
+     "label": "Question text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "headings",
+     "type": "array",
+     "label": "Headings",
+     "of": "object",
+     "properties": [
+      {
+       "name": "heading",
+       "type": "string",
+       "label": "Heading text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "image",
+       "type": "object",
+       "label": "Heading image",
+       "properties": [
+        {
+         "name": "url",
+         "type": "string",
+         "label": "Image URL",
+         "control_type": "url"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "visible",
+     "type": "boolean",
+     "label": "Visible?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "visible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "forced_ranking",
+     "type": "boolean",
+     "label": "Forced ranking?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "forced_ranking",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "display_options",
+     "type": "object",
+     "label": "Display options",
+     "properties": [
+      {
+       "name": "display_type",
+       "type": "string",
+       "label": "Display type",
+       "control_type": "text"
+      },
+      {
+       "name": "display_subtype",
+       "type": "string",
+       "label": "Display subtype",
+       "control_type": "text"
+      },
+      {
+       "name": "left_label",
+       "type": "string",
+       "label": "Left label",
+       "control_type": "text"
+      },
+      {
+       "name": "right_label",
+       "type": "string",
+       "label": "Right label",
+       "control_type": "text"
+      },
+      {
+       "name": "custom_options",
+       "type": "object",
+       "label": "Custom options",
+       "properties": [
+        {
+         "name": "starting_position",
+         "type": "integer",
+         "label": "Starting position",
+         "control_type": "integer"
+        },
+        {
+         "name": "step_size",
+         "type": "integer",
+         "label": "Step size",
+         "control_type": "integer"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "validation",
+     "type": "object",
+     "label": "Validation",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Validation type",
+       "control_type": "text"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Validation text",
+       "control_type": "text"
+      },
+      {
+       "name": "sum",
+       "type": "integer",
+       "label": "Required sum",
+       "control_type": "integer"
+      },
+      {
+       "name": "sum_text",
+       "type": "string",
+       "label": "Sum validation text",
+       "control_type": "text"
+      },
+      {
+       "name": "min",
+       "type": "integer",
+       "label": "Minimum value",
+       "control_type": "integer"
+      },
+      {
+       "name": "max",
+       "type": "integer",
+       "label": "Maximum value",
+       "control_type": "integer"
+      }
+     ]
+    },
+    {
+     "name": "answers",
+     "type": "object",
+     "label": "Answers",
+     "properties": [
+      {
+       "name": "choices",
+       "type": "array",
+       "label": "Choices",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Choice ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Choice text",
+         "control_type": "text"
+        },
+        {
+         "name": "weight",
+         "type": "integer",
+         "label": "Weight",
+         "control_type": "integer"
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer"
+        },
+        {
+         "name": "visible",
+         "type": "boolean",
+         "label": "Visible?",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "visible",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "required",
+         "type": "boolean",
+         "label": "Required?",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "required",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "image",
+         "type": "object",
+         "label": "Image",
+         "properties": [
+          {
+           "name": "url",
+           "type": "string",
+           "label": "Image URL",
+           "control_type": "url"
+          }
+         ]
+        },
+        {
+         "name": "options",
+         "type": "object",
+         "label": "Options",
+         "properties": [
+          {
+           "name": "placeholder_text",
+           "type": "string",
+           "label": "Placeholder text",
+           "control_type": "text"
+          },
+          {
+           "name": "default_country",
+           "type": "string",
+           "label": "Default country",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "other",
+       "type": "array",
+       "label": "Other choices",
+       "of": "object",
+       "properties": [
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text"
+        },
+        {
+         "name": "num_chars",
+         "type": "integer",
+         "label": "Character limit",
+         "control_type": "integer"
+        },
+        {
+         "name": "num_lines",
+         "type": "integer",
+         "label": "Line limit",
+         "control_type": "integer"
+        }
+       ]
+      },
+      {
+       "name": "rows",
+       "type": "array",
+       "label": "Rows",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Row ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Row text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "subtype",
+         "type": "string",
+         "label": "Subtype",
+         "control_type": "text"
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer"
+        },
+        {
+         "name": "visible",
+         "type": "boolean",
+         "label": "Visible?",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "visible",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "cols",
+       "type": "array",
+       "label": "Columns",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Column ID",
+         "control_type": "text"
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Column text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer"
+        },
+        {
+         "name": "choices",
+         "type": "array",
+         "label": "Choices",
+         "of": "object",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "Choice ID",
+           "control_type": "text"
+          },
+          {
+           "name": "text",
+           "type": "string",
+           "label": "Choice text",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "position",
+           "type": "integer",
+           "label": "Position",
+           "control_type": "integer"
+          },
+          {
+           "name": "visible",
+           "type": "boolean",
+           "label": "Visible?",
+           "control_type": "checkbox",
+           "toggle_field": {
+            "name": "visible",
+            "type": "boolean"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_collector",
+   "title": "Create collector",
+   "description": "Create a collector in SurveyMonkey",
+   "help": "Creates a collector on a survey. Standard: weblink, email. Popup: popup_invitation, embedded_survey, popup_survey.",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey to attach the collector to."
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Collector type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "weblink",
+      "email",
+      "popup_invitation",
+      "embedded_survey",
+      "popup_survey"
+     ],
+     "toggle_field": {
+      "name": "type",
+      "type": "string"
+     },
+     "hint": "Standard: weblink, email. Popup: popup_invitation, embedded_survey, popup_survey."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Collector name",
+     "control_type": "text",
+     "hint": "A label for the collector."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Collector ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Collector name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Collector type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "Share URL",
+     "control_type": "url",
+     "hint": "Shareable URL. Populated for web-link collectors only."
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "response_count",
+     "type": "integer",
+     "label": "Response count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "thank_you_message",
+     "type": "string",
+     "label": "Thank you message",
+     "control_type": "text"
+    },
+    {
+     "name": "thank_you_page",
+     "type": "object",
+     "label": "Thank you page",
+     "properties": [
+      {
+       "name": "is_enabled",
+       "type": "boolean",
+       "label": "Enabled?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_enabled",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "message",
+       "type": "string",
+       "label": "Message",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "disqualification_type",
+     "type": "string",
+     "label": "Disqualification type",
+     "control_type": "text"
+    },
+    {
+     "name": "disqualification_message",
+     "type": "string",
+     "label": "Disqualification message",
+     "control_type": "text"
+    },
+    {
+     "name": "disqualification_url",
+     "type": "string",
+     "label": "Disqualification URL",
+     "control_type": "url"
+    },
+    {
+     "name": "closed_page_message",
+     "type": "string",
+     "label": "Closed page message",
+     "control_type": "text"
+    },
+    {
+     "name": "redirect_type",
+     "type": "string",
+     "label": "Redirect type",
+     "control_type": "text"
+    },
+    {
+     "name": "redirect_url",
+     "type": "string",
+     "label": "Redirect URL",
+     "control_type": "url"
+    },
+    {
+     "name": "display_survey_results",
+     "type": "boolean",
+     "label": "Display survey results?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "display_survey_results",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "edit_response_type",
+     "type": "string",
+     "label": "Edit response type",
+     "control_type": "text"
+    },
+    {
+     "name": "anonymous_type",
+     "type": "string",
+     "label": "Anonymous type",
+     "control_type": "text"
+    },
+    {
+     "name": "allow_multiple_responses",
+     "type": "boolean",
+     "label": "Allow multiple responses?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "allow_multiple_responses",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "password_enabled",
+     "type": "boolean",
+     "label": "Password enabled?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "password_enabled",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "respondent_authentication",
+     "type": "boolean",
+     "label": "Respondent authentication?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "respondent_authentication",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "response_limit",
+     "type": "integer",
+     "label": "Response limit",
+     "control_type": "integer"
+    },
+    {
+     "name": "sender_email",
+     "type": "string",
+     "label": "Sender email",
+     "control_type": "email"
+    },
+    {
+     "name": "close_date",
+     "type": "date_time",
+     "label": "Close date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "date_created",
+     "type": "date_time",
+     "label": "Date created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_modified",
+     "type": "date_time",
+     "label": "Date modified",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_contact_list",
+   "title": "Create contact list",
+   "description": "Create a contact list in SurveyMonkey",
+   "help": "Creates an empty named contact list for survey outreach. Use Add contacts to populate it, then reference the list in Send collector invitation .",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "List name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name for the contact list."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Contact list ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "List name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_survey",
+   "title": "Create survey",
+   "description": "Create a survey in SurveyMonkey",
+   "help": "Creates a survey blank, from a SurveyMonkey template, or by copying an existing survey. Provide at most one source — not both a template ID and a survey ID.",
+   "input": [
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey title",
+     "control_type": "text",
+     "required": true,
+     "hint": "Title of the new survey."
+    },
+    {
+     "name": "from_template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text",
+     "hint": "ID of a SurveyMonkey library template to base the survey on (from List survey templates ). Do not combine with Survey ID to copy."
+    },
+    {
+     "name": "from_survey_id",
+     "type": "string",
+     "label": "Survey ID to copy",
+     "control_type": "text",
+     "hint": "ID of an existing survey to duplicate. Do not combine with Template ID."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "language",
+     "type": "string",
+     "label": "Language",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "category",
+     "type": "string",
+     "label": "Category",
+     "control_type": "text"
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text"
+    },
+    {
+     "name": "theme_id",
+     "type": "string",
+     "label": "Theme ID",
+     "control_type": "text"
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text"
+    },
+    {
+     "name": "owner",
+     "type": "string",
+     "label": "Owner ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_owner",
+     "type": "boolean",
+     "label": "Is owner?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_owner",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "footer",
+     "type": "boolean",
+     "label": "Footer enabled?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "footer",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "page_count",
+     "type": "integer",
+     "label": "Page count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "question_count",
+     "type": "integer",
+     "label": "Question count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "response_count",
+     "type": "integer",
+     "label": "Response count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "buttons_text",
+     "type": "object",
+     "label": "Button labels",
+     "required": true,
+     "properties": [
+      {
+       "name": "next_button",
+       "type": "string",
+       "label": "Next button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "prev_button",
+       "type": "string",
+       "label": "Previous button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "done_button",
+       "type": "string",
+       "label": "Done button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "exit_button",
+       "type": "string",
+       "label": "Exit button",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "analyze_url",
+     "type": "string",
+     "label": "Analyze URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "edit_url",
+     "type": "string",
+     "label": "Edit URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "collect_url",
+     "type": "string",
+     "label": "Collect URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "summary_url",
+     "type": "string",
+     "label": "Summary URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "preview",
+     "type": "string",
+     "label": "Preview URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "date_created",
+     "type": "date_time",
+     "label": "Date created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_modified",
+     "type": "date_time",
+     "label": "Date modified",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_webhook",
+   "title": "Create webhook",
+   "description": "Create a webhook in SurveyMonkey",
+   "help": "Subscribes to survey, collector, or app lifecycle events. The subscription URL must accept a HEAD request and return 200. Object type is required for all event types except survey_created . When object type is set, object IDs must also be provided. Do not set object type to collector for collector_c…",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Webhook name",
+     "control_type": "text",
+     "required": true,
+     "hint": "A label for the webhook subscription."
+    },
+    {
+     "name": "subscription_url",
+     "type": "string",
+     "label": "Subscription URL",
+     "control_type": "url",
+     "required": true,
+     "hint": "HTTPS endpoint SurveyMonkey will POST event payloads to. Must accept a HEAD request and return 200."
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "response_completed",
+      "response_created",
+      "response_updated",
+      "response_deleted",
+      "response_disqualified",
+      "response_overquota",
+      "survey_created",
+      "survey_updated",
+      "survey_deleted",
+      "collector_created",
+      "collector_updated",
+      "collector_deleted",
+      "app_installed",
+      "app_uninstalled"
+     ],
+     "toggle_field": {
+      "name": "event_type",
+      "type": "string"
+     },
+     "hint": "Event to subscribe to."
+    },
+    {
+     "name": "object_type",
+     "type": "string",
+     "label": "Object type",
+     "control_type": "select",
+     "options": [
+      "survey",
+      "collector",
+      "app"
+     ],
+     "toggle_field": {
+      "name": "object_type",
+      "type": "string"
+     },
+     "hint": "Required for all event types except survey_created . When set, Object IDs must also be provided."
+    },
+    {
+     "name": "object_ids",
+     "type": "array",
+     "label": "Object IDs",
+     "of": "string",
+     "hint": "IDs of the surveys, collectors, or apps to watch. Required when Object type is set."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Webhook ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Webhook name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object_type",
+     "type": "string",
+     "label": "Object type",
+     "control_type": "text"
+    },
+    {
+     "name": "object_ids",
+     "type": "array",
+     "label": "Object IDs",
+     "control_type": "text",
+     "of": "string"
+    },
+    {
+     "name": "subscription_url",
+     "type": "string",
+     "label": "Subscription URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "delete_webhook",
+   "title": "Delete webhook",
+   "description": "Delete a webhook in SurveyMonkey",
+   "help": "Deletes a single webhook subscription and stops its event delivery. Use List webhooks and Get webhook to identify the exact webhook before deleting. Deletes the subscription only — no survey or response data is affected.",
+   "input": [
+    {
+     "name": "webhook_id",
+     "type": "string",
+     "label": "Webhook ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the webhook to delete. Identify it via List webhooks and Get webhook first."
+    }
+   ],
+   "output": [
+    {
+     "name": "deleted",
+     "type": "boolean",
+     "label": "Deleted",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "deleted",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "get_response",
+   "title": "Get response",
+   "description": "Get a response in SurveyMonkey",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey the response belongs to."
+    },
+    {
+     "name": "response_id",
+     "type": "string",
+     "label": "Response ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the response to retrieve. Obtain from List responses ."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Response ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text"
+    },
+    {
+     "name": "collector_id",
+     "type": "string",
+     "label": "Collector ID",
+     "control_type": "text"
+    },
+    {
+     "name": "recipient_id",
+     "type": "string",
+     "label": "Recipient ID",
+     "control_type": "text"
+    },
+    {
+     "name": "response_status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "collection_mode",
+     "type": "string",
+     "label": "Collection mode",
+     "control_type": "text"
+    },
+    {
+     "name": "first_name",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text"
+    },
+    {
+     "name": "last_name",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text"
+    },
+    {
+     "name": "email_address",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text"
+    },
+    {
+     "name": "ip_address",
+     "type": "string",
+     "label": "IP address",
+     "control_type": "text"
+    },
+    {
+     "name": "custom_value",
+     "type": "string",
+     "label": "Custom value",
+     "control_type": "text"
+    },
+    {
+     "name": "total_time",
+     "type": "integer",
+     "label": "Total time (seconds)",
+     "control_type": "integer"
+    },
+    {
+     "name": "edit_url",
+     "type": "string",
+     "label": "Edit URL",
+     "control_type": "url"
+    },
+    {
+     "name": "analyze_url",
+     "type": "string",
+     "label": "Analyze URL",
+     "control_type": "url"
+    },
+    {
+     "name": "date_created",
+     "type": "date_time",
+     "label": "Date created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_modified",
+     "type": "date_time",
+     "label": "Date modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_survey_details",
+   "title": "Get survey details",
+   "description": "Get survey details in SurveyMonkey",
+   "help": "Returns a survey's full structure including all pages and questions with answer choices and positions.",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey to retrieve. Obtain from List surveys or Create survey ."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "language",
+     "type": "string",
+     "label": "Language",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "category",
+     "type": "string",
+     "label": "Category",
+     "control_type": "text"
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text"
+    },
+    {
+     "name": "theme_id",
+     "type": "string",
+     "label": "Theme ID",
+     "control_type": "text"
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text"
+    },
+    {
+     "name": "owner",
+     "type": "string",
+     "label": "Owner ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_owner",
+     "type": "boolean",
+     "label": "Is owner?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_owner",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "footer",
+     "type": "boolean",
+     "label": "Footer enabled?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "footer",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "page_count",
+     "type": "integer",
+     "label": "Page count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "question_count",
+     "type": "integer",
+     "label": "Question count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "response_count",
+     "type": "integer",
+     "label": "Response count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "buttons_text",
+     "type": "object",
+     "label": "Button labels",
+     "required": true,
+     "properties": [
+      {
+       "name": "next_button",
+       "type": "string",
+       "label": "Next button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "prev_button",
+       "type": "string",
+       "label": "Previous button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "done_button",
+       "type": "string",
+       "label": "Done button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "exit_button",
+       "type": "string",
+       "label": "Exit button",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "analyze_url",
+     "type": "string",
+     "label": "Analyze URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "edit_url",
+     "type": "string",
+     "label": "Edit URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "collect_url",
+     "type": "string",
+     "label": "Collect URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "summary_url",
+     "type": "string",
+     "label": "Summary URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "preview",
+     "type": "string",
+     "label": "Preview URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "date_created",
+     "type": "date_time",
+     "label": "Date created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_modified",
+     "type": "date_time",
+     "label": "Date modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "pages",
+     "type": "array",
+     "label": "Pages",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Page ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Page title",
+       "control_type": "text"
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "position",
+       "type": "integer",
+       "label": "Position",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "question_count",
+       "type": "integer",
+       "label": "Question count",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "questions",
+       "type": "array",
+       "label": "Questions",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Question ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "family",
+         "type": "string",
+         "label": "Question family",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "subtype",
+         "type": "string",
+         "label": "Question subtype",
+         "control_type": "text"
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer",
+         "required": true
+        },
+        {
+         "name": "visible",
+         "type": "boolean",
+         "label": "Visible?",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "visible",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "forced_ranking",
+         "type": "boolean",
+         "label": "Forced ranking?",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "forced_ranking",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "headings",
+         "type": "array",
+         "label": "Headings",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "heading",
+           "type": "string",
+           "label": "Question text",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "API URL",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "answers",
+         "type": "object",
+         "label": "Answers",
+         "properties": [
+          {
+           "name": "choices",
+           "type": "array",
+           "label": "Choices",
+           "of": "object",
+           "properties": [
+            {
+             "name": "id",
+             "type": "string",
+             "label": "Choice ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "text",
+             "type": "string",
+             "label": "Choice text",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "description",
+             "type": "string",
+             "label": "Description",
+             "control_type": "text"
+            },
+            {
+             "name": "position",
+             "type": "integer",
+             "label": "Position",
+             "control_type": "integer",
+             "required": true
+            },
+            {
+             "name": "visible",
+             "type": "boolean",
+             "label": "Visible?",
+             "control_type": "checkbox",
+             "required": true,
+             "toggle_field": {
+              "name": "visible",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "is_na",
+             "type": "boolean",
+             "label": "Is N/A?",
+             "control_type": "checkbox",
+             "required": true,
+             "toggle_field": {
+              "name": "is_na",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "weight",
+             "type": "integer",
+             "label": "Weight",
+             "control_type": "integer"
+            }
+           ]
+          },
+          {
+           "name": "rows",
+           "type": "array",
+           "label": "Rows",
+           "of": "object",
+           "properties": [
+            {
+             "name": "id",
+             "type": "string",
+             "label": "Row ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "text",
+             "type": "string",
+             "label": "Row text",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "subtype",
+             "type": "string",
+             "label": "Subtype",
+             "control_type": "text"
+            },
+            {
+             "name": "position",
+             "type": "integer",
+             "label": "Position",
+             "control_type": "integer",
+             "required": true
+            },
+            {
+             "name": "visible",
+             "type": "boolean",
+             "label": "Visible?",
+             "control_type": "checkbox",
+             "required": true,
+             "toggle_field": {
+              "name": "visible",
+              "type": "boolean"
+             }
+            }
+           ]
+          },
+          {
+           "name": "cols",
+           "type": "array",
+           "label": "Cols",
+           "of": "object",
+           "properties": [
+            {
+             "name": "id",
+             "type": "string",
+             "label": "Column ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "text",
+             "type": "string",
+             "label": "Column text",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "position",
+             "type": "integer",
+             "label": "Position",
+             "control_type": "integer",
+             "required": true
+            },
+            {
+             "name": "visible",
+             "type": "boolean",
+             "label": "Visible?",
+             "control_type": "checkbox",
+             "required": true,
+             "toggle_field": {
+              "name": "visible",
+              "type": "boolean"
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_webhook",
+   "title": "Get webhook",
+   "description": "Get a webhook in SurveyMonkey",
+   "help": "Retrieves a webhook subscription's full detail — event type, what it watches, and its delivery URL. Use List webhooks to find the webhook ID first.",
+   "input": [
+    {
+     "name": "webhook_id",
+     "type": "string",
+     "label": "Webhook ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the webhook to read. Obtain from List webhooks ."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Webhook ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Webhook name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object_type",
+     "type": "string",
+     "label": "Object type",
+     "control_type": "text"
+    },
+    {
+     "name": "object_ids",
+     "type": "array",
+     "label": "Object IDs",
+     "control_type": "text",
+     "of": "string"
+    },
+    {
+     "name": "subscription_url",
+     "type": "string",
+     "label": "Subscription URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "list_collectors",
+   "title": "List collectors",
+   "description": "List collectors for a SurveyMonkey survey",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey whose collectors to list."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Collectors per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "collectors",
+     "type": "array",
+     "label": "Collectors",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Collector ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Collector name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Collector type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      },
+      {
+       "name": "response_count",
+       "type": "integer",
+       "label": "Response count",
+       "control_type": "integer"
+      },
+      {
+       "name": "date_created",
+       "type": "string",
+       "label": "Date created",
+       "control_type": "text"
+      },
+      {
+       "name": "date_modified",
+       "type": "string",
+       "label": "Date modified",
+       "control_type": "text"
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "Share URL",
+       "control_type": "url",
+       "hint": "Shareable URL. Populated for web-link collectors only."
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Sender email",
+       "control_type": "email",
+       "hint": "Populated for email collectors only."
+      },
+      {
+       "name": "is_sender_email_verified",
+       "type": "boolean",
+       "label": "Sender email verified?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "is_sender_email_verified",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total collectors",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_contact_lists",
+   "title": "List contact lists",
+   "description": "List contact lists in SurveyMonkey",
+   "input": [
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Lists per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "contact_lists",
+     "type": "array",
+     "label": "Contact lists",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Contact list ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "List name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total contact lists",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_contacts",
+   "title": "List contacts",
+   "description": "List contacts in a SurveyMonkey contact list",
+   "input": [
+    {
+     "name": "contact_list_id",
+     "type": "string",
+     "label": "Contact list ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the contact list to read."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "select",
+     "options": [
+      "active",
+      "optout",
+      "bounced"
+     ],
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "Filter contacts by status. Defaults to active."
+    },
+    {
+     "name": "sort_by",
+     "type": "string",
+     "label": "Sort by",
+     "control_type": "select",
+     "options": [
+      "email",
+      "first_name",
+      "last_name"
+     ],
+     "toggle_field": {
+      "name": "sort_by",
+      "type": "string"
+     },
+     "hint": "Field to sort by. Defaults to email."
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "label": "Sort order",
+     "control_type": "select",
+     "options": [
+      "ASC",
+      "DESC"
+     ],
+     "toggle_field": {
+      "name": "sort_order",
+      "type": "string"
+     },
+     "hint": "Sort direction. Defaults to ASC."
+    },
+    {
+     "name": "search_by",
+     "type": "string",
+     "label": "Search by",
+     "control_type": "select",
+     "options": [
+      "email",
+      "first_name",
+      "last_name",
+      "phone_number"
+     ],
+     "toggle_field": {
+      "name": "search_by",
+      "type": "string"
+     },
+     "hint": "Field to search on. Must be used together with Search."
+    },
+    {
+     "name": "search",
+     "type": "string",
+     "label": "Search",
+     "control_type": "text",
+     "hint": "Search query. Must be used together with Search by."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Contacts per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "contacts",
+     "type": "array",
+     "label": "Contacts",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Contact ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "phone_number",
+       "type": "string",
+       "label": "Phone number",
+       "control_type": "text"
+      },
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total contacts",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_question_bank_questions",
+   "title": "List question bank questions",
+   "description": "List question bank questions in SurveyMonkey",
+   "help": "Lists SurveyMonkey's reusable question bank questions. Use the returned question_id as the Question bank question ID when adding a question with Add question .",
+   "input": [
+    {
+     "name": "search",
+     "type": "string",
+     "label": "Search",
+     "control_type": "text",
+     "hint": "Filter by question text."
+    },
+    {
+     "name": "locale",
+     "type": "string",
+     "label": "Locale",
+     "control_type": "text",
+     "hint": "Filter by locale (e.g. en_US ). Defaults to en_US when omitted."
+    },
+    {
+     "name": "custom",
+     "type": "boolean",
+     "label": "Custom only?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "custom",
+      "type": "boolean"
+     },
+     "hint": "Set to true to return only custom question bank questions. Defaults to false when omitted."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Questions per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "questions",
+     "type": "array",
+     "label": "Questions",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "question_id",
+       "type": "string",
+       "label": "Question bank question ID",
+       "control_type": "text",
+       "required": true,
+       "hint": "Pass this value as the Question bank question ID in Add question."
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Question text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "locales",
+       "type": "array",
+       "label": "Locales",
+       "required": true,
+       "of": "string",
+       "hint": "ISO 639-1 locale codes this question is available in."
+      },
+      {
+       "name": "modifiers",
+       "type": "array",
+       "label": "Modifiers",
+       "of": "object",
+       "properties": [
+        {
+         "name": "modifier_id",
+         "type": "string",
+         "label": "Modifier ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "modifier_type",
+         "type": "string",
+         "label": "Modifier type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "options",
+         "type": "array",
+         "label": "Options",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "modifier_options_id",
+           "type": "string",
+           "label": "Option ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "value",
+           "type": "string",
+           "label": "Option value",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_responses",
+   "title": "List responses",
+   "description": "List responses in SurveyMonkey",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "hint": "ID of the survey whose responses to list. Provide either Survey ID or Collector ID."
+    },
+    {
+     "name": "collector_id",
+     "type": "string",
+     "label": "Collector ID",
+     "control_type": "text",
+     "hint": "ID of the collector whose responses to list. Provide either Collector ID or Survey ID."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status filter",
+     "control_type": "select",
+     "options": [
+      "completed",
+      "partial",
+      "overquota",
+      "disqualified"
+     ],
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "Filter by response status. The total reflects the filtered count when applied."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Responses per page (max 100, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "responses",
+     "type": "array",
+     "label": "Responses",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Response ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "survey_id",
+       "type": "string",
+       "label": "Survey ID",
+       "control_type": "text"
+      },
+      {
+       "name": "collector_id",
+       "type": "string",
+       "label": "Collector ID",
+       "control_type": "text"
+      },
+      {
+       "name": "recipient_id",
+       "type": "string",
+       "label": "Recipient ID",
+       "control_type": "text"
+      },
+      {
+       "name": "response_status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "collection_mode",
+       "type": "string",
+       "label": "Collection mode",
+       "control_type": "text"
+      },
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "email_address",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text"
+      },
+      {
+       "name": "ip_address",
+       "type": "string",
+       "label": "IP address",
+       "control_type": "text"
+      },
+      {
+       "name": "language",
+       "type": "string",
+       "label": "Language",
+       "control_type": "text"
+      },
+      {
+       "name": "custom_value",
+       "type": "string",
+       "label": "Custom value",
+       "control_type": "text"
+      },
+      {
+       "name": "total_time",
+       "type": "integer",
+       "label": "Total time (seconds)",
+       "control_type": "integer"
+      },
+      {
+       "name": "edit_url",
+       "type": "string",
+       "label": "Edit URL",
+       "control_type": "url"
+      },
+      {
+       "name": "analyze_url",
+       "type": "string",
+       "label": "Analyze URL",
+       "control_type": "url"
+      },
+      {
+       "name": "date_created",
+       "type": "date_time",
+       "label": "Date created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "date_modified",
+       "type": "date_time",
+       "label": "Date modified",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "pages",
+       "type": "array",
+       "label": "Pages",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Page ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "questions",
+         "type": "array",
+         "label": "Questions",
+         "of": "object",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "Question ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "answers",
+           "type": "array",
+           "label": "Answers",
+           "of": "object",
+           "properties": [
+            {
+             "name": "choice_id",
+             "type": "string",
+             "label": "Choice ID",
+             "control_type": "text"
+            },
+            {
+             "name": "row_id",
+             "type": "string",
+             "label": "Row ID",
+             "control_type": "text"
+            },
+            {
+             "name": "text",
+             "type": "string",
+             "label": "Text answer",
+             "control_type": "text"
+            },
+            {
+             "name": "choice_metadata",
+             "type": "object",
+             "label": "Choice metadata",
+             "properties": [
+              {
+               "name": "weight",
+               "type": "string",
+               "label": "Weight",
+               "control_type": "text"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total responses",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_survey_categories",
+   "title": "List survey categories",
+   "description": "List survey categories in SurveyMonkey",
+   "help": "Returns the list of categories used to filter survey templates. Use the returned id as the Category value in List survey templates .",
+   "input": [
+    {
+     "name": "language",
+     "type": "string",
+     "label": "Language",
+     "control_type": "text",
+     "hint": "ISO 639-1 language code (e.g. en , fr ). Defaults to en."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Categories per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "categories",
+     "type": "array",
+     "label": "Categories",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Category ID",
+       "control_type": "text",
+       "required": true,
+       "hint": "Pass this value as the Category in List survey templates."
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Category name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total categories",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_survey_templates",
+   "title": "List survey templates",
+   "description": "List survey templates in SurveyMonkey",
+   "help": "Lists SurveyMonkey's own library templates. Use the returned id as the Template ID when creating a survey with Create survey .",
+   "input": [
+    {
+     "name": "category",
+     "type": "string",
+     "label": "Category",
+     "control_type": "select",
+     "pick_list": "survey_category_pick_list",
+     "toggle_field": {
+      "name": "category",
+      "type": "string"
+     },
+     "hint": "Filter by template category. First 50 categories shown — use toggle to enter a value manually if not listed."
+    },
+    {
+     "name": "language",
+     "type": "string",
+     "label": "Language",
+     "control_type": "text",
+     "hint": "Filter by language code (ISO 639-1, e.g. en , fr ). Defaults to en."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Templates per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "templates",
+     "type": "array",
+     "label": "Templates",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Template ID",
+       "control_type": "text",
+       "required": true,
+       "hint": "Pass this value as the Template ID in Create survey."
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Template name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Template title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "category",
+       "type": "string",
+       "label": "Category",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "available",
+       "type": "boolean",
+       "label": "Available?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "available",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "num_questions",
+       "type": "integer",
+       "label": "Number of questions",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "preview_link",
+       "type": "string",
+       "label": "Preview link",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total templates",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_surveys",
+   "title": "List surveys",
+   "description": "List surveys in SurveyMonkey",
+   "input": [
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey title",
+     "control_type": "text",
+     "hint": "Filter by title fragment. Returns surveys whose title contains this text."
+    },
+    {
+     "name": "sort_by",
+     "type": "string",
+     "label": "Sort by",
+     "control_type": "select",
+     "options": [
+      "date_modified",
+      "title",
+      "num_responses"
+     ],
+     "toggle_field": {
+      "name": "sort_by",
+      "type": "string"
+     },
+     "hint": "Defaults to date modified."
+    },
+    {
+     "name": "sort_order",
+     "type": "string",
+     "label": "Sort order",
+     "control_type": "select",
+     "options": [
+      "DESC",
+      "ASC"
+     ],
+     "toggle_field": {
+      "name": "sort_order",
+      "type": "string"
+     },
+     "hint": "Defaults to descending."
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text",
+     "hint": "Restrict results to surveys in this folder."
+    },
+    {
+     "name": "start_modified_at",
+     "type": "date_time",
+     "label": "Modified after",
+     "control_type": "date_time",
+     "hint": "Return surveys modified on or after this date/time."
+    },
+    {
+     "name": "end_modified_at",
+     "type": "date_time",
+     "label": "Modified before",
+     "control_type": "date_time",
+     "hint": "Return surveys modified before this date/time."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Surveys per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "surveys",
+     "type": "array",
+     "label": "Surveys",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Survey ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Survey title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "nickname",
+       "type": "string",
+       "label": "Nickname",
+       "control_type": "text"
+      },
+      {
+       "name": "language",
+       "type": "string",
+       "label": "Language",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "folder_id",
+       "type": "string",
+       "label": "Folder ID",
+       "control_type": "text"
+      },
+      {
+       "name": "survey_state",
+       "type": "string",
+       "label": "Survey state",
+       "control_type": "text",
+       "required": true,
+       "hint": "e.g. DRAFT, OPEN"
+      },
+      {
+       "name": "question_count",
+       "type": "integer",
+       "label": "Question count",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "response_count",
+       "type": "integer",
+       "label": "Response count",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "analyze_url",
+       "type": "string",
+       "label": "Analyze URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "preview",
+       "type": "string",
+       "label": "Preview URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "date_created",
+       "type": "date_time",
+       "label": "Date created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "date_modified",
+       "type": "date_time",
+       "label": "Date modified",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total surveys",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "list_webhooks",
+   "title": "List webhooks",
+   "description": "List webhooks in SurveyMonkey",
+   "input": [
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "hint": "1-based page number. Defaults to 1."
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "hint": "Webhooks per page (max 1000, default 50)."
+    }
+   ],
+   "output": [
+    {
+     "name": "webhooks",
+     "type": "array",
+     "label": "Webhooks",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Webhook ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Webhook name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "API URL",
+       "control_type": "url",
+       "required": true
+      }
+     ],
+     "hint": "Thin summary — id and name only. Use Get webhook for full detail."
+    },
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total webhooks",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Current page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "per_page",
+     "type": "integer",
+     "label": "Per page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page",
+     "type": "integer",
+     "label": "Next page",
+     "control_type": "integer",
+     "hint": "Page number for the next call. Pipe this into the Page input to fetch the next batch. Absent when there are no more pages."
+    }
+   ]
+  },
+  {
+   "name": "lookup_survey",
+   "title": "Search surveys",
+   "description": "Search for a survey in SurveyMonkey",
+   "input": [
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Exact name of survey"
+    }
+   ],
+   "output": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "analysis_url",
+     "type": "string",
+     "label": "Analysis URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "preview_url",
+     "type": "string",
+     "label": "Preview URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "date_created",
+     "type": "date_time",
+     "label": "Date created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_modified",
+     "type": "date_time",
+     "label": "Date modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "language_id",
+     "type": "integer",
+     "label": "Language ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "question_count",
+     "type": "integer",
+     "label": "Number of questions",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "num_responses",
+     "type": "integer",
+     "label": "Number of responses",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "send_flow",
+   "title": "Send survey invite via email",
+   "description": "Send SurveyMonkey survey invite via email to recipient",
+   "help": "When sent via the API, email invitation messages' formatting may differ from the template.",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "survey_pick_list",
+     "extends_schema": true,
+     "hint": "Enter survey ID"
+    },
+    {
+     "name": "email",
+     "type": "string",
+     "label": "Recipient email",
+     "control_type": "email",
+     "required": true,
+     "hint": "Send survey invite to this email address"
+    },
+    {
+     "name": "first_name",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text"
+    },
+    {
+     "name": "last_name",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text"
+    }
+   ],
+   "output": [
+    {
+     "name": "recipient_id",
+     "type": "integer",
+     "label": "Recipient ID",
+     "control_type": "text"
+    },
+    {
+     "name": "valid_email",
+     "type": "boolean",
+     "label": "Valid email",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "valid_email",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "invalid_email",
+     "type": "boolean",
+     "label": "Invalid email",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "invalid_email",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "duplicate_email",
+     "type": "boolean",
+     "label": "Duplicate email",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "duplicate_email",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "bounced_email",
+     "type": "boolean",
+     "label": "Bounced email",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "bounced_email",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "optedout_email",
+     "type": "boolean",
+     "label": "Optedout email",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "optedout_email",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "send_invitation",
+   "title": "Send collector invitation",
+   "description": "Send a collector invitation via SurveyMonkey",
+   "help": "Creates and sends an email invitation on an existing collector. Combines message creation, recipient addition, and sending in one step. Sends to real people — confirm details before invoking.",
+   "input": [
+    {
+     "name": "collector_id",
+     "type": "string",
+     "label": "Collector ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of an email collector. Obtain from Create collector or List collectors ."
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message type",
+     "control_type": "select",
+     "options": [
+      "invite",
+      "reminder",
+      "thank_you"
+     ],
+     "toggle_field": {
+      "name": "message_type",
+      "type": "string"
+     },
+     "hint": "Defaults to invite. Message type cannot be changed after creation."
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Email subject",
+     "control_type": "text",
+     "hint": "Subject line for email collectors."
+    },
+    {
+     "name": "body_text",
+     "type": "string",
+     "label": "Message body",
+     "control_type": "text",
+     "hint": "Plain-text message body. For email, must include [SurveyLink] , [OptOutLink] , [FooterLink] , and [PrivacyLink] placeholders. Leave blank to use SurveyMonkey's default template (recommended)."
+    },
+    {
+     "name": "recipient_emails",
+     "type": "array",
+     "label": "Recipients",
+     "of": "string",
+     "hint": "Email addresses for the email collector."
+    },
+    {
+     "name": "contact_list_id",
+     "type": "string",
+     "label": "Contact list ID",
+     "control_type": "text",
+     "hint": "ID of a contact list to use as recipients. Can be combined with individual emails."
+    },
+    {
+     "name": "schedule_at",
+     "type": "string",
+     "label": "Schedule at",
+     "control_type": "date_time",
+     "hint": "Send at this time."
+    }
+   ],
+   "output": [
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Send status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "scheduled_date",
+     "type": "date_time",
+     "label": "Scheduled date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "recipients_count",
+     "type": "integer",
+     "label": "Recipients count",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_page",
+   "title": "Update page",
+   "description": "Update a page in a SurveyMonkey survey",
+   "help": "Updates an existing page's title, description, or position. Only supplied fields change. Changing position reorders the page within the survey.",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey containing the page."
+    },
+    {
+     "name": "page_id",
+     "type": "string",
+     "label": "Page ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the page to update. Obtain from Get survey details ."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Page title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Page description",
+     "control_type": "text"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "hint": "New 1-based position for the page (reorders it within the survey)."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Page ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Page title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "question_count",
+     "type": "integer",
+     "label": "Question count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_question",
+   "title": "Update question",
+   "description": "Update a question in SurveyMonkey",
+   "help": "Updates an existing question's text, answer choices, or position on its page. Only supplied fields change. Cannot move a question to a different page or change its family.",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey."
+    },
+    {
+     "name": "page_id",
+     "type": "string",
+     "label": "Page ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the page containing the question."
+    },
+    {
+     "name": "question_id",
+     "type": "string",
+     "label": "Question ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the question to update. Obtain from Get survey details ."
+    },
+    {
+     "name": "heading",
+     "type": "string",
+     "label": "Question text",
+     "control_type": "text",
+     "hint": "New question text."
+    },
+    {
+     "name": "image_url",
+     "type": "string",
+     "label": "Heading image URL",
+     "control_type": "text",
+     "hint": "For image-based questions such as presentation/image or image_choice."
+    },
+    {
+     "name": "answers",
+     "type": "object",
+     "label": "Answers",
+     "properties": [
+      {
+       "name": "rows",
+       "type": "array",
+       "label": "Rows",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "hint": "Existing row ID to update; omit to add a new row."
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "hint": "Row label text. Required when adding a new row."
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer",
+         "hint": "1-based position of this row."
+        }
+       ],
+       "hint": "Row items (matrix, open_ended/multi/numerical, datetime). Each row requires a text label."
+      },
+      {
+       "name": "choices",
+       "type": "array",
+       "label": "Choices",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "hint": "Existing choice ID to update; omit to add a new choice."
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "hint": "Choice label. Required for single_choice, multiple_choice, matrix. Optional for demographic."
+        },
+        {
+         "name": "image_url",
+         "type": "string",
+         "label": "Image URL",
+         "control_type": "text",
+         "hint": "Required for image_choice display type when adding a new choice."
+        },
+        {
+         "name": "weight",
+         "type": "integer",
+         "label": "Weight",
+         "control_type": "integer",
+         "hint": "For matrix/rating: weight value of this choice. Required for rating subtype."
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer",
+         "hint": "1-based position of this choice."
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Field type",
+         "control_type": "select",
+         "options": [
+          "name",
+          "company",
+          "address",
+          "address2",
+          "city",
+          "state",
+          "zip",
+          "country",
+          "email",
+          "phone",
+          "address1_label",
+          "address2_label",
+          "city_label",
+          "state_label",
+          "zip_label",
+          "country_label",
+          "phone_number",
+          "email_address",
+          "first_name",
+          "last_name",
+          "middle_name",
+          "title",
+          "suffix"
+         ],
+         "toggle_field": {
+          "name": "type",
+          "type": "string"
+         },
+         "hint": "For demographic only — the field this choice represents."
+        },
+        {
+         "name": "visible",
+         "type": "boolean",
+         "label": "Visible",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "visible",
+          "type": "boolean"
+         },
+         "hint": "For demographic: whether this field is shown."
+        },
+        {
+         "name": "required",
+         "type": "boolean",
+         "label": "Required",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "required",
+          "type": "boolean"
+         },
+         "hint": "For demographic subtypes such as international, us, and address: whether this field is required. Do not use for phone, email, or name."
+        },
+        {
+         "name": "options",
+         "type": "object",
+         "label": "Options",
+         "properties": [
+          {
+           "name": "placeholder_text",
+           "type": "string",
+           "label": "Placeholder text",
+           "control_type": "text"
+          },
+          {
+           "name": "default_country",
+           "type": "string",
+           "label": "Default country",
+           "control_type": "text"
+          }
+         ]
+        }
+       ],
+       "hint": "Choice items (single_choice, multiple_choice, matrix, demographic). For matrix/rating: include weight. For demographic: include type, visible, required."
+      },
+      {
+       "name": "other",
+       "type": "array",
+       "label": "Other",
+       "of": "object",
+       "properties": [
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text"
+        },
+        {
+         "name": "num_chars",
+         "type": "integer",
+         "label": "Num chars",
+         "control_type": "integer"
+        },
+        {
+         "name": "num_lines",
+         "type": "integer",
+         "label": "Num lines",
+         "control_type": "integer"
+        }
+       ],
+       "hint": "Optional other-answer configuration for choice and matrix questions."
+      },
+      {
+       "name": "cols",
+       "type": "array",
+       "label": "Cols",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "hint": "Existing column ID to update; omit to add a new column."
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "hint": "Column header label. Required when adding a new column."
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer",
+         "hint": "1-based position of this column."
+        },
+        {
+         "name": "choices",
+         "type": "array",
+         "label": "Choices",
+         "of": "object",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "hint": "Existing choice ID to update; omit to add a new choice."
+          },
+          {
+           "name": "text",
+           "type": "string",
+           "label": "Text",
+           "control_type": "text",
+           "hint": "Choice text. Required when adding a new nested choice."
+          },
+          {
+           "name": "visible",
+           "type": "boolean",
+           "label": "Visible",
+           "control_type": "checkbox",
+           "toggle_field": {
+            "name": "visible",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "position",
+           "type": "integer",
+           "label": "Position",
+           "control_type": "integer",
+           "hint": "Position of this choice. Required when adding a new nested choice."
+          }
+         ],
+         "hint": "Dropdown options within this column."
+        }
+       ],
+       "hint": "For matrix/menu only: column definitions. Each column has a text label and its own dropdown choices."
+      }
+     ],
+     "hint": "Answer structure — varies by family. Include the existing id on a row, choice, or col to update it; omit to add new. See Add question for full per-family structure."
+    },
+    {
+     "name": "display_options",
+     "type": "object",
+     "label": "Display options",
+     "properties": [
+      {
+       "name": "display_type",
+       "type": "string",
+       "label": "Display type",
+       "control_type": "text"
+      }
+     ],
+     "hint": "Optional display settings such as image_choice, slider, file_upload, emoji, or star."
+    },
+    {
+     "name": "validation",
+     "type": "object",
+     "label": "Validation",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Error message",
+       "control_type": "text"
+      },
+      {
+       "name": "sum",
+       "type": "integer",
+       "label": "Required sum",
+       "control_type": "integer"
+      },
+      {
+       "name": "sum_text",
+       "type": "string",
+       "label": "Sum error message",
+       "control_type": "text"
+      },
+      {
+       "name": "min",
+       "type": "integer",
+       "label": "Minimum value",
+       "control_type": "integer"
+      },
+      {
+       "name": "max",
+       "type": "integer",
+       "label": "Maximum value",
+       "control_type": "integer"
+      }
+     ],
+     "hint": "Use for datetime and open_ended/numerical updates."
+    },
+    {
+     "name": "forced_ranking",
+     "type": "boolean",
+     "label": "Forced ranking?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "forced_ranking",
+      "type": "boolean"
+     },
+     "hint": "Optional for matrix single/rating questions."
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "hint": "New 1-based position on the page (reorders the question)."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Question ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "family",
+     "type": "string",
+     "label": "Question family",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "subtype",
+     "type": "string",
+     "label": "Question subtype",
+     "control_type": "text"
+    },
+    {
+     "name": "heading",
+     "type": "string",
+     "label": "Question text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "headings",
+     "type": "array",
+     "label": "Headings",
+     "of": "object",
+     "properties": [
+      {
+       "name": "heading",
+       "type": "string",
+       "label": "Heading text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "image",
+       "type": "object",
+       "label": "Heading image",
+       "properties": [
+        {
+         "name": "url",
+         "type": "string",
+         "label": "Image URL",
+         "control_type": "url"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "visible",
+     "type": "boolean",
+     "label": "Visible?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "visible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "forced_ranking",
+     "type": "boolean",
+     "label": "Forced ranking?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "forced_ranking",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "display_options",
+     "type": "object",
+     "label": "Display options",
+     "properties": [
+      {
+       "name": "display_type",
+       "type": "string",
+       "label": "Display type",
+       "control_type": "text"
+      },
+      {
+       "name": "display_subtype",
+       "type": "string",
+       "label": "Display subtype",
+       "control_type": "text"
+      },
+      {
+       "name": "left_label",
+       "type": "string",
+       "label": "Left label",
+       "control_type": "text"
+      },
+      {
+       "name": "right_label",
+       "type": "string",
+       "label": "Right label",
+       "control_type": "text"
+      },
+      {
+       "name": "custom_options",
+       "type": "object",
+       "label": "Custom options",
+       "properties": [
+        {
+         "name": "starting_position",
+         "type": "integer",
+         "label": "Starting position",
+         "control_type": "integer"
+        },
+        {
+         "name": "step_size",
+         "type": "integer",
+         "label": "Step size",
+         "control_type": "integer"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "validation",
+     "type": "object",
+     "label": "Validation",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Validation type",
+       "control_type": "text"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Validation text",
+       "control_type": "text"
+      },
+      {
+       "name": "sum",
+       "type": "integer",
+       "label": "Required sum",
+       "control_type": "integer"
+      },
+      {
+       "name": "sum_text",
+       "type": "string",
+       "label": "Sum validation text",
+       "control_type": "text"
+      },
+      {
+       "name": "min",
+       "type": "integer",
+       "label": "Minimum value",
+       "control_type": "integer"
+      },
+      {
+       "name": "max",
+       "type": "integer",
+       "label": "Maximum value",
+       "control_type": "integer"
+      }
+     ]
+    },
+    {
+     "name": "answers",
+     "type": "object",
+     "label": "Answers",
+     "properties": [
+      {
+       "name": "choices",
+       "type": "array",
+       "label": "Choices",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Choice ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Choice text",
+         "control_type": "text"
+        },
+        {
+         "name": "weight",
+         "type": "integer",
+         "label": "Weight",
+         "control_type": "integer"
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer"
+        },
+        {
+         "name": "visible",
+         "type": "boolean",
+         "label": "Visible?",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "visible",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "required",
+         "type": "boolean",
+         "label": "Required?",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "required",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "image",
+         "type": "object",
+         "label": "Image",
+         "properties": [
+          {
+           "name": "url",
+           "type": "string",
+           "label": "Image URL",
+           "control_type": "url"
+          }
+         ]
+        },
+        {
+         "name": "options",
+         "type": "object",
+         "label": "Options",
+         "properties": [
+          {
+           "name": "placeholder_text",
+           "type": "string",
+           "label": "Placeholder text",
+           "control_type": "text"
+          },
+          {
+           "name": "default_country",
+           "type": "string",
+           "label": "Default country",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "other",
+       "type": "array",
+       "label": "Other choices",
+       "of": "object",
+       "properties": [
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text"
+        },
+        {
+         "name": "num_chars",
+         "type": "integer",
+         "label": "Character limit",
+         "control_type": "integer"
+        },
+        {
+         "name": "num_lines",
+         "type": "integer",
+         "label": "Line limit",
+         "control_type": "integer"
+        }
+       ]
+      },
+      {
+       "name": "rows",
+       "type": "array",
+       "label": "Rows",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Row ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Row text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "subtype",
+         "type": "string",
+         "label": "Subtype",
+         "control_type": "text"
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer"
+        },
+        {
+         "name": "visible",
+         "type": "boolean",
+         "label": "Visible?",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "visible",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "cols",
+       "type": "array",
+       "label": "Columns",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Column ID",
+         "control_type": "text"
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Column text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "position",
+         "type": "integer",
+         "label": "Position",
+         "control_type": "integer"
+        },
+        {
+         "name": "choices",
+         "type": "array",
+         "label": "Choices",
+         "of": "object",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "Choice ID",
+           "control_type": "text"
+          },
+          {
+           "name": "text",
+           "type": "string",
+           "label": "Choice text",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "position",
+           "type": "integer",
+           "label": "Position",
+           "control_type": "integer"
+          },
+          {
+           "name": "visible",
+           "type": "boolean",
+           "label": "Visible?",
+           "control_type": "checkbox",
+           "toggle_field": {
+            "name": "visible",
+            "type": "boolean"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_survey",
+   "title": "Update survey",
+   "description": "Update survey settings in SurveyMonkey",
+   "input": [
+    {
+     "name": "survey_id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the survey to update."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey title",
+     "control_type": "text",
+     "hint": "New survey title."
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text",
+     "hint": "Internal nickname for the survey."
+    },
+    {
+     "name": "buttons_text",
+     "type": "object",
+     "label": "Navigation button labels",
+     "properties": [
+      {
+       "name": "next_button",
+       "type": "string",
+       "label": "Next button",
+       "control_type": "text"
+      },
+      {
+       "name": "prev_button",
+       "type": "string",
+       "label": "Previous button",
+       "control_type": "text"
+      },
+      {
+       "name": "done_button",
+       "type": "string",
+       "label": "Done button",
+       "control_type": "text"
+      },
+      {
+       "name": "exit_button",
+       "type": "string",
+       "label": "Exit button",
+       "control_type": "text"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Survey ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Survey title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "language",
+     "type": "string",
+     "label": "Language",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "category",
+     "type": "string",
+     "label": "Category",
+     "control_type": "text"
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text"
+    },
+    {
+     "name": "theme_id",
+     "type": "string",
+     "label": "Theme ID",
+     "control_type": "text"
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text"
+    },
+    {
+     "name": "owner",
+     "type": "string",
+     "label": "Owner ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_owner",
+     "type": "boolean",
+     "label": "Is owner?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_owner",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "footer",
+     "type": "boolean",
+     "label": "Footer enabled?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "footer",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "page_count",
+     "type": "integer",
+     "label": "Page count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "question_count",
+     "type": "integer",
+     "label": "Question count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "response_count",
+     "type": "integer",
+     "label": "Response count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "buttons_text",
+     "type": "object",
+     "label": "Button labels",
+     "required": true,
+     "properties": [
+      {
+       "name": "next_button",
+       "type": "string",
+       "label": "Next button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "prev_button",
+       "type": "string",
+       "label": "Previous button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "done_button",
+       "type": "string",
+       "label": "Done button",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "exit_button",
+       "type": "string",
+       "label": "Exit button",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "API URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "analyze_url",
+     "type": "string",
+     "label": "Analyze URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "edit_url",
+     "type": "string",
+     "label": "Edit URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "collect_url",
+     "type": "string",
+     "label": "Collect URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "summary_url",
+     "type": "string",
+     "label": "Summary URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "preview",
+     "type": "string",
+     "label": "Preview URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "date_created",
+     "type": "date_time",
+     "label": "Date created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_modified",
+     "type": "date_time",
+     "label": "Date modified",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

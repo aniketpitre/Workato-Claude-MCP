@@ -1,0 +1,2151 @@
+{
+ "name": "solace",
+ "title": "Solace",
+ "requires_connection": true,
+ "categories": [
+  "messaging"
+ ],
+ "aliases": [
+  "Solace"
+ ],
+ "triggers": [
+  {
+   "name": "new_message_batch_from_queue",
+   "title": "New message batch in queue",
+   "description": "New message batch in Solace queue",
+   "help": "Triggers with a batch of new messages available in the specified Solace queue.",
+   "input": [
+    {
+     "name": "destination",
+     "type": "string",
+     "label": "Queue name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "queue_list",
+     "toggle_field": {
+      "name": "destination",
+      "type": "string"
+     },
+     "hint": "Select a queue, or toggle to enter it manually."
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message format",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "text",
+      "binary"
+     ],
+     "extends_schema": true,
+     "hint": "Select the message format."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 10,
+     "hint": "Maximum number of messages to aggregate into a single trigger event (1-1000)."
+    },
+    {
+     "name": "batch_timeout",
+     "type": "integer",
+     "label": "Batch timeout (ms)",
+     "control_type": "integer",
+     "default": 30000,
+     "hint": "Maximum time to wait for Batch size messages to accumulate before dispatching a partial batch (1-300000 ms)."
+    },
+    {
+     "name": "manual_ack",
+     "type": "boolean",
+     "label": "Manual acknowledgement",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "manual_ack",
+      "type": "boolean"
+     },
+     "hint": "Hold the whole batch until the recipe settles it with the Acknowledge message action. Queues only. When off , the batch is acknowledged as soon as its trigger event is created (the job persists and ca…"
+    },
+    {
+     "name": "ack_timeout",
+     "type": "integer",
+     "label": "Acknowledgement timeout (ms)",
+     "control_type": "integer",
+     "default": 60000,
+     "hint": "Milliseconds to wait for the Acknowledge message action before the whole batch is redelivered. The recipe must finish acknowledging within this window; otherwise Solace treats the batch as failed and …"
+    },
+    {
+     "name": "max_pending_acks",
+     "type": "integer",
+     "label": "Max pending acknowledgements",
+     "control_type": "integer",
+     "default": 5,
+     "hint": "Maximum number of received events (messages, or batches for the batch trigger) the agent holds unacknowledged at once, before it stops pulling more from the queue. Should typically match this recipe's…"
+    },
+    {
+     "name": "custom_properties",
+     "type": "array",
+     "label": "Additional subscription properties",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Extra Solace session properties for this subscription only, overriding the connection's own."
+    }
+   ],
+   "output": [
+    {
+     "name": "ack_handle",
+     "type": "string",
+     "label": "Acknowledgement handle",
+     "control_type": "text"
+    },
+    {
+     "name": "manual_ack",
+     "type": "boolean",
+     "label": "Manual acknowledgement",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "manual_ack",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "count",
+     "type": "integer",
+     "label": "Message count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "messages",
+     "type": "array",
+     "label": "Messages",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "ack_handle",
+       "type": "string",
+       "label": "Acknowledgement handle",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Message type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "delivery_mode",
+       "type": "string",
+       "label": "Delivery mode",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "priority",
+       "type": "integer",
+       "label": "Priority",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "cos",
+       "type": "integer",
+       "label": "Class of service",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "destination",
+       "type": "object",
+       "label": "Destination",
+       "required": true,
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "reply_to",
+       "type": "object",
+       "label": "Reply to",
+       "required": true,
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "application_id",
+       "type": "string",
+       "label": "Application ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "application_type",
+       "type": "string",
+       "label": "Application type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "http_content_type",
+       "type": "string",
+       "label": "HTTP content type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "correlation_id",
+       "type": "string",
+       "label": "Correlation ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sender_id",
+       "type": "string",
+       "label": "Sender ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "replication_group_id",
+       "type": "string",
+       "label": "Replication group ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sequence_number",
+       "type": "integer",
+       "label": "Sequence number",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "sender_time",
+       "type": "integer",
+       "label": "Sender time",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "receive_time",
+       "type": "integer",
+       "label": "Receive time",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "time_to_live",
+       "type": "integer",
+       "label": "Time to live",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "expiration",
+       "type": "integer",
+       "label": "Expiration",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "delivery_count",
+       "type": "integer",
+       "label": "Delivery count",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "is_reply",
+       "type": "boolean",
+       "label": "Is reply",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "is_reply",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "dmq_eligible",
+       "type": "boolean",
+       "label": "Dead message queue eligible",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "dmq_eligible",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "discard_indication",
+       "type": "boolean",
+       "label": "Discard indication",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "discard_indication",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "eliding_eligible",
+       "type": "boolean",
+       "label": "Eliding eligible",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "eliding_eligible",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "user_data",
+       "type": "string",
+       "label": "User data",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "properties",
+       "type": "array",
+       "label": "Properties",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "message",
+       "type": "string",
+       "label": "Message",
+       "control_type": "text-area",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "new_message_queue",
+   "title": "New message in queue",
+   "description": "New message in Solace queue",
+   "help": "Triggers when a new message is available in the specified Solace queue.",
+   "input": [
+    {
+     "name": "destination",
+     "type": "string",
+     "label": "Queue name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "queue_list",
+     "toggle_field": {
+      "name": "destination",
+      "type": "string"
+     },
+     "hint": "Select a queue, or toggle to enter it manually."
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message format",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "text",
+      "binary"
+     ],
+     "extends_schema": true,
+     "hint": "Select the message format."
+    },
+    {
+     "name": "manual_ack",
+     "type": "boolean",
+     "label": "Manual acknowledgement",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "manual_ack",
+      "type": "boolean"
+     },
+     "hint": "Hold each message until the recipe settles it with the Acknowledge message action. Queues only. When off , each message is acknowledged as soon as its trigger event is created (the job persists and ca…"
+    },
+    {
+     "name": "ack_timeout",
+     "type": "integer",
+     "label": "Acknowledgement timeout (ms)",
+     "control_type": "integer",
+     "default": 60000,
+     "hint": "Milliseconds to wait for the Acknowledge message action before the message is redelivered. The recipe must finish acknowledging within this window; otherwise Solace treats the message as failed and re…"
+    },
+    {
+     "name": "max_pending_acks",
+     "type": "integer",
+     "label": "Max pending acknowledgements",
+     "control_type": "integer",
+     "default": 5,
+     "hint": "Maximum number of received events (messages, or batches for the batch trigger) the agent holds unacknowledged at once, before it stops pulling more from the queue. Should typically match this recipe's…"
+    },
+    {
+     "name": "custom_properties",
+     "type": "array",
+     "label": "Additional subscription properties",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Extra Solace session properties for this subscription only, overriding the connection's own."
+    }
+   ],
+   "output": [
+    {
+     "name": "ack_handle",
+     "type": "string",
+     "label": "Acknowledgement handle",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Message type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "delivery_mode",
+     "type": "string",
+     "label": "Delivery mode",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "priority",
+     "type": "integer",
+     "label": "Priority",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "cos",
+     "type": "integer",
+     "label": "Class of service",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "destination",
+     "type": "object",
+     "label": "Destination",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "reply_to",
+     "type": "object",
+     "label": "Reply to",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "application_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "application_type",
+     "type": "string",
+     "label": "Application type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "http_content_type",
+     "type": "string",
+     "label": "HTTP content type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "correlation_id",
+     "type": "string",
+     "label": "Correlation ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sender_id",
+     "type": "string",
+     "label": "Sender ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "replication_group_id",
+     "type": "string",
+     "label": "Replication group ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sequence_number",
+     "type": "integer",
+     "label": "Sequence number",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "sender_time",
+     "type": "integer",
+     "label": "Sender time",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "receive_time",
+     "type": "integer",
+     "label": "Receive time",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "time_to_live",
+     "type": "integer",
+     "label": "Time to live",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "expiration",
+     "type": "integer",
+     "label": "Expiration",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "delivery_count",
+     "type": "integer",
+     "label": "Delivery count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "is_reply",
+     "type": "boolean",
+     "label": "Is reply",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "is_reply",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "dmq_eligible",
+     "type": "boolean",
+     "label": "Dead message queue eligible",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "dmq_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discard_indication",
+     "type": "boolean",
+     "label": "Discard indication",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "discard_indication",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "eliding_eligible",
+     "type": "boolean",
+     "label": "Eliding eligible",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "eliding_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "user_data",
+     "type": "string",
+     "label": "User data",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "type": "array",
+     "label": "Properties",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "manual_ack",
+     "type": "boolean",
+     "label": "Manual acknowledgement",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "manual_ack",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "new_message_topic",
+   "title": "New message in topic",
+   "description": "New message in Solace topic",
+   "help": "Triggers when a new message is available in the specified Solace topic.",
+   "input": [
+    {
+     "name": "topics",
+     "type": "array",
+     "label": "Topics",
+     "required": true,
+     "of": "string",
+     "hint": "One or more topic subscriptions to listen on, e.g. ['orders/created', 'orders/updated'] . Wildcards * (single level) and > (remaining levels) are supported."
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message format",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "text",
+      "binary"
+     ],
+     "extends_schema": true,
+     "hint": "Select the message format."
+    }
+   ],
+   "output": [
+    {
+     "name": "ack_handle",
+     "type": "string",
+     "label": "Acknowledgement handle",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Message type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "delivery_mode",
+     "type": "string",
+     "label": "Delivery mode",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "priority",
+     "type": "integer",
+     "label": "Priority",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "cos",
+     "type": "integer",
+     "label": "Class of service",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "destination",
+     "type": "object",
+     "label": "Destination",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "reply_to",
+     "type": "object",
+     "label": "Reply to",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "application_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "application_type",
+     "type": "string",
+     "label": "Application type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "http_content_type",
+     "type": "string",
+     "label": "HTTP content type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "correlation_id",
+     "type": "string",
+     "label": "Correlation ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sender_id",
+     "type": "string",
+     "label": "Sender ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "replication_group_id",
+     "type": "string",
+     "label": "Replication group ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sequence_number",
+     "type": "integer",
+     "label": "Sequence number",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "sender_time",
+     "type": "integer",
+     "label": "Sender time",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "receive_time",
+     "type": "integer",
+     "label": "Receive time",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "time_to_live",
+     "type": "integer",
+     "label": "Time to live",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "expiration",
+     "type": "integer",
+     "label": "Expiration",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "delivery_count",
+     "type": "integer",
+     "label": "Delivery count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "is_reply",
+     "type": "boolean",
+     "label": "Is reply",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "is_reply",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "dmq_eligible",
+     "type": "boolean",
+     "label": "Dead message queue eligible",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "dmq_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discard_indication",
+     "type": "boolean",
+     "label": "Discard indication",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "discard_indication",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "eliding_eligible",
+     "type": "boolean",
+     "label": "Eliding eligible",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "eliding_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "user_data",
+     "type": "string",
+     "label": "User data",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "type": "array",
+     "label": "Properties",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "acknowledge_message",
+   "title": "Acknowledge message received from Solace",
+   "description": "Acknowledge message received from Solace",
+   "help": "Settles a message received (via a trigger or the receive action) in manual acknowledgement mode, using its acknowledgement handle.",
+   "input": [
+    {
+     "name": "ack_handle",
+     "type": "string",
+     "label": "Acknowledgement handle",
+     "control_type": "text",
+     "required": true,
+     "hint": "The Acknowledgement handle from a trigger or receive output produced in manual acknowledgement mode."
+    },
+    {
+     "name": "outcome",
+     "type": "string",
+     "label": "Outcome",
+     "control_type": "select",
+     "required": true,
+     "default": "ACCEPTED",
+     "options": [
+      "ACCEPTED",
+      "FAILED",
+      "REJECTED"
+     ],
+     "hint": "ACCEPTED consumes the message, FAILED redelivers it, REJECTED routes it to the dead-message queue."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "publish_to_queue",
+   "title": "Publish message to queue",
+   "description": "Publish message to Solace queue",
+   "help": "Publishes a message to the specified Solace queue.",
+   "input": [
+    {
+     "name": "destination",
+     "type": "string",
+     "label": "Queue name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "queue_list",
+     "toggle_field": {
+      "name": "destination",
+      "type": "string"
+     },
+     "hint": "Select a queue, or toggle to enter it manually."
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message format",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "text",
+      "binary"
+     ],
+     "extends_schema": true,
+     "hint": "Select the message format."
+    },
+    {
+     "name": "delivery_mode",
+     "type": "string",
+     "label": "Delivery mode",
+     "control_type": "select",
+     "options": [
+      "PERSISTENT",
+      "NON_PERSISTENT",
+      "DIRECT"
+     ],
+     "hint": "Messages are PERSISTENT by default. DIRECT is only supported for topics."
+    },
+    {
+     "name": "priority",
+     "type": "integer",
+     "label": "Priority",
+     "control_type": "integer",
+     "hint": "Message priority (0-255, default 4 )."
+    },
+    {
+     "name": "correlation_id",
+     "type": "string",
+     "label": "Correlation ID",
+     "control_type": "text"
+    },
+    {
+     "name": "cos",
+     "type": "integer",
+     "label": "Class of service",
+     "control_type": "select",
+     "options": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "name": "reply_to",
+     "type": "object",
+     "label": "Reply to",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "select",
+       "options": [
+        "queue",
+        "topic"
+       ]
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "application_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text"
+    },
+    {
+     "name": "application_type",
+     "type": "string",
+     "label": "Application type",
+     "control_type": "text"
+    },
+    {
+     "name": "http_content_type",
+     "type": "string",
+     "label": "HTTP content type",
+     "control_type": "text"
+    },
+    {
+     "name": "sender_id",
+     "type": "string",
+     "label": "Sender ID",
+     "control_type": "text"
+    },
+    {
+     "name": "sequence_number",
+     "type": "integer",
+     "label": "Sequence number",
+     "control_type": "integer"
+    },
+    {
+     "name": "sender_time",
+     "type": "integer",
+     "label": "Sender time",
+     "control_type": "integer",
+     "hint": "Sender timestamp in milliseconds."
+    },
+    {
+     "name": "time_to_live",
+     "type": "integer",
+     "label": "Time to live",
+     "control_type": "integer",
+     "hint": "Broker-enforced time-to-live in milliseconds. This is what actually expires the message (and routes it to the dead message queue when eligible). 0 means it never expires."
+    },
+    {
+     "name": "expiration",
+     "type": "integer",
+     "label": "Expiration",
+     "control_type": "integer",
+     "hint": "Informational expiration timestamp header, in milliseconds. It does not expire the message on the broker — use Time to live for that."
+    },
+    {
+     "name": "is_reply",
+     "type": "boolean",
+     "label": "Is reply",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "is_reply",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "dmq_eligible",
+     "type": "boolean",
+     "label": "Dead message queue eligible",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "dmq_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "eliding_eligible",
+     "type": "boolean",
+     "label": "Eliding eligible",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "eliding_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "user_data",
+     "type": "string",
+     "label": "User data",
+     "control_type": "text",
+     "hint": "Arbitrary user data header; sent base64-encoded."
+    },
+    {
+     "name": "properties",
+     "type": "array",
+     "label": "Properties",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "select",
+       "options": [
+        "string",
+        "char",
+        "boolean",
+        "byte",
+        "short",
+        "int",
+        "long",
+        "float",
+        "double",
+        "bytes"
+       ],
+       "hint": "Default is String"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ]
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "publish_to_topic",
+   "title": "Publish message to topic",
+   "description": "Publish message to Solace topic",
+   "help": "Publishes a message to the specified Solace topic.",
+   "input": [
+    {
+     "name": "destination",
+     "type": "string",
+     "label": "Topic name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter topic name"
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message format",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "text",
+      "binary"
+     ],
+     "extends_schema": true,
+     "hint": "Select the message format."
+    },
+    {
+     "name": "delivery_mode",
+     "type": "string",
+     "label": "Delivery mode",
+     "control_type": "select",
+     "options": [
+      "PERSISTENT",
+      "NON_PERSISTENT",
+      "DIRECT"
+     ],
+     "hint": "Messages are PERSISTENT by default. DIRECT is only supported for topics."
+    },
+    {
+     "name": "priority",
+     "type": "integer",
+     "label": "Priority",
+     "control_type": "integer",
+     "hint": "Message priority (0-255, default 4 )."
+    },
+    {
+     "name": "correlation_id",
+     "type": "string",
+     "label": "Correlation ID",
+     "control_type": "text"
+    },
+    {
+     "name": "cos",
+     "type": "integer",
+     "label": "Class of service",
+     "control_type": "select",
+     "options": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "name": "reply_to",
+     "type": "object",
+     "label": "Reply to",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "select",
+       "options": [
+        "queue",
+        "topic"
+       ]
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "application_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text"
+    },
+    {
+     "name": "application_type",
+     "type": "string",
+     "label": "Application type",
+     "control_type": "text"
+    },
+    {
+     "name": "http_content_type",
+     "type": "string",
+     "label": "HTTP content type",
+     "control_type": "text"
+    },
+    {
+     "name": "sender_id",
+     "type": "string",
+     "label": "Sender ID",
+     "control_type": "text"
+    },
+    {
+     "name": "sequence_number",
+     "type": "integer",
+     "label": "Sequence number",
+     "control_type": "integer"
+    },
+    {
+     "name": "sender_time",
+     "type": "integer",
+     "label": "Sender time",
+     "control_type": "integer",
+     "hint": "Sender timestamp in milliseconds."
+    },
+    {
+     "name": "time_to_live",
+     "type": "integer",
+     "label": "Time to live",
+     "control_type": "integer",
+     "hint": "Broker-enforced time-to-live in milliseconds. This is what actually expires the message (and routes it to the dead message queue when eligible). 0 means it never expires."
+    },
+    {
+     "name": "expiration",
+     "type": "integer",
+     "label": "Expiration",
+     "control_type": "integer",
+     "hint": "Informational expiration timestamp header, in milliseconds. It does not expire the message on the broker — use Time to live for that."
+    },
+    {
+     "name": "is_reply",
+     "type": "boolean",
+     "label": "Is reply",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "is_reply",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "dmq_eligible",
+     "type": "boolean",
+     "label": "Dead message queue eligible",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "dmq_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "eliding_eligible",
+     "type": "boolean",
+     "label": "Eliding eligible",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "eliding_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "user_data",
+     "type": "string",
+     "label": "User data",
+     "control_type": "text",
+     "hint": "Arbitrary user data header; sent base64-encoded."
+    },
+    {
+     "name": "properties",
+     "type": "array",
+     "label": "Properties",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "select",
+       "options": [
+        "string",
+        "char",
+        "boolean",
+        "byte",
+        "short",
+        "int",
+        "long",
+        "float",
+        "double",
+        "bytes"
+       ],
+       "hint": "Default is String"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ]
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "receive_message_from_queue",
+   "title": "Receive message from queue",
+   "description": "Receive message from Solace queue",
+   "help": "Receive a message from the specified Solace queue.",
+   "input": [
+    {
+     "name": "destination",
+     "type": "string",
+     "label": "Queue name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "queue_list",
+     "toggle_field": {
+      "name": "destination",
+      "type": "string"
+     },
+     "hint": "Select a queue, or toggle to enter it manually."
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message format",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "text",
+      "binary"
+     ],
+     "extends_schema": true,
+     "hint": "Select the message format."
+    },
+    {
+     "name": "receive_timeout",
+     "type": "integer",
+     "label": "Timeout (ms)",
+     "control_type": "integer",
+     "default": 30000,
+     "hint": "Maximum wait time for a message in milliseconds (1-300000)."
+    },
+    {
+     "name": "selector",
+     "type": "string",
+     "label": "Selector",
+     "control_type": "text",
+     "hint": "Filter expression to select specific messages. Property name is case sensitive."
+    },
+    {
+     "name": "manual_ack",
+     "type": "boolean",
+     "label": "Manual acknowledgement",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "manual_ack",
+      "type": "boolean"
+     },
+     "hint": "Hold each message until the recipe settles it with the Acknowledge message action. Queues only. When off , each message is acknowledged as soon as its trigger event is created (the job persists and ca…"
+    },
+    {
+     "name": "ack_timeout",
+     "type": "integer",
+     "label": "Acknowledgement timeout (ms)",
+     "control_type": "integer",
+     "default": 60000,
+     "hint": "Milliseconds to wait for the Acknowledge message action before the message is redelivered. The recipe must finish acknowledging within this window; otherwise Solace treats the message as failed and re…"
+    }
+   ],
+   "output": [
+    {
+     "name": "ack_handle",
+     "type": "string",
+     "label": "Acknowledgement handle",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Message type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "delivery_mode",
+     "type": "string",
+     "label": "Delivery mode",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "priority",
+     "type": "integer",
+     "label": "Priority",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "cos",
+     "type": "integer",
+     "label": "Class of service",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "destination",
+     "type": "object",
+     "label": "Destination",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "reply_to",
+     "type": "object",
+     "label": "Reply to",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "application_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "application_type",
+     "type": "string",
+     "label": "Application type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "http_content_type",
+     "type": "string",
+     "label": "HTTP content type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "correlation_id",
+     "type": "string",
+     "label": "Correlation ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sender_id",
+     "type": "string",
+     "label": "Sender ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "replication_group_id",
+     "type": "string",
+     "label": "Replication group ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sequence_number",
+     "type": "integer",
+     "label": "Sequence number",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "sender_time",
+     "type": "integer",
+     "label": "Sender time",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "receive_time",
+     "type": "integer",
+     "label": "Receive time",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "time_to_live",
+     "type": "integer",
+     "label": "Time to live",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "expiration",
+     "type": "integer",
+     "label": "Expiration",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "delivery_count",
+     "type": "integer",
+     "label": "Delivery count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "is_reply",
+     "type": "boolean",
+     "label": "Is reply",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "is_reply",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "dmq_eligible",
+     "type": "boolean",
+     "label": "Dead message queue eligible",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "dmq_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discard_indication",
+     "type": "boolean",
+     "label": "Discard indication",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "discard_indication",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "eliding_eligible",
+     "type": "boolean",
+     "label": "Eliding eligible",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "eliding_eligible",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "user_data",
+     "type": "string",
+     "label": "User data",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "properties",
+     "type": "array",
+     "label": "Properties",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "receive_messages_batch_from_queue",
+   "title": "Receive messages batch from queue",
+   "description": "Receive a batch of messages from Solace queue",
+   "help": "Receives up to Batch size messages from the queue. Messages are acknowledged automatically unless Manual acknowledgement is enabled.",
+   "input": [
+    {
+     "name": "destination",
+     "type": "string",
+     "label": "Queue name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "queue_list",
+     "toggle_field": {
+      "name": "destination",
+      "type": "string"
+     },
+     "hint": "Select a queue, or toggle to enter it manually."
+    },
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message format",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "text",
+      "binary"
+     ],
+     "extends_schema": true,
+     "hint": "Select the message format."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 10,
+     "hint": "Maximum number of messages to receive (1-1000)."
+    },
+    {
+     "name": "receive_timeout",
+     "type": "integer",
+     "label": "Timeout (ms)",
+     "control_type": "integer",
+     "default": 30000,
+     "hint": "Maximum wait time for a message in milliseconds (1-300000)."
+    },
+    {
+     "name": "selector",
+     "type": "string",
+     "label": "Selector",
+     "control_type": "text",
+     "hint": "Filter expression to select specific messages. Property name is case sensitive."
+    },
+    {
+     "name": "manual_ack",
+     "type": "boolean",
+     "label": "Manual acknowledgement",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "manual_ack",
+      "type": "boolean"
+     },
+     "hint": "Hold the whole batch until the recipe settles it with the Acknowledge message action. Queues only. When off , the batch is acknowledged as soon as it is received (the job persists and can be rerun, bu…"
+    },
+    {
+     "name": "ack_timeout",
+     "type": "integer",
+     "label": "Acknowledgement timeout (ms)",
+     "control_type": "integer",
+     "default": 60000,
+     "hint": "Milliseconds to wait for the Acknowledge message action before the whole batch is redelivered. The recipe must finish acknowledging within this window; otherwise Solace treats the batch as failed and …"
+    }
+   ],
+   "output": [
+    {
+     "name": "ack_handle",
+     "type": "string",
+     "label": "Acknowledgement handle",
+     "control_type": "text"
+    },
+    {
+     "name": "count",
+     "type": "integer",
+     "label": "Message count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "messages",
+     "type": "array",
+     "label": "Messages",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "ack_handle",
+       "type": "string",
+       "label": "Acknowledgement handle",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Message type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "delivery_mode",
+       "type": "string",
+       "label": "Delivery mode",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "priority",
+       "type": "integer",
+       "label": "Priority",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "cos",
+       "type": "integer",
+       "label": "Class of service",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "destination",
+       "type": "object",
+       "label": "Destination",
+       "required": true,
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "reply_to",
+       "type": "object",
+       "label": "Reply to",
+       "required": true,
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "application_id",
+       "type": "string",
+       "label": "Application ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "application_type",
+       "type": "string",
+       "label": "Application type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "http_content_type",
+       "type": "string",
+       "label": "HTTP content type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "correlation_id",
+       "type": "string",
+       "label": "Correlation ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sender_id",
+       "type": "string",
+       "label": "Sender ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "replication_group_id",
+       "type": "string",
+       "label": "Replication group ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sequence_number",
+       "type": "integer",
+       "label": "Sequence number",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "sender_time",
+       "type": "integer",
+       "label": "Sender time",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "receive_time",
+       "type": "integer",
+       "label": "Receive time",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "time_to_live",
+       "type": "integer",
+       "label": "Time to live",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "expiration",
+       "type": "integer",
+       "label": "Expiration",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "delivery_count",
+       "type": "integer",
+       "label": "Delivery count",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "is_reply",
+       "type": "boolean",
+       "label": "Is reply",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "is_reply",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "dmq_eligible",
+       "type": "boolean",
+       "label": "Dead message queue eligible",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "dmq_eligible",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "discard_indication",
+       "type": "boolean",
+       "label": "Discard indication",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "discard_indication",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "eliding_eligible",
+       "type": "boolean",
+       "label": "Eliding eligible",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "eliding_eligible",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "user_data",
+       "type": "string",
+       "label": "User data",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "properties",
+       "type": "array",
+       "label": "Properties",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "message",
+       "type": "string",
+       "label": "Message",
+       "control_type": "text-area",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

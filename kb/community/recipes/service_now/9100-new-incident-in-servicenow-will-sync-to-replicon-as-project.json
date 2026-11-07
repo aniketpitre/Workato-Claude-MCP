@@ -1,0 +1,2720 @@
+{
+ "id": 9100,
+ "name": "New incident in ServiceNow will Sync to Replicon  as Project",
+ "description": "This recipe creates a Replicon project when a new ServiceNow incident is created, to enable users to clock in their timesheets on Replicon for ServiceNow incidents. \n\nThis is useful when Replicon is your project management system that consolidates timesheets and expenses in a central system, while ServiceNow is your incident management system. \n\nOnly projects which are `filed` under an existing Replicon program (program should be created in Replicon with the exact name `category - subcategory` (case sensitive), with the `category` and 'subcategory` as that of the ServiceNow incident. \n\n#### How it works\n\nTrigger: New incidents in ServiceNow over the last day will be picked up by the recipe when first started. \n\nActions:\n- If the ServiceNow incident is inactive, end the recipe.\n- If the Replicon program does not exist, or is inactive, or its end date has passed, end the recipe.\n- Else, create the project in Replicon and add the incident assignee to the project team. Add the incident assignee's supervisor to the project team as project manager. If incident assignee has no supervisor, leave the project manger field blank.\n- Update the ServiceNow incident with the unique Replicon URI (identifier)\n\n#### Customization Options\n- Set your own criteria to filter what specific ServiceNow incidents you would like to sync across to Replicon\n\n### Custom Fields\n- Create \"Replicon URI\" custom field under ServiceNow Incident\n\n#### What you need to use this recipe\n- You should have a Replicon account with integrations rights and the Project Management permission set (view and edit all projects and project teams in Replicon), as well as a ServiceNow account with access rights to view and edit all incidents and users.\n- The users you are assigning to the incidents in ServiceNow should also exist in Replicon as users, and the login names for both users should match for the integration to work successfully.\n- You can change the naming convention for the programs for which you wish to sync the projects to\n\nUsually used with:\n- Updated ServiceNow incidents update corresponding Replicon project\n- Closed ServiceNow incidents close corresponding Replicon project\n",
+ "applications": [
+  "service_now",
+  "replicon",
+  "service_now"
+ ],
+ "action_applications": [
+  "replicon",
+  "service_now"
+ ],
+ "trigger_application": "service_now",
+ "business_objects": [
+  "program",
+  "user",
+  "project"
+ ],
+ "categories": [
+  "IT Helpdesk",
+  "Human Resources",
+  "Finance",
+  "Time and Expense"
+ ],
+ "copy_count": 875,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-06-18T22:44:10.685-07:00",
+ "source_url": "https://app.workato.com/recipes/9100?community=us",
+ "steps": [
+  "service_now.new_object",
+  "replicon.search_program",
+  "service_now.get_user",
+  "replicon.get_user_details",
+  "replicon.create_project",
+  "service_now.update_object",
+  "replicon.assign_user_to_project",
+  "replicon.assign_manager_to_project"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "service_now",
+  "name": "new_object",
+  "as": "new_object",
+  "title": "New record in incident",
+  "description": "New <span class=\"provider\">record</span> in <span class=\"provider\">incident</span> table in <span class=\"provider\">ServiceNow</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "table": "Incident"
+  },
+  "toggleCfg": {
+   "table": true
+  },
+  "input": {
+   "table": "incident"
+  },
+  "extended_output_schema": [
+   {
+    "type": "integer",
+    "name": "business_stc",
+    "control_type": "number",
+    "label": "Business resolve time",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "calendar_stc",
+    "control_type": "number",
+    "label": "Resolve time",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "object",
+    "name": "caller_id",
+    "label": "Caller",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "category",
+    "control_type": "text",
+    "label": "Category",
+    "optional": true
+   },
+   {
+    "type": "object",
+    "name": "caused_by",
+    "label": "Caused by Change",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "incident_state",
+    "control_type": "number",
+    "label": "Incident state",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "notify",
+    "control_type": "number",
+    "label": "Notify",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "object",
+    "name": "problem_id",
+    "label": "Problem",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "date_time",
+    "name": "resolved_at",
+    "control_type": "date_time",
+    "label": "Resolved",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "object",
+    "name": "resolved_by",
+    "label": "Resolved by",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "object",
+    "name": "rfc",
+    "label": "Change Request",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "severity",
+    "control_type": "number",
+    "label": "Severity",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "subcategory",
+    "control_type": "text",
+    "label": "Subcategory",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "sys_id",
+    "control_type": "text",
+    "label": "Sys ID",
+    "optional": true,
+    "key_scope": "incident"
+   },
+   {
+    "type": "string",
+    "name": "u_replicon_uri",
+    "control_type": "text",
+    "label": "Replicon URI",
+    "optional": true
+   },
+   {
+    "type": "boolean",
+    "name": "active",
+    "control_type": "checkbox",
+    "label": "Active",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Active",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "type": "boolean",
+     "name": "active"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "activity_due",
+    "control_type": "text",
+    "label": "Activity due",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "additional_assignee_list",
+    "control_type": "text",
+    "label": "Additional assignee list",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "approval",
+    "control_type": "text",
+    "label": "Approval",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "approval_history",
+    "control_type": "text",
+    "label": "Approval history",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "approval_set",
+    "control_type": "date_time",
+    "label": "Approval set",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "object",
+    "name": "assigned_to",
+    "label": "Assigned to",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "object",
+    "name": "assignment_group",
+    "label": "Assignment group",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "business_duration",
+    "control_type": "text",
+    "label": "Business duration",
+    "optional": true
+   },
+   {
+    "type": "object",
+    "name": "business_service",
+    "label": "Business service",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "calendar_duration",
+    "control_type": "text",
+    "label": "Duration",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "closed_at",
+    "control_type": "date_time",
+    "label": "Closed",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "object",
+    "name": "closed_by",
+    "label": "Closed by",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "close_notes",
+    "control_type": "text",
+    "label": "Close notes",
+    "optional": true
+   },
+   {
+    "type": "object",
+    "name": "cmdb_ci",
+    "label": "Configuration item",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "comments",
+    "control_type": "text",
+    "label": "Additional comments",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "comments_and_work_notes",
+    "control_type": "text",
+    "label": "Comments and Work notes",
+    "optional": true
+   },
+   {
+    "type": "object",
+    "name": "company",
+    "label": "Company",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "contact_type",
+    "control_type": "text",
+    "label": "Contact type",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "correlation_display",
+    "control_type": "text",
+    "label": "Correlation display",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "correlation_id",
+    "control_type": "text",
+    "label": "Correlation ID",
+    "optional": true
+   },
+   {
+    "type": "object",
+    "name": "delivery_plan",
+    "label": "Execution plan",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "object",
+    "name": "delivery_task",
+    "label": "Execution task",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "string",
+    "name": "description",
+    "control_type": "text",
+    "label": "Description",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "due_date",
+    "control_type": "date_time",
+    "label": "Due date",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "integer",
+    "name": "escalation",
+    "control_type": "number",
+    "label": "Escalation",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "date_time",
+    "name": "expected_start",
+    "control_type": "date_time",
+    "label": "Expected start",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "date_time",
+    "name": "follow_up",
+    "control_type": "date_time",
+    "label": "Follow up",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "group_list",
+    "control_type": "text",
+    "label": "Group list",
+    "optional": true
+   },
+   {
+    "type": "integer",
+    "name": "impact",
+    "control_type": "number",
+    "label": "Impact",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "boolean",
+    "name": "knowledge",
+    "control_type": "checkbox",
+    "label": "Knowledge",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Knowledge",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "type": "boolean",
+     "name": "knowledge"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "object",
+    "name": "location",
+    "label": "Location",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "boolean",
+    "name": "made_sla",
+    "control_type": "checkbox",
+    "label": "Made SLA",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Made SLA",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "type": "boolean",
+     "name": "made_sla"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "number",
+    "control_type": "text",
+    "label": "Number",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "opened_at",
+    "control_type": "date_time",
+    "label": "Opened",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "object",
+    "name": "opened_by",
+    "label": "Opened by",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "order",
+    "control_type": "number",
+    "label": "Order",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "object",
+    "name": "parent",
+    "label": "Parent",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "url",
+      "label": "Link",
+      "optional": true,
+      "type": "string",
+      "name": "link"
+     },
+     {
+      "control_type": "text",
+      "label": "Value",
+      "optional": true,
+      "type": "string",
+      "name": "value"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "priority",
+    "control_type": "number",
+    "label": "Priority",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "reassignment_count",
+    "control_type": "number",
+    "label": "Reassignment count",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "short_description",
+    "control_type": "text",
+    "label": "Short description",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "sla_due",
+    "control_type": "text",
+    "label": "SLA due",
+    "optional": true
+   },
+   {
+    "type": "integer",
+    "name": "state",
+    "control_type": "number",
+    "label": "State",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "sys_class_name",
+    "control_type": "text",
+    "label": "Task type",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "sys_created_by",
+    "control_type": "text",
+    "label": "Created by",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "sys_created_on",
+    "control_type": "date_time",
+    "label": "Created",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "sys_domain",
+    "control_type": "text",
+    "label": "Domain",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "sys_domain_path",
+    "control_type": "text",
+    "label": "Domain Path",
+    "optional": true
+   },
+   {
+    "type": "integer",
+    "name": "sys_mod_count",
+    "control_type": "number",
+    "label": "Updates",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "sys_updated_by",
+    "control_type": "text",
+    "label": "Updated by",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "sys_updated_on",
+    "control_type": "date_time",
+    "label": "Updated",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "time_worked",
+    "control_type": "text",
+    "label": "Time worked",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "upon_approval",
+    "control_type": "text",
+    "label": "Upon approval",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "upon_reject",
+    "control_type": "text",
+    "label": "Upon reject",
+    "optional": true
+   },
+   {
+    "type": "integer",
+    "name": "urgency",
+    "control_type": "number",
+    "label": "Urgency",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "user_input",
+    "control_type": "text",
+    "label": "User input",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "watch_list",
+    "control_type": "text",
+    "label": "Watch list",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "work_end",
+    "control_type": "date_time",
+    "label": "Work end",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "work_notes",
+    "control_type": "text",
+    "label": "Work notes",
+    "optional": true
+   },
+   {
+    "type": "string",
+    "name": "work_notes_list",
+    "control_type": "text",
+    "label": "Work notes list",
+    "optional": true
+   },
+   {
+    "type": "date_time",
+    "name": "work_start",
+    "control_type": "date_time",
+    "label": "Work start",
+    "optional": true,
+    "render_input": {},
+    "parse_output": {}
+   }
+  ],
+  "visible_config_fields": [
+   "since",
+   "table"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.service_now.new_object.active')}",
+       "rhs": null,
+       "operand": "is_not_true"
+      }
+     ]
+    },
+    "uuid": "4c7ed725-0628-48da-ad13-2e9acf3ccfaf"
+   },
+   {
+    "number": 2,
+    "provider": "replicon",
+    "name": "search_program",
+    "as": "search_program1",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "exact_match": true
+    },
+    "input": {
+     "program_name": "#{_('data.service_now.new_object.category')} - #{_('data.service_now.new_object.subcategory')}",
+     "exact_match": "true"
+    },
+    "uuid": "370e2d1d-6f70-441f-b239-a7a40872633d"
+   },
+   {
+    "number": 3,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.replicon.search_program1.programs.first.name')}",
+       "rhs": null,
+       "operand": "blank"
+      }
+     ]
+    },
+    "comment": "Stop if program does not exist in Replicon",
+    "uuid": "a7cec95f-25fe-4599-8ccc-212dde859216"
+   },
+   {
+    "number": 4,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.replicon.search_program1.programs.first.isActive')}",
+       "rhs": null,
+       "operand": "is_not_true"
+      }
+     ]
+    },
+    "comment": "Stop if program is inactive",
+    "uuid": "884f7c71-40cb-4477-a937-ee9ecf4efec6"
+   },
+   {
+    "number": 5,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.replicon.search_program1.programs.first.dateRange.endDate')}",
+       "rhs": null,
+       "operand": "present"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 6,
+      "keyword": "filter",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "lhs": "#{_('data.replicon.search_program1.programs.first.dateRange.endDate')}",
+         "rhs": "#{_('data.service_now.new_object.sys_updated_on')}",
+         "operand": "less_than"
+        }
+       ]
+      },
+      "uuid": "4e4847a2-85fd-43fe-8c33-34640b2a341c"
+     }
+    ],
+    "comment": "Check Incident falls under Project Date range.",
+    "uuid": "4501b24b-672b-4b72-bd4c-21e454f96543"
+   },
+   {
+    "number": 7,
+    "provider": "service_now",
+    "name": "get_user",
+    "as": "get_user2",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "sys_id": "#{_('data.service_now.new_object.assigned_to.value')}"
+    },
+    "comment": "Get ServiceNow details of assignee",
+    "uuid": "920494bc-2a1f-444c-8382-572ad874b9a6"
+   },
+   {
+    "number": 8,
+    "provider": "replicon",
+    "name": "get_user_details",
+    "as": "get_user_details",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "login_name": "#{_('data.service_now.get_user2.user_name')}"
+    },
+    "comment": "Require Replicon URI field in ServiceNow",
+    "uuid": "2b79d7b5-8eee-45cc-aaad-c0107598ea14"
+   },
+   {
+    "number": 9,
+    "provider": "replicon",
+    "name": "create_project",
+    "as": "create_project",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "name": "#{_('data.service_now.new_object.short_description')} (#{_('data.service_now.new_object.number')})",
+     "code": "#{_('data.service_now.new_object.number')}",
+     "start_date": "#{_('data.service_now.new_object.opened_at')}",
+     "description": "#{_('data.service_now.new_object.description')}",
+     "program_name": "#{_('data.service_now.new_object.category')} - #{_('data.service_now.new_object.subcategory')}"
+    },
+    "uuid": "0adc8624-fc9a-42b6-a512-1a5c80239baf"
+   },
+   {
+    "number": 10,
+    "provider": "service_now",
+    "name": "update_object",
+    "as": "update_object",
+    "title": "Update record",
+    "description": "Update <span class=\"provider\">record</span> in <span class=\"provider\">incident</span> table in <span class=\"provider\">ServiceNow</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table": "Incident"
+    },
+    "toggleCfg": {
+     "table": true,
+     "row.active": true
+    },
+    "input": {
+     "table": "incident",
+     "sys_id": "#{_('data.service_now.new_object.sys_id')}",
+     "row": {
+      "active": "true",
+      "u_replicon_uri": "#{_('data.replicon.create_project.uri')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "type": "integer",
+      "name": "business_stc",
+      "control_type": "number",
+      "label": "Business resolve time",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "integer",
+      "name": "calendar_stc",
+      "control_type": "number",
+      "label": "Resolve time",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "object",
+      "name": "caller_id",
+      "label": "Caller",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "category",
+      "control_type": "text",
+      "label": "Category",
+      "optional": true
+     },
+     {
+      "type": "object",
+      "name": "caused_by",
+      "label": "Caused by Change",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "integer",
+      "name": "incident_state",
+      "control_type": "number",
+      "label": "Incident state",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "integer",
+      "name": "notify",
+      "control_type": "number",
+      "label": "Notify",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "object",
+      "name": "problem_id",
+      "label": "Problem",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "date_time",
+      "name": "resolved_at",
+      "control_type": "date_time",
+      "label": "Resolved",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "object",
+      "name": "resolved_by",
+      "label": "Resolved by",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "object",
+      "name": "rfc",
+      "label": "Change Request",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "integer",
+      "name": "severity",
+      "control_type": "number",
+      "label": "Severity",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "string",
+      "name": "subcategory",
+      "control_type": "text",
+      "label": "Subcategory",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "sys_id",
+      "control_type": "text",
+      "label": "Sys ID",
+      "optional": true,
+      "key_scope": "incident"
+     },
+     {
+      "type": "string",
+      "name": "u_replicon_uri",
+      "control_type": "text",
+      "label": "Replicon URI",
+      "optional": true
+     },
+     {
+      "type": "boolean",
+      "name": "active",
+      "control_type": "checkbox",
+      "label": "Active",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Active",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "type": "boolean",
+       "name": "active"
+      },
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "string",
+      "name": "activity_due",
+      "control_type": "text",
+      "label": "Activity due",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "additional_assignee_list",
+      "control_type": "text",
+      "label": "Additional assignee list",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "approval",
+      "control_type": "text",
+      "label": "Approval",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "approval_history",
+      "control_type": "text",
+      "label": "Approval history",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "approval_set",
+      "control_type": "date_time",
+      "label": "Approval set",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "object",
+      "name": "assigned_to",
+      "label": "Assigned to",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "object",
+      "name": "assignment_group",
+      "label": "Assignment group",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "business_duration",
+      "control_type": "text",
+      "label": "Business duration",
+      "optional": true
+     },
+     {
+      "type": "object",
+      "name": "business_service",
+      "label": "Business service",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "calendar_duration",
+      "control_type": "text",
+      "label": "Duration",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "closed_at",
+      "control_type": "date_time",
+      "label": "Closed",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "object",
+      "name": "closed_by",
+      "label": "Closed by",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "close_notes",
+      "control_type": "text",
+      "label": "Close notes",
+      "optional": true
+     },
+     {
+      "type": "object",
+      "name": "cmdb_ci",
+      "label": "Configuration item",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "comments",
+      "control_type": "text",
+      "label": "Additional comments",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "comments_and_work_notes",
+      "control_type": "text",
+      "label": "Comments and Work notes",
+      "optional": true
+     },
+     {
+      "type": "object",
+      "name": "company",
+      "label": "Company",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "contact_type",
+      "control_type": "text",
+      "label": "Contact type",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "correlation_display",
+      "control_type": "text",
+      "label": "Correlation display",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "correlation_id",
+      "control_type": "text",
+      "label": "Correlation ID",
+      "optional": true
+     },
+     {
+      "type": "object",
+      "name": "delivery_plan",
+      "label": "Execution plan",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "object",
+      "name": "delivery_task",
+      "label": "Execution task",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "description",
+      "control_type": "text",
+      "label": "Description",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "due_date",
+      "control_type": "date_time",
+      "label": "Due date",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "integer",
+      "name": "escalation",
+      "control_type": "number",
+      "label": "Escalation",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "date_time",
+      "name": "expected_start",
+      "control_type": "date_time",
+      "label": "Expected start",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "date_time",
+      "name": "follow_up",
+      "control_type": "date_time",
+      "label": "Follow up",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "string",
+      "name": "group_list",
+      "control_type": "text",
+      "label": "Group list",
+      "optional": true
+     },
+     {
+      "type": "integer",
+      "name": "impact",
+      "control_type": "number",
+      "label": "Impact",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "boolean",
+      "name": "knowledge",
+      "control_type": "checkbox",
+      "label": "Knowledge",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Knowledge",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "type": "boolean",
+       "name": "knowledge"
+      },
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "object",
+      "name": "location",
+      "label": "Location",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "boolean",
+      "name": "made_sla",
+      "control_type": "checkbox",
+      "label": "Made SLA",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Made SLA",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "type": "boolean",
+       "name": "made_sla"
+      },
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "string",
+      "name": "number",
+      "control_type": "text",
+      "label": "Number",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "opened_at",
+      "control_type": "date_time",
+      "label": "Opened",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "object",
+      "name": "opened_by",
+      "label": "Opened by",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "integer",
+      "name": "order",
+      "control_type": "number",
+      "label": "Order",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "object",
+      "name": "parent",
+      "label": "Parent",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "url",
+        "label": "Link",
+        "optional": true,
+        "type": "string",
+        "name": "link"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "integer",
+      "name": "priority",
+      "control_type": "number",
+      "label": "Priority",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "integer",
+      "name": "reassignment_count",
+      "control_type": "number",
+      "label": "Reassignment count",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "string",
+      "name": "short_description",
+      "control_type": "text",
+      "label": "Short description",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "sla_due",
+      "control_type": "text",
+      "label": "SLA due",
+      "optional": true
+     },
+     {
+      "type": "integer",
+      "name": "state",
+      "control_type": "number",
+      "label": "State",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "string",
+      "name": "sys_class_name",
+      "control_type": "text",
+      "label": "Task type",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "sys_created_by",
+      "control_type": "text",
+      "label": "Created by",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "sys_created_on",
+      "control_type": "date_time",
+      "label": "Created",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "string",
+      "name": "sys_domain",
+      "control_type": "text",
+      "label": "Domain",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "sys_domain_path",
+      "control_type": "text",
+      "label": "Domain Path",
+      "optional": true
+     },
+     {
+      "type": "integer",
+      "name": "sys_mod_count",
+      "control_type": "number",
+      "label": "Updates",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "string",
+      "name": "sys_updated_by",
+      "control_type": "text",
+      "label": "Updated by",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "sys_updated_on",
+      "control_type": "date_time",
+      "label": "Updated",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "string",
+      "name": "time_worked",
+      "control_type": "text",
+      "label": "Time worked",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "upon_approval",
+      "control_type": "text",
+      "label": "Upon approval",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "upon_reject",
+      "control_type": "text",
+      "label": "Upon reject",
+      "optional": true
+     },
+     {
+      "type": "integer",
+      "name": "urgency",
+      "control_type": "number",
+      "label": "Urgency",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "string",
+      "name": "user_input",
+      "control_type": "text",
+      "label": "User input",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "watch_list",
+      "control_type": "text",
+      "label": "Watch list",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "work_end",
+      "control_type": "date_time",
+      "label": "Work end",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "string",
+      "name": "work_notes",
+      "control_type": "text",
+      "label": "Work notes",
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "work_notes_list",
+      "control_type": "text",
+      "label": "Work notes list",
+      "optional": true
+     },
+     {
+      "type": "date_time",
+      "name": "work_start",
+      "control_type": "date_time",
+      "label": "Work start",
+      "optional": true,
+      "render_input": {},
+      "parse_output": {}
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "sys_id",
+      "control_type": "text",
+      "label": "Sys ID",
+      "key_scope": "incident"
+     },
+     {
+      "type": "object",
+      "name": "row",
+      "label": "Columns",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Caller",
+        "optional": true,
+        "type": "string",
+        "name": "caller_id",
+        "parent": "row",
+        "path": "row.caller_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Category",
+        "optional": true,
+        "type": "string",
+        "name": "category",
+        "parent": "row",
+        "path": "row.category"
+       },
+       {
+        "control_type": "text",
+        "label": "Caused by Change",
+        "optional": true,
+        "type": "string",
+        "name": "caused_by",
+        "parent": "row",
+        "path": "row.caused_by"
+       },
+       {
+        "control_type": "number",
+        "label": "Incident state",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "incident_state",
+        "parent": "row",
+        "path": "row.incident_state"
+       },
+       {
+        "control_type": "number",
+        "label": "Notify",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "notify",
+        "parent": "row",
+        "path": "row.notify"
+       },
+       {
+        "control_type": "text",
+        "label": "Problem",
+        "optional": true,
+        "type": "string",
+        "name": "problem_id",
+        "parent": "row",
+        "path": "row.problem_id"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Resolved",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "resolved_at",
+        "parent": "row",
+        "path": "row.resolved_at"
+       },
+       {
+        "control_type": "text",
+        "label": "Resolved by",
+        "optional": true,
+        "type": "string",
+        "name": "resolved_by",
+        "parent": "row",
+        "path": "row.resolved_by"
+       },
+       {
+        "control_type": "text",
+        "label": "Change Request",
+        "optional": true,
+        "type": "string",
+        "name": "rfc",
+        "parent": "row",
+        "path": "row.rfc"
+       },
+       {
+        "control_type": "number",
+        "label": "Severity",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "severity",
+        "parent": "row",
+        "path": "row.severity"
+       },
+       {
+        "control_type": "text",
+        "label": "Subcategory",
+        "optional": true,
+        "type": "string",
+        "name": "subcategory",
+        "parent": "row",
+        "path": "row.subcategory"
+       },
+       {
+        "control_type": "text",
+        "label": "Replicon URI",
+        "optional": true,
+        "type": "string",
+        "name": "u_replicon_uri",
+        "parent": "row",
+        "path": "row.u_replicon_uri"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Active",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Active",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "type": "boolean",
+         "name": "active",
+         "parent": "row"
+        },
+        "optional": true,
+        "type": "boolean",
+        "name": "active",
+        "parent": "row",
+        "path": "row.active"
+       },
+       {
+        "control_type": "text",
+        "label": "Activity due",
+        "optional": true,
+        "type": "string",
+        "name": "activity_due",
+        "parent": "row",
+        "path": "row.activity_due"
+       },
+       {
+        "control_type": "text",
+        "label": "Additional assignee list",
+        "optional": true,
+        "type": "string",
+        "name": "additional_assignee_list",
+        "parent": "row",
+        "path": "row.additional_assignee_list"
+       },
+       {
+        "control_type": "text",
+        "label": "Approval",
+        "optional": true,
+        "type": "string",
+        "name": "approval",
+        "parent": "row",
+        "path": "row.approval"
+       },
+       {
+        "control_type": "text",
+        "label": "Approval history",
+        "optional": true,
+        "type": "string",
+        "name": "approval_history",
+        "parent": "row",
+        "path": "row.approval_history"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Approval set",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "approval_set",
+        "parent": "row",
+        "path": "row.approval_set"
+       },
+       {
+        "control_type": "text",
+        "label": "Assigned to",
+        "optional": true,
+        "type": "string",
+        "name": "assigned_to",
+        "parent": "row",
+        "path": "row.assigned_to"
+       },
+       {
+        "control_type": "text",
+        "label": "Assignment group",
+        "optional": true,
+        "type": "string",
+        "name": "assignment_group",
+        "parent": "row",
+        "path": "row.assignment_group"
+       },
+       {
+        "control_type": "text",
+        "label": "Business service",
+        "optional": true,
+        "type": "string",
+        "name": "business_service",
+        "parent": "row",
+        "path": "row.business_service"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Closed",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "closed_at",
+        "parent": "row",
+        "path": "row.closed_at"
+       },
+       {
+        "control_type": "text",
+        "label": "Closed by",
+        "optional": true,
+        "type": "string",
+        "name": "closed_by",
+        "parent": "row",
+        "path": "row.closed_by"
+       },
+       {
+        "control_type": "text",
+        "label": "Close notes",
+        "optional": true,
+        "type": "string",
+        "name": "close_notes",
+        "parent": "row",
+        "path": "row.close_notes"
+       },
+       {
+        "control_type": "text",
+        "label": "Configuration item",
+        "optional": true,
+        "type": "string",
+        "name": "cmdb_ci",
+        "parent": "row",
+        "path": "row.cmdb_ci"
+       },
+       {
+        "control_type": "text",
+        "label": "Additional comments",
+        "optional": true,
+        "type": "string",
+        "name": "comments",
+        "parent": "row",
+        "path": "row.comments"
+       },
+       {
+        "control_type": "text",
+        "label": "Comments and Work notes",
+        "optional": true,
+        "type": "string",
+        "name": "comments_and_work_notes",
+        "parent": "row",
+        "path": "row.comments_and_work_notes"
+       },
+       {
+        "control_type": "text",
+        "label": "Company",
+        "optional": true,
+        "type": "string",
+        "name": "company",
+        "parent": "row",
+        "path": "row.company"
+       },
+       {
+        "control_type": "text",
+        "label": "Contact type",
+        "optional": true,
+        "type": "string",
+        "name": "contact_type",
+        "parent": "row",
+        "path": "row.contact_type"
+       },
+       {
+        "control_type": "text",
+        "label": "Correlation display",
+        "optional": true,
+        "type": "string",
+        "name": "correlation_display",
+        "parent": "row",
+        "path": "row.correlation_display"
+       },
+       {
+        "control_type": "text",
+        "label": "Correlation ID",
+        "optional": true,
+        "type": "string",
+        "name": "correlation_id",
+        "parent": "row",
+        "path": "row.correlation_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Execution plan",
+        "optional": true,
+        "type": "string",
+        "name": "delivery_plan",
+        "parent": "row",
+        "path": "row.delivery_plan"
+       },
+       {
+        "control_type": "text",
+        "label": "Execution task",
+        "optional": true,
+        "type": "string",
+        "name": "delivery_task",
+        "parent": "row",
+        "path": "row.delivery_task"
+       },
+       {
+        "control_type": "text",
+        "label": "Description",
+        "optional": true,
+        "type": "string",
+        "name": "description",
+        "parent": "row",
+        "path": "row.description"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Due date",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "due_date",
+        "parent": "row",
+        "path": "row.due_date"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Expected start",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "expected_start",
+        "parent": "row",
+        "path": "row.expected_start"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Follow up",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "follow_up",
+        "parent": "row",
+        "path": "row.follow_up"
+       },
+       {
+        "control_type": "text",
+        "label": "Group list",
+        "optional": true,
+        "type": "string",
+        "name": "group_list",
+        "parent": "row",
+        "path": "row.group_list"
+       },
+       {
+        "control_type": "number",
+        "label": "Impact",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "impact",
+        "parent": "row",
+        "path": "row.impact"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Knowledge",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Knowledge",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "type": "boolean",
+         "name": "knowledge",
+         "parent": "row"
+        },
+        "optional": true,
+        "type": "boolean",
+        "name": "knowledge",
+        "parent": "row",
+        "path": "row.knowledge"
+       },
+       {
+        "control_type": "text",
+        "label": "Location",
+        "optional": true,
+        "type": "string",
+        "name": "location",
+        "parent": "row",
+        "path": "row.location"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Made SLA",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Made SLA",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "type": "boolean",
+         "name": "made_sla",
+         "parent": "row"
+        },
+        "optional": true,
+        "type": "boolean",
+        "name": "made_sla",
+        "parent": "row",
+        "path": "row.made_sla"
+       },
+       {
+        "control_type": "text",
+        "label": "Number",
+        "optional": true,
+        "type": "string",
+        "name": "number",
+        "parent": "row",
+        "path": "row.number"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Opened",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "opened_at",
+        "parent": "row",
+        "path": "row.opened_at"
+       },
+       {
+        "control_type": "text",
+        "label": "Opened by",
+        "optional": true,
+        "type": "string",
+        "name": "opened_by",
+        "parent": "row",
+        "path": "row.opened_by"
+       },
+       {
+        "control_type": "number",
+        "label": "Order",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "order",
+        "parent": "row",
+        "path": "row.order"
+       },
+       {
+        "control_type": "text",
+        "label": "Parent",
+        "optional": true,
+        "type": "string",
+        "name": "parent",
+        "parent": "row",
+        "path": "row.parent"
+       },
+       {
+        "control_type": "number",
+        "label": "Priority",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "priority",
+        "parent": "row",
+        "path": "row.priority"
+       },
+       {
+        "control_type": "number",
+        "label": "Reassignment count",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "reassignment_count",
+        "parent": "row",
+        "path": "row.reassignment_count"
+       },
+       {
+        "control_type": "text",
+        "label": "Short description",
+        "optional": true,
+        "type": "string",
+        "name": "short_description",
+        "parent": "row",
+        "path": "row.short_description"
+       },
+       {
+        "control_type": "text",
+        "label": "SLA due",
+        "optional": true,
+        "type": "string",
+        "name": "sla_due",
+        "parent": "row",
+        "path": "row.sla_due"
+       },
+       {
+        "control_type": "number",
+        "label": "State",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "state",
+        "parent": "row",
+        "path": "row.state"
+       },
+       {
+        "control_type": "text",
+        "label": "Task type",
+        "optional": true,
+        "type": "string",
+        "name": "sys_class_name",
+        "parent": "row",
+        "path": "row.sys_class_name"
+       },
+       {
+        "control_type": "text",
+        "label": "Created by",
+        "optional": true,
+        "type": "string",
+        "name": "sys_created_by",
+        "parent": "row",
+        "path": "row.sys_created_by"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "sys_created_on",
+        "parent": "row",
+        "path": "row.sys_created_on"
+       },
+       {
+        "control_type": "text",
+        "label": "Domain",
+        "optional": true,
+        "type": "string",
+        "name": "sys_domain",
+        "parent": "row",
+        "path": "row.sys_domain"
+       },
+       {
+        "control_type": "text",
+        "label": "Domain Path",
+        "optional": true,
+        "type": "string",
+        "name": "sys_domain_path",
+        "parent": "row",
+        "path": "row.sys_domain_path"
+       },
+       {
+        "control_type": "number",
+        "label": "Updates",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "sys_mod_count",
+        "parent": "row",
+        "path": "row.sys_mod_count"
+       },
+       {
+        "control_type": "text",
+        "label": "Updated by",
+        "optional": true,
+        "type": "string",
+        "name": "sys_updated_by",
+        "parent": "row",
+        "path": "row.sys_updated_by"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "sys_updated_on",
+        "parent": "row",
+        "path": "row.sys_updated_on"
+       },
+       {
+        "control_type": "text",
+        "label": "Time worked",
+        "optional": true,
+        "type": "string",
+        "name": "time_worked",
+        "parent": "row",
+        "path": "row.time_worked"
+       },
+       {
+        "control_type": "text",
+        "label": "Upon approval",
+        "optional": true,
+        "type": "string",
+        "name": "upon_approval",
+        "parent": "row",
+        "path": "row.upon_approval"
+       },
+       {
+        "control_type": "text",
+        "label": "Upon reject",
+        "optional": true,
+        "type": "string",
+        "name": "upon_reject",
+        "parent": "row",
+        "path": "row.upon_reject"
+       },
+       {
+        "control_type": "number",
+        "label": "Urgency",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "urgency",
+        "parent": "row",
+        "path": "row.urgency"
+       },
+       {
+        "control_type": "text",
+        "label": "User input",
+        "optional": true,
+        "type": "string",
+        "name": "user_input",
+        "parent": "row",
+        "path": "row.user_input"
+       },
+       {
+        "control_type": "text",
+        "label": "Watch list",
+        "optional": true,
+        "type": "string",
+        "name": "watch_list",
+        "parent": "row",
+        "path": "row.watch_list"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Work end",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "work_end",
+        "parent": "row",
+        "path": "row.work_end"
+       },
+       {
+        "control_type": "text",
+        "label": "Work notes",
+        "optional": true,
+        "type": "string",
+        "name": "work_notes",
+        "parent": "row",
+        "path": "row.work_notes"
+       },
+       {
+        "control_type": "text",
+        "label": "Work notes list",
+        "optional": true,
+        "type": "string",
+        "name": "work_notes_list",
+        "parent": "row",
+        "path": "row.work_notes_list"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Work start",
+        "render_input": {},
+        "parse_output": {},
+        "optional": true,
+        "type": "date_time",
+        "name": "work_start",
+        "parent": "row",
+        "path": "row.work_start"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "table",
+     "row.active",
+     "sys_id",
+     "row",
+     "row.u_replicon_uri"
+    ],
+    "comment": "Update incident with Replicon's project URI",
+    "uuid": "3ce7239b-c8b3-4785-ba4c-1a42f2065cbd"
+   },
+   {
+    "number": 11,
+    "provider": "replicon",
+    "name": "assign_user_to_project",
+    "as": "assign_user_to_project",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "projectUri": "#{_('data.replicon.create_project.uri')}",
+     "user_uri": "#{_('data.replicon.get_user_details.uri')}"
+    },
+    "comment": "Assign assignee to Replicon project by URI",
+    "uuid": "bacd4608-3fdd-4dba-a87b-210ae527bd96"
+   },
+   {
+    "number": 12,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.replicon.get_user_details.supervisor.displayText')}",
+       "rhs": null,
+       "operand": "present"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 13,
+      "provider": "replicon",
+      "name": "assign_manager_to_project",
+      "as": "assign_manager_to_project1",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "projectUri": "#{_('data.replicon.create_project.uri')}",
+       "userUri": "#{_('data.replicon.get_user_details.supervisor.uri')}"
+      },
+      "uuid": "510c2f93-a286-43d6-b6c9-918e5afe1bd5"
+     }
+    ],
+    "uuid": "63b702cf-cc77-4b33-8a77-86cf077b89e0"
+   }
+  ],
+  "uuid": "ec254242-59c5-459e-89eb-6a2b32524285",
+  "param": {}
+ }
+}

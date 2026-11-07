@@ -1,0 +1,579 @@
+{
+ "name": "zonebilling",
+ "title": "ZoneBilling for NetSuite",
+ "requires_connection": true,
+ "categories": [
+  "Accounting",
+  "ERP",
+  "Payment Processing/POS",
+  "Time and Expense"
+ ],
+ "aliases": [
+  "ZoneBilling for NetSuite"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in ZoneBilling for NetSuite (Custom)",
+   "help": "Build your own ZoneBilling action with a HTTP request. The request will be authorized with your ZoneBilling NetSuite connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_record",
+   "title": "Create Record",
+   "description": "Create a record in NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the target record type in NetSuite"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_records_batch",
+   "title": "Create Records",
+   "description": "Create multiple records in NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the target record type in NetSuite"
+    }
+   ],
+   "output": [
+    {
+     "name": "reference_id",
+     "type": "integer",
+     "label": "Reference ID",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "get_file",
+   "title": "Get File",
+   "description": "Get a File from the File Cabinet in NetSuite",
+   "input": [
+    {
+     "name": "record_id",
+     "type": "integer",
+     "label": "File ID",
+     "control_type": "integer",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Specify the specific file ID you would like to retrieve from the File Cabinet"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File Name",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "contents",
+     "type": "string",
+     "label": "File",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_process_status",
+   "title": "Get Bulk API Status",
+   "description": "Get the status for a ZAB Process in NetSuite",
+   "input": [
+    {
+     "name": "process_id",
+     "type": "string",
+     "label": "Process ID",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "processes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "process_id",
+      "type": "integer"
+     },
+     "hint": "Indicate the Process ID you would like to gather details on."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "object",
+     "label": "Status",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "response",
+     "type": "object",
+     "label": "Response",
+     "properties": [
+      {
+       "name": "processed_count",
+       "type": "integer",
+       "label": "Processed count",
+       "control_type": "number"
+      },
+      {
+       "name": "error_count",
+       "type": "integer",
+       "label": "Error count",
+       "control_type": "number"
+      },
+      {
+       "name": "results",
+       "type": "array",
+       "label": "Results",
+       "of": "object"
+      },
+      {
+       "name": "errors",
+       "type": "array",
+       "label": "Errors",
+       "of": "object"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_record",
+   "title": "Get Record",
+   "description": "Get Record from a ZAB API Export in NetSuite",
+   "input": [
+    {
+     "name": "export_id",
+     "type": "string",
+     "label": "ZAB API Export",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "api_exports",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "export_id",
+      "type": "string"
+     },
+     "hint": "Select a pre-configured ZAB API Export record that corresponds to a saved search of records within your NetSuite account."
+    },
+    {
+     "name": "internal_id",
+     "type": "integer",
+     "label": "Identifier",
+     "control_type": "integer",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "external_id",
+      "type": "integer"
+     },
+     "hint": "Specify a specific record internal id you would like to retrieve"
+    },
+    {
+     "name": "options",
+     "type": "object",
+     "label": "Options",
+     "properties": [
+      {
+       "name": "include_empty_properties",
+       "type": "number",
+       "label": "Include Empty Properties",
+       "control_type": "checkbox",
+       "extends_schema": true,
+       "hint": "If true, properties/fields that have empty values will be included in the results"
+      },
+      {
+       "name": "text_always",
+       "type": "number",
+       "label": "Include Text Always",
+       "control_type": "checkbox",
+       "default": true,
+       "extends_schema": true,
+       "hint": "If true, a text property will be returned for each attribute, even if it is the same as the value"
+      },
+      {
+       "name": "label_as_key",
+       "type": "number",
+       "label": "Use NetSuite Column Label as Result Key",
+       "control_type": "checkbox",
+       "default": true,
+       "extends_schema": true,
+       "hint": "If true, the object keys will be the NetSuite Search Column Labels"
+      }
+     ]
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_record_file",
+   "title": "Get Record File",
+   "description": "Get Record File from NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the record type you are looking to export."
+    },
+    {
+     "name": "record_id",
+     "type": "integer",
+     "label": "Record ID",
+     "control_type": "integer",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Specify the specific record internal ID you would like to retrieve"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File Name",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "contents",
+     "type": "string",
+     "label": "File",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_record_file_attachments",
+   "title": "Get Record File Attachments",
+   "description": "Get Record 's' File Attachments from NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the record type you are looking to export."
+    },
+    {
+     "name": "record_id",
+     "type": "integer",
+     "label": "Record ID",
+     "control_type": "integer",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Specify the specific record internal ID you would like to retrieve"
+    }
+   ],
+   "output": [
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "File Name",
+       "control_type": "text"
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "contents",
+       "type": "string",
+       "label": "File",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_records",
+   "title": "Get Records",
+   "description": "Collect results from a ZAB API Export in NetSuite",
+   "input": [
+    {
+     "name": "export_id",
+     "type": "string",
+     "label": "ZAB API Export",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "api_exports",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "export_id",
+      "type": "string"
+     },
+     "hint": "Select a pre-configured ZAB API Export record that corresponds to a saved search of records within your NetSuite account."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "post_automation",
+   "title": "Run ZAB Automation(s)",
+   "description": "Kick off a ZAB Automation in NetSuite",
+   "input": [],
+   "output": []
+  },
+  {
+   "name": "update_record",
+   "title": "Update Record",
+   "description": "Update a record in NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the target record type in NetSuite"
+    },
+    {
+     "name": "external_key",
+     "type": "string",
+     "label": "Identifier",
+     "control_type": "select",
+     "required": true,
+     "default": "internalid",
+     "pick_list": "record_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "external_key",
+      "type": "string"
+     },
+     "hint": "Select the field on the record type to be used as the primary key."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_records_batch",
+   "title": "Update Records",
+   "description": "Update multiple records in NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the target record type in NetSuite"
+    },
+    {
+     "name": "external_key",
+     "type": "string",
+     "label": "Identifier",
+     "control_type": "select",
+     "required": true,
+     "default": "internalid",
+     "pick_list": "record_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "external_key",
+      "type": "string"
+     },
+     "hint": "Select the field on the record type to be used as the primary key."
+    }
+   ],
+   "output": [
+    {
+     "name": "reference_id",
+     "type": "integer",
+     "label": "Reference ID",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "upsert_record",
+   "title": "Upsert Record",
+   "description": "Upsert a record in NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the target record type in NetSuite"
+    },
+    {
+     "name": "external_key",
+     "type": "string",
+     "label": "Identifier",
+     "control_type": "select",
+     "required": true,
+     "default": "internalid",
+     "pick_list": "record_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "external_key",
+      "type": "string"
+     },
+     "hint": "Select the field on the record type to be used as the primary key."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upsert_records_batch",
+   "title": "Upsert Records",
+   "description": "Update multiple records in NetSuite",
+   "input": [
+    {
+     "name": "record_type",
+     "type": "string",
+     "label": "Record Type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "record_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "record_type",
+      "type": "string"
+     },
+     "hint": "Select the target record type in NetSuite"
+    },
+    {
+     "name": "external_key",
+     "type": "string",
+     "label": "Identifier",
+     "control_type": "select",
+     "required": true,
+     "default": "internalid",
+     "pick_list": "record_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "external_key",
+      "type": "string"
+     },
+     "hint": "Select the field on the record type to be used as the primary key."
+    }
+   ],
+   "output": [
+    {
+     "name": "reference_id",
+     "type": "integer",
+     "label": "Reference ID",
+     "control_type": "number"
+    }
+   ]
+  }
+ ]
+}

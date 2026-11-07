@@ -1,0 +1,700 @@
+{
+ "id": 46218,
+ "name": "Report Zendesk ticket count every 30 min via email",
+ "description": "If Zendesk ticket count exceeds threshold notify user via email. \nRecipe runs every 30 min.\n_________________________________________________________________________________\n**Trigger**\nScheduled to run every 30 minutes\n\n**Action**\nIf ticket count exceeds threshold, notify Workato user via email.\n_________________________________________________________________________________\n**Requires**\nConnection to Zendesk\n\n**Configuration**\nSet ticket threshold, the minimum number of tickets to require an email.",
+ "applications": [
+  "clock",
+  "zendesk",
+  "email"
+ ],
+ "action_applications": [
+  "zendesk",
+  "email"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "ticket",
+  "email"
+ ],
+ "categories": [
+  "Utilities",
+  "Customer Service",
+  "Helpdesk"
+ ],
+ "copy_count": 160,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2017-06-06T16:10:37.310-07:00",
+ "source_url": "https://app.workato.com/recipes/46218?community=us",
+ "steps": [
+  "clock.timer",
+  "zendesk.search_ticket",
+  "email.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "timer",
+  "as": "timer",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "interval": "30",
+   "start_at": "="
+  },
+  "parameters_schema": "[\n{\n    \"label\": \"Ticket threshold\",\n    \"name\": \"Threshold\",\n    \"type\": \"integer\",\n    \"control_type\": \"number\",\n    \"hint\": \"Threshold of tickets every 30 minutes\"\n}\n]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "zendesk",
+    "name": "search_ticket",
+    "as": "search_ticket",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "earliest_created_time": "=_('data.clock.timer.time').to_time - 30.minutes"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "tickets",
+      "label": "Tickets",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Ticket ID",
+        "event_title": true,
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Subject",
+        "hint": "Ticket topic or subject",
+        "event_title": true,
+        "type": "string",
+        "name": "subject"
+       },
+       {
+        "control_type": "select",
+        "label": "Type",
+        "pick_list": "ticket_type",
+        "hint": "The type of support ticket to create",
+        "optional": true,
+        "toggle_hint": "Select from list instead?",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Type",
+         "toggle_hint": "Enter custom value instead?",
+         "optional": true,
+         "type": "string",
+         "name": "type"
+        },
+        "type": "string",
+        "name": "type"
+       },
+       {
+        "control_type": "select",
+        "label": "Priority",
+        "pick_list": "ticket_priority",
+        "hint": "Ticket priority",
+        "optional": true,
+        "toggle_hint": "Select from list instead?",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Priority",
+         "toggle_hint": "Enter custom value instead?",
+         "optional": true,
+         "type": "string",
+         "name": "priority"
+        },
+        "type": "string",
+        "name": "priority"
+       },
+       {
+        "control_type": "text",
+        "label": "External ID",
+        "hint": "ID to link this ticket to external records",
+        "optional": true,
+        "type": "string",
+        "name": "external_id"
+       },
+       {
+        "control_type": "select",
+        "label": "Status",
+        "pick_list": "ticket_status",
+        "hint": "Ticket status",
+        "optional": true,
+        "toggle_hint": "Select from list instead?",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Status",
+         "toggle_hint": "Enter custom value instead?",
+         "optional": true,
+         "type": "string",
+         "name": "status"
+        },
+        "type": "string",
+        "name": "status"
+       },
+       {
+        "control_type": "text",
+        "label": "Requester ID",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to user who requested the ticket if left empty",
+        "foreign_key": "user",
+        "fetch_with": "get_user_by_id(id)",
+        "join_point_label": "Requester",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Requester name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to user who requested the ticket if left empty",
+         "type": "string",
+         "name": "requester_name"
+        },
+        "type": "integer",
+        "name": "requester_id"
+       },
+       {
+        "name": "get_user_by_id+requester_id",
+        "type": "object",
+        "label": "Requester",
+        "fetch_with": "get_user_by_id(requester_id>id)",
+        "properties": [],
+        "join_point": true
+       },
+       {
+        "control_type": "text",
+        "label": "Submitter ID",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to user who submitted the ticket if left empty",
+        "foreign_key": "user",
+        "fetch_with": "get_user_by_id(id)",
+        "join_point_label": "Submitter",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Submitter name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to user who submitted the ticket if left empty",
+         "type": "string",
+         "name": "submitter_name"
+        },
+        "type": "integer",
+        "name": "submitter_id"
+       },
+       {
+        "name": "get_user_by_id+submitter_id",
+        "type": "object",
+        "label": "Submitter",
+        "fetch_with": "get_user_by_id(submitter_id>id)",
+        "properties": [],
+        "join_point": true
+       },
+       {
+        "control_type": "text",
+        "label": "Assignee ID",
+        "extended": true,
+        "optional": true,
+        "foreign_key": "user",
+        "fetch_with": "get_user_by_id(id)",
+        "join_point_label": "Assignee",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Assignee name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "type": "string",
+         "name": "assignee_name"
+        },
+        "type": "integer",
+        "name": "assignee_id"
+       },
+       {
+        "name": "get_user_by_id+assignee_id",
+        "type": "object",
+        "label": "Assignee",
+        "fetch_with": "get_user_by_id(assignee_id>id)",
+        "properties": [],
+        "join_point": true
+       },
+       {
+        "control_type": "text",
+        "label": "Organization ID",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to the organization requester belongs to if left empty",
+        "foreign_key": "organization",
+        "fetch_with": "get_organization_by_id(id)",
+        "join_point_label": "Organization",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Organization name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to the organization requester belongs to if left empty",
+         "type": "string",
+         "name": "organization_name"
+        },
+        "type": "integer",
+        "name": "organization_id"
+       },
+       {
+        "name": "get_organization_by_id+organization_id",
+        "type": "object",
+        "label": "Organization",
+        "fetch_with": "get_organization_by_id(organization_id>id)",
+        "properties": [],
+        "join_point": true
+       },
+       {
+        "control_type": "text",
+        "label": "Group ID",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to the group the ticket is assigned to if left empty",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Group name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to the group the ticket is assigned to if left empty",
+         "type": "string",
+         "name": "group_name"
+        },
+        "type": "integer",
+        "name": "group_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Forum topic ID",
+        "extended": true,
+        "optional": true,
+        "hint": "Forum topic that ticket originated from, if any",
+        "type": "integer",
+        "name": "forum_topic_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Recipient email address",
+        "extended": true,
+        "optional": true,
+        "hint": "Email address that received the ticket, if any",
+        "type": "string",
+        "name": "recipient"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Has incidents",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Has incidents",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "extended": true,
+         "optional": true,
+         "hint": "Yes if ticket is marked as a problem, No if not. Defaults to No if left empty",
+         "type": "boolean",
+         "name": "has_incidents"
+        },
+        "extended": true,
+        "optional": true,
+        "hint": "Yes if ticket is marked as a problem, No if not. Defaults to No if left empty",
+        "type": "boolean",
+        "name": "has_incidents"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Due at",
+        "extended": true,
+        "optional": true,
+        "hint": "Tickets of type Task will have a due date",
+        "parse_output": "convert_date_time",
+        "render_input": "convert_date_time",
+        "type": "date_time",
+        "name": "due_at"
+       },
+       {
+        "control_type": "text",
+        "label": "Tags",
+        "hint": "Comma separated list of tags. For eg. enterprise, important",
+        "optional": true,
+        "type": "string",
+        "name": "tags_string"
+       },
+       {
+        "name": "tags",
+        "type": "array",
+        "of": "string",
+        "control_type": "text",
+        "label": "Tags list",
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Ticket form ID",
+        "optional": true,
+        "type": "integer",
+        "name": "ticket_form_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Description",
+        "optional": true,
+        "type": "string",
+        "name": "description"
+       },
+       {
+        "control_type": "url",
+        "label": "Ticket URL",
+        "optional": true,
+        "type": "string",
+        "name": "url"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date created",
+        "optional": true,
+        "parse_output": "convert_date_time",
+        "render_input": "convert_date_time",
+        "type": "date_time",
+        "name": "created_at"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date updated",
+        "optional": true,
+        "parse_output": "convert_date_time",
+        "render_input": "convert_date_time",
+        "type": "date_time",
+        "name": "updated_at"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "select",
+          "label": "Salesforce source",
+          "optional": true,
+          "custom_field_id": 24367555,
+          "custom": true,
+          "pick_list": [
+           [
+            "Salesforce large account",
+            "salesforce_large_account"
+           ],
+           [
+            "Salesforce SMB account",
+            "salesforce_smb_account"
+           ]
+          ],
+          "toggle_hint": "Select from list instead?",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Salesforce source",
+           "toggle_hint": "Enter custom value instead?",
+           "optional": true,
+           "custom_field_id": 24367555,
+           "custom": true,
+           "type": "string",
+           "name": "field_24367555"
+          },
+          "type": "string",
+          "name": "field_24367555"
+         },
+         {
+          "control_type": "text",
+          "label": "Account priority",
+          "optional": true,
+          "custom_field_id": 24309109,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309109"
+         },
+         {
+          "control_type": "text",
+          "label": "Account type",
+          "optional": true,
+          "custom_field_id": 24367565,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367565"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact title",
+          "optional": true,
+          "custom_field_id": 24367545,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367545"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact phone",
+          "optional": true,
+          "custom_field_id": 24309039,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309039"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity name",
+          "optional": true,
+          "custom_field_id": 24309829,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309829"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity stage",
+          "optional": true,
+          "custom_field_id": 24367575,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367575"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity close date",
+          "optional": true,
+          "custom_field_id": 24367595,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367595"
+         },
+         {
+          "control_type": "text",
+          "label": "favourite dish",
+          "optional": true,
+          "custom_field_id": 24451615,
+          "custom": true,
+          "hint": "i love fish fillet",
+          "type": "string",
+          "name": "field_24451615"
+         },
+         {
+          "control_type": "date_time",
+          "label": "L1 ETA",
+          "optional": true,
+          "custom_field_id": 24400949,
+          "custom": true,
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "field_24400949"
+         },
+         {
+          "control_type": "date_time",
+          "label": "L2 provided",
+          "optional": true,
+          "custom_field_id": 24459575,
+          "custom": true,
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "field_24459575"
+         },
+         {
+          "control_type": "date_time",
+          "label": "L1 provided",
+          "optional": true,
+          "custom_field_id": 24400959,
+          "custom": true,
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "field_24400959"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Merchant update",
+          "optional": true,
+          "custom_field_id": 24350019,
+          "custom": true,
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "field_24350019"
+         },
+         {
+          "control_type": "date_time",
+          "label": "L2 ETA",
+          "optional": true,
+          "custom_field_id": 24400979,
+          "custom": true,
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "field_24400979"
+         },
+         {
+          "control_type": "text",
+          "label": "Product area",
+          "optional": true,
+          "custom_field_id": 24400989,
+          "custom": true,
+          "type": "string",
+          "name": "field_24400989"
+         },
+         {
+          "control_type": "text",
+          "label": "Customers affected",
+          "optional": true,
+          "custom_field_id": 24401029,
+          "custom": true,
+          "type": "string",
+          "name": "field_24401029"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Resolution status",
+          "optional": true,
+          "custom_field_id": 24459685,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459685"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Incident status",
+          "optional": true,
+          "custom_field_id": 24459695,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459695"
+         },
+         {
+          "control_type": "text",
+          "label": "Severity",
+          "optional": true,
+          "custom_field_id": 24459705,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459705"
+         },
+         {
+          "control_type": "text",
+          "label": "Industry name",
+          "optional": true,
+          "custom_field_id": 24321519,
+          "custom": true,
+          "type": "string",
+          "name": "field_24321519"
+         }
+        ],
+        "label": "Ticket custom fields",
+        "type": "object",
+        "name": "custom_fields"
+       }
+      ]
+     },
+     {
+      "type": "integer",
+      "name": "count",
+      "control_type": "text",
+      "label": "Total tickets"
+     }
+    ],
+    "comment": "Search all tickets from 30 minutes ago",
+    "uuid": "1c04243c-f51a-4be3-bdcd-9bfd829600a2"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "greater_than",
+       "lhs": "=_('data.zendesk.search_ticket.count').to_i",
+       "rhs": "#{_('data.workato.job_context.parameters.Threshold')}"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "send_mail",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "to": "#{_('data.workato.job_context.user_email')}",
+       "subject": "Half hourly Zendesk Ticket count Check",
+       "body": "There were #{_('data.zendesk.search_ticket.count')} in the last 30 minutes\n\nYour threshold per day is #{_('data.workato.job_context.parameters.Threshold')}"
+      },
+      "comment": "Notify Workato user if ticket count exceeds threshold, via email",
+      "uuid": "72722d09-a8a4-4e11-926e-09273168d1dc",
+      "title": null,
+      "description": null
+     }
+    ],
+    "uuid": "0340bcee-ac7c-4148-9412-5d4da969050b"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Time interval"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Ticket count"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Threshold (during job)"
+   },
+   {
+    "name": "custom_column_4",
+    "label": "Over?"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "=(_('data.clock.timer.time') - 30.minutes).strftime(\"%l:%M%P\") + \" to \" + \n_('data.clock.timer.time').strftime(\"%l:%M%P\")",
+   "custom_column_2": "#{_('data.zendesk.search_ticket.count')}",
+   "custom_column_3": "#{_('data.workato.job_context.parameters.Threshold')}",
+   "custom_column_4": "=(_('data.zendesk.search_ticket.count').to_i > _('data.workato.job_context.parameters.Threshold').to_i) ? \"Yes\" : \"No\""
+  },
+  "uuid": "533a3beb-6dcd-4562-91d9-e27a3f038808",
+  "title": null,
+  "description": null
+ }
+}

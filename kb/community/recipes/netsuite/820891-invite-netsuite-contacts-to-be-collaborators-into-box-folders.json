@@ -1,0 +1,2202 @@
+{
+ "id": 820891,
+ "name": "Invite NetSuite contacts to be collaborators into Box folders",
+ "description": "1. A new contact is created in NetSuite.\n2. If the contact has a company, Workato checks if a shared folder with the **company name** exists.\n3. If the shared folder does not exist, Workato creates a new shared folder with the **company name**.\n4. Workato invites the new contact to collaborate in the shared folder with a role of \"Viewer/Uploader\".",
+ "applications": [
+  "netsuite",
+  "box"
+ ],
+ "action_applications": [
+  "box"
+ ],
+ "trigger_application": "netsuite",
+ "business_objects": [
+  "contact",
+  "file",
+  "folder",
+  "collaborator"
+ ],
+ "categories": [
+  "Accounting",
+  "ERP",
+  "CRM",
+  "Ecommerce",
+  "Financial Management",
+  "HR management",
+  "Document/File"
+ ],
+ "copy_count": 723,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-08-30T16:41:11.894-07:00",
+ "source_url": "https://app.workato.com/recipes/820891?community=us",
+ "steps": [
+  "netsuite.new_object",
+  "box.search_files",
+  "box.create_folder",
+  "box.create_collaboration"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "netsuite",
+  "name": "new_object",
+  "as": "new_object",
+  "title": "New Contact",
+  "description": "New <span class=\"provider\">Contact</span> in <span class=\"provider\">NetSuite</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "netsuite_object": "Contact"
+  },
+  "toggleCfg": {},
+  "input": {
+   "since": "=1.days.ago",
+   "netsuite_object": "Contact"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "internal_id",
+    "control_type": "text",
+    "label": "Internal ID",
+    "optional": true,
+    "ns_content_type": "attribute",
+    "ns_tag": ""
+   },
+   {
+    "type": "string",
+    "name": "external_id",
+    "control_type": "text",
+    "label": "External ID",
+    "optional": true,
+    "ns_content_type": "attribute",
+    "ns_tag": ""
+   },
+   {
+    "type": "object",
+    "name": "customForm",
+    "label": "Custom form",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "entityId",
+    "control_type": "text",
+    "label": "Entity ID",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "contactSource",
+    "label": "Contact source",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "company",
+    "label": "Company",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "salutation",
+    "control_type": "text",
+    "label": "Salutation",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "firstName",
+    "control_type": "text",
+    "label": "First name",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "middleName",
+    "control_type": "text",
+    "label": "Middle name",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "lastName",
+    "control_type": "text",
+    "label": "Last name",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "title",
+    "control_type": "text",
+    "label": "Title",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "phone",
+    "control_type": "text",
+    "label": "Phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "fax",
+    "control_type": "text",
+    "label": "Fax",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "email",
+    "control_type": "text",
+    "label": "Email",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "defaultAddress",
+    "control_type": "text",
+    "label": "Default address",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "boolean",
+    "name": "isPrivate",
+    "control_type": "checkbox",
+    "label": "Is private",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Is private",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsRelationships",
+     "type": "boolean",
+     "name": "isPrivate"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "boolean",
+    "name": "isInactive",
+    "control_type": "checkbox",
+    "label": "Is inactive",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Is inactive",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsRelationships",
+     "type": "boolean",
+     "name": "isInactive"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "subsidiary",
+    "label": "Subsidiary",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "phoneticName",
+    "control_type": "text",
+    "label": "Phonetic name",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "categoryList",
+    "label": "Category list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "category",
+      "type": "array",
+      "of": "object",
+      "label": "Category",
+      "optional": true,
+      "ns_ref_type": "RecordRef",
+      "ns_content_type": "element",
+      "ns_tag": "listsRelationships",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Internal ID",
+        "optional": true,
+        "ns_content_type": "attribute",
+        "ns_tag": "",
+        "type": "string",
+        "name": "internal_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCore",
+        "type": "string",
+        "name": "name"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "altEmail",
+    "control_type": "text",
+    "label": "Alt email",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "officePhone",
+    "control_type": "text",
+    "label": "Office phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "homePhone",
+    "control_type": "text",
+    "label": "Home phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "mobilePhone",
+    "control_type": "text",
+    "label": "Mobile phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "supervisor",
+    "label": "Supervisor",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "supervisorPhone",
+    "control_type": "text",
+    "label": "Supervisor phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "assistant",
+    "label": "Assistant",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "assistantPhone",
+    "control_type": "text",
+    "label": "Assistant phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "comments",
+    "control_type": "text",
+    "label": "Comments",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "string",
+    "name": "globalSubscriptionStatus",
+    "control_type": "select",
+    "label": "Global subscription status",
+    "pick_list": [
+     [
+      "Confirmed Opt In",
+      "_confirmedOptIn"
+     ],
+     [
+      "Confirmed Opt Out",
+      "_confirmedOptOut"
+     ],
+     [
+      "Soft Opt In",
+      "_softOptIn"
+     ],
+     [
+      "Soft Opt Out",
+      "_softOptOut"
+     ]
+    ],
+    "optional": true,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Global subscription status",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "toggle_to_primary_hint": "Select from list",
+     "toggle_to_secondary_hint": "Enter custom value",
+     "ns_content_type": "element",
+     "ns_tag": "listsRelationships",
+     "type": "string",
+     "name": "globalSubscriptionStatus"
+    },
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "image",
+    "label": "Image",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "boolean",
+    "name": "billPay",
+    "control_type": "checkbox",
+    "label": "Bill pay",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Bill pay",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsRelationships",
+     "type": "boolean",
+     "name": "billPay"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "date_time",
+    "name": "dateCreated",
+    "control_type": "date_time",
+    "label": "Date created",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "date_time",
+    "name": "lastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last modified date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "addressbookList",
+    "label": "Addressbook list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "addressbook",
+      "type": "array",
+      "of": "object",
+      "label": "Addressbook",
+      "optional": true,
+      "ns_ref_type": "ContactAddressbook",
+      "ns_content_type": "element",
+      "ns_tag": "listsRelationships",
+      "properties": [
+       {
+        "control_type": "checkbox",
+        "label": "Default shipping",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Default shipping",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "listsRelationships",
+         "type": "boolean",
+         "name": "defaultShipping"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "boolean",
+        "name": "defaultShipping"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Default billing",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Default billing",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "listsRelationships",
+         "type": "boolean",
+         "name": "defaultBilling"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "boolean",
+        "name": "defaultBilling"
+       },
+       {
+        "control_type": "text",
+        "label": "Label",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "string",
+        "name": "label"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "internalId"
+         },
+         {
+          "control_type": "select",
+          "label": "Country",
+          "pick_list": [
+           [
+            "Afghanistan",
+            "_afghanistan"
+           ],
+           [
+            "Aland Islands",
+            "_alandIslands"
+           ],
+           [
+            "Albania",
+            "_albania"
+           ],
+           [
+            "Algeria",
+            "_algeria"
+           ],
+           [
+            "American Samoa",
+            "_americanSamoa"
+           ],
+           [
+            "Andorra",
+            "_andorra"
+           ],
+           [
+            "Angola",
+            "_angola"
+           ],
+           [
+            "Anguilla",
+            "_anguilla"
+           ],
+           [
+            "Antarctica",
+            "_antarctica"
+           ],
+           [
+            "Antigua And Barbuda",
+            "_antiguaAndBarbuda"
+           ],
+           [
+            "Argentina",
+            "_argentina"
+           ],
+           [
+            "Armenia",
+            "_armenia"
+           ],
+           [
+            "Aruba",
+            "_aruba"
+           ],
+           [
+            "Australia",
+            "_australia"
+           ],
+           [
+            "Austria",
+            "_austria"
+           ],
+           [
+            "Azerbaijan",
+            "_azerbaijan"
+           ],
+           [
+            "Bahamas",
+            "_bahamas"
+           ],
+           [
+            "Bahrain",
+            "_bahrain"
+           ],
+           [
+            "Bangladesh",
+            "_bangladesh"
+           ],
+           [
+            "Barbados",
+            "_barbados"
+           ],
+           [
+            "Belarus",
+            "_belarus"
+           ],
+           [
+            "Belgium",
+            "_belgium"
+           ],
+           [
+            "Belize",
+            "_belize"
+           ],
+           [
+            "Benin",
+            "_benin"
+           ],
+           [
+            "Bermuda",
+            "_bermuda"
+           ],
+           [
+            "Bhutan",
+            "_bhutan"
+           ],
+           [
+            "Bolivia",
+            "_bolivia"
+           ],
+           [
+            "Bonaire Saint Eustatius And Saba",
+            "_bonaireSaintEustatiusAndSaba"
+           ],
+           [
+            "Bosnia And Herzegovina",
+            "_bosniaAndHerzegovina"
+           ],
+           [
+            "Botswana",
+            "_botswana"
+           ],
+           [
+            "Bouvet Island",
+            "_bouvetIsland"
+           ],
+           [
+            "Brazil",
+            "_brazil"
+           ],
+           [
+            "British Indian Ocean Territory",
+            "_britishIndianOceanTerritory"
+           ],
+           [
+            "Brunei Darussalam",
+            "_bruneiDarussalam"
+           ],
+           [
+            "Bulgaria",
+            "_bulgaria"
+           ],
+           [
+            "Burkina Faso",
+            "_burkinaFaso"
+           ],
+           [
+            "Burundi",
+            "_burundi"
+           ],
+           [
+            "Cambodia",
+            "_cambodia"
+           ],
+           [
+            "Cameroon",
+            "_cameroon"
+           ],
+           [
+            "Canada",
+            "_canada"
+           ],
+           [
+            "Canary Islands",
+            "_canaryIslands"
+           ],
+           [
+            "Cape Verde",
+            "_capeVerde"
+           ],
+           [
+            "Cayman Islands",
+            "_caymanIslands"
+           ],
+           [
+            "Central African Republic",
+            "_centralAfricanRepublic"
+           ],
+           [
+            "Ceuta And Melilla",
+            "_ceutaAndMelilla"
+           ],
+           [
+            "Chad",
+            "_chad"
+           ],
+           [
+            "Chile",
+            "_chile"
+           ],
+           [
+            "China",
+            "_china"
+           ],
+           [
+            "Christmas Island",
+            "_christmasIsland"
+           ],
+           [
+            "Cocos Keeling Islands",
+            "_cocosKeelingIslands"
+           ],
+           [
+            "Colombia",
+            "_colombia"
+           ],
+           [
+            "Comoros",
+            "_comoros"
+           ],
+           [
+            "Congo Democratic Peoples Republic",
+            "_congoDemocraticPeoplesRepublic"
+           ],
+           [
+            "Congo Republic Of",
+            "_congoRepublicOf"
+           ],
+           [
+            "Cook Islands",
+            "_cookIslands"
+           ],
+           [
+            "Costa Rica",
+            "_costaRica"
+           ],
+           [
+            "Cote D Ivoire",
+            "_coteDIvoire"
+           ],
+           [
+            "Croatia Hrvatska",
+            "_croatiaHrvatska"
+           ],
+           [
+            "Cuba",
+            "_cuba"
+           ],
+           [
+            "Curacao",
+            "_curacao"
+           ],
+           [
+            "Cyprus",
+            "_cyprus"
+           ],
+           [
+            "Czech Republic",
+            "_czechRepublic"
+           ],
+           [
+            "Denmark",
+            "_denmark"
+           ],
+           [
+            "Djibouti",
+            "_djibouti"
+           ],
+           [
+            "Dominica",
+            "_dominica"
+           ],
+           [
+            "Dominican Republic",
+            "_dominicanRepublic"
+           ],
+           [
+            "East Timor",
+            "_eastTimor"
+           ],
+           [
+            "Ecuador",
+            "_ecuador"
+           ],
+           [
+            "Egypt",
+            "_egypt"
+           ],
+           [
+            "El Salvador",
+            "_elSalvador"
+           ],
+           [
+            "Equatorial Guinea",
+            "_equatorialGuinea"
+           ],
+           [
+            "Eritrea",
+            "_eritrea"
+           ],
+           [
+            "Estonia",
+            "_estonia"
+           ],
+           [
+            "Ethiopia",
+            "_ethiopia"
+           ],
+           [
+            "Falkland Islands",
+            "_falklandIslands"
+           ],
+           [
+            "Faroe Islands",
+            "_faroeIslands"
+           ],
+           [
+            "Fiji",
+            "_fiji"
+           ],
+           [
+            "Finland",
+            "_finland"
+           ],
+           [
+            "France",
+            "_france"
+           ],
+           [
+            "French Guiana",
+            "_frenchGuiana"
+           ],
+           [
+            "French Polynesia",
+            "_frenchPolynesia"
+           ],
+           [
+            "French Southern Territories",
+            "_frenchSouthernTerritories"
+           ],
+           [
+            "Gabon",
+            "_gabon"
+           ],
+           [
+            "Gambia",
+            "_gambia"
+           ],
+           [
+            "Georgia",
+            "_georgia"
+           ],
+           [
+            "Germany",
+            "_germany"
+           ],
+           [
+            "Ghana",
+            "_ghana"
+           ],
+           [
+            "Gibraltar",
+            "_gibraltar"
+           ],
+           [
+            "Greece",
+            "_greece"
+           ],
+           [
+            "Greenland",
+            "_greenland"
+           ],
+           [
+            "Grenada",
+            "_grenada"
+           ],
+           [
+            "Guadeloupe",
+            "_guadeloupe"
+           ],
+           [
+            "Guam",
+            "_guam"
+           ],
+           [
+            "Guatemala",
+            "_guatemala"
+           ],
+           [
+            "Guernsey",
+            "_guernsey"
+           ],
+           [
+            "Guinea",
+            "_guinea"
+           ],
+           [
+            "Guinea Bissau",
+            "_guineaBissau"
+           ],
+           [
+            "Guyana",
+            "_guyana"
+           ],
+           [
+            "Haiti",
+            "_haiti"
+           ],
+           [
+            "Heard And Mc Donald Islands",
+            "_heardAndMcDonaldIslands"
+           ],
+           [
+            "Holy See City Vatican State",
+            "_holySeeCityVaticanState"
+           ],
+           [
+            "Honduras",
+            "_honduras"
+           ],
+           [
+            "Hong Kong",
+            "_hongKong"
+           ],
+           [
+            "Hungary",
+            "_hungary"
+           ],
+           [
+            "Iceland",
+            "_iceland"
+           ],
+           [
+            "India",
+            "_india"
+           ],
+           [
+            "Indonesia",
+            "_indonesia"
+           ],
+           [
+            "Iran Islamic Republic Of",
+            "_iranIslamicRepublicOf"
+           ],
+           [
+            "Iraq",
+            "_iraq"
+           ],
+           [
+            "Ireland",
+            "_ireland"
+           ],
+           [
+            "Isle Of Man",
+            "_isleOfMan"
+           ],
+           [
+            "Israel",
+            "_israel"
+           ],
+           [
+            "Italy",
+            "_italy"
+           ],
+           [
+            "Jamaica",
+            "_jamaica"
+           ],
+           [
+            "Japan",
+            "_japan"
+           ],
+           [
+            "Jersey",
+            "_jersey"
+           ],
+           [
+            "Jordan",
+            "_jordan"
+           ],
+           [
+            "Kazakhstan",
+            "_kazakhstan"
+           ],
+           [
+            "Kenya",
+            "_kenya"
+           ],
+           [
+            "Kiribati",
+            "_kiribati"
+           ],
+           [
+            "Korea Democratic Peoples Republic",
+            "_koreaDemocraticPeoplesRepublic"
+           ],
+           [
+            "Korea Republic Of",
+            "_koreaRepublicOf"
+           ],
+           [
+            "Kosovo",
+            "_kosovo"
+           ],
+           [
+            "Kuwait",
+            "_kuwait"
+           ],
+           [
+            "Kyrgyzstan",
+            "_kyrgyzstan"
+           ],
+           [
+            "Lao Peoples Democratic Republic",
+            "_laoPeoplesDemocraticRepublic"
+           ],
+           [
+            "Latvia",
+            "_latvia"
+           ],
+           [
+            "Lebanon",
+            "_lebanon"
+           ],
+           [
+            "Lesotho",
+            "_lesotho"
+           ],
+           [
+            "Liberia",
+            "_liberia"
+           ],
+           [
+            "Libya",
+            "_libya"
+           ],
+           [
+            "Liechtenstein",
+            "_liechtenstein"
+           ],
+           [
+            "Lithuania",
+            "_lithuania"
+           ],
+           [
+            "Luxembourg",
+            "_luxembourg"
+           ],
+           [
+            "Macau",
+            "_macau"
+           ],
+           [
+            "Macedonia",
+            "_macedonia"
+           ],
+           [
+            "Madagascar",
+            "_madagascar"
+           ],
+           [
+            "Malawi",
+            "_malawi"
+           ],
+           [
+            "Malaysia",
+            "_malaysia"
+           ],
+           [
+            "Maldives",
+            "_maldives"
+           ],
+           [
+            "Mali",
+            "_mali"
+           ],
+           [
+            "Malta",
+            "_malta"
+           ],
+           [
+            "Marshall Islands",
+            "_marshallIslands"
+           ],
+           [
+            "Martinique",
+            "_martinique"
+           ],
+           [
+            "Mauritania",
+            "_mauritania"
+           ],
+           [
+            "Mauritius",
+            "_mauritius"
+           ],
+           [
+            "Mayotte",
+            "_mayotte"
+           ],
+           [
+            "Mexico",
+            "_mexico"
+           ],
+           [
+            "Micronesia Federal State Of",
+            "_micronesiaFederalStateOf"
+           ],
+           [
+            "Moldova Republic Of",
+            "_moldovaRepublicOf"
+           ],
+           [
+            "Monaco",
+            "_monaco"
+           ],
+           [
+            "Mongolia",
+            "_mongolia"
+           ],
+           [
+            "Montenegro",
+            "_montenegro"
+           ],
+           [
+            "Montserrat",
+            "_montserrat"
+           ],
+           [
+            "Morocco",
+            "_morocco"
+           ],
+           [
+            "Mozambique",
+            "_mozambique"
+           ],
+           [
+            "Myanmar",
+            "_myanmar"
+           ],
+           [
+            "Namibia",
+            "_namibia"
+           ],
+           [
+            "Nauru",
+            "_nauru"
+           ],
+           [
+            "Nepal",
+            "_nepal"
+           ],
+           [
+            "Netherlands",
+            "_netherlands"
+           ],
+           [
+            "New Caledonia",
+            "_newCaledonia"
+           ],
+           [
+            "New Zealand",
+            "_newZealand"
+           ],
+           [
+            "Nicaragua",
+            "_nicaragua"
+           ],
+           [
+            "Niger",
+            "_niger"
+           ],
+           [
+            "Nigeria",
+            "_nigeria"
+           ],
+           [
+            "Niue",
+            "_niue"
+           ],
+           [
+            "Norfolk Island",
+            "_norfolkIsland"
+           ],
+           [
+            "Northern Mariana Islands",
+            "_northernMarianaIslands"
+           ],
+           [
+            "Norway",
+            "_norway"
+           ],
+           [
+            "Oman",
+            "_oman"
+           ],
+           [
+            "Pakistan",
+            "_pakistan"
+           ],
+           [
+            "Palau",
+            "_palau"
+           ],
+           [
+            "Panama",
+            "_panama"
+           ],
+           [
+            "Papua New Guinea",
+            "_papuaNewGuinea"
+           ],
+           [
+            "Paraguay",
+            "_paraguay"
+           ],
+           [
+            "Peru",
+            "_peru"
+           ],
+           [
+            "Philippines",
+            "_philippines"
+           ],
+           [
+            "Pitcairn Island",
+            "_pitcairnIsland"
+           ],
+           [
+            "Poland",
+            "_poland"
+           ],
+           [
+            "Portugal",
+            "_portugal"
+           ],
+           [
+            "Puerto Rico",
+            "_puertoRico"
+           ],
+           [
+            "Qatar",
+            "_qatar"
+           ],
+           [
+            "Reunion Island",
+            "_reunionIsland"
+           ],
+           [
+            "Romania",
+            "_romania"
+           ],
+           [
+            "Russian Federation",
+            "_russianFederation"
+           ],
+           [
+            "Rwanda",
+            "_rwanda"
+           ],
+           [
+            "Saint Barthelemy",
+            "_saintBarthelemy"
+           ],
+           [
+            "Saint Helena",
+            "_saintHelena"
+           ],
+           [
+            "Saint Kitts And Nevis",
+            "_saintKittsAndNevis"
+           ],
+           [
+            "Saint Lucia",
+            "_saintLucia"
+           ],
+           [
+            "Saint Martin",
+            "_saintMartin"
+           ],
+           [
+            "Saint Vincent And The Grenadines",
+            "_saintVincentAndTheGrenadines"
+           ],
+           [
+            "Samoa",
+            "_samoa"
+           ],
+           [
+            "San Marino",
+            "_sanMarino"
+           ],
+           [
+            "Sao Tome And Principe",
+            "_saoTomeAndPrincipe"
+           ],
+           [
+            "Saudi Arabia",
+            "_saudiArabia"
+           ],
+           [
+            "Senegal",
+            "_senegal"
+           ],
+           [
+            "Serbia",
+            "_serbia"
+           ],
+           [
+            "Seychelles",
+            "_seychelles"
+           ],
+           [
+            "Sierra Leone",
+            "_sierraLeone"
+           ],
+           [
+            "Singapore",
+            "_singapore"
+           ],
+           [
+            "Sint Maarten",
+            "_sintMaarten"
+           ],
+           [
+            "Slovak Republic",
+            "_slovakRepublic"
+           ],
+           [
+            "Slovenia",
+            "_slovenia"
+           ],
+           [
+            "Solomon Islands",
+            "_solomonIslands"
+           ],
+           [
+            "Somalia",
+            "_somalia"
+           ],
+           [
+            "South Africa",
+            "_southAfrica"
+           ],
+           [
+            "South Georgia",
+            "_southGeorgia"
+           ],
+           [
+            "South Sudan",
+            "_southSudan"
+           ],
+           [
+            "Spain",
+            "_spain"
+           ],
+           [
+            "Sri Lanka",
+            "_sriLanka"
+           ],
+           [
+            "State Of Palestine",
+            "_stateOfPalestine"
+           ],
+           [
+            "St Pierre And Miquelon",
+            "_stPierreAndMiquelon"
+           ],
+           [
+            "Sudan",
+            "_sudan"
+           ],
+           [
+            "Suriname",
+            "_suriname"
+           ],
+           [
+            "Svalbard And Jan Mayen Islands",
+            "_svalbardAndJanMayenIslands"
+           ],
+           [
+            "Swaziland",
+            "_swaziland"
+           ],
+           [
+            "Sweden",
+            "_sweden"
+           ],
+           [
+            "Switzerland",
+            "_switzerland"
+           ],
+           [
+            "Syrian Arab Republic",
+            "_syrianArabRepublic"
+           ],
+           [
+            "Taiwan",
+            "_taiwan"
+           ],
+           [
+            "Tajikistan",
+            "_tajikistan"
+           ],
+           [
+            "Tanzania",
+            "_tanzania"
+           ],
+           [
+            "Thailand",
+            "_thailand"
+           ],
+           [
+            "Togo",
+            "_togo"
+           ],
+           [
+            "Tokelau",
+            "_tokelau"
+           ],
+           [
+            "Tonga",
+            "_tonga"
+           ],
+           [
+            "Trinidad And Tobago",
+            "_trinidadAndTobago"
+           ],
+           [
+            "Tunisia",
+            "_tunisia"
+           ],
+           [
+            "Turkey",
+            "_turkey"
+           ],
+           [
+            "Turkmenistan",
+            "_turkmenistan"
+           ],
+           [
+            "Turks And Caicos Islands",
+            "_turksAndCaicosIslands"
+           ],
+           [
+            "Tuvalu",
+            "_tuvalu"
+           ],
+           [
+            "Uganda",
+            "_uganda"
+           ],
+           [
+            "Ukraine",
+            "_ukraine"
+           ],
+           [
+            "United Arab Emirates",
+            "_unitedArabEmirates"
+           ],
+           [
+            "United Kingdom",
+            "_unitedKingdom"
+           ],
+           [
+            "United States",
+            "_unitedStates"
+           ],
+           [
+            "Uruguay",
+            "_uruguay"
+           ],
+           [
+            "U S Minor Outlying Islands",
+            "_uSMinorOutlyingIslands"
+           ],
+           [
+            "Uzbekistan",
+            "_uzbekistan"
+           ],
+           [
+            "Vanuatu",
+            "_vanuatu"
+           ],
+           [
+            "Venezuela",
+            "_venezuela"
+           ],
+           [
+            "Vietnam",
+            "_vietnam"
+           ],
+           [
+            "Virgin Islands British",
+            "_virginIslandsBritish"
+           ],
+           [
+            "Virgin Islands Usa",
+            "_virginIslandsUSA"
+           ],
+           [
+            "Wallis And Futuna Islands",
+            "_wallisAndFutunaIslands"
+           ],
+           [
+            "Western Sahara",
+            "_westernSahara"
+           ],
+           [
+            "Yemen",
+            "_yemen"
+           ],
+           [
+            "Zambia",
+            "_zambia"
+           ],
+           [
+            "Zimbabwe",
+            "_zimbabwe"
+           ]
+          ],
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Country",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "toggle_to_primary_hint": "Select from list",
+           "toggle_to_secondary_hint": "Enter custom value",
+           "ns_content_type": "element",
+           "ns_tag": "platformCommon",
+           "type": "string",
+           "name": "country"
+          },
+          "type": "string",
+          "name": "country"
+         },
+         {
+          "control_type": "text",
+          "label": "Attention",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "attention"
+         },
+         {
+          "control_type": "text",
+          "label": "Addressee",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "addressee"
+         },
+         {
+          "control_type": "text",
+          "label": "Addr phone",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "addrPhone"
+         },
+         {
+          "control_type": "text",
+          "label": "Addr 1",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "addr1"
+         },
+         {
+          "control_type": "text",
+          "label": "Addr 2",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "addr2"
+         },
+         {
+          "control_type": "text",
+          "label": "Addr 3",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "addr3"
+         },
+         {
+          "control_type": "text",
+          "label": "City",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "city"
+         },
+         {
+          "control_type": "text",
+          "label": "State",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "state"
+         },
+         {
+          "control_type": "text",
+          "label": "Zip",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "zip"
+         },
+         {
+          "control_type": "text",
+          "label": "Addr text",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "string",
+          "name": "addrText"
+         },
+         {
+          "control_type": "checkbox",
+          "label": "Override",
+          "render_input": "render_boolean",
+          "parse_output": "parse_boolean",
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Override",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "optional": true,
+           "ns_content_type": "element",
+           "ns_tag": "platformCommon",
+           "type": "boolean",
+           "name": "override"
+          },
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCommon",
+          "type": "boolean",
+          "name": "override"
+         }
+        ],
+        "label": "Addressbook address",
+        "optional": true,
+        "ns_ref_type": "Address",
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "object",
+        "name": "addressbookAddress"
+       },
+       {
+        "control_type": "text",
+        "label": "Internal ID",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "string",
+        "name": "internalId"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "subscriptionsList",
+    "label": "Subscriptions list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "subscriptions",
+      "type": "array",
+      "of": "object",
+      "label": "Subscriptions",
+      "optional": true,
+      "ns_ref_type": "Subscriptions",
+      "ns_content_type": "element",
+      "ns_tag": "listsRelationships",
+      "properties": [
+       {
+        "control_type": "checkbox",
+        "label": "Subscribed",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Subscribed",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "listsRelationships",
+         "type": "boolean",
+         "name": "subscribed"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "boolean",
+        "name": "subscribed"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Subscription",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "object",
+        "name": "subscription"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Last modified date",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsRelationships",
+        "type": "date_time",
+        "name": "lastModifiedDate",
+        "parse_output": "parse_iso8601_timestamp",
+        "render_input": "render_iso8601_timestamp"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsRelationships"
+   },
+   {
+    "type": "object",
+    "name": "custom_fields",
+    "label": "Custom fields",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "SF Id",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_4674_custentity_sf_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Last Sync Time",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_4673_custentity_last_sync_time"
+     },
+     {
+      "control_type": "text",
+      "label": "Hash",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_4670_custentity4132099087"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Last Synced Time",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "ns_custom_type": "DateCustomFieldRef",
+      "ns_search_type": "SearchDateCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "date_time",
+      "name": "f_5037_custentity_last_synced_time"
+     },
+     {
+      "control_type": "text",
+      "label": "Supervisore",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Supervisore",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3744_custentity_supervisor"
+      },
+      "type": "string",
+      "name": "f_3744_custentity_supervisor"
+     },
+     {
+      "control_type": "text",
+      "label": "Supervisore ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3744_custentity_supervisor_id"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.netsuite.new_object.company.internal_id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "box",
+      "name": "search_files",
+      "as": "5a2ef391",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "type": true,
+       "exact_match": true
+      },
+      "input": {
+       "type": "folder",
+       "exact_match": "true",
+       "query": "#{_('data.netsuite.new_object.company.name')}"
+      },
+      "visible_config_fields": [
+       "ancestor_folder_ids",
+       "type",
+       "exact_match"
+      ],
+      "comment": "Check if folder exists in Box with company name",
+      "uuid": "d414c53f-550b-4bab-a133-4a12c45e53fe",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 3,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "blank",
+         "lhs": "#{_('data.box.5a2ef391.files.first.id')}",
+         "rhs": null
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 4,
+        "provider": "box",
+        "name": "create_folder",
+        "as": "create_folder",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "parent_id": {
+          "ids": [
+           "0"
+          ],
+          "titles": [
+           "Home folder"
+          ]
+         }
+        },
+        "toggleCfg": {
+         "parent_id": true
+        },
+        "input": {
+         "folder_name": "#{_('data.netsuite.new_object.company.name')}",
+         "parent_id": "0"
+        },
+        "comment": "Create folder in Box with company name",
+        "uuid": "c45dd4cf-5d0f-4d7e-85a7-b45a20401267",
+        "title": null,
+        "description": null
+       }
+      ],
+      "uuid": "50a82294-ccd6-4a52-ae01-1a7ff60c28e5"
+     },
+     {
+      "number": 5,
+      "provider": "box",
+      "name": "create_collaboration",
+      "as": "create_collaboration",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "item.type": true,
+       "role": false
+      },
+      "input": {
+       "item": {
+        "type": "#{_('data.box.create_folder.type')}",
+        "id": "=_('data.box.5a2ef391.files.first.id') or _('data.box.create_folder.id')"
+       },
+       "role": "viewer uploader",
+       "accessible_by": {
+        "login": "#{_('data.netsuite.new_object.email')}"
+       }
+      },
+      "comment": "Invite NetSuite contact to collaborate on folder",
+      "uuid": "cd6e0edf-ec12-4da4-ad48-8848a8b153d2",
+      "title": null,
+      "description": null
+     }
+    ],
+    "comment": "If new contact has an associated company",
+    "uuid": "92726bd5-994c-4cb4-87cd-12c1aa726dac"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Folder name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "NetSuite contact"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.netsuite.new_object.company.name')}",
+   "custom_column_2": "#{_('data.netsuite.new_object.firstName')} #{_('data.netsuite.new_object.lastName')}"
+  },
+  "uuid": "34b0c4d5-f4f5-4feb-a765-7d63803d9b25",
+  "param": {}
+ }
+}

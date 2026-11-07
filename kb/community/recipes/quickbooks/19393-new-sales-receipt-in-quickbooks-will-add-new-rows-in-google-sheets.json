@@ -1,0 +1,199 @@
+{
+ "id": 19393,
+ "name": "New sales receipt in QuickBooks will add new rows in Google Sheets",
+ "description": "This integration adds new rows into Google Sheets when new sales receipts are added in QBO.\n\n---------------------------\n\nTo run this recipe, make sure the file in exists in Google Sheets. Copy the sample sheet to create one.\n[See sample google sheet here](https://docs.google.com/spreadsheets/d/1RCscTP3JhMxKkJlRdvGDr8--S-ynXdZwHVMXkQcs-n0/edit?usp=sharing)\n\n### Configurations\nSet the Google Sheet to which you would like to add sales receipt data to in step 1. Copy the sample sheet given above and make sure it has the following specifications.\n\n**Directory**: Create file in top directory\n**Name**: Sample Sheet for QuickBooks Transaction Summary\n**Sheet Name**: Sheet1\n**Column names:** Txn Date, Txn Type, Customer ID, Customer Name, Document ID, Amount, Due Date, Stage",
+ "applications": [
+  "quickbooks",
+  "google_sheets"
+ ],
+ "action_applications": [
+  "google_sheets"
+ ],
+ "trigger_application": "quickbooks",
+ "business_objects": [
+  "sales receipt",
+  "spreadsheet row"
+ ],
+ "categories": [
+  "Accounting",
+  "Finance",
+  "Utilities"
+ ],
+ "copy_count": 712,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-08-18T03:46:20.838-07:00",
+ "source_url": "https://app.workato.com/recipes/19393?community=us",
+ "steps": [
+  "quickbooks.new_sales_receipt",
+  "google_sheets.add_spreadsheet_row_v4"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "quickbooks",
+  "name": "new_sales_receipt",
+  "as": "new_sales_receipt",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "#{_('data.workato.job_context.parameters.start_date')}"
+  },
+  "parameters_schema": "[\n  {\n    \"label\": \"Start date\",\n    \"name\": \"start_date\",\n    \"type\": \"date_time\",\n    \"control_type\": \"date_time\",\n    \"hint\": \"Set the date and time from when you want to process records from, by clicking on the calendar icon  to the left. (For example: setting it to 12/28/2015 12:00 am will pick up all records created or updated since that time.)\"\n  }\n]",
+  "block": [
+   {
+    "number": 1,
+    "provider": "google_sheets",
+    "name": "add_spreadsheet_row_v4",
+    "as": "add_spreadsheet_row_v4",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "spreadsheet": "Sample Sheet for Quickbooks Transaction Summary"
+    },
+    "toggleCfg": {},
+    "input": {
+     "spreadsheet": "1RCscTP3JhMxKkJlRdvGDr8--S-ynXdZwHVMXkQcs-n0",
+     "sheet": "Sheet1",
+     "data": {
+      "col_1": "=_('data.quickbooks.new_sales_receipt.TxnDate').to_date",
+      "col_2": "Sales Receipt",
+      "col_4": "#{_('data.quickbooks.new_sales_receipt.CustomerRef.lookup_customer_by_id(value>id).FullyQualifiedName')}",
+      "col_5": "#{_('data.quickbooks.new_sales_receipt.Id')}",
+      "col_3": "#{_('data.quickbooks.new_sales_receipt.CustomerRef.lookup_customer_by_id(value>id).Id')}",
+      "col_6": "#{_('data.quickbooks.new_sales_receipt.Line.first.Amount')}",
+      "col_7": "=_('data.quickbooks.new_sales_receipt.TxnDate').to_date",
+      "col_8": "#{_('data.quickbooks.new_sales_receipt.CustomerRef.lookup_customer_by_id(value>id).BillAddr.CountrySubDivisionCode')}"
+     }
+    },
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "sheet",
+      "control_type": "select",
+      "label": "Sheet",
+      "hint": "Select the sheet to create row in",
+      "pick_list": [
+       [
+        "Sheet1",
+        "Sheet1"
+       ]
+      ],
+      "optional": false,
+      "extends_schema": true
+     },
+     {
+      "type": "object",
+      "name": "data",
+      "label": "Columns",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Txn Date",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_1",
+        "parent": "data",
+        "path": "data.col_1"
+       },
+       {
+        "control_type": "text",
+        "label": "Txn Type",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_2",
+        "parent": "data",
+        "path": "data.col_2"
+       },
+       {
+        "control_type": "text",
+        "label": "Customer ID",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_3",
+        "parent": "data",
+        "path": "data.col_3"
+       },
+       {
+        "control_type": "text",
+        "label": "Customer Name",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_4",
+        "parent": "data",
+        "path": "data.col_4"
+       },
+       {
+        "control_type": "text",
+        "label": "Document ID",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_5",
+        "parent": "data",
+        "path": "data.col_5"
+       },
+       {
+        "control_type": "text",
+        "label": "Amount",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_6",
+        "parent": "data",
+        "path": "data.col_6"
+       },
+       {
+        "control_type": "text",
+        "label": "Due Date",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_7",
+        "parent": "data",
+        "path": "data.col_7"
+       },
+       {
+        "control_type": "text",
+        "label": "Stage",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_8",
+        "parent": "data",
+        "path": "data.col_8"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "spreadsheet",
+     "sheet",
+     "data",
+     "data.col_1",
+     "data.col_2",
+     "data.col_3",
+     "data.col_4",
+     "data.col_5",
+     "data.col_6",
+     "data.col_7",
+     "data.col_8"
+    ],
+    "uuid": "f5c5520c-688d-4bc3-9d59-682b200c6608"
+   }
+  ],
+  "uuid": "805eee1a-5bb9-42c3-95cb-a3464d7a1a19",
+  "param": {}
+ }
+}

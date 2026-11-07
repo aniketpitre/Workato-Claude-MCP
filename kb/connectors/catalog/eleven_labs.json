@@ -1,0 +1,474 @@
+{
+ "name": "eleven_labs",
+ "title": "ElevenLabs",
+ "requires_connection": true,
+ "categories": [
+  "NLU",
+  "Artificial Intelligence"
+ ],
+ "aliases": [
+  "ElevenLabs",
+  "eleven labs",
+  "text to speech"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in ElevenLabs (Custom)",
+   "help": "Build your own ElevenLabs action with an HTTP request. The request will be authorized with your ElevenLabs API key.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "clone_voice",
+   "title": "Clone voice",
+   "description": "Clone voice in ElevenLabs",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "The name that identifies this voice."
+    },
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "file_name",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mime_type",
+       "type": "string",
+       "label": "MIME type",
+       "control_type": "text",
+       "required": true,
+       "hint": "e.g. audio/mpeg"
+      },
+      {
+       "name": "file_content",
+       "type": "string",
+       "label": "File content",
+       "control_type": "text",
+       "required": true,
+       "hint": "Connect a file, or provide the base64 encoded content of the audio file."
+      }
+     ],
+     "hint": "Audio recordings to use for voice cloning. Provide at least one audio file."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "A description of the voice."
+    },
+    {
+     "name": "remove_background_noise",
+     "type": "boolean",
+     "label": "Remove background noise",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "remove_background_noise",
+      "type": "boolean"
+     },
+     "hint": "Removes background noise from voice samples using an audio isolation model. May reduce quality if samples don't include background noise. Defaults to false."
+    },
+    {
+     "name": "labels",
+     "type": "array",
+     "label": "Labels",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Labels for the voice, e.g. accent, gender, age, use_case."
+    }
+   ],
+   "output": [
+    {
+     "name": "voice_id",
+     "type": "string",
+     "label": "Voice ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "requires_verification",
+     "type": "boolean",
+     "label": "Requires verification",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "requires_verification",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "delete_record",
+   "title": "Delete record",
+   "description": "Delete record in ElevenLabs",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "voice"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "generate_audio",
+   "title": "Generate audio",
+   "description": "Generate audio in ElevenLabs",
+   "help": "Returns audio as a file output that can be used in later steps. ElevenLabs limits each request to 5000 characters; split longer text into multiple calls.",
+   "input": [
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true,
+     "hint": "The text to convert to speech (max 5000 characters)."
+    },
+    {
+     "name": "voice_id",
+     "type": "string",
+     "label": "Voice ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Voice to use for synthesis."
+    },
+    {
+     "name": "model_id",
+     "type": "string",
+     "label": "Model ID",
+     "control_type": "text",
+     "hint": "Defaults to eleven_v3 for expressive output."
+    },
+    {
+     "name": "voice_settings",
+     "type": "object",
+     "label": "Voice settings",
+     "properties": [
+      {
+       "name": "stability",
+       "type": "number",
+       "label": "Stability",
+       "control_type": "number",
+       "hint": "Number between 0 and 1 (e.g. 0.5). Higher values sound more stable."
+      },
+      {
+       "name": "similarity_boost",
+       "type": "number",
+       "label": "Similarity boost",
+       "control_type": "number",
+       "hint": "Number between 0 and 1 (e.g. 0.7). Higher values match the original voice more closely."
+      },
+      {
+       "name": "style",
+       "type": "number",
+       "label": "Style",
+       "control_type": "number",
+       "hint": "Number between 0 and 1 (e.g. 0.2). Higher values amplify the voice style."
+      },
+      {
+       "name": "use_speaker_boost",
+       "type": "boolean",
+       "label": "Use speaker boost",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "use_speaker_boost",
+        "type": "boolean"
+       },
+       "hint": "Boolean toggle. Enable to boost similarity at a small latency cost."
+      }
+     ],
+     "hint": "Override settings for stability, similarity boost, style, and speaker boost."
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Output format",
+     "control_type": "select",
+     "options": [
+      "mp3_44100_128",
+      "mp3_44100_192",
+      "pcm_16000",
+      "pcm_22050",
+      "pcm_24000",
+      "pcm_44100"
+     ],
+     "toggle_field": {
+      "name": "output_format_custom",
+      "type": "string"
+     },
+     "hint": "Audio container and sample rate. Higher bitrates require higher tiers."
+    },
+    {
+     "name": "language_code",
+     "type": "string",
+     "label": "Language code",
+     "control_type": "text",
+     "hint": "ISO 639-1 (e.g. en, es, ja)."
+    },
+    {
+     "name": "seed",
+     "type": "integer",
+     "label": "Seed",
+     "control_type": "integer",
+     "hint": "Seed for reproducible output, e.g. 123."
+    },
+    {
+     "name": "stream",
+     "type": "boolean",
+     "label": "Stream",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "stream",
+      "type": "boolean"
+     },
+     "hint": "Stream the audio from ElevenLabs instead of waiting for the full response. Useful for reducing time-to-first-byte in real-time playback use cases."
+    }
+   ],
+   "output": [
+    {
+     "name": "audio",
+     "type": "string",
+     "label": "Audio file",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "audio_base64",
+     "type": "string",
+     "label": "Audio (base64)",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "content_type",
+     "type": "string",
+     "label": "Content type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Output format",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "file_extension",
+     "type": "string",
+     "label": "File extension",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "character_count",
+     "type": "integer",
+     "label": "Character count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "history_item_id",
+     "type": "string",
+     "label": "History item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "character_cost",
+     "type": "number",
+     "label": "Character cost",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "current_concurrent_requests",
+     "type": "integer",
+     "label": "Current concurrent requests",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "workspace_concurrent_requests",
+     "type": "integer",
+     "label": "Workspace concurrent requests",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "maximum_concurrent_requests",
+     "type": "integer",
+     "label": "Maximum concurrent requests",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "tts_latency_ms",
+     "type": "integer",
+     "label": "TTS latency (ms)",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "collect_preference",
+     "type": "boolean",
+     "label": "Collect preference",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "collect_preference",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "get_record",
+   "title": "Get record",
+   "description": "Get record in ElevenLabs",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "voice",
+      "subscription"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_records",
+   "title": "List records",
+   "description": "List records in ElevenLabs",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "voices",
+      "models"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_record",
+   "title": "Update record",
+   "description": "Update record in ElevenLabs",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "voice_settings"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  }
+ ]
+}

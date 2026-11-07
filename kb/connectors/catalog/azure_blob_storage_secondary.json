@@ -1,0 +1,1780 @@
+{
+ "name": "azure_blob_storage_secondary",
+ "title": "Azure Blob Storage secondary",
+ "requires_connection": true,
+ "categories": [
+  "Developer Tool"
+ ],
+ "aliases": [
+  "Azure Blob Storage",
+  "Microsoft"
+ ],
+ "triggers": [
+  {
+   "name": "new_blob",
+   "title": "New blob",
+   "description": "New blob in Azure Blob Storage secondary",
+   "help": "Triggers immediately when a new Blob is uploaded into a container you have selected. Create a new event in your Azure Blob Storage account to receive events. Endpoint Please connect to get webhook url",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    }
+   ],
+   "output": [
+    {
+     "name": "container_name",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "blob_name",
+     "type": "string",
+     "label": "Blob name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventType",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "api",
+       "type": "string",
+       "label": "Api",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "clientRequestId",
+       "type": "string",
+       "label": "Client request ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "requestId",
+       "type": "string",
+       "label": "Request ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "eTag",
+       "type": "string",
+       "label": "E tag",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "contentType",
+       "type": "string",
+       "label": "Content type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "contentLength",
+       "type": "integer",
+       "label": "Content length",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "blobType",
+       "type": "string",
+       "label": "Blob type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sequencer",
+       "type": "string",
+       "label": "Sequencer",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "storageDiagnostics",
+       "type": "object",
+       "label": "Storage diagnostics",
+       "required": true,
+       "properties": [
+        {
+         "name": "batchId",
+         "type": "string",
+         "label": "Batch ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "dataVersion",
+     "type": "integer",
+     "label": "Data version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "metadataVersion",
+     "type": "integer",
+     "label": "Metadata version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventTime",
+     "type": "date_time",
+     "label": "Event time",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_event_webhook",
+   "title": "New event",
+   "description": "New event in Azure Blob Storage secondary",
+   "help": "Triggers immediately when a specified event occurs in a container you have selected. The Management scope is required for this trigger to be setup. Ensure that the Azure user authenticated for this connection has the EventGrid EventSubscription Contributor role in the resource group provided below.",
+   "input": [
+    {
+     "name": "subscriptionId",
+     "type": "string",
+     "label": "Subscription",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "subscriptions",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "subscriptionId",
+      "type": "string"
+     },
+     "hint": "Select a subscription under which the webhook should be registered"
+    },
+    {
+     "name": "resourceGroupName",
+     "type": "string",
+     "label": "Resource group name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "resource_groups",
+     "toggle_field": {
+      "name": "resourceGroupName",
+      "type": "string"
+     },
+     "hint": "Select a resource group under which the webhook should be registered"
+    },
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select a container to monitor for events. If your container cannot be found, toggle to Enter container name and provide the container name."
+    },
+    {
+     "name": "events",
+     "type": "string",
+     "label": "Events to monitor",
+     "control_type": "multiselect",
+     "required": true,
+     "options": [
+      "Microsoft.Storage.BlobCreated",
+      "Microsoft.Storage.BlobDeleted",
+      "Microsoft.Storage.BlobTierChanged",
+      "Microsoft.Storage.AsyncOperationInitiated"
+     ],
+     "hint": "Select the events to monitor. Refer this document to learn more about the supported Blob event types."
+    }
+   ],
+   "output": [
+    {
+     "name": "container_name",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "blob_name",
+     "type": "string",
+     "label": "Blob name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventType",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "api",
+       "type": "string",
+       "label": "Api",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "clientRequestId",
+       "type": "string",
+       "label": "Client request ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "requestId",
+       "type": "string",
+       "label": "Request ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "eTag",
+       "type": "string",
+       "label": "E tag",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "contentType",
+       "type": "string",
+       "label": "Content type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "contentLength",
+       "type": "integer",
+       "label": "Content length",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "blobType",
+       "type": "string",
+       "label": "Blob type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sequencer",
+       "type": "string",
+       "label": "Sequencer",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "storageDiagnostics",
+       "type": "object",
+       "label": "Storage diagnostics",
+       "required": true,
+       "properties": [
+        {
+         "name": "batchId",
+         "type": "string",
+         "label": "Batch ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "dataVersion",
+     "type": "integer",
+     "label": "Data version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "metadataVersion",
+     "type": "integer",
+     "label": "Metadata version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventTime",
+     "type": "date_time",
+     "label": "Event time",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Azure Blob Storage secondary (Custom)",
+   "help": "Build your own Azure Blob Storage action with a HTTP request. The request will be authorized under your chosen Azure Blob Storage connection OAuth scopes.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_container",
+   "title": "Create container",
+   "description": "Create container ​in Azure Blob Storage secondary",
+   "help": "Creates a container in the storage account associated to your connection. Container names must be unique.",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "text",
+     "required": true,
+     "hint": "This name may only contain lowercase letters, numbers, and hyphens, and must begin with a letter or a number. Each hyphen must be preceded and followed by a non-hyphen character. The name must also be…"
+    },
+    {
+     "name": "custom_metadata",
+     "type": "array",
+     "label": "Custom metadata",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true,
+       "hint": "Enter the name without any space or special characters. Each key must be unique."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Attach custom metadata to your blob."
+    },
+    {
+     "name": "access_level",
+     "type": "string",
+     "label": "Access level",
+     "control_type": "select",
+     "options": [
+      "container",
+      "blob"
+     ],
+     "toggle_field": {
+      "name": "access_level",
+      "type": "string"
+     },
+     "hint": "Specifies whether data in the container may be accessed publicly and the level of access. If left blank, container data is Private to the account. Public container : All container properties and blobs…"
+    }
+   ],
+   "output": [
+    {
+     "name": "content_length",
+     "type": "integer",
+     "label": "Content length",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "last_modified",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "server",
+     "type": "string",
+     "label": "Server",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "download_blob",
+   "title": "Download blob contents",
+   "description": "Download​ contents ​from a blob ​in Azure Blob Storage secondary",
+   "help": "This action downloads a blob’s content. This action is streaming compatible through chunking. Default chunk is 10MB",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    },
+    {
+     "name": "blob",
+     "type": "string",
+     "label": "Blob name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listBlobs",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "blob",
+      "type": "string"
+     },
+     "hint": "Select the blob to be processed. Returns the first 5000 blobs. If your blob cannot be found or is a datapill, toggle to text input and enter the blob name."
+    },
+    {
+     "name": "chunk_size",
+     "type": "string",
+     "label": "Chunk size",
+     "control_type": "text",
+     "default": "10MB",
+     "hint": "File contents will be transferred in chunks of this size. Enter the size with the unit, Eg. 50KB. Valid units are 'B', 'KB', 'MB'. Default chunk size is 10MB . Minimum is 32KB and maximum is 10MB . Us…"
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_with_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": [
+    {
+     "name": "blob_content",
+     "type": "string",
+     "label": "Blob contents",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "generate_presigned_url",
+   "title": "Generate pre-signed URL",
+   "description": "Generate pre-signed URL ​to be used in Azure Blob Storage secondary",
+   "help": "Generate a pre-signed URL that can be passed to third parties to upload or download a file from blob storage. For this action, access key must be provided in the connection.",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    },
+    {
+     "name": "blob",
+     "type": "string",
+     "label": "Blob name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listBlobs",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "blob",
+      "type": "string"
+     },
+     "hint": "Select the blob to be processed. Returns the first 5000 blobs. If your blob cannot be found or is a datapill, toggle to text input and enter the blob name."
+    },
+    {
+     "name": "signedExpiry",
+     "type": "integer",
+     "label": "Expiry time",
+     "control_type": "date_time",
+     "hint": "Enter the time at which the pre-signed URL becomes invalid"
+    },
+    {
+     "name": "signedPermissions",
+     "type": "string",
+     "label": "Permissions",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "permissions_list",
+     "hint": "The permissions specified indicate which operations a client may perform on the resource. For more information, click here ."
+    }
+   ],
+   "output": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_blob_properties",
+   "title": "Get blob properties",
+   "description": "Get Blob properties ​in Azure Blob Storage secondary",
+   "help": "This action retrieves all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    },
+    {
+     "name": "blob",
+     "type": "string",
+     "label": "Blob name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listBlobs",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "blob",
+      "type": "string"
+     },
+     "hint": "Select the blob to be processed. Returns the first 5000 blobs. If your blob cannot be found or is a datapill, toggle to text input and enter the blob name."
+    }
+   ],
+   "output": [
+    {
+     "name": "content_length",
+     "type": "integer",
+     "label": "Content length",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "content_md5",
+     "type": "string",
+     "label": "Content md5",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "content_type",
+     "type": "string",
+     "label": "Content type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_modified",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "accept_ranges",
+     "type": "string",
+     "label": "Accept ranges",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "server",
+     "type": "string",
+     "label": "Server",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_creation_time",
+     "type": "date_time",
+     "label": "Creation time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "x_ms_lease_status",
+     "type": "string",
+     "label": "Lease status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_lease_state",
+     "type": "string",
+     "label": "Lease state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_blob_type",
+     "type": "string",
+     "label": "Blob type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_blob_sequence_number",
+     "type": "integer",
+     "label": "Blob sequence number",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "x_ms_blob_committed_block_count",
+     "type": "integer",
+     "label": "Blob commited block count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "x_ms_server_encrypted",
+     "type": "boolean",
+     "label": "Server encrypted",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "x_ms_server_encrypted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "x_ms_access_tier",
+     "type": "string",
+     "label": "Access tier",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_access_tier_inferred",
+     "type": "boolean",
+     "label": "Access tier inferred",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "x_ms_access_tier_inferred",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_container_properties",
+   "title": "Get container properties",
+   "description": "Get container properties ​in Azure Blob Storage secondary",
+   "help": "Returns all user-defined metadata and system properties for the specified container. The data returned does not include the container's list of blobs. Use the \"Search blobs\" action to retrieve blobs in a container.",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    }
+   ],
+   "output": [
+    {
+     "name": "content_length",
+     "type": "integer",
+     "label": "Content length",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "last_modified",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "server",
+     "type": "string",
+     "label": "Server",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_lease_status",
+     "type": "string",
+     "label": "Lease status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_lease_state",
+     "type": "string",
+     "label": "Lease state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_has_immutability_policy",
+     "type": "boolean",
+     "label": "Has immutability policy",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "x_ms_has_immutability_policy",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "x_ms_has_legal_hold",
+     "type": "boolean",
+     "label": "Has legal hold",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "x_ms_has_legal_hold",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "x_ms_blob_public_access",
+     "type": "string",
+     "label": "Blob public access",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_default_encryption_scope",
+     "type": "string",
+     "label": "Default encryption scope",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_deny_encryption_scope_override",
+     "type": "boolean",
+     "label": "Deny encryption scope override",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "x_ms_deny_encryption_scope_override",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_blob",
+   "title": "Search blobs",
+   "description": "Search blobs ​in Azure Blob Storage secondary",
+   "help": "This returns a list of the blobs under a container. Filter further by prefix to only retrieve blobs that start with a specific string. Retrieves 1000 blobs and blob metadata by default.",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    },
+    {
+     "name": "prefix",
+     "type": "string",
+     "label": "Prefix",
+     "control_type": "text",
+     "hint": "Filters the results to return only blobs whose names begin with the specified prefix."
+    },
+    {
+     "name": "maxresults",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "default": "1000",
+     "hint": "Specifies the maximum number of blobs to return. Defaults to 1000 , minimum is 1 and maximum is 5000 ."
+    },
+    {
+     "name": "marker",
+     "type": "string",
+     "label": "Next page marker",
+     "control_type": "text",
+     "hint": "A string value that identifies the portion of the list to be returned with the next list operation. This value can be found from the output of previous Search blobs action."
+    }
+   ],
+   "output": [
+    {
+     "name": "container_name",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "service_endpoint",
+     "type": "string",
+     "label": "Service endpoint",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "max_results",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "blobs",
+     "type": "object",
+     "label": "Blobs",
+     "required": true,
+     "properties": [
+      {
+       "name": "blob",
+       "type": "array",
+       "label": "Blob",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "properties",
+         "type": "object",
+         "label": "Properties",
+         "required": true,
+         "properties": [
+          {
+           "name": "creation_time",
+           "type": "date_time",
+           "label": "Creation time",
+           "control_type": "date_time",
+           "required": true
+          },
+          {
+           "name": "last_modified",
+           "type": "date_time",
+           "label": "Last modified",
+           "control_type": "date_time",
+           "required": true
+          },
+          {
+           "name": "etag",
+           "type": "string",
+           "label": "Etag",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content_length",
+           "type": "string",
+           "label": "Content length",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content_type",
+           "type": "string",
+           "label": "Content type",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content_encoding",
+           "type": "string",
+           "label": "Content encoding",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content_language",
+           "type": "string",
+           "label": "Content language",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content_crc64",
+           "type": "string",
+           "label": "Content crc64",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content_md5",
+           "type": "string",
+           "label": "Content md5",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "cache_control",
+           "type": "string",
+           "label": "Cache control",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content_disposition",
+           "type": "string",
+           "label": "Content disposition",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "x_ms_blob_sequence_number",
+           "type": "integer",
+           "label": "Blob sequence number",
+           "control_type": "number",
+           "required": true
+          },
+          {
+           "name": "blob_type",
+           "type": "string",
+           "label": "Blob type",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "access_tier",
+           "type": "string",
+           "label": "Access tier",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "access_tier_inferred",
+           "type": "boolean",
+           "label": "Access tier inferred",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "access_tier_inferred",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "lease_status",
+           "type": "string",
+           "label": "Lease status",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "lease_state",
+           "type": "string",
+           "label": "Lease state",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "server_encrypted",
+           "type": "boolean",
+           "label": "Server encrypted",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "server_encrypted",
+            "type": "boolean"
+           }
+          }
+         ]
+        },
+        {
+         "name": "or_metadata",
+         "type": "string",
+         "label": "Or metadata",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "prefix",
+     "type": "string",
+     "label": "Prefix",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "marker",
+     "type": "string",
+     "label": "Marker",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "next_marker",
+     "type": "string",
+     "label": "Next marker",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_container",
+   "title": "Search containers",
+   "description": "Search containers ​in Azure Blob Storage secondary",
+   "help": "Searches for containers in the storage account associated to your connection. Filter further by prefix to only retrieve containers that start with a specific string. Retrieves 1000 containers and container metadata by default.",
+   "input": [
+    {
+     "name": "prefix",
+     "type": "string",
+     "label": "Prefix",
+     "control_type": "text",
+     "hint": "Filters the results to return only containers whose names begin with the specified prefix."
+    },
+    {
+     "name": "maxresults",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "default": "1000",
+     "hint": "Specifies the maximum number of containers to return. Defaults to 1000 , minimum is 1 and maximum is 5000 ."
+    },
+    {
+     "name": "marker",
+     "type": "string",
+     "label": "Next page marker",
+     "control_type": "text",
+     "hint": "A string value that identifies the portion of the list to be returned with the next list operation. This value can be found from the output of previous Search containers action."
+    }
+   ],
+   "output": [
+    {
+     "name": "service_endpoint",
+     "type": "string",
+     "label": "Service endpoint",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "max_results",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "containers",
+     "type": "object",
+     "label": "Containers",
+     "required": true,
+     "properties": [
+      {
+       "name": "container",
+       "type": "array",
+       "label": "Container",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "properties",
+         "type": "object",
+         "label": "Properties",
+         "required": true,
+         "properties": [
+          {
+           "name": "last_modified",
+           "type": "date_time",
+           "label": "Last modified",
+           "control_type": "date_time",
+           "required": true
+          },
+          {
+           "name": "etag",
+           "type": "string",
+           "label": "Etag",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "lease_status",
+           "type": "string",
+           "label": "Lease status",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "lease_state",
+           "type": "string",
+           "label": "Lease state",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "public_access",
+           "type": "string",
+           "label": "Public access",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "default_encryption_scope",
+           "type": "string",
+           "label": "Default encryption scope",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "deny_encryption_scope_override",
+           "type": "boolean",
+           "label": "Deny encryption scope override",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "deny_encryption_scope_override",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "has_immutability_policy",
+           "type": "boolean",
+           "label": "Has immutability policy",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "has_immutability_policy",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "has_legal_hold",
+           "type": "boolean",
+           "label": "Has legal hold",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "has_legal_hold",
+            "type": "boolean"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "prefix",
+     "type": "string",
+     "label": "Prefix",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "marker",
+     "type": "string",
+     "label": "Marker",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "next_marker",
+     "type": "string",
+     "label": "Next marker",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_blob_metadata",
+   "title": "Update blob metadata",
+   "description": "Update Blob metadata ​in Azure Blob Storage secondary",
+   "help": "This action sets the custom metadata values of a specified Blob.",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    },
+    {
+     "name": "blob",
+     "type": "string",
+     "label": "Blob name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listBlobs",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "blob",
+      "type": "string"
+     },
+     "hint": "Select the blob to be processed. Returns the first 5000 blobs. If your blob cannot be found or is a datapill, toggle to text input and enter the blob name."
+    },
+    {
+     "name": "custom_metadata",
+     "type": "array",
+     "label": "Custom metadata",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true,
+       "hint": "Enter the name without any space or special characters. Each key must be unique."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Attach custom metadata to your blob."
+    }
+   ],
+   "output": [
+    {
+     "name": "last_modified",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "server",
+     "type": "string",
+     "label": "Server",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_request_server_encrypted",
+     "type": "boolean",
+     "label": "Request server encrypted",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "x_ms_request_server_encrypted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "content_length",
+     "type": "integer",
+     "label": "Content length",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upload_blob",
+   "title": "Upload blob",
+   "description": "Upload Blob ​in Azure Blob Storage secondary",
+   "help": "Creates or updates a new block Blob in Azure Blob storage by default. This action can also be used to initialize a page or append blob but not add data to it. Updating an existing block blob overwrites any existing metadata on the blob. This action is streaming compatible.",
+   "input": [
+    {
+     "name": "container",
+     "type": "string",
+     "label": "Container name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "listContainers",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "container",
+      "type": "string"
+     },
+     "hint": "Select the container which contains the blob. Returns the first 200 containers. If your container cannot be found or is a datapill, toggle to text input and enter the container name."
+    },
+    {
+     "name": "blob",
+     "type": "string",
+     "label": "Blob name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the blob name to create or update."
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "Blob contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the blob content to create or update a blob."
+    },
+    {
+     "name": "blob_type",
+     "type": "string",
+     "label": "Blob type",
+     "control_type": "select",
+     "options": [
+      "BlockBlob",
+      "PageBlob",
+      "AppendBlob"
+     ],
+     "toggle_field": {
+      "name": "blob_type",
+      "type": "string"
+     },
+     "hint": "Specify the blob type to create. Defaults to BlockBlob ."
+    },
+    {
+     "name": "custom_metadata",
+     "type": "array",
+     "label": "Custom metadata",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true,
+       "hint": "Enter the name without any space or special characters. Each key must be unique."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Attach custom metadata to your blob."
+    },
+    {
+     "name": "content_type",
+     "type": "string",
+     "label": "Content type",
+     "control_type": "select",
+     "default": "application/octet-stream",
+     "pick_list": "mime_types",
+     "toggle_field": {
+      "name": "content_type",
+      "type": "string"
+     },
+     "hint": "Select the content type of the blob. Default is application/octet-stream ."
+    },
+    {
+     "name": "content_encoding",
+     "type": "string",
+     "label": "Content encoding",
+     "control_type": "text",
+     "hint": "Specifies the content encoding of the Blob. Useful when downloading Blobs to decode blob content."
+    },
+    {
+     "name": "content_language",
+     "type": "string",
+     "label": "Content language",
+     "control_type": "text",
+     "hint": "Specifies the natural languages used by this resource."
+    },
+    {
+     "name": "content_disposition",
+     "type": "string",
+     "label": "Content disposition",
+     "control_type": "text",
+     "hint": "Conveys additional information about how users may view your Blob data via URL."
+    },
+    {
+     "name": "access_tier",
+     "type": "string",
+     "label": "Access tier",
+     "control_type": "select",
+     "options": [
+      "Hot",
+      "Cool",
+      "Archive"
+     ],
+     "hint": "Indicates the tier to be set on blob. Access tier supports only for block blob."
+    },
+    {
+     "name": "file_size",
+     "type": "string",
+     "label": "Blob size",
+     "control_type": "integer",
+     "hint": "Input blob size in bytes. Required for Page blob and page blob size must be aligned to a 512-byte boundary."
+    },
+    {
+     "name": "is_preserve_custom_metadata_capitalization",
+     "type": "boolean",
+     "label": "Preserve casing of custom metadata keys?",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "Set this to Yes to preserve the exact casing of metadata keys as provided in this action. By default, keys are capitalized with the rest in lowercase. For example, accountID becomes Accountid"
+    }
+   ],
+   "output": [
+    {
+     "name": "content_length",
+     "type": "integer",
+     "label": "Content length",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "last_modified",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "server",
+     "type": "string",
+     "label": "Server",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_blob_sequence_number",
+     "type": "integer",
+     "label": "Blob sequence number",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "x_ms_content_crc64",
+     "type": "string",
+     "label": "Content crc64",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "x_ms_request_server_encrypted",
+     "type": "boolean",
+     "label": "Request server encrypted",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "x_ms_request_server_encrypted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "x_ms_blob_committed_block_count",
+     "type": "integer",
+     "label": "Blob committed block count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "x_ms_blob_append_offset",
+     "type": "integer",
+     "label": "Blob append offset",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

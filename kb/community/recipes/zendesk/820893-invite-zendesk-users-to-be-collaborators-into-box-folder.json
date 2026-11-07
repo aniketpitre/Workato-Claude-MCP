@@ -1,0 +1,518 @@
+{
+ "id": 820893,
+ "name": "Invite Zendesk users to be collaborators into Box folder",
+ "description": "1. A new user is created in Zendesk.\n2. Workato searches for a folder in Box that matches the new user's **organization name**.\n3. If no matching folder is found in Box, Workato creates a new folder in Box.\n4. Workato invites the new Zendesk user to be an **Editor** of the Box folder.",
+ "applications": [
+  "zendesk",
+  "zendesk",
+  "box"
+ ],
+ "action_applications": [
+  "zendesk",
+  "box"
+ ],
+ "trigger_application": "zendesk",
+ "business_objects": [
+  "user",
+  "organization",
+  "file",
+  "folder",
+  "collaborator"
+ ],
+ "categories": [
+  "Customer Service",
+  "Document/File"
+ ],
+ "copy_count": 690,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-08-27T16:54:06.428-07:00",
+ "source_url": "https://app.workato.com/recipes/820893?community=us",
+ "steps": [
+  "zendesk.new_user",
+  "zendesk.get_organization_by_id",
+  "box.search_files",
+  "box.create_folder",
+  "box.create_collaboration"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "zendesk",
+  "name": "new_user",
+  "as": "new_user",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "=1.days.ago"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "equals_to",
+     "lhs": "#{_('data.zendesk.new_user.role')}",
+     "rhs": "end-user"
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "user_fields",
+    "label": "User Custom fields",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Slack Handle",
+      "optional": true,
+      "custom_field_id": 263786,
+      "custom": true,
+      "type": "string",
+      "name": "field_slack_handle"
+     },
+     {
+      "control_type": "text",
+      "label": "Special user comment",
+      "optional": true,
+      "custom_field_id": 161249,
+      "custom": true,
+      "type": "string",
+      "name": "field_special_user_comment"
+     },
+     {
+      "control_type": "text",
+      "label": "Contact title",
+      "optional": true,
+      "custom_field_id": 168975,
+      "custom": true,
+      "type": "string",
+      "name": "field_contact_title"
+     },
+     {
+      "control_type": "text",
+      "label": "Contact phone",
+      "optional": true,
+      "custom_field_id": 168985,
+      "custom": true,
+      "type": "string",
+      "name": "field_contact_phone"
+     },
+     {
+      "control_type": "text",
+      "label": "Current Agent ID",
+      "optional": true,
+      "custom_field_id": 121313,
+      "custom": true,
+      "type": "string",
+      "name": "field_current_agent_id"
+     },
+     {
+      "control_type": "text-area",
+      "label": "Agent Cycle List",
+      "optional": true,
+      "custom_field_id": 125036,
+      "custom": true,
+      "hint": "Do not edit this field. Used to manage round robin assignment of Tickets to Agents",
+      "type": "string",
+      "name": "field_agent_cycle_list"
+     },
+     {
+      "control_type": "number",
+      "label": "Agent cycle id",
+      "parse_output": "integer_conversion",
+      "optional": true,
+      "custom_field_id": 123093,
+      "custom": true,
+      "type": "integer",
+      "name": "field_agent_cycle_id"
+     },
+     {
+      "control_type": "number",
+      "label": "Numeric field",
+      "parse_output": "integer_conversion",
+      "optional": true,
+      "custom_field_id": 129646,
+      "custom": true,
+      "type": "integer",
+      "name": "field_numeric_field"
+     },
+     {
+      "control_type": "select",
+      "label": "Dropdown field",
+      "optional": true,
+      "custom_field_id": 129656,
+      "custom": true,
+      "pick_list": [
+       [
+        "A",
+        "a"
+       ],
+       [
+        "B",
+        "b"
+       ],
+       [
+        "C",
+        "c"
+       ]
+      ],
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Dropdown field",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom_field_id": 129656,
+       "custom": true,
+       "hint": "Enter the <b>tag value</b> of the option",
+       "type": "string",
+       "name": "field_dropdown_field"
+      },
+      "type": "string",
+      "name": "field_dropdown_field"
+     },
+     {
+      "control_type": "number",
+      "label": "Decimal field",
+      "parse_output": "float_conversion",
+      "optional": true,
+      "custom_field_id": 126513,
+      "custom": true,
+      "type": "number",
+      "name": "field_decimal_field"
+     },
+     {
+      "control_type": "date",
+      "label": "Date field",
+      "render_input": "render_iso8601_date",
+      "parse_output": "ticket_custom_date_field",
+      "optional": true,
+      "custom_field_id": 126523,
+      "custom": true,
+      "type": "date_time",
+      "name": "field_date_field"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Checkbox field",
+      "render_input": {},
+      "parse_output": {},
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Checkbox field",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "custom_field_id": 126533,
+       "custom": true,
+       "type": "boolean",
+       "name": "field_checkbox_field"
+      },
+      "optional": true,
+      "custom_field_id": 126533,
+      "custom": true,
+      "type": "boolean",
+      "name": "field_checkbox_field"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "zendesk",
+    "name": "get_organization_by_id",
+    "as": "get_organization_by_id",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "id": "#{_('data.zendesk.new_user.organization_id')}"
+    },
+    "extended_output_schema": [
+     {
+      "type": "object",
+      "name": "organization_fields",
+      "label": "Organization custom fields",
+      "properties": [
+       {
+        "control_type": "text-area",
+        "label": "Notes",
+        "optional": true,
+        "custom_field_id": 360000174832,
+        "custom": true,
+        "type": "string",
+        "name": "field_no"
+       },
+       {
+        "control_type": "text",
+        "label": "Account priority",
+        "optional": true,
+        "custom_field_id": 170299,
+        "custom": true,
+        "type": "string",
+        "name": "field_account_priority"
+       },
+       {
+        "control_type": "text",
+        "label": "Account type",
+        "optional": true,
+        "custom_field_id": 173589,
+        "custom": true,
+        "type": "string",
+        "name": "field_account_type"
+       },
+       {
+        "control_type": "number",
+        "label": "Phone",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom_field_id": 173343,
+        "custom": true,
+        "type": "integer",
+        "name": "field_phone"
+       },
+       {
+        "control_type": "number",
+        "label": "custom number field",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom_field_id": 173743,
+        "custom": true,
+        "type": "integer",
+        "name": "field_custom_number_field"
+       },
+       {
+        "control_type": "number",
+        "label": "custom decimal",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "custom_field_id": 173783,
+        "custom": true,
+        "type": "number",
+        "name": "field_custom_decimal"
+       },
+       {
+        "control_type": "text-area",
+        "label": "custom multiline field",
+        "optional": true,
+        "custom_field_id": 173763,
+        "custom": true,
+        "type": "string",
+        "name": "field_custom_multiline_field"
+       },
+       {
+        "control_type": "select",
+        "label": "check priority",
+        "optional": true,
+        "custom_field_id": 169606,
+        "custom": true,
+        "pick_list": [
+         [
+          "number 1",
+          "number_1"
+         ],
+         [
+          "number 2",
+          "number_2"
+         ]
+        ],
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "check priority",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 169606,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_check_priority"
+        },
+        "type": "string",
+        "name": "field_check_priority"
+       },
+       {
+        "control_type": "text",
+        "label": "Organization comments",
+        "optional": true,
+        "custom_field_id": 173263,
+        "custom": true,
+        "type": "string",
+        "name": "field_organization_comments"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Active organization",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Active organization",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom_field_id": 173283,
+         "custom": true,
+         "type": "boolean",
+         "name": "field_active_organization"
+        },
+        "optional": true,
+        "custom_field_id": 173283,
+        "custom": true,
+        "type": "boolean",
+        "name": "field_active_organization"
+       },
+       {
+        "control_type": "date",
+        "label": "Active from",
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "optional": true,
+        "custom_field_id": 173303,
+        "custom": true,
+        "type": "date_time",
+        "name": "field_active_from"
+       },
+       {
+        "control_type": "text",
+        "label": "Regular expression",
+        "optional": true,
+        "custom_field_id": 177806,
+        "custom": true,
+        "type": "string",
+        "name": "field_regular_expression"
+       }
+      ]
+     }
+    ],
+    "uuid": "eeabafe5-4435-4412-a19d-985ed80d0086"
+   },
+   {
+    "number": 2,
+    "provider": "box",
+    "name": "search_files",
+    "as": "search_files",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "type": true,
+     "exact_match": true
+    },
+    "input": {
+     "type": "folder",
+     "exact_match": "false",
+     "query": "#{_('data.zendesk.get_organization_by_id.name')}"
+    },
+    "comment": "Search for a folder in Box by Zendesk organization name",
+    "uuid": "9495774f-9b77-44f4-b29e-a5d6a1f60523",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 3,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.box.search_files.files.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 4,
+      "provider": "box",
+      "name": "create_folder",
+      "as": "create_folder",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "parent_id": {
+        "ids": [
+         "0"
+        ],
+        "titles": [
+         "Home folder"
+        ]
+       }
+      },
+      "toggleCfg": {
+       "parent_id": true
+      },
+      "input": {
+       "folder_name": "#{_('data.zendesk.get_organization_by_id.name')}",
+       "parent_id": "0"
+      },
+      "uuid": "d1cf45b2-74a7-485c-86b3-0e8b180ff204",
+      "title": null,
+      "description": null
+     }
+    ],
+    "comment": "If folder with Zendesk organization name does not exist in Box",
+    "uuid": "45a788ba-bdd9-4d77-a747-a07e80505894"
+   },
+   {
+    "number": 5,
+    "provider": "box",
+    "name": "create_collaboration",
+    "as": "create_collaboration__1",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "item.type": false,
+     "role": false
+    },
+    "input": {
+     "item": {
+      "type": "folder",
+      "id": "=_('data.box.search_files.files.first.id') or _('data.box.create_folder.id')"
+     },
+     "accessible_by": {
+      "login": "#{_('data.zendesk.new_user.email')}"
+     },
+     "role": "editor"
+    },
+    "comment": "Invite the new Zendesk user to be an Editor of the Box folder",
+    "uuid": "34441273-c1e7-48cc-8be4-5bfa0bd8d458",
+    "title": null,
+    "description": null
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_3",
+    "label": "Zendesk user"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "Email"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Folder name"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_3": "#{_('data.zendesk.new_user.name')}",
+   "custom_column_1": "#{_('data.zendesk.new_user.email')}",
+   "custom_column_2": "#{_('data.zendesk.get_organization_by_id.name')}"
+  },
+  "uuid": "12fb5ab3-a7d5-4bf9-aa08-fa02f8c54406",
+  "param": {}
+ }
+}

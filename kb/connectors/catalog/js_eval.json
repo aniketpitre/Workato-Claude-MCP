@@ -1,0 +1,95 @@
+{
+ "name": "js_eval",
+ "title": "JavaScript snippets by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Developer Tool",
+  "Marketing",
+  "Workato"
+ ],
+ "aliases": [
+  "JavaScript snippets by Workato",
+  "utility",
+  "workato",
+  "utilities",
+  "js",
+  "code"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "invoke_custom_js_code",
+   "title": "Execute code",
+   "description": "Execute JavaScript code",
+   "help": "Execute custom JavaScript code in the recipe. Write your code within the exports.main block. Standard JavaScript libraries available in NodeJS are included. This action will timeout after 30 seconds.",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "What does this step do? E.g.: Get account details/Transform customer data etc."
+    },
+    {
+     "name": "code_input",
+     "type": "object",
+     "label": "Input fields",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      }
+     ],
+     "hint": "Define the input fields that will be passed to your JavaScript code"
+    },
+    {
+     "name": "code_output_schema_json",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Learn how to configure output for this action here ."
+    },
+    {
+     "name": "payload_asset_type",
+     "type": "string",
+     "label": "JavaScript snippet source",
+     "control_type": "select",
+     "visible_if": "authUser.feature_flags.static_asset_code_snippets_enabled",
+     "default": "inline",
+     "options": [
+      "static_asset",
+      "inline"
+     ],
+     "hint": "• Define manually — Write the JavaScript snippet directly in this action. • Use a resource — Reference a snippet file managed in your Workato project."
+    },
+    {
+     "name": "snippet_document_static_asset",
+     "type": "string",
+     "label": "JavaScript Snippet Resource",
+     "control_type": "tree",
+     "required_when_visible": true,
+     "visible_if": "input.payload_asset_type == 'static_asset'",
+     "pick_list": "snippet_static_assets",
+     "hint": "Select a JavaScript snippet resource to be used for executing the code."
+    },
+    {
+     "name": "code",
+     "type": "string",
+     "label": "Code",
+     "control_type": "code",
+     "required_when_visible": true,
+     "visible_if": "input.payload_asset_type == 'inline'",
+     "default": "// @param input fields supplied in the recipe step, as an object\n// @return object matching the output schema\n// Eg: Code for returning time zone for an IP address\n/*\nconst fetch = require(\"node-fetch\")\n\nexports.main = async ({ ip_address }) => {\n  const response = await fetch(\"https://worldtimeapi.org/api/ip/\" + ip_address)\n  if (response.status !== 200) { throw response.statusText }\n  const { timezone } = await response.json()\n  return { timezone };\n}\n*/\n"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

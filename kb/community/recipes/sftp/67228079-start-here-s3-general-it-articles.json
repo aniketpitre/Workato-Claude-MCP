@@ -1,0 +1,166 @@
+{
+ "id": 67228079,
+ "name": "Start Here | S3 General IT Articles",
+ "description": null,
+ "applications": [
+  "sftp",
+  "logger",
+  "workato_genie"
+ ],
+ "action_applications": [
+  "logger",
+  "workato_genie"
+ ],
+ "trigger_application": "sftp",
+ "business_objects": [],
+ "categories": [
+  "File Transfer",
+  "Recipe Tools",
+  "Workato",
+  "Artificial Intelligence"
+ ],
+ "copy_count": 3,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2025-10-31T01:24:51.693-07:00",
+ "source_url": "https://app.workato.com/recipes/67228079?community=us",
+ "steps": [
+  "sftp.new_file_in_dir",
+  "sftp.streamable_download",
+  "logger.log_message",
+  "workato_genie.upsert_knowledge"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "sftp",
+  "name": "new_file_in_dir",
+  "as": "f2f60fb9",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "directory": {
+    "ids": [
+     "/",
+     "/sftp",
+     "/sftp/agentic_102025",
+     "/sftp/agentic_102025/knowledge",
+     "/sftp/agentic_102025/knowledge/it-general"
+    ],
+    "titles": [
+     "Root directory",
+     "sftp",
+     "agentic_102025",
+     "knowledge",
+     "it-general"
+    ]
+   }
+  },
+  "toggleCfg": {
+   "directory": true,
+   "___poll_interval": true
+  },
+  "input": {
+   "directory": "/sftp/agentic_102025/knowledge/it-general",
+   "___poll_interval": "5"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "ends_with",
+     "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"sftp\",\"line\":\"f2f60fb9\",\"path\":[\"name\"]}')}",
+     "rhs": ".md",
+     "uuid": "0bdc1192-db81-4896-9a94-a013ce95887f"
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "visible_config_fields": [
+   "directory",
+   "___poll_interval",
+   "since"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "sftp",
+    "name": "streamable_download",
+    "as": "53bad992",
+    "keyword": "action",
+    "toggleCfg": {
+     "download_in_one_go": true
+    },
+    "input": {
+     "download_in_one_go": "false",
+     "filename": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"sftp\",\"line\":\"f2f60fb9\",\"path\":[\"file_path\"]}')}"
+    },
+    "uuid": "9a0756d2-5ad0-491b-b4db-5218929c1fa3",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "provider": "logger",
+    "name": "log_message",
+    "as": "c79c2e53",
+    "keyword": "action",
+    "input": {
+     "user_logs_enabled": "false",
+     "message": "Proccessing file with contents: #{_dp('{\"pill_type\":\"output\",\"provider\":\"sftp\",\"line\":\"f2f60fb9\",\"path\":[\"name\"]}')}"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "switch",
+      "default": false,
+      "disable_formula": true,
+      "extends_schema": true,
+      "hint": "                Send a copy of the message to Workato logs.\n                <a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n                  Learn more\n                </a>\n",
+      "label": "Send to Workato log service",
+      "name": "user_logs_enabled",
+      "optional": true,
+      "type": "string"
+     }
+    ],
+    "comment": "Activity 3.2:\nThis recipe retrieves new and updated documents from Amazon S3 and adds them to the IT Helpdesk. This is a different S3 path from before.\n\nTodo:\n1. Choose Step 3, and select \"Helpdesk\" for Knowledge Base\n2. Choose Save  (top right)\n3. Choose Test recipe\n4. When done, reviewing results, choose Exit \n5. Choose Start recipe\n6. Switch to Workato Go and ask your Genie about the hours for IT support.\n\nTip:\nIf you've tested the recipe before and it's no longer finding trigger events, go to the Jobs report, choose on of the previous jobs, and then choose \"Repeat this Job\"",
+    "uuid": "fd893aa7-c4bc-4df6-8318-1d3206fa2730",
+    "title": null,
+    "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>"
+   },
+   {
+    "number": 3,
+    "provider": "workato_genie",
+    "name": "upsert_knowledge",
+    "as": "12665a38",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "knowledge_base_id": "Helpdesk-KR"
+    },
+    "input": {
+     "documents": {
+      "doc_id": "SFTP_#{_dp('{\"line\": \"f2f60fb9\", \"path\": [\"file_path\"], \"pill_type\": \"output\", \"provider\": \"sftp\"}')}_#{_dp('{\"line\": \"f2f60fb9\", \"path\": [\"name\"], \"pill_type\": \"output\", \"provider\": \"sftp\"}')}",
+      "title": "=_dp('{\"pill_type\":\"output\",\"provider\":\"sftp\",\"line\":\"f2f60fb9\",\"path\":[\"name\"]}').split(\".\").first",
+      "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"sftp\",\"line\":\"53bad992\",\"path\":[\"contents\"]}')}",
+      "metadata": [
+       {
+        "key": "lang",
+        "value": "en"
+       }
+      ]
+     },
+     "knowledge_base_id": "kb-AWnarDrA-EgPkxL"
+    },
+    "comment": "Todo: Update the Knowledge Base to point to IT Helpdesk",
+    "uuid": "2b504aea-3c73-433e-b0f8-4a00cc841997",
+    "title": null,
+    "description": null
+   }
+  ],
+  "uuid": "30b7f1a5-1caa-4432-a7cb-1481cf71cdfe",
+  "unfinished": false,
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

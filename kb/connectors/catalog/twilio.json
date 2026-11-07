@@ -1,0 +1,585 @@
+{
+ "name": "twilio",
+ "title": "Twilio",
+ "requires_connection": true,
+ "categories": [
+  "Communication",
+  "Developer Tool",
+  "Sales Enablement"
+ ],
+ "aliases": [
+  "Twilio"
+ ],
+ "triggers": [
+  {
+   "name": "sms_received",
+   "title": "New SMS received",
+   "description": "Received SMS message via Twilio",
+   "help": "Checks for new SMSes every {{authUser.membership.poll_interval}} minutes. When recipe is first started, trigger will pick up SMSes received an hour before recipe start time.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "To",
+     "type": "string",
+     "label": "Phone number",
+     "control_type": "select",
+     "pick_list": "sms_numbers",
+     "toggle_field": {
+      "name": "To",
+      "type": "string"
+     },
+     "hint": "Select the Twilio phone number receiving the SMS"
+    }
+   ],
+   "output": [
+    {
+     "name": "sid",
+     "type": "string",
+     "label": "SID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "to",
+     "type": "string",
+     "label": "To",
+     "control_type": "phone",
+     "required": true
+    },
+    {
+     "name": "from",
+     "type": "string",
+     "label": "From",
+     "control_type": "phone",
+     "required": true
+    },
+    {
+     "name": "account_sid",
+     "type": "string",
+     "label": "Account SID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "date_sent",
+     "type": "date_time",
+     "label": "Date sent",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_created",
+     "type": "date_time",
+     "label": "Date created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date_updated",
+     "type": "date_time",
+     "label": "Date updated",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Twilio (Custom)",
+   "help": "Build your own Twilio action with a HTTP request. The request will be authorized with your Twilio connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_media",
+   "title": "Get media from MMS",
+   "description": "Get media from MMS message via Twilio",
+   "help": "Retrieve list of media sent in an MMS. Identify the MMS via its message SID.",
+   "input": [
+    {
+     "name": "sid",
+     "type": "string",
+     "label": "Message SID",
+     "control_type": "text",
+     "required": true,
+     "hint": "SID of MMS to retrieve media for"
+    }
+   ],
+   "output": [
+    {
+     "name": "media",
+     "type": "array",
+     "label": "Media",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "sid",
+       "type": "string",
+       "label": "Sid",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "account_sid",
+       "type": "string",
+       "label": "Account sid",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "parent_sid",
+       "type": "string",
+       "label": "Parent sid",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Content type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "date_created",
+       "type": "date_time",
+       "label": "Date created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "date_updated",
+       "type": "date_time",
+       "label": "Date updated",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "make_call",
+   "title": "Make phone call",
+   "description": "Make phone call via Twilio",
+   "input": [
+    {
+     "name": "From",
+     "type": "string",
+     "label": "From",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "voice_numbers",
+     "toggle_field": {
+      "name": "From",
+      "type": "string"
+     },
+     "hint": "Select Twilio phone number to call from"
+    },
+    {
+     "name": "To",
+     "type": "string",
+     "label": "To",
+     "control_type": "phone",
+     "required": true,
+     "hint": "Phone number to call, inclusive of country code, e.g. +16505551212"
+    },
+    {
+     "name": "Body",
+     "type": "string",
+     "label": "Message",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Message to be vocalized. Maximum 1286 characters."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "make_ivr_call",
+   "title": "Make IVR phone call",
+   "description": "Make IVR phone call via Twilio",
+   "input": [
+    {
+     "name": "From",
+     "type": "string",
+     "label": "From",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "voice_numbers",
+     "toggle_field": {
+      "name": "From",
+      "type": "string"
+     },
+     "hint": "Select Twilio phone number to call from"
+    },
+    {
+     "name": "To",
+     "type": "string",
+     "label": "To",
+     "control_type": "phone",
+     "required": true,
+     "hint": "Phone number to call, inclusive of country code, e.g. +16505551212"
+    },
+    {
+     "name": "Welcome",
+     "type": "string",
+     "label": "Welcome message",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Message to be vocalized when user picks up call"
+    },
+    {
+     "name": "TimeoutRetryPrompt",
+     "type": "string",
+     "label": "No-selection prompt",
+     "control_type": "text-area",
+     "hint": "Prompt to be vocalized if user makes no selection; defaults to disable if empty (hangup if no selection)"
+    },
+    {
+     "name": "option1Prompt",
+     "type": "string",
+     "label": "Key 1 prompt",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Describe what happens if caller presses 1"
+    },
+    {
+     "name": "option1Message",
+     "type": "string",
+     "label": "Key 1 response",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Response message vocalized when caller presses 1"
+    },
+    {
+     "name": "option1EndsCall",
+     "type": "boolean",
+     "label": "Key 1 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option1EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option2Prompt",
+     "type": "string",
+     "label": "Key 2 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 2"
+    },
+    {
+     "name": "option2Message",
+     "type": "string",
+     "label": "Key 2 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 2"
+    },
+    {
+     "name": "option2EndsCall",
+     "type": "boolean",
+     "label": "Key 2 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option2EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option3Prompt",
+     "type": "string",
+     "label": "Key 3 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 3"
+    },
+    {
+     "name": "option3Message",
+     "type": "string",
+     "label": "Key 3 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 3"
+    },
+    {
+     "name": "option3EndsCall",
+     "type": "boolean",
+     "label": "Key 3 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option3EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option4Prompt",
+     "type": "string",
+     "label": "Key 4 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 4"
+    },
+    {
+     "name": "option4Message",
+     "type": "string",
+     "label": "Key 4 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 4"
+    },
+    {
+     "name": "option4EndsCall",
+     "type": "boolean",
+     "label": "Key 4 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option4EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option5Prompt",
+     "type": "string",
+     "label": "Key 5 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 5"
+    },
+    {
+     "name": "option5Message",
+     "type": "string",
+     "label": "Key 5 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 5"
+    },
+    {
+     "name": "option5EndsCall",
+     "type": "boolean",
+     "label": "Key 5 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option5EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option6Prompt",
+     "type": "string",
+     "label": "Key 6 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 6"
+    },
+    {
+     "name": "option6Message",
+     "type": "string",
+     "label": "Key 6 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 6"
+    },
+    {
+     "name": "option6EndsCall",
+     "type": "boolean",
+     "label": "Key 6 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option6EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option7Prompt",
+     "type": "string",
+     "label": "Key 7 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 7"
+    },
+    {
+     "name": "option7Message",
+     "type": "string",
+     "label": "Key 7 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 7"
+    },
+    {
+     "name": "option7EndsCall",
+     "type": "boolean",
+     "label": "Key 7 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option7EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option8Prompt",
+     "type": "string",
+     "label": "Key 8 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 8"
+    },
+    {
+     "name": "option8Message",
+     "type": "string",
+     "label": "Key 8 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 8"
+    },
+    {
+     "name": "option8EndsCall",
+     "type": "boolean",
+     "label": "Key 8 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option8EndsCall",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "option9Prompt",
+     "type": "string",
+     "label": "Key 9 prompt",
+     "control_type": "text-area",
+     "hint": "Describe what happens if caller presses 9"
+    },
+    {
+     "name": "option9Message",
+     "type": "string",
+     "label": "Key 9 response",
+     "control_type": "text-area",
+     "hint": "Response message vocalized when caller presses 9"
+    },
+    {
+     "name": "option9EndsCall",
+     "type": "boolean",
+     "label": "Key 9 ends call",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "option9EndsCall",
+      "type": "boolean"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "twiml_url",
+     "type": "string",
+     "label": "Twiml URL",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "send_sms",
+   "title": "Send SMS",
+   "description": "Send SMS message via Twilio",
+   "input": [
+    {
+     "name": "From",
+     "type": "string",
+     "label": "From",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sms_numbers",
+     "toggle_field": {
+      "name": "From",
+      "type": "string"
+     },
+     "hint": "Select Twilio phone number to send message from"
+    },
+    {
+     "name": "To",
+     "type": "string",
+     "label": "To",
+     "control_type": "phone",
+     "required": true,
+     "hint": "Phone number to message, inclusive of country code, e.g. +16505551212"
+    },
+    {
+     "name": "Body",
+     "type": "string",
+     "label": "Message",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "SMS to be sent. Maximum 160 characters"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

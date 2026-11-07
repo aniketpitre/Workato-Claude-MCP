@@ -1,0 +1,528 @@
+{
+ "name": "egnyte",
+ "title": "Egnyte",
+ "requires_connection": true,
+ "categories": [
+  "Document/File"
+ ],
+ "aliases": [
+  "Egnyte"
+ ],
+ "triggers": [
+  {
+   "name": "new_events",
+   "title": "New/updated/deleted events",
+   "description": "New/updated/deleted events in Egnyte",
+   "help": "The Events API lets your application learn about activity in Egnyte. This means you can find out what has happened since a given moment in time, letting your application respond or react to activity. Currently, this API is in beta and is limited to file system and notes activity. By default, the tri…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "event_types",
+     "type": "string",
+     "label": "Event types",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "event_types",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "event_types",
+      "type": "string"
+     },
+     "hint": "Select the event types you want to be notified."
+    },
+    {
+     "name": "folder",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folder",
+      "type": "string"
+     },
+     "hint": "Scope requests to a given folder. When folder is specified, it return events that have occurred at this path (including events inside subfolders)."
+    },
+    {
+     "name": "event_from",
+     "type": "number",
+     "label": "Retrieve events from beginning",
+     "control_type": "checkbox",
+     "hint": "Select Yes to fetch events from the beginning of time. Otherwise, it retrieves events from recipe start time if No or Unselected ."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Egnyte (Custom)",
+   "help": "Build your own Egnyte action with an HTTP request. The request will be authorized with your Egnyte connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "copy_or_move_file",
+   "title": "Copy or move file",
+   "description": "Copy or move file in Egnyte",
+   "help": "Copy or move only one file in Egnyte.",
+   "input": [
+    {
+     "name": "action",
+     "type": "string",
+     "label": "Action",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "action_types",
+     "extends_schema": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "file_path",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select path of file."
+    },
+    {
+     "name": "destination_path",
+     "type": "string",
+     "label": "Destination folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "destination_path",
+      "type": "string"
+     },
+     "hint": "Select destination path."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "Destination file name",
+     "control_type": "text",
+     "hint": "To rename a file, provide a new file name along with file extension. Example: Sample.txt"
+    },
+    {
+     "name": "permissions",
+     "type": "string",
+     "label": "Permissions",
+     "control_type": "select",
+     "options": [
+      "keep_original",
+      "inherit_from_parent"
+     ],
+     "hint": "Determines how permissions of copied file or folder are derived. Allowed values are: keep_original, inherit_from_parent . If neither is specified, default behavior is to use the workgroup settings con…"
+    },
+    {
+     "name": "entry_id",
+     "type": "string",
+     "label": "Entry ID",
+     "control_type": "text",
+     "visible_if": "input.action == \"copy\"",
+     "hint": "Specifies the entry ID of the file version to copy.Entry ID for a specific version of the desired file. If none is specified then the latest file version for the file will be copied."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "copy_or_move_folder",
+   "title": "Copy or move folder",
+   "description": "Copy or move folder in Egnyte",
+   "help": "Copy or move folder to a destination folder in Egnyte.",
+   "input": [
+    {
+     "name": "action",
+     "type": "string",
+     "label": "Action",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "action_types",
+     "extends_schema": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select path of folder."
+    },
+    {
+     "name": "destination_path",
+     "type": "string",
+     "label": "Destination folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "destination_path",
+      "type": "string"
+     },
+     "hint": "Select destination path."
+    },
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Destination folder name",
+     "control_type": "text",
+     "hint": "To rename a folder, provide a new folder name. Example: new_folder"
+    },
+    {
+     "name": "permissions",
+     "type": "string",
+     "label": "Permissions",
+     "control_type": "select",
+     "options": [
+      "keep_original",
+      "inherit_from_parent"
+     ],
+     "hint": "Determines how permissions of copied file or folder are derived. Allowed values are: keep_original, inherit_from_parent . If neither is specified, default behavior is to use the workgroup settings con…"
+    },
+    {
+     "name": "entry_id",
+     "type": "string",
+     "label": "Entry ID",
+     "control_type": "text",
+     "visible_if": "input.action == \"copy\"",
+     "hint": "Specifies the entry ID of the file version to copy.Entry ID for a specific version of the desired file. If none is specified then the latest file version for the file will be copied."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_folder",
+   "title": "Create folder",
+   "description": "Create folder in Egnyte",
+   "help": "Creates a new folder in Egnyte.",
+   "input": [
+    {
+     "name": "parent_folder",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "parent_folder",
+      "type": "string"
+     },
+     "hint": "Select path to create new folder."
+    },
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text"
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "download_file",
+   "title": "Download file from selected folder",
+   "description": "Download file in Egnyte",
+   "help": "Download file contents from selected folder in Egnyte.",
+   "input": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "file_path",
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Select path of file."
+    },
+    {
+     "name": "chunk_size",
+     "type": "string",
+     "label": "Chunk size",
+     "control_type": "text",
+     "default": "10MB",
+     "hint": "File contents will be transferred in chunks of this size. Enter the size with the unit, Eg. 50KB. Valid units are 'B', 'KB', 'MB'. Default chunk size is 10MB . Minimum is 32KB and maximum is 10MB . Us…"
+    }
+   ],
+   "output": [
+    {
+     "name": "content",
+     "type": "string",
+     "label": "Content",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_event_details",
+   "title": "Get event details",
+   "description": "Get file system or note event details in Egnyte",
+   "help": "Get event details in Egnyte.",
+   "input": [
+    {
+     "name": "object_detail",
+     "type": "string",
+     "label": "Event object URI",
+     "control_type": "text",
+     "required": true,
+     "hint": "The object uri from the Event trigger output."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_object",
+   "title": "Get object details",
+   "description": "Get object details in Egnyte",
+   "help": "Get object details in Egnyte.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_types",
+     "extends_schema": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "tree",
+     "required": true,
+     "visible_if": "input.object == \"folder\"",
+     "pick_list": "source_path",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select path of folder."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "tree",
+     "required": true,
+     "visible_if": "input.object == \"file\"",
+     "pick_list": "source_path",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select path of file."
+    },
+    {
+     "name": "list_content",
+     "type": "number",
+     "label": "List content",
+     "control_type": "checkbox",
+     "hint": "For folders, this option determines whether the contents of the folder (files and subfolders) are included in the response. Default: Yes . For files, when Yes , this will return a list of all of the v…"
+    },
+    {
+     "name": "allowed_link_types",
+     "type": "number",
+     "label": "Allowed link types",
+     "control_type": "checkbox",
+     "hint": "If Yes , then show allowed_file_link_types, allowed_folder_link_types fields, and allow_upload_links fields. Default: No ."
+    },
+    {
+     "name": "perms",
+     "type": "number",
+     "label": "Permissions",
+     "control_type": "checkbox",
+     "hint": "If Yes , the response includes a permissions key for the folder that lists the different users and groups who have permissions along with their permission level. Default: No ."
+    },
+    {
+     "name": "include_perm",
+     "type": "number",
+     "label": "Include permission level",
+     "control_type": "checkbox",
+     "hint": "If Yes , the response returns the current user's permission level on the folder and subfolders. Default: No ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_objects",
+   "title": "Search objects",
+   "description": "Search objects in Egnyte",
+   "help": "Search objects in Egnyte.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_types",
+     "extends_schema": true
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search string",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide search string to find. String length should be between 3-100 . For file, it also searches in the file content."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upload_file",
+   "title": "Upload file",
+   "description": "Upload file in Egnyte",
+   "help": "Upload file to a selected folder in Egnyte.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select path to upload file."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide file name that you want to upload. Example: Contacts.csv"
+    },
+    {
+     "name": "streaming_upload",
+     "type": "number",
+     "label": "Streaming upload?",
+     "control_type": "checkbox",
+     "hint": "Select Yes , if file size is over 100MB. Minimum file size for streaming should be over 20MB. Defaults to regular file upload."
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text"
+    },
+    {
+     "name": "checksum",
+     "type": "string",
+     "label": "Checksum",
+     "control_type": "text"
+    },
+    {
+     "name": "group_id",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text"
+    },
+    {
+     "name": "entry_id",
+     "type": "string",
+     "label": "Entry ID",
+     "control_type": "text"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,631 @@
+{
+ "id": 58774669,
+ "name": "New row in a sheet in Google Sheets will analyse text to answer user-provided questions using OpenAI",
+ "description": "",
+ "applications": [
+  "google_sheets",
+  "open_ai"
+ ],
+ "action_applications": [
+  "open_ai"
+ ],
+ "trigger_application": "google_sheets",
+ "business_objects": [
+  "spreadsheet row"
+ ],
+ "categories": [
+  "Document/File",
+  "Sales Enablement",
+  "Artificial Intelligence"
+ ],
+ "copy_count": 6,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2025-02-06T22:53:02.782-08:00",
+ "source_url": "https://app.workato.com/recipes/58774669?community=us",
+ "steps": [
+  "google_sheets.new_spreadsheet_row_v4",
+  "open_ai.analyse_document",
+  "google_sheets.update_row_v4_new",
+  "open_ai.analyse_document",
+  "google_sheets.update_row_v4_new"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "google_sheets",
+  "name": "new_spreadsheet_row_v4",
+  "as": "caafad48",
+  "title": "New row in sheet in My Drive",
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "spreadsheet": "Copy of Docusign - How Can We Be a Better Partner? (Responses)"
+  },
+  "toggleCfg": {
+   "spreadsheet": true,
+   "sheet": true
+  },
+  "input": {
+   "spreadsheet": "1BN96VDa3yx6td9uHR-_9NusR1o0MtJSo2O3FzHOccbs",
+   "sheet": "Form Responses 1"
+  },
+  "extended_output_schema": [
+   {
+    "label": "Columns",
+    "name": "columns",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Timestamp",
+      "optional": true,
+      "type": "string",
+      "name": "col_1"
+     },
+     {
+      "control_type": "text",
+      "label": "What partner are you with?",
+      "optional": true,
+      "type": "string",
+      "name": "col_2"
+     },
+     {
+      "control_type": "text",
+      "label": "How can we better meet your expectations as a vendor?",
+      "optional": true,
+      "type": "string",
+      "name": "col_3"
+     },
+     {
+      "control_type": "text",
+      "label": "From your perspective, what key qualities or offerings do you look for in vendors like us?",
+      "optional": true,
+      "type": "string",
+      "name": "col_4"
+     },
+     {
+      "control_type": "text",
+      "label": "In what ways can we enhance our support to help you and your customers maximize revenue opportunities?\n\nI.e. Account Mapping, Enablement, E-mail Templates, Prospecting, etc.",
+      "optional": true,
+      "type": "string",
+      "name": "col_5"
+     },
+     {
+      "control_type": "text",
+      "label": "What other things could we improve?",
+      "optional": true,
+      "type": "string",
+      "name": "col_6"
+     },
+     {
+      "control_type": "text",
+      "label": "How has your overall experience been working with Docusign in the past?",
+      "optional": true,
+      "type": "string",
+      "name": "col_7"
+     },
+     {
+      "control_type": "text",
+      "label": "Additional feedback:",
+      "optional": true,
+      "type": "string",
+      "name": "col_8"
+     }
+    ],
+    "type": "object"
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "control_type": "select",
+    "extends_schema": true,
+    "hint": "Select a sheet to monitor for a new row. The sheet must have at least one header row.",
+    "label": "Sheet",
+    "name": "sheet",
+    "optional": false,
+    "pick_list": [
+     [
+      "Form Responses 1",
+      "Form Responses 1"
+     ],
+     [
+      "Sheet4",
+      "Sheet4"
+     ],
+     [
+      "CDW Sum",
+      "CDW Sum"
+     ],
+     [
+      "SHI Sum",
+      "SHI Sum"
+     ],
+     [
+      "Ingram Sum",
+      "Ingram Sum"
+     ]
+    ],
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Sheet",
+     "toggle_hint": "Use sheet name",
+     "extends_schema": true,
+     "change_on_blur": true,
+     "toggle_to_secondary_hint": "Use sheet name",
+     "toggle_to_primary_hint": "Select a sheet",
+     "hint": "Enter the sheet name. The sheet must have at least one header row.",
+     "type": "string",
+     "name": "sheet"
+    },
+    "toggle_hint": "Select a sheet",
+    "type": "string"
+   },
+   {
+    "control_type": "checkbox",
+    "extends_schema": true,
+    "hint": "Default is <b>No</b>.<br>If <b>Yes</b>, add column names manually in the input field below.<br>If <b>No</b>, Workato will automatically get the first row in your sheet as column names.<br>",
+    "label": "Add column names manually?",
+    "name": "header_fl",
+    "optional": true,
+    "toggle_field": {
+     "label": "Add column names manually?",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "extends_schema": true,
+     "hint": "Default is <b>No</b>.<br>If <b>Yes</b>, add column names manually in the input field below.<br>If <b>No</b>, Workato will automatically get the first row in your sheet as column names.<br>",
+     "optional": true,
+     "toggle_field": null,
+     "render_input": null,
+     "parse_output": null,
+     "type": "boolean",
+     "name": "header_fl"
+    },
+    "toggle_hint": "Select from option list",
+    "type": "boolean"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"caafad48\",\"path\":[\"columns\",\"col_2\"]}')}",
+       "rhs": "CDW",
+       "uuid": "ca742767-4e68-4ffd-a5a3-f931213da3d0"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "open_ai",
+      "name": "analyse_document",
+      "as": "d108fdcf",
+      "title": null,
+      "description": "Analyse <span class=\"provider\">text</span> to answer user-provided questions using <span class=\"provider\">OpenAI</span>",
+      "keyword": "action",
+      "input": {
+       "text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"caafad48\",\"path\":[\"columns\",\"col_3\"]}')}",
+       "question": "Based on the provided dataset, please analyze and present the top 3 to 5 most interesting observations, highlights, or trends. This may include identifying segments (e.g. age, gender, etc) that were more likely to respond in a certain way, significant patterns, or unexpected insights from the data."
+      },
+      "uuid": "2beb3a87-128b-4344-9bc5-cc74530394d9"
+     },
+     {
+      "number": 3,
+      "provider": "google_sheets",
+      "name": "update_row_v4_new",
+      "as": "05a6c7af",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "spreadsheet": "Copy of Docusign - How Can We Be a Better Partner? (Responses)"
+      },
+      "input": {
+       "team_drives": "my_drive",
+       "row_number": "2",
+       "spreadsheet": "1BN96VDa3yx6td9uHR-_9NusR1o0MtJSo2O3FzHOccbs",
+       "sheet": "Sheet4",
+       "data": {
+        "col_Column 1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"open_ai\",\"line\":\"d108fdcf\",\"path\":[\"response\"]}')}"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "label": "Columns",
+        "name": "columns",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Column 1",
+          "old_name": "col_Column_1",
+          "custom_attribute": 1,
+          "type": "string",
+          "name": "col_Column 1"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 2",
+          "old_name": "col_Column_2",
+          "custom_attribute": 2,
+          "type": "string",
+          "name": "col_Column 2"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 3",
+          "old_name": "col_Column_3",
+          "custom_attribute": 3,
+          "type": "string",
+          "name": "col_Column 3"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 4",
+          "old_name": "col_Column_4",
+          "custom_attribute": 4,
+          "type": "string",
+          "name": "col_Column 4"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 5",
+          "old_name": "col_Column_5",
+          "custom_attribute": 5,
+          "type": "string",
+          "name": "col_Column 5"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 6",
+          "old_name": "col_Column_6",
+          "custom_attribute": 6,
+          "type": "string",
+          "name": "col_Column 6"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "control_type": "select",
+        "extends_schema": true,
+        "hint": "Select a sheet to update row. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+        "label": "Sheet",
+        "name": "sheet",
+        "optional": false,
+        "pick_list": [
+         [
+          "Form Responses 1",
+          "Form Responses 1"
+         ],
+         [
+          "Sheet4",
+          "Sheet4"
+         ],
+         [
+          "CDW Sum",
+          "CDW Sum"
+         ],
+         [
+          "SHI Sum",
+          "SHI Sum"
+         ],
+         [
+          "Ingram Sum",
+          "Ingram Sum"
+         ]
+        ],
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Sheet name",
+         "toggle_hint": "Use sheet name",
+         "extends_schema": true,
+         "change_on_blur": true,
+         "toggle_to_secondary_hint": "Use sheet name",
+         "toggle_to_primary_hint": "Select a sheet",
+         "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+         "type": "string",
+         "name": "sheet_name"
+        },
+        "toggle_hint": "Select a sheet",
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "hint": "Enter the row number of the row you want to update. Or use <b>Row number</b> data pill from the output of other Google Sheets’s triggers & actions.",
+        "label": "Row number",
+        "name": "row_number",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "hint": "Input new values to update the row.",
+        "label": "Columns",
+        "name": "data",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Column 1",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "name": "col_Column 1"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 2",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "name": "col_Column 2"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 3",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "name": "col_Column 3"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 4",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "name": "col_Column 4"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 5",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "name": "col_Column 5"
+         },
+         {
+          "control_type": "text",
+          "label": "Column 6",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "name": "col_Column 6"
+         }
+        ],
+        "sticky": true,
+        "type": "object"
+       }
+      ],
+      "uuid": "07b0207a-f173-43e5-a371-40320acecf09"
+     }
+    ],
+    "uuid": "61348234-263d-4872-b0c1-f09077ddf406"
+   },
+   {
+    "number": 4,
+    "provider": "open_ai",
+    "name": "analyse_document",
+    "as": "fb583998",
+    "title": null,
+    "description": "Analyse <span class=\"provider\">text</span> to answer user-provided questions using <span class=\"provider\">OpenAI</span>",
+    "keyword": "action",
+    "input": {
+     "text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"caafad48\",\"path\":[\"columns\",\"col_3\"]}')}",
+     "question": "Based on the provided dataset, please analyze and present the top 3 to 5 most interesting observations, highlights, or trends. This may include identifying segments (e.g. age, gender, etc) that were more likely to respond in a certain way, significant patterns, or unexpected insights from the data."
+    },
+    "uuid": "96dcf963-1baf-4e49-97f8-4956fd6ba5ad"
+   },
+   {
+    "number": 5,
+    "provider": "google_sheets",
+    "name": "update_row_v4_new",
+    "as": "3b9c0017",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "spreadsheet": "Copy of Docusign - How Can We Be a Better Partner? (Responses)"
+    },
+    "input": {
+     "team_drives": "my_drive",
+     "row_number": "2",
+     "spreadsheet": "1BN96VDa3yx6td9uHR-_9NusR1o0MtJSo2O3FzHOccbs",
+     "sheet": "Sheet4",
+     "data": {
+      "col_Column 1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"open_ai\",\"line\":\"fb583998\",\"path\":[\"response\"]}')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Columns",
+      "name": "columns",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Column 1",
+        "old_name": "col_Column_1",
+        "custom_attribute": 1,
+        "type": "string",
+        "name": "col_Column 1"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 2",
+        "old_name": "col_Column_2",
+        "custom_attribute": 2,
+        "type": "string",
+        "name": "col_Column 2"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 3",
+        "old_name": "col_Column_3",
+        "custom_attribute": 3,
+        "type": "string",
+        "name": "col_Column 3"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 4",
+        "old_name": "col_Column_4",
+        "custom_attribute": 4,
+        "type": "string",
+        "name": "col_Column 4"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 5",
+        "old_name": "col_Column_5",
+        "custom_attribute": 5,
+        "type": "string",
+        "name": "col_Column 5"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 6",
+        "old_name": "col_Column_6",
+        "custom_attribute": 6,
+        "type": "string",
+        "name": "col_Column 6"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "select",
+      "extends_schema": true,
+      "hint": "Select a sheet to update row. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+      "label": "Sheet",
+      "name": "sheet",
+      "optional": false,
+      "pick_list": [
+       [
+        "Form Responses 1",
+        "Form Responses 1"
+       ],
+       [
+        "Sheet4",
+        "Sheet4"
+       ],
+       [
+        "CDW Sum",
+        "CDW Sum"
+       ],
+       [
+        "SHI Sum",
+        "SHI Sum"
+       ],
+       [
+        "Ingram Sum",
+        "Ingram Sum"
+       ]
+      ],
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Sheet name",
+       "toggle_hint": "Use sheet name",
+       "extends_schema": true,
+       "change_on_blur": true,
+       "toggle_to_secondary_hint": "Use sheet name",
+       "toggle_to_primary_hint": "Select a sheet",
+       "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+       "type": "string",
+       "name": "sheet_name"
+      },
+      "toggle_hint": "Select a sheet",
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "hint": "Enter the row number of the row you want to update. Or use <b>Row number</b> data pill from the output of other Google Sheets’s triggers & actions.",
+      "label": "Row number",
+      "name": "row_number",
+      "optional": false,
+      "type": "string"
+     },
+     {
+      "hint": "Input new values to update the row.",
+      "label": "Columns",
+      "name": "data",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Column 1",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "col_Column 1"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 2",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "col_Column 2"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 3",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "col_Column 3"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 4",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "col_Column 4"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 5",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "col_Column 5"
+       },
+       {
+        "control_type": "text",
+        "label": "Column 6",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "col_Column 6"
+       }
+      ],
+      "sticky": true,
+      "type": "object"
+     }
+    ],
+    "uuid": "78640fc8-2fd1-481b-8a53-7ffe93ae0a51"
+   },
+   {
+    "number": 6,
+    "as": "a1278ab4",
+    "keyword": "stop",
+    "input": {
+     "stop_with_error": "false"
+    },
+    "uuid": "f497b855-3d1b-4a4a-85f5-5ecb046a8890"
+   }
+  ],
+  "uuid": "738d5e01-ae85-463a-a37b-fda1e055e8ac",
+  "unfinished": false,
+  "param": {}
+ }
+}

@@ -1,0 +1,206 @@
+{
+ "name": "csv_parser",
+ "title": "CSV tools by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Data Parser",
+  "Marketing",
+  "Utilities",
+  "Workato"
+ ],
+ "aliases": [
+  "CSV tools by Workato",
+  "utility",
+  "workato",
+  "utilities",
+  "parser"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "create_csv_lines",
+   "title": "Compose CSV",
+   "description": "Compose CSV",
+   "help": "Compose a CSV formatted string from a list (array). Example output: line1_value1,line1_value2 line2_value1,line2_value2 line3_value1,line3_value2",
+   "input": [
+    {
+     "name": "column_labels",
+     "type": "string",
+     "label": "CSV column names",
+     "control_type": "text-area",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Type in the column names of your CSV, one per line. This will generate additional input fields below."
+    },
+    {
+     "name": "create_header_line",
+     "type": "boolean",
+     "label": "Create header line",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "true",
+     "toggle_field": {
+      "name": "create_header_line",
+      "type": "boolean"
+     },
+     "hint": "If true , a header line will be created using the column names provided."
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "default": ",",
+     "options": [
+      ",",
+      " ",
+      "\t",
+      ":",
+      ";",
+      "|"
+     ],
+     "toggle_field": {
+      "name": "custom_col_sep",
+      "type": "string"
+     }
+    },
+    {
+     "name": "force_quotes",
+     "type": "boolean",
+     "label": "Force quotes",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "force_quotes",
+      "type": "boolean"
+     },
+     "hint": "When set to true, quote all values."
+    }
+   ],
+   "output": [
+    {
+     "name": "csv_lines",
+     "type": "string",
+     "label": "CSV contents",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "parse_csv",
+   "title": "Parse CSV",
+   "description": "Parse CSV",
+   "help": "Parse CSV-formatted string into an array of lines. A maximum of 50000 lines can be converted. Learn more",
+   "input": [
+    {
+     "name": "csv_content",
+     "type": "string",
+     "label": "CSV contents",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Maximum 50000 lines."
+    },
+    {
+     "name": "col_sep",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "default": ",",
+     "options": [
+      ",",
+      " ",
+      "\t",
+      ":",
+      ";",
+      "|"
+     ],
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_col_sep",
+      "type": "string"
+     },
+     "hint": "The character that separates columns in the CSV contents."
+    },
+    {
+     "name": "skip_first_line",
+     "type": "boolean",
+     "label": "CSV contents contain header line?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "true",
+     "extends_schema": true,
+     "hint": "Set to Yes if the CSV contents contain a header line that should not be parsed."
+    },
+    {
+     "name": "header_line",
+     "type": "string",
+     "label": "Header line",
+     "control_type": "text-area",
+     "required_when_visible": true,
+     "visible_if": "input.header_line",
+     "extends_schema": true,
+     "hint": "Paste an example header line here. Column names must be separated using the Column delimiter above."
+    },
+    {
+     "name": "header_schema",
+     "type": "string",
+     "label": "Header schema",
+     "control_type": "schema-designer",
+     "required_when_visible": true,
+     "visible_if": "!input.header_line",
+     "extends_schema": true,
+     "hint": "Describe the CSV columns."
+    },
+    {
+     "name": "column_value_by",
+     "type": "string",
+     "label": "Keep track of columns by",
+     "control_type": "select",
+     "visible_if": "input.skip_first_line == 'true'",
+     "default": "index",
+     "options": [
+      "index",
+      "name"
+     ],
+     "extends_schema": true,
+     "hint": "Configure this if your expected CSV contents will not have fixed column order or column names: - If Column order is set: Your CSV contents must have fixed column order for recipe to work. Column names…"
+    },
+    {
+     "name": "quote_char",
+     "type": "string",
+     "label": "Quote character",
+     "control_type": "select",
+     "default": "\"",
+     "options": [
+      "\"",
+      "'",
+      "\u0000"
+     ],
+     "hint": "Character used to quote the CSV cell values. Select None if no quote character is used."
+    },
+    {
+     "name": "enable_liberal_parsing",
+     "type": "boolean",
+     "label": "Enable liberal parsing",
+     "control_type": "checkbox",
+     "hint": "Recovers from minor format issues and continue parsing instead of raising error. Use with caution as malformed data may be inaccurately parsed."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

@@ -1,0 +1,533 @@
+{
+ "name": "ftps",
+ "title": "FTP/FTPS",
+ "requires_connection": true,
+ "categories": [
+  "File Transfer"
+ ],
+ "aliases": [
+  "FTP/FTPS"
+ ],
+ "triggers": [
+  {
+   "name": "new_csv_file",
+   "title": "New CSV file",
+   "description": "New CSV file added in directory on FTP/FTPS server",
+   "help": "Trigger when new lines are added to a CSV file in a FTP directory. Watches first-level directory only. Only CSV files with rows trigger jobs. To pick up new/updated lines in existing CSV files, use the \"New/updated file in directory\" trigger",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "directories",
+     "toggle_field": {
+      "name": "directory",
+      "type": "string"
+     },
+     "hint": "Files in this directory will be processed, ordered by ascending modification time."
+    },
+    {
+     "name": "columns",
+     "type": "string",
+     "label": "Column names",
+     "control_type": "schema-designer",
+     "required": true,
+     "extends_schema": true
+    },
+    {
+     "name": "separator",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "default": "comma",
+     "options": [
+      "comma",
+      "space",
+      "tab",
+      "colon",
+      "semicolon",
+      "pipe"
+     ],
+     "hint": "The character used to separate column values within each CSV row."
+    },
+    {
+     "name": "skip_header_line",
+     "type": "boolean",
+     "label": "Contains header row?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "true",
+     "toggle_field": {
+      "name": "skip_header_line",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes if the first CSV row is a header row, containing column names."
+    },
+    {
+     "name": "max_batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "required": true,
+     "default": 100,
+     "hint": "Number of CSV rows per batch. Instead of reading rows one by one, Workato reads a batch of CSV rows at a time to increase throughput. Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_file_in_dir",
+   "title": "New/updated file in directory",
+   "description": "New/updated file in directory on FTP/FTPS server",
+   "help": "Watches first-level directory only. This trigger gets the file information. Use 'Download file' action to retrieve the contents of the file",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "directories",
+     "toggle_field": {
+      "name": "directory",
+      "type": "string"
+     },
+     "hint": "Files in this directory will be processed, ordered by ascending modification time."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get file created/updated since the given date/time. Leave empty to get files created/updated 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "full_path",
+     "type": "string",
+     "label": "Full path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "directory",
+     "type": "boolean",
+     "label": "Directory",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "directory",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "permissions",
+     "type": "string",
+     "label": "Permissions",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "owner",
+     "type": "string",
+     "label": "Owner",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "group",
+     "type": "string",
+     "label": "Group",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "mtime",
+     "type": "date_time",
+     "label": "Modification time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "get_file_content",
+   "title": "Download file",
+   "description": "Download file contents from FTP/FTPS server",
+   "help": "Use this action to fetch the contents of a file from FTP/FTPS server.",
+   "input": [
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the full path of file with extension. For eg. '/directory1/file1.txt'"
+    }
+   ],
+   "output": [
+    {
+     "name": "contents",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "list_directories_files",
+   "title": "List files and directories",
+   "description": "List files and directories from FTP/FTPS server",
+   "help": "Retrieves the first level of files and directories from the specified path.",
+   "input": [
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "directories",
+     "toggle_field": {
+      "name": "directory",
+      "type": "string"
+     },
+     "hint": "Select the directory"
+    },
+    {
+     "name": "include_files",
+     "type": "boolean",
+     "label": "Include files",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "include_files",
+      "type": "boolean"
+     },
+     "hint": "Default to Yes . If Yes , it includes both files and directories. If No , it includes only directories"
+    }
+   ],
+   "output": [
+    {
+     "name": "results",
+     "type": "array",
+     "label": "Results",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "full_path",
+       "type": "string",
+       "label": "Full path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "directory",
+       "type": "boolean",
+       "label": "Directory",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "directory",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "permissions",
+       "type": "string",
+       "label": "Permissions",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "owner",
+       "type": "string",
+       "label": "Owner",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "group",
+       "type": "string",
+       "label": "Group",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mtime",
+       "type": "date_time",
+       "label": "Modification time",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "remove",
+   "title": "Remove file",
+   "description": "Remove file from FTP/FTPS server",
+   "help": "Remove a file on connected FTP/FTPS server. Identify the file to remove with the exact, case sensitive file path. Action will fail if the file is not found.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File to remove. Use exact, case sensitive file path, e.g. /User/personal folder/file name.txt"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "rename",
+   "title": "Rename file",
+   "description": "Rename a file on FTP/FTPS server",
+   "help": "Rename a file on connected FTP/FTPS server. Identify the file to rename with the exact, case sensitive file path. Action will fail if the file is not found.",
+   "input": [
+    {
+     "name": "from",
+     "type": "string",
+     "label": "From",
+     "control_type": "text",
+     "required": true,
+     "hint": "Existing file name. Use exact, case sensitive file path, e.g. /User/personal folder/source name.txt"
+    },
+    {
+     "name": "to",
+     "type": "string",
+     "label": "To",
+     "control_type": "text",
+     "required": true,
+     "hint": "New file name. E.g. destination name.txt"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "stat",
+   "title": "Get file information",
+   "description": "Get information about file via its exact file path on FTP-S server",
+   "help": "Retrieve information about a file via its specific, case sensitive file path in connected FTP/FTPS server. Action will fail if the file is not found.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Use exact, case sensitive file path. E.g. /User/personal folder/file name.txt"
+    }
+   ],
+   "output": [
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modify",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "streamable_get_file_content",
+   "title": "Download large file",
+   "description": "Download large file contents from FTP/FTPS server",
+   "help": "Download file contents from FTP/FTPS server. File will be downloaded in binary mode.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the full path of file with extension. For eg. '/directory1/file1.txt'"
+    },
+    {
+     "name": "expected_encoding",
+     "type": "string",
+     "label": "Encoding of file content",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Encoding will be autodetected. This field allows to set it explicitly. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "contents",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "detected_encoding",
+     "type": "string",
+     "label": "Detected encoding",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upload",
+   "title": "Upload file",
+   "description": "Upload a file to FTP/FTPS server",
+   "help": "Upload a file into a specified folder in connected FTP/FTPS server.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File will be created if not already present on the server.Use exact, case sensitive file path including extension, e.g. /User/personal folder/file name.txt will create, append or overwrite file named …"
+    },
+    {
+     "name": "append",
+     "type": "boolean",
+     "label": "Append",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "append",
+      "type": "boolean"
+     },
+     "hint": "Setting to true will append content to file, false will overwrite the file with new content"
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text-area",
+     "required_when_visible": true,
+     "hint": "Input text to create a plain text file."
+    }
+   ],
+   "output": [
+    {
+     "name": "uploaded_bytes",
+     "type": "integer",
+     "label": "Uploaded bytes",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

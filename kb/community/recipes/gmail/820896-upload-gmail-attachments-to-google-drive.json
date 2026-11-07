@@ -1,0 +1,123 @@
+{
+ "id": 820896,
+ "name": "Upload Gmail attachments to Google Drive",
+ "description": "1. A new email is received in Gmail.\n2. If the email has attachments, Workato uploads these attachments to Google Drive **My Drive**. \n\n**Notes**\nYou can specify Google Drive folder to upload attachments to.",
+ "applications": [
+  "gmail",
+  "gmail",
+  "google_drive"
+ ],
+ "action_applications": [
+  "gmail",
+  "google_drive"
+ ],
+ "trigger_application": "gmail",
+ "business_objects": [
+  "email"
+ ],
+ "categories": [
+  "Productivity",
+  "Document/File"
+ ],
+ "copy_count": 1060,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-08-28T22:56:51.634-07:00",
+ "source_url": "https://app.workato.com/recipes/820896?community=us",
+ "steps": [
+  "gmail.new_email",
+  "gmail.download_attachment",
+  "google_drive.upload_file"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "gmail",
+  "name": "new_email",
+  "as": "new_email",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "label_ids": "INBOX"
+  },
+  "toggleCfg": {},
+  "input": {
+   "label_ids": "INBOX"
+  },
+  "visible_config_fields": [
+   "label_ids"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "as": "foreach",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "gmail",
+      "name": "download_attachment",
+      "as": "download_attachment",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "id": "#{_('data.gmail.new_email.id')}",
+       "attachmentId": "#{_('data.foreach.foreach.attachmentId')}"
+      },
+      "comment": "Download email attachments using an attachment ID",
+      "uuid": "f9ec7c9e-6bec-4094-bcfd-44251f0eaada",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 3,
+      "provider": "google_drive",
+      "name": "upload_file",
+      "as": "upload_file",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "fileContent": "#{_('data.gmail.download_attachment.content_bytes')}",
+       "name": "#{_('data.foreach.foreach.filename')}"
+      },
+      "uuid": "e813a0de-23e2-403e-a3a9-4d8464f3ceca",
+      "title": null,
+      "description": null
+     }
+    ],
+    "source": "#{_('data.gmail.new_email.attachments')}",
+    "uuid": "274f27ce-3363-4fda-8897-136ad0ca54e5"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_3",
+    "label": "Email subject"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "Number of files"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "File names"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_3": "#{_('data.gmail.new_email.subject')}",
+   "custom_column_1": "#{_('data.gmail.new_email.attachments.first.____Size', 'list_meta', '____Size', 'data.gmail.new_email.attachments')}",
+   "custom_column_2": "=_('data.gmail.new_email.attachments').pluck('filename').join(', ')"
+  },
+  "uuid": "dca75535-adaf-4274-82a2-a4841e4b99bf",
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

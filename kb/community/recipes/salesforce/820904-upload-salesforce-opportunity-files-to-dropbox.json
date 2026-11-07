@@ -1,0 +1,1090 @@
+{
+ "id": 820904,
+ "name": "Upload Salesforce opportunity files to Dropbox",
+ "description": "1. A new opportunity with attachments is created in Salesforce.\n2. Workato searches for a matching folder in Dropbox by **opportunity ID** and creates a new folder if it doesn't already exist.\n3. Workato uploads the opportunity attachments to Dropbox.\n\n**Notes**\nYou can specify the Dropbox folder to upload attachments to.",
+ "applications": [
+  "salesforce",
+  "dropbox",
+  "salesforce"
+ ],
+ "action_applications": [
+  "dropbox",
+  "salesforce"
+ ],
+ "trigger_application": "salesforce",
+ "business_objects": [
+  "opportunity",
+  "folder",
+  "file"
+ ],
+ "categories": [
+  "CRM",
+  "Marketing",
+  "Document/File"
+ ],
+ "copy_count": 1548,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-08-31T18:09:32.954-07:00",
+ "source_url": "https://app.workato.com/recipes/820904?community=us",
+ "steps": [
+  "salesforce.new_custom_object",
+  "dropbox.search_folder",
+  "dropbox.create_folder",
+  "salesforce.get_combined_attachment",
+  "dropbox.upload_file_content"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "salesforce",
+  "name": "new_custom_object",
+  "as": "new_custom_object",
+  "title": "New Opportunity",
+  "description": "New <span class=\"provider\">Opportunity</span> in <span class=\"provider\">Salesforce</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "sobject_name": "Opportunity"
+  },
+  "toggleCfg": {},
+  "input": {
+   "sobject_name": "Opportunity",
+   "since_offset": "-3600"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "present",
+     "lhs": "#{_('data.salesforce.new_custom_object.CombinedAttachments.records.first.Id')}",
+     "rhs": null
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "AccountId",
+    "control_type": "text",
+    "label": "Account ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Account",
+    "fetch_with": "get_custom_object(id, sobject_name: Account)",
+    "join_point_label": "Account",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+AccountId",
+    "label": "Account",
+    "properties": [],
+    "fetch_with": "get_custom_object(AccountId>id, sobject_name: Account)",
+    "join_point": true
+   },
+   {
+    "type": "number",
+    "name": "Amount",
+    "control_type": "number",
+    "label": "Amount",
+    "optional": true,
+    "custom": false,
+    "parse_output": "float_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "CampaignId",
+    "control_type": "text",
+    "label": "Campaign ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Campaign",
+    "fetch_with": "get_custom_object(id, sobject_name: Campaign)",
+    "join_point_label": "Campaign",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+CampaignId",
+    "label": "Campaign",
+    "properties": [],
+    "fetch_with": "get_custom_object(CampaignId>id, sobject_name: Campaign)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "CloseDate",
+    "control_type": "date",
+    "label": "Close Date",
+    "custom": false,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "boolean",
+    "name": "IsClosed",
+    "control_type": "checkbox",
+    "label": "Closed",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Closed",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "IsClosed"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "CreatedById",
+    "control_type": "text",
+    "label": "Created By ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "User",
+    "fetch_with": "get_custom_object(id, sobject_name: User)",
+    "join_point_label": "Created  by",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+CreatedById",
+    "label": "Created  by",
+    "properties": [],
+    "fetch_with": "get_custom_object(CreatedById>id, sobject_name: User)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "CreatedDate",
+    "control_type": "date_time",
+    "label": "Created Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "IsDeleted",
+    "control_type": "checkbox",
+    "label": "Deleted",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Deleted",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "IsDeleted"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Description",
+    "control_type": "text-area",
+    "label": "Description",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "number",
+    "name": "ExpectedRevenue",
+    "control_type": "number",
+    "label": "Expected Amount",
+    "optional": true,
+    "custom": false,
+    "parse_output": "float_conversion",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Fiscal",
+    "control_type": "text",
+    "label": "Fiscal Period",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "integer",
+    "name": "FiscalQuarter",
+    "control_type": "number",
+    "label": "Fiscal Quarter",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "integer",
+    "name": "FiscalYear",
+    "control_type": "number",
+    "label": "Fiscal Year",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "ForecastCategory",
+    "control_type": "select",
+    "label": "Forecast Category",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Opportunity\""
+    },
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Forecast Category",
+     "toggle_hint": "Enter custom value",
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "string",
+     "name": "ForecastCategory"
+    },
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "ForecastCategoryName",
+    "control_type": "select",
+    "label": "Forecast Category",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Opportunity\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Forecast Category",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "ForecastCategoryName"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "boolean",
+    "name": "HasOpportunityLineItem",
+    "control_type": "checkbox",
+    "label": "Has Line Item",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Has Line Item",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "HasOpportunityLineItem"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "HasOpenActivity",
+    "control_type": "checkbox",
+    "label": "Has Open Activity",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Has Open Activity",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "HasOpenActivity"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "HasOverdueTask",
+    "control_type": "checkbox",
+    "label": "Has Overdue Task",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Has Overdue Task",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "HasOverdueTask"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastActivityDate",
+    "control_type": "date",
+    "label": "Last Activity",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LastModifiedById",
+    "control_type": "text",
+    "label": "Last Modified By ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "User",
+    "fetch_with": "get_custom_object(id, sobject_name: User)",
+    "join_point_label": "Last  modified  by",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+LastModifiedById",
+    "label": "Last  modified  by",
+    "properties": [],
+    "fetch_with": "get_custom_object(LastModifiedById>id, sobject_name: User)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "LastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last Modified Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastReferencedDate",
+    "control_type": "date_time",
+    "label": "Last Referenced Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastViewedDate",
+    "control_type": "date_time",
+    "label": "Last Viewed Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LeadSource",
+    "control_type": "select",
+    "label": "Lead Source",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Opportunity\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Lead Source",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "LeadSource"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Name",
+    "control_type": "text",
+    "label": "Name",
+    "custom": false,
+    "event_title": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "NextStep",
+    "control_type": "text",
+    "label": "Next Step",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Id",
+    "control_type": "text",
+    "label": "Opportunity ID",
+    "optional": true,
+    "custom": false,
+    "key_scope": "Opportunity",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Type",
+    "control_type": "select",
+    "label": "Opportunity Type",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Opportunity\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Opportunity Type",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Type"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "OwnerId",
+    "control_type": "text",
+    "label": "Owner ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "User",
+    "fetch_with": "get_custom_object(id, sobject_name: User)",
+    "join_point_label": "Owner",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+OwnerId",
+    "label": "Owner",
+    "properties": [],
+    "fetch_with": "get_custom_object(OwnerId>id, sobject_name: User)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "Pricebook2Id",
+    "control_type": "text",
+    "label": "Price Book ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Pricebook2",
+    "fetch_with": "get_custom_object(id, sobject_name: Pricebook2)",
+    "join_point_label": "Price  book",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+Pricebook2Id",
+    "label": "Price  book",
+    "properties": [],
+    "fetch_with": "get_custom_object(Pricebook2Id>id, sobject_name: Pricebook2)",
+    "join_point": true
+   },
+   {
+    "type": "boolean",
+    "name": "IsPrivate",
+    "control_type": "checkbox",
+    "label": "Private",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Private",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "boolean",
+     "name": "IsPrivate"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Probability",
+    "control_type": "text",
+    "label": "Probability (%)",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "number",
+    "name": "TotalOpportunityQuantity",
+    "control_type": "number",
+    "label": "Quantity",
+    "optional": true,
+    "custom": false,
+    "parse_output": "float_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "SyncedQuoteId",
+    "control_type": "text",
+    "label": "Quote ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Quote",
+    "fetch_with": "get_custom_object(id, sobject_name: Quote)",
+    "join_point_label": "Quote",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+SyncedQuoteId",
+    "label": "Quote",
+    "properties": [],
+    "fetch_with": "get_custom_object(SyncedQuoteId>id, sobject_name: Quote)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "StageName",
+    "control_type": "select",
+    "label": "Stage",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Opportunity\""
+    },
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Stage",
+     "toggle_hint": "Enter custom value",
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "StageName"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "SystemModstamp",
+    "control_type": "date_time",
+    "label": "System Modstamp",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "IsWon",
+    "control_type": "checkbox",
+    "label": "Won",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Won",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "IsWon"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "CurrentGenerators__c",
+    "control_type": "text",
+    "label": "Current Generator(s)",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "DeliveryInstallationStatus__c",
+    "control_type": "select",
+    "label": "Delivery/Installation Status",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Opportunity\""
+    },
+    "optional": true,
+    "custom": true,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Delivery/Installation Status",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": true,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "DeliveryInstallationStatus__c"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "External_ID__c",
+    "control_type": "text",
+    "label": "External ID",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "MainCompetitors__c",
+    "control_type": "text",
+    "label": "Main Competitor(s)",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "OrderNumber__c",
+    "control_type": "text",
+    "label": "Order Number",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Priority__c",
+    "control_type": "select",
+    "label": "Priority",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Opportunity\""
+    },
+    "optional": true,
+    "custom": true,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Priority",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": true,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Priority__c"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "TestDate__c",
+    "control_type": "date_time",
+    "label": "TestDate",
+    "optional": true,
+    "custom": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "TrackingNumber__c",
+    "control_type": "text",
+    "label": "Tracking Number",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "CombinedAttachments",
+    "label": "Combined attachments",
+    "properties": [
+     {
+      "control_type": "number",
+      "label": "Total size",
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "name": "totalSize"
+     },
+     {
+      "name": "records",
+      "type": "array",
+      "of": "object",
+      "label": "Files",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "ID",
+        "type": "string",
+        "name": "Id"
+       },
+       {
+        "control_type": "number",
+        "label": "Content size",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "ContentSize"
+       },
+       {
+        "control_type": "url",
+        "label": "Content URL",
+        "type": "string",
+        "name": "ContentUrl"
+       },
+       {
+        "control_type": "text",
+        "label": "File extension",
+        "type": "string",
+        "name": "FileExtension"
+       },
+       {
+        "control_type": "text",
+        "label": "File type",
+        "type": "string",
+        "name": "FileType"
+       },
+       {
+        "control_type": "text",
+        "label": "Parent ID",
+        "type": "string",
+        "name": "ParentId"
+       },
+       {
+        "control_type": "text",
+        "label": "Record type",
+        "type": "string",
+        "name": "RecordType"
+       },
+       {
+        "control_type": "text",
+        "label": "Title",
+        "type": "string",
+        "name": "Title"
+       }
+      ]
+     }
+    ],
+    "sfdc_field_type": "CombinedAttachment"
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "since_offset",
+    "control_type": "select",
+    "label": "When first started, this recipe should pick up events from",
+    "hint": "When you start recipe for the first time, it picks up Salesforce records from this specified date and time. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+    "default": -3600,
+    "pick_list": [
+     [
+      "Recipe start",
+      0
+     ],
+     [
+      "An hour ago",
+      -3600
+     ],
+     [
+      "Yesterday",
+      -86400
+     ],
+     [
+      "Last week",
+      -604800
+     ],
+     [
+      "Last month",
+      -2592000
+     ],
+     [
+      "Beginning of time",
+      "no_limit"
+     ]
+    ],
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "render_input": "convert_date_time",
+     "parse_output": "convert_date_time",
+     "toggle_hint": "Enter custom value",
+     "since_field": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time.<b>Once recipe has been run or tested, value cannot be changed.</b>",
+     "type": "date_time",
+     "name": "since"
+    },
+    "since_field": true
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "dropbox",
+    "name": "search_folder",
+    "as": "search_folder",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "folder_path": {
+      "ids": [
+       "/"
+      ],
+      "titles": [
+       "(root)"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "folder_path": true
+    },
+    "input": {
+     "search_keyword": "#{_('data.salesforce.new_custom_object.Id')}",
+     "folder_path": "/"
+    },
+    "comment": "Search for a folder in Dropbox by Salesforce opportunity ID",
+    "uuid": "2906929b-5685-4d6c-a368-019ebcfb1aea"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.dropbox.search_folder.folders.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "dropbox",
+      "name": "create_folder",
+      "as": "create_folder",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "folder_path": {
+        "ids": [
+         "/"
+        ],
+        "titles": [
+         "(root)"
+        ]
+       }
+      },
+      "toggleCfg": {
+       "folder_path": true
+      },
+      "input": {
+       "folder_name": "#{_('data.salesforce.new_custom_object.Id')}",
+       "folder_path": "/"
+      },
+      "uuid": "463ac3dd-6a6f-487f-ba35-56e97607cc77"
+     }
+    ],
+    "comment": "If folder with Salesforce opportunity ID does not exist in Dropbox",
+    "uuid": "6d05f540-9912-4378-8a05-57e0fcd0722b"
+   },
+   {
+    "number": 4,
+    "as": "foreach",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 5,
+      "provider": "salesforce",
+      "name": "get_combined_attachment",
+      "as": "get_combined_attachment",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "Id": "#{_('data.foreach.foreach.Id')}"
+      },
+      "comment": "Download file attachments using a file ID from Salesforce",
+      "uuid": "1f26a01c-de84-4106-ae19-83d23368b055"
+     },
+     {
+      "number": 6,
+      "provider": "dropbox",
+      "name": "upload_file_content",
+      "as": "upload_file_content",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "folder_path": false,
+       "obtain_url": true
+      },
+      "input": {
+       "obtain_url": "false",
+       "body": "#{_('data.salesforce.get_combined_attachment.body')}",
+       "folder_path": "=_('data.dropbox.search_folder.folders.first.path') or _('data.dropbox.create_folder.path')",
+       "filename": "#{_('data.foreach.foreach.Title')}.#{_('data.foreach.foreach.FileExtension')}"
+      },
+      "uuid": "9087779b-1c6f-44a9-99e3-b0ab7cb8b678"
+     }
+    ],
+    "source": "#{_('data.salesforce.new_custom_object.CombinedAttachments.records')}",
+    "uuid": "713d54c4-b386-4fbe-8759-c5f515299a6c"
+   }
+  ],
+  "comment": "Trigger only if Salesforce opportunity has attachments",
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Opportunity name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Dropbox folder"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.salesforce.new_custom_object.Name')}",
+   "custom_column_2": "#{_('data.salesforce.new_custom_object.Id')}"
+  },
+  "uuid": "6201c3c6-c69a-4c7d-b483-863dfc4e6966",
+  "param": {}
+ }
+}

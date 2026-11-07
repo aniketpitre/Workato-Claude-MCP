@@ -1,0 +1,325 @@
+{
+ "name": "outreach",
+ "title": "Outreach",
+ "requires_connection": true,
+ "categories": null,
+ "aliases": [
+  "Outreach"
+ ],
+ "triggers": [
+  {
+   "name": "completed_sequence_task",
+   "title": "Completed sequence task",
+   "description": "Completed sequence task in Outreach",
+   "help": "Triggers when a user completes a sequenced task.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start the recipe for the first time, it picks up completed sequence tasks from the specified date and time. Leave blank to fetch sequence tasks completed one hour ago. Once recipe has been ru…"
+    },
+    {
+     "name": "sequence_id",
+     "type": "string",
+     "label": "Sequence",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sequences",
+     "toggle_field": {
+      "name": "sequence_id",
+      "type": "string"
+     },
+     "hint": "Select the sequence from picklist. If your sequence is not found, provide sequence ID through custom value option."
+    },
+    {
+     "name": "sequence_step_id",
+     "type": "string",
+     "label": "Sequence step",
+     "control_type": "multiselect",
+     "pick_list": "sequence_steps",
+     "hint": "Limit to only the selected steps in the sequence. Leave blank to get all completed tasks in a sequence."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_record",
+   "title": "New or updated record",
+   "description": "New/Updated record in Outreach",
+   "help": "Triggers as soon as the outreach record is created or updated.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "new_updated_object_list",
+     "extends_schema": true,
+     "hint": "Select the object"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested, …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_record",
+   "title": "New record",
+   "description": "New record in Outreach",
+   "help": "Triggers as soon as the outreach record is created.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "new_object_list",
+     "extends_schema": true,
+     "hint": "Select the object"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created one hour ago. Once recipe has been run or tested, value canno…"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Outreach (Custom)",
+   "help": "Build your own Outreach action with a HTTP request. The request will be authorized with your Outreach connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_prospect_to_sequence",
+   "title": "Add a prospect to sequence",
+   "description": "Add a prospect to a sequence in Outreach",
+   "help": "Select a sequence and provide a prospect ID to associate with.",
+   "input": [
+    {
+     "name": "sequence",
+     "type": "string",
+     "label": "Sequence",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sequences",
+     "toggle_field": {
+      "name": "sequence",
+      "type": "integer"
+     }
+    },
+    {
+     "name": "prospect",
+     "type": "integer",
+     "label": "Prospect ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "mailbox",
+     "type": "string",
+     "label": "Mailbox",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "mailboxes",
+     "toggle_field": {
+      "name": "mailbox",
+      "type": "integer"
+     }
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_template_to_sequence_step",
+   "title": "Add a template to sequence step",
+   "description": "Add a template to a sequence step in Outreach",
+   "help": "Provide the sequence step ID and a template ID to associate with the sequence.",
+   "input": [
+    {
+     "name": "sequenceStep",
+     "type": "integer",
+     "label": "Sequence step ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "template",
+     "type": "integer",
+     "label": "Template ID",
+     "control_type": "integer",
+     "required": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_object",
+   "title": "Create record",
+   "description": "Create record in Outreach",
+   "help": "Create a record in Outreach.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "create_object_list",
+     "extends_schema": true,
+     "hint": "Select an Outreach object"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_object",
+   "title": "Get record by ID",
+   "description": "Get record details in Outreach",
+   "help": "Fetches the record that matches the given ID",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "get_object_list",
+     "extends_schema": true,
+     "hint": "Select an object"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_steps_in_sequence",
+   "title": "Get steps in a sequence",
+   "description": "Get steps in a sequence in Outreach",
+   "help": "Fetches the steps from selected sequence.",
+   "input": [
+    {
+     "name": "sequence_id",
+     "type": "string",
+     "label": "Sequence",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sequences",
+     "toggle_field": {
+      "name": "sequence_id",
+      "type": "string"
+     }
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_object",
+   "title": "Search records",
+   "description": "Search records in Outreach",
+   "help": "Fetches multiple records. The records can be filtered and sorted according to the specified attributes. By default, this action returns a maximum of 1000 rows. Note that not all attributes permit filter and sort criteria. Please check Outreach API reference for more details.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "search_object_list",
+     "extends_schema": true,
+     "hint": "Select an object to search for"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_object",
+   "title": "Update record",
+   "description": "Update record in Outreach",
+   "help": "Update a record in Outreach.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "update_object_list",
+     "extends_schema": true,
+     "hint": "Select an object to update"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

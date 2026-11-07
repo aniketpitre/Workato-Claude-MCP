@@ -1,0 +1,576 @@
+{
+ "name": "sap_s4_hana_cloud",
+ "title": "SAP OData",
+ "requires_connection": true,
+ "categories": null,
+ "aliases": [
+  "SAP OData",
+  "ecc",
+  "s4",
+  "hana",
+  "odata"
+ ],
+ "triggers": [
+  {
+   "name": "new_object",
+   "title": "New object",
+   "description": "New object in SAP OData",
+   "help": "Select the object to which you want to trigger off. Then select the field which corresponds to the “last_modified_timestamp”. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "trigger_object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    },
+    {
+     "name": "created_timestamp_variable",
+     "type": "string",
+     "label": "Timestamp cursor",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timestamp_property_list",
+     "extends_schema": true,
+     "hint": "Select the timestamp field for this object. To pick up jobs only when the object is created, select the created timestamp field. For example, CreationDate. Not all objects have fields which are suitab…"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created one hour ago. Once recipe has been run or tested, value canno…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_object",
+   "title": "Updated object",
+   "description": "Updated object in SAP OData",
+   "help": "Select the object to which you want to trigger off. Then select the field which corresponds to the “last_modified_timestamp”. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "trigger_object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    },
+    {
+     "name": "created_timestamp_variable",
+     "type": "string",
+     "label": "Timestamp cursor",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timestamp_property_list",
+     "extends_schema": true,
+     "hint": "To pick up jobs when the object updated, select the updated timestamp field. For example, LastChangeDate or prefferably LastChangeTime. Not all objects have variables which are suitable."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested, …"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in SAP OData (Custom)",
+   "help": "Build your own SAP OData action with a HTTP request. The request will be authorized with your SAP OData connection. Please refer to OData V2 API specification under SAP S/4HANA Cloud Public Edition and SAP S/4HANA Private Edition product pages. The sap-client parameter provided in the connection set…",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "batch_request",
+   "title": "Batch request",
+   "description": "Batch request in SAP OData",
+   "help": "Executes multiple OData operations in a single batch request sequentially. The uniqueness of the schema generated would be a combination of operation and object selected for a particular service in the batch action. Learn more",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "operation_groups",
+     "type": "array",
+     "label": "Operation groups",
+     "required": true,
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "operation_type",
+       "type": "string",
+       "label": "Operation type",
+       "control_type": "select",
+       "required": true,
+       "options": [
+        "Get",
+        "Search",
+        "Update",
+        "Create",
+        "Delete"
+       ],
+       "extends_schema": true,
+       "hint": "Select the operation type"
+      },
+      {
+       "name": "object",
+       "type": "string",
+       "label": "Object",
+       "control_type": "select",
+       "visible_if": "parentInput.operation_type !== 'Delete'",
+       "pick_list": "object_list",
+       "extends_schema": true,
+       "hint": "Object name from SAP OData service"
+      },
+      {
+       "name": "object_to_delete",
+       "type": "string",
+       "label": "Object",
+       "control_type": "select",
+       "visible_if": "parentInput.operation_type == 'Delete'",
+       "pick_list": "delete_object_list",
+       "extends_schema": true,
+       "hint": "Object name from SAP OData service"
+      }
+     ],
+     "hint": "Each operation group defines an object and operation type (e.g. Get, Create, etc.). You can configure each operation in the group with additional options below."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_object",
+   "title": "Create object",
+   "description": "Create new object in SAP OData",
+   "help": "Creates a object in SAP. First select the object you want to create, then populate the relevant fields for that object. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_object",
+   "title": "Delete object",
+   "description": "Delete object in SAP OData",
+   "help": "Deletes an object in SAP. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "delete_object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_object",
+   "title": "Get object details by ID",
+   "description": "Get object details by ID",
+   "help": "Retrieve details of a record by ID in SAP. First select the object you want to retrieve, then provide the record ID. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_object",
+   "title": "Search object",
+   "description": "Search for an object in SAP OData",
+   "help": "Searches an object in SAP. First select the object you want to search, then populate the relevant fields for that object. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    },
+    {
+     "name": "$filter",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Provide the filter parameter directly. If this is provided, field level search is ignored. API name has to be given in search. Eg: PurchaseOrder eq '4500000039'"
+    },
+    {
+     "name": "$top",
+     "type": "string",
+     "label": "Limit",
+     "control_type": "integer",
+     "extends_schema": true,
+     "hint": "Number of rows to return."
+    },
+    {
+     "name": "$skip",
+     "type": "string",
+     "label": "Skip token",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Used for pagination. Specify the number of records to skip."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_object_with_proxy",
+   "title": "Extract bulk data",
+   "description": "Extract bulk data for an object in SAP OData",
+   "help": "Extract bulk data action has certain limitations, as listed here",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_list",
+     "extends_schema": true,
+     "hint": "Object name from SAP OData service"
+    },
+    {
+     "name": "$filter",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "hint": "Provide the filter parameter directly. If this is provided, field level search is ignored. API name has to be given in search. Eg: PurchaseOrder eq '4500000039'"
+    },
+    {
+     "name": "$top",
+     "type": "string",
+     "label": "Limit",
+     "control_type": "text",
+     "hint": "Number of records to return"
+    },
+    {
+     "name": "$skip",
+     "type": "string",
+     "label": "Skip token",
+     "control_type": "text",
+     "hint": "Number of records to skip"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_object",
+   "title": "Update object",
+   "description": "Update object in SAP OData",
+   "help": "Updates an object in SAP. First select the object you want to update, then populate the relevant fields for that object. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "upsert_object",
+   "title": "Upsert object",
+   "description": "Replace object in SAP OData",
+   "help": "Overrides an object in SAP. First select the object you want to override, then populate the relevant fields for that object. Please ensure the integration user has necessary permissions to access the Service dropdown. See SAP OData documentation for more information.",
+   "input": [
+    {
+     "name": "service",
+     "type": "string",
+     "label": "Service name",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "service_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "service",
+      "type": "string"
+     },
+     "hint": "This can be found in communication arrangements created for Workato. E.g. if https://www.myS4HanaSystem.com/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV ​ is the service URL, your service is API_PU…"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "object_list",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  }
+ ]
+}

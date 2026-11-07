@@ -1,0 +1,569 @@
+{
+ "name": "aws_lambda",
+ "title": "AWS Lambda",
+ "requires_connection": true,
+ "categories": [
+  "Developer Tool"
+ ],
+ "aliases": [
+  "AWS Lambda"
+ ],
+ "triggers": [
+  {
+   "name": "new_function",
+   "title": "New function created",
+   "description": "New function created in AWS Lambda",
+   "help": "Trigger will pick all the functions created since the beginning.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    }
+   ],
+   "output": [
+    {
+     "name": "FunctionArn",
+     "type": "string",
+     "label": "Amazon Resource Name",
+     "control_type": "text"
+    },
+    {
+     "name": "KMSKeyArn",
+     "type": "string",
+     "label": "KMS key arn",
+     "control_type": "text"
+    },
+    {
+     "name": "Description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "FunctionName",
+     "type": "string",
+     "label": "Function name",
+     "control_type": "text"
+    },
+    {
+     "name": "DeadLetterConfig",
+     "type": "object",
+     "label": "Dead letter config",
+     "properties": [
+      {
+       "name": "TargetArn",
+       "type": "string",
+       "label": "Target arn",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "Handler",
+     "type": "string",
+     "label": "Handler",
+     "control_type": "text",
+     "hint": "The function within your code that Lambda calls to begin execution"
+    },
+    {
+     "name": "MemorySize",
+     "type": "integer",
+     "label": "Memory size",
+     "control_type": "number"
+    },
+    {
+     "name": "Publish",
+     "type": "number",
+     "label": "Publish",
+     "control_type": "number"
+    },
+    {
+     "name": "Role",
+     "type": "string",
+     "label": "Role",
+     "control_type": "text"
+    },
+    {
+     "name": "Runtime",
+     "type": "string",
+     "label": "Runtime",
+     "control_type": "select",
+     "options": [
+      "nodejs",
+      "nodejs4.3",
+      "java8",
+      "python2.7"
+     ]
+    },
+    {
+     "name": "Timeout",
+     "type": "integer",
+     "label": "Timeout",
+     "control_type": "number"
+    },
+    {
+     "name": "VpcConfig",
+     "type": "object",
+     "label": "Vpc config",
+     "properties": [
+      {
+       "name": "SecurityGroupIds",
+       "type": "array",
+       "label": "Security group IDs",
+       "of": "object",
+       "properties": [
+        {
+         "name": "SecurityGroupIds",
+         "type": "string",
+         "label": "Security group ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "SubnetIds",
+       "type": "array",
+       "label": "Subnet IDs",
+       "of": "object",
+       "properties": [
+        {
+         "name": "SubnetIds",
+         "type": "string",
+         "label": "Subnet ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "VpcId",
+       "type": "string",
+       "label": "Vpc ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "CodeSha256",
+     "type": "string",
+     "label": "Code sha 256",
+     "control_type": "text"
+    },
+    {
+     "name": "CodeSize",
+     "type": "integer",
+     "label": "Code size",
+     "control_type": "number"
+    },
+    {
+     "name": "LastModified",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time"
+    },
+    {
+     "name": "Environment",
+     "type": "object",
+     "label": "Environment",
+     "properties": [
+      {
+       "name": "Variables",
+       "type": "array",
+       "label": "Variables",
+       "of": "object",
+       "properties": [
+        {
+         "name": "Key",
+         "type": "string",
+         "label": "Key",
+         "control_type": "text"
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "Error",
+       "type": "object",
+       "label": "Error",
+       "properties": [
+        {
+         "name": "ErrorCode",
+         "type": "string",
+         "label": "Error code",
+         "control_type": "text"
+        },
+        {
+         "name": "Message",
+         "type": "string",
+         "label": "Message",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in AWS Lambda (Custom)",
+   "help": "Build your own AWS Lambda action with a HTTP request. The request will be authorized with your AWS Lambda connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_function_by_name",
+   "title": "Get function details",
+   "description": "Get function details from AWS Lambda",
+   "help": "Action will raise an error if function name is not found",
+   "input": [
+    {
+     "name": "FunctionName",
+     "type": "string",
+     "label": "Function name",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "FunctionName",
+      "type": "string"
+     },
+     "hint": "Exact case-sensitive function name"
+    }
+   ],
+   "output": [
+    {
+     "name": "Code",
+     "type": "object",
+     "label": "Code",
+     "properties": [
+      {
+       "name": "Location",
+       "type": "string",
+       "label": "Location",
+       "control_type": "text"
+      },
+      {
+       "name": "RepositoryType",
+       "type": "string",
+       "label": "Repository type",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "Configuration",
+     "type": "object",
+     "label": "Configuration",
+     "properties": [
+      {
+       "name": "FunctionArn",
+       "type": "string",
+       "label": "Amazon Resource Name",
+       "control_type": "text"
+      },
+      {
+       "name": "KMSKeyArn",
+       "type": "string",
+       "label": "KMS key arn",
+       "control_type": "text"
+      },
+      {
+       "name": "Description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "FunctionName",
+       "type": "string",
+       "label": "Function name",
+       "control_type": "text"
+      },
+      {
+       "name": "DeadLetterConfig",
+       "type": "object",
+       "label": "Dead letter config",
+       "properties": [
+        {
+         "name": "TargetArn",
+         "type": "string",
+         "label": "Target arn",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "Handler",
+       "type": "string",
+       "label": "Handler",
+       "control_type": "text",
+       "hint": "The function within your code that Lambda calls to begin execution"
+      },
+      {
+       "name": "MemorySize",
+       "type": "integer",
+       "label": "Memory size",
+       "control_type": "number"
+      },
+      {
+       "name": "Publish",
+       "type": "number",
+       "label": "Publish",
+       "control_type": "number"
+      },
+      {
+       "name": "Role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text"
+      },
+      {
+       "name": "Runtime",
+       "type": "string",
+       "label": "Runtime",
+       "control_type": "select",
+       "options": [
+        "nodejs",
+        "nodejs4.3",
+        "java8",
+        "python2.7"
+       ]
+      },
+      {
+       "name": "Timeout",
+       "type": "integer",
+       "label": "Timeout",
+       "control_type": "number"
+      },
+      {
+       "name": "VpcConfig",
+       "type": "object",
+       "label": "Vpc config",
+       "properties": [
+        {
+         "name": "SecurityGroupIds",
+         "type": "array",
+         "label": "Security group IDs",
+         "of": "object",
+         "properties": [
+          {
+           "name": "SecurityGroupIds",
+           "type": "string",
+           "label": "Security group ID",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "SubnetIds",
+         "type": "array",
+         "label": "Subnet IDs",
+         "of": "object",
+         "properties": [
+          {
+           "name": "SubnetIds",
+           "type": "string",
+           "label": "Subnet ID",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "VpcId",
+         "type": "string",
+         "label": "Vpc ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "CodeSha256",
+       "type": "string",
+       "label": "Code sha 256",
+       "control_type": "text"
+      },
+      {
+       "name": "CodeSize",
+       "type": "integer",
+       "label": "Code size",
+       "control_type": "number"
+      },
+      {
+       "name": "LastModified",
+       "type": "date_time",
+       "label": "Last modified",
+       "control_type": "date_time"
+      },
+      {
+       "name": "Environment",
+       "type": "object",
+       "label": "Environment",
+       "properties": [
+        {
+         "name": "Variables",
+         "type": "array",
+         "label": "Variables",
+         "of": "object",
+         "properties": [
+          {
+           "name": "Key",
+           "type": "string",
+           "label": "Key",
+           "control_type": "text"
+          },
+          {
+           "name": "value",
+           "type": "string",
+           "label": "Value",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "Error",
+         "type": "object",
+         "label": "Error",
+         "properties": [
+          {
+           "name": "ErrorCode",
+           "type": "string",
+           "label": "Error code",
+           "control_type": "text"
+          },
+          {
+           "name": "Message",
+           "type": "string",
+           "label": "Message",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "Version",
+       "type": "string",
+       "label": "Version",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "invoke_function",
+   "title": "Invoke function",
+   "description": "Invoke function in AWS Lambda",
+   "input": [
+    {
+     "name": "FunctionName",
+     "type": "string",
+     "label": "Function name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "functions",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "FunctionName",
+      "type": "string"
+     },
+     "hint": "Only the first 50 functions are displayed in the list. If you do not find your function in the list, toggle to use full function name."
+    },
+    {
+     "name": "list_item",
+     "type": "object",
+     "label": "Function input",
+     "control_type": "form-schema-builder",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ]
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Function output",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Learn how to configure output for this action here"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

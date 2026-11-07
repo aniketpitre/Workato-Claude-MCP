@@ -1,0 +1,732 @@
+{
+ "name": "smb",
+ "title": "SMB",
+ "requires_connection": true,
+ "categories": [
+  "Document/File",
+  "Marketing"
+ ],
+ "aliases": [
+  "SMB",
+  "smb"
+ ],
+ "triggers": [
+  {
+   "name": "new_file",
+   "title": "New file in folder",
+   "description": "New/updated file in SMB directory",
+   "help": "Triggers when a file is created or updated in specified directory. Watches first-level directory only. Use the Download file</b action to fetch contents of file. This action requires a connection using OPA version 26.0 or newer.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Monitor this folder for new files."
+    },
+    {
+     "name": "start_time",
+     "type": "date_time",
+     "label": "Start time",
+     "control_type": "date_time",
+     "hint": "Set date and time for monitoring for new files or leave blank to start immediately. Once recipe has been run or tested, value cannot be changed."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path (processed)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path after file has been processed."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name (processed)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name after file has been processed."
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "attr",
+     "type": "array",
+     "label": "Attributes",
+     "required": true,
+     "of": "string",
+     "hint": "Attributes of the file"
+    },
+    {
+     "name": "create_time",
+     "type": "date_time",
+     "label": "Creation time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the file was created"
+    },
+    {
+     "name": "change_time",
+     "type": "date_time",
+     "label": "Change time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the file was last changed"
+    },
+    {
+     "name": "access_time",
+     "type": "date_time",
+     "label": "Access time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the file was last accessed"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "create_folder",
+   "title": "Create folder",
+   "description": "Create a new folder in a specified directory",
+   "help": "This action allows you to create a folder in the SMB share.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     }
+    },
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "strict",
+     "type": "boolean",
+     "label": "Require folder to not exist?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "strict",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the action will fail if the folder already exists."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Path of the created folder"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "Type of the created folder"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "Size of the created folder in bytes"
+    },
+    {
+     "name": "attr",
+     "type": "array",
+     "label": "Attributes",
+     "required": true,
+     "of": "string",
+     "hint": "Attributes of the created folder"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the created folder"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the directory containing the created folder"
+    },
+    {
+     "name": "create_time",
+     "type": "date_time",
+     "label": "Creation time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the folder was created"
+    },
+    {
+     "name": "change_time",
+     "type": "date_time",
+     "label": "Change time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the folder was last changed"
+    },
+    {
+     "name": "access_time",
+     "type": "date_time",
+     "label": "Access time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the folder was last accessed"
+    }
+   ]
+  },
+  {
+   "name": "delete",
+   "title": "Delete resource",
+   "description": "Delete a resource",
+   "help": "This action allows you to delete a file or a folder.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Resource to delete",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_entries",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select the file or folder to delete."
+    },
+    {
+     "name": "recursive",
+     "type": "boolean",
+     "label": "Include files in sub-folders?",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "recursive",
+      "type": "boolean"
+     },
+     "hint": "If Yes , files in sub-folders will be processed."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Path of the deleted resource"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "Type of the deleted resource"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "Size of the deleted resource in bytes"
+    },
+    {
+     "name": "attr",
+     "type": "array",
+     "label": "Attributes",
+     "required": true,
+     "of": "string",
+     "hint": "Attributes of the deleted resource"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the deleted resource"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the directory containing the deleted resource"
+    },
+    {
+     "name": "create_time",
+     "type": "date_time",
+     "label": "Creation time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the folder was created"
+    },
+    {
+     "name": "change_time",
+     "type": "date_time",
+     "label": "Change time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the folder was last changed"
+    },
+    {
+     "name": "access_time",
+     "type": "date_time",
+     "label": "Access time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the folder was last accessed"
+    }
+   ]
+  },
+  {
+   "name": "download_file",
+   "title": "Download file",
+   "description": "Download file using SMB",
+   "help": "Download file. File contents can be used in subsequent steps in the recipe to upload to other applications. This action requires a connection using OPA version 26.0 or newer.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_entries",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Download contents from this file"
+    },
+    {
+     "name": "chunk_size",
+     "type": "integer",
+     "label": "Chunk size (MB)",
+     "control_type": "number",
+     "default": 5,
+     "hint": "Size of each chunk to download. Default is 5MB, maximum is 100MB."
+    }
+   ],
+   "output": [
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true,
+     "hint": "Content of the file"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Path of the file"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "Size of the file in bytes"
+    },
+    {
+     "name": "attr",
+     "type": "array",
+     "label": "Attributes",
+     "required": true,
+     "of": "string",
+     "hint": "Attributes of the file"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "Type of the file"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the file"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the directory containing the file"
+    },
+    {
+     "name": "create_time",
+     "type": "date_time",
+     "label": "Creation time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the file was created"
+    },
+    {
+     "name": "change_time",
+     "type": "date_time",
+     "label": "Change time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the file was last changed"
+    },
+    {
+     "name": "access_time",
+     "type": "date_time",
+     "label": "Access time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the file was last accessed"
+    }
+   ]
+  },
+  {
+   "name": "list",
+   "title": "List directory contents",
+   "description": "List all contents in a specified directory",
+   "help": "List all contents in a specified directory.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "List files in this folder."
+    }
+   ],
+   "output": [
+    {
+     "name": "entries",
+     "type": "array",
+     "label": "Entries",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true,
+       "hint": "Name of the resource"
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size (bytes)",
+       "control_type": "text",
+       "required": true,
+       "hint": "Size of the resource in bytes"
+      },
+      {
+       "name": "kind",
+       "type": "integer",
+       "label": "Kind",
+       "control_type": "text",
+       "required": true,
+       "hint": "Type of the resource"
+      },
+      {
+       "name": "attr",
+       "type": "array",
+       "label": "Attributes",
+       "required": true,
+       "of": "string",
+       "hint": "Attributes of the resource"
+      },
+      {
+       "name": "create_time",
+       "type": "date_time",
+       "label": "Creation time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "Time when the resource was created"
+      },
+      {
+       "name": "change_time",
+       "type": "date_time",
+       "label": "Change time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "Time when the resource was last changed"
+      },
+      {
+       "name": "access_time",
+       "type": "date_time",
+       "label": "Access time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "Time when the resource was last accessed"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "metadata",
+   "title": "Get metadata",
+   "description": "Get metadata of a resource",
+   "help": "Get metadata of a file or folder.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Resource metadata",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_entries",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select the file or folder to get metadata."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Path of the resource"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "Size of the resource in bytes"
+    },
+    {
+     "name": "attr",
+     "type": "array",
+     "label": "Attributes",
+     "required": true,
+     "of": "string",
+     "hint": "Attributes of the resource"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "Type of the resource"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the resource"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the directory containing the resource"
+    },
+    {
+     "name": "create_time",
+     "type": "date_time",
+     "label": "Creation time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the resource was created"
+    },
+    {
+     "name": "change_time",
+     "type": "date_time",
+     "label": "Change time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the resource was last changed"
+    },
+    {
+     "name": "access_time",
+     "type": "date_time",
+     "label": "Access time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Time when the resource was last accessed"
+    }
+   ]
+  },
+  {
+   "name": "upload_file",
+   "title": "Upload file",
+   "description": "Upload a file to a folder",
+   "help": "Upload a new file to a SMB folder. If a file with the same name already exists in the folder, it will be overwritten. This action requires a connection using OPA version 26.0 or newer.“",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Upload the file to this folder."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "required_when_visible": true,
+     "hint": "Name for the uploaded file."
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text-area",
+     "required": true,
+     "required_when_visible": true,
+     "hint": "Use File contents datapill from another action/trigger or provide text directly. Leave it blank to create an empty file at the target location."
+    },
+    {
+     "name": "overwrite",
+     "type": "boolean",
+     "label": "Overwrite existing file?",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "overwrite",
+      "type": "boolean"
+     },
+     "hint": "If Yes , overwrite content of existing file with the same name. If No , create a new file and append an incremental number at the end, e.g. report_1.csv, report_2.csv ."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Path of the uploaded file"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the uploaded file"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of the directory containing the uploaded file"
+    },
+    {
+     "name": "writtenLength",
+     "type": "integer",
+     "label": "Written Length",
+     "control_type": "text",
+     "required": true,
+     "hint": "Number of bytes written"
+    }
+   ]
+  }
+ ]
+}

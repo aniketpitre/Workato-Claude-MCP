@@ -1,0 +1,1882 @@
+{
+ "id": 334600,
+ "name": "Case created/updated in Salesforce will create/update issue in JIRA",
+ "description": "**Recipe details**\nWhenever a case is created or updated in Salesforce,  create or update a corresponding issue in JIRA. \n\nConditions can be added to the trigger to execute this issue creation in JIRA only when the case in Salesforce meets certain criteria.\n\nThis recipe maintains a link between Salesforce cases and JIRA issues by inserting the Salesforce case number into the JIRA issue's description field.\n\n**Required parameters**\n1) From: determine the date from which we should start processing closed priority issues.\n2) Project key: determine which project to create issues under\n3) Issue type: determine which issue type to create the issues as\n\nThe project key and issue type parameters are currently set on a recipe level, i.e. all issues will be created in the same project as the same issue type. To create issues under different projects and as different types, use a lookup table in formula mode. [Learn more about lookup tables here.](https://support.workato.com/support/solutions/articles/1000185431-lookup-tables-to-map-values-across-two-apps-)\n\nChange Log : \n15 / 10 / 2016 - Fixed job report",
+ "applications": [
+  "salesforce",
+  "jira"
+ ],
+ "action_applications": [
+  "jira"
+ ],
+ "trigger_application": "salesforce",
+ "business_objects": [
+  "case",
+  "issue"
+ ],
+ "categories": [
+  "CRM",
+  "Marketing",
+  "Sales",
+  "Project management"
+ ],
+ "copy_count": 740,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2016-10-19T21:20:39.497-07:00",
+ "source_url": "https://app.workato.com/recipes/334600?community=us",
+ "steps": [
+  "salesforce.updated_custom_object",
+  "jira.search_issues",
+  "jira.create_issue",
+  "jira.update_issue"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "salesforce",
+  "name": "updated_custom_object",
+  "as": "updated_custom_object",
+  "title": "New/updated Case",
+  "description": "New/updated <span class=\"provider\">Case</span> in <span class=\"provider\">Salesforce</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "sobject_name": "Case"
+  },
+  "toggleCfg": {},
+  "input": {
+   "sobject_name": "Case",
+   "since": "#{_('data.workato.job_context.parameters.from')}"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "AccountId",
+    "control_type": "text",
+    "label": "Account ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "Id",
+    "control_type": "text",
+    "label": "Case ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false,
+    "key_scope": "Case"
+   },
+   {
+    "type": "string",
+    "name": "CaseNumber",
+    "control_type": "text",
+    "label": "Case Number",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "Origin",
+    "control_type": "select",
+    "label": "Case Origin",
+    "pick_list": [
+     [
+      "Email",
+      "Email"
+     ],
+     [
+      "Phone",
+      "Phone"
+     ],
+     [
+      "Web",
+      "Web"
+     ]
+    ],
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list instead?",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Case Origin",
+     "toggle_hint": "Enter custom value instead?",
+     "optional": true,
+     "custom": false,
+     "type": "string",
+     "name": "Origin"
+    }
+   },
+   {
+    "type": "string",
+    "name": "Reason",
+    "control_type": "select",
+    "label": "Case Reason",
+    "pick_list": [
+     [
+      "User didn't attend training",
+      "User didn't attend training"
+     ],
+     [
+      "Complex functionality",
+      "Complex functionality"
+     ],
+     [
+      "Existing problem",
+      "Existing problem"
+     ],
+     [
+      "Instructions not clear",
+      "Instructions not clear"
+     ],
+     [
+      "New problem",
+      "New problem"
+     ]
+    ],
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list instead?",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Case Reason",
+     "toggle_hint": "Enter custom value instead?",
+     "optional": true,
+     "custom": false,
+     "type": "string",
+     "name": "Reason"
+    }
+   },
+   {
+    "type": "string",
+    "name": "Type",
+    "control_type": "select",
+    "label": "Case Type",
+    "pick_list": [
+     [
+      "Problem",
+      "Problem"
+     ],
+     [
+      "Feature Request",
+      "Feature Request"
+     ],
+     [
+      "Question",
+      "Question"
+     ]
+    ],
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list instead?",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Case Type",
+     "toggle_hint": "Enter custom value instead?",
+     "optional": true,
+     "custom": false,
+     "type": "string",
+     "name": "Type"
+    }
+   },
+   {
+    "type": "boolean",
+    "name": "IsClosed",
+    "control_type": "checkbox",
+    "label": "Closed",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Closed",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "type": "boolean",
+     "name": "IsClosed"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "date_time",
+    "name": "ClosedDate",
+    "control_type": "date_time",
+    "label": "Closed Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "string",
+    "name": "SuppliedCompany",
+    "control_type": "text",
+    "label": "Company",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "ContactId",
+    "control_type": "text",
+    "label": "Contact ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "CreatedById",
+    "control_type": "text",
+    "label": "Created By ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "date_time",
+    "name": "CreatedDate",
+    "control_type": "date_time",
+    "label": "Created Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "boolean",
+    "name": "IsDeleted",
+    "control_type": "checkbox",
+    "label": "Deleted",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Deleted",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "type": "boolean",
+     "name": "IsDeleted"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "Description",
+    "control_type": "text-area",
+    "label": "Description",
+    "optional": true,
+    "custom": false
+   },
+   {
+    "type": "string",
+    "name": "SuppliedEmail",
+    "control_type": "text",
+    "label": "Email Address",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "boolean",
+    "name": "IsEscalated",
+    "control_type": "checkbox",
+    "label": "Escalated",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Escalated",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "type": "boolean",
+     "name": "IsEscalated"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "string",
+    "name": "LastModifiedById",
+    "control_type": "text",
+    "label": "Last Modified By ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last Modified Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "date_time",
+    "name": "LastReferencedDate",
+    "control_type": "date_time",
+    "label": "Last Referenced Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "date_time",
+    "name": "LastViewedDate",
+    "control_type": "date_time",
+    "label": "Last Viewed Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   },
+   {
+    "type": "string",
+    "name": "SuppliedName",
+    "control_type": "text",
+    "label": "Name",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "OwnerId",
+    "control_type": "text",
+    "label": "Owner ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "ParentId",
+    "control_type": "text",
+    "label": "Parent Case ID",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "SuppliedPhone",
+    "control_type": "text",
+    "label": "Phone",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "string",
+    "name": "Priority",
+    "control_type": "select",
+    "label": "Priority",
+    "pick_list": [
+     [
+      "High",
+      "High"
+     ],
+     [
+      "Medium",
+      "Medium"
+     ],
+     [
+      "Low",
+      "Low"
+     ]
+    ],
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list instead?",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Priority",
+     "toggle_hint": "Enter custom value instead?",
+     "optional": true,
+     "custom": false,
+     "type": "string",
+     "name": "Priority"
+    }
+   },
+   {
+    "type": "string",
+    "name": "Status",
+    "control_type": "select",
+    "label": "Status",
+    "pick_list": [
+     [
+      "On Hold",
+      "On Hold"
+     ],
+     [
+      "Escalated",
+      "Escalated"
+     ],
+     [
+      "Closed",
+      "Closed"
+     ],
+     [
+      "New",
+      "New"
+     ]
+    ],
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list instead?",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Status",
+     "toggle_hint": "Enter custom value instead?",
+     "optional": true,
+     "custom": false,
+     "type": "string",
+     "name": "Status"
+    }
+   },
+   {
+    "type": "string",
+    "name": "Subject",
+    "control_type": "text",
+    "label": "Subject",
+    "optional": true,
+    "custom": false,
+    "event_title": false
+   },
+   {
+    "type": "date_time",
+    "name": "SystemModstamp",
+    "control_type": "date_time",
+    "label": "System Modstamp",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp"
+   }
+  ],
+  "parameters_schema": "[\n  {\n    \"label\": \"From\",\n    \"name\": \"from\",\n    \"type\": \"date_time\",\n    \"hint\": \"Fetch trigger events from specified time.\",\n    \"control_type\": \"date_time\"\n  },\n    {\n    \"label\": \"Project key\",\n    \"name\": \"key\",\n    \"type\": \"string\",\n    \"control_type\": \"text\",\n    \"hint\": \"JIRA project key of project to create issues in, e.g. PRJ\"\n  },\n  {\n    \"label\": \"Issue type\",\n    \"name\": \"issue_type\",\n    \"type\": \"string\",\n    \"control_type\": \"text\",\n    \"hint\": \"Name of issue type to create  in JIRA\" \n  }\n]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "jira",
+    "name": "search_issues",
+    "as": "search_issues",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Description": "Case Number: #{_('data.salesforce.updated_custom_object.CaseNumber')}"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "issues",
+      "label": "Issues",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "ID",
+        "type": "string",
+        "name": "id"
+       },
+       {
+        "control_type": "url",
+        "label": "Self",
+        "type": "string",
+        "name": "self"
+       },
+       {
+        "control_type": "text",
+        "label": "Key",
+        "type": "string",
+        "name": "key"
+       },
+       {
+        "properties": [
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "extended": true,
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "Description",
+            "type": "string",
+            "name": "description"
+           },
+           {
+            "control_type": "text",
+            "label": "Icon URL",
+            "extended": true,
+            "type": "string",
+            "name": "iconUrl"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Sub task",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Sub task",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "type": "boolean",
+             "name": "subtask"
+            },
+            "type": "boolean",
+            "name": "subtask"
+           }
+          ],
+          "label": "Issue Type",
+          "type": "object",
+          "name": "issuetype"
+         },
+         {
+          "control_type": "number",
+          "label": "Time Spent",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "timespent"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "extended": true,
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "Key",
+            "extended": true,
+            "type": "string",
+            "name": "key"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "url",
+              "label": "48 x 48",
+              "extended": true,
+              "type": "string",
+              "name": "48x48"
+             },
+             {
+              "control_type": "url",
+              "label": "24 x 24",
+              "extended": true,
+              "type": "string",
+              "name": "24x24"
+             }
+            ],
+            "label": "Avatar urls",
+            "type": "object",
+            "name": "avatarUrls"
+           }
+          ],
+          "label": "Project",
+          "type": "object",
+          "name": "project"
+         },
+         {
+          "name": "fixVersions",
+          "type": "array",
+          "of": "object",
+          "label": "Fix Version/s",
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "Description",
+            "type": "string",
+            "name": "description"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           }
+          ]
+         },
+         {
+          "control_type": "text",
+          "label": "Capture for JIRA URL",
+          "type": "string",
+          "name": "customfield_10110"
+         },
+         {
+          "control_type": "number",
+          "label": "Σ Time Spent",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "aggregatetimespent"
+         },
+         {
+          "control_type": "text",
+          "label": "Capture for JIRA Screen Resolution",
+          "type": "string",
+          "name": "customfield_10111"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "Description",
+            "type": "string",
+            "name": "description"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           }
+          ],
+          "label": "Resolution",
+          "type": "object",
+          "name": "resolution"
+         },
+         {
+          "control_type": "text",
+          "label": "Capture for JIRA jQuery Version",
+          "type": "string",
+          "name": "customfield_10112"
+         },
+         {
+          "control_type": "text",
+          "label": "Capture for JIRA Document Mode",
+          "type": "string",
+          "name": "customfield_10113"
+         },
+         {
+          "control_type": "text",
+          "label": "Iteration",
+          "type": "string",
+          "name": "customfield_10104"
+         },
+         {
+          "control_type": "text",
+          "label": "Test sessions",
+          "type": "string",
+          "name": "customfield_10105"
+         },
+         {
+          "control_type": "text",
+          "label": "Raised during",
+          "type": "string",
+          "name": "customfield_10106"
+         },
+         {
+          "control_type": "text",
+          "label": "Capture for JIRA User Agent",
+          "type": "string",
+          "name": "customfield_10107"
+         },
+         {
+          "control_type": "text",
+          "label": "Capture for JIRA Browser",
+          "type": "string",
+          "name": "customfield_10108"
+         },
+         {
+          "control_type": "text",
+          "label": "Capture for JIRA Operating System",
+          "type": "string",
+          "name": "customfield_10109"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Resolved",
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "resolutiondate"
+         },
+         {
+          "control_type": "number",
+          "label": "Work Ratio",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "workratio"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Last Viewed",
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "lastViewed"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "number",
+            "label": "Watch count",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "watchCount"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Is watching",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Is watching",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "type": "boolean",
+             "name": "isWatching"
+            },
+            "type": "boolean",
+            "name": "isWatching"
+           }
+          ],
+          "label": "Watchers",
+          "type": "object",
+          "name": "watches"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Created",
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "created"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "extended": true,
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "url",
+            "label": "Icon URL",
+            "extended": true,
+            "type": "string",
+            "name": "iconUrl"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           }
+          ],
+          "label": "Priority",
+          "type": "object",
+          "name": "priority"
+         },
+         {
+          "control_type": "date_time",
+          "label": "[CHART] Date of First Response",
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "customfield_10100"
+         },
+         {
+          "name": "labels",
+          "type": "array",
+          "of": "string",
+          "control_type": "text",
+          "label": "Labels"
+         },
+         {
+          "control_type": "number",
+          "label": "Remaining Estimate",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "timeestimate"
+         },
+         {
+          "control_type": "number",
+          "label": "Σ Original Estimate",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "aggregatetimeoriginalestimate"
+         },
+         {
+          "name": "versions",
+          "type": "array",
+          "of": "object",
+          "label": "Affects Version/s",
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "Description",
+            "type": "string",
+            "name": "description"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           }
+          ]
+         },
+         {
+          "name": "issuelinks",
+          "type": "array",
+          "of": "object",
+          "label": "Linked Issues",
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "ID",
+              "type": "string",
+              "name": "id"
+             },
+             {
+              "control_type": "text",
+              "label": "Name",
+              "type": "string",
+              "name": "name"
+             },
+             {
+              "control_type": "text",
+              "label": "Inward",
+              "type": "string",
+              "name": "inward"
+             },
+             {
+              "control_type": "text",
+              "label": "Outward",
+              "type": "string",
+              "name": "outward"
+             },
+             {
+              "control_type": "url",
+              "label": "Self",
+              "type": "string",
+              "name": "self"
+             }
+            ],
+            "label": "Type",
+            "type": "object",
+            "name": "type"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "url",
+              "label": "Self",
+              "type": "string",
+              "name": "self"
+             },
+             {
+              "control_type": "text",
+              "label": "Key",
+              "type": "string",
+              "name": "key"
+             },
+             {
+              "control_type": "text",
+              "label": "ID",
+              "type": "string",
+              "name": "id"
+             }
+            ],
+            "label": "Outward issue",
+            "type": "object",
+            "name": "outwardIssue"
+           }
+          ]
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "extended": true,
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "url",
+            "label": "Key",
+            "extended": true,
+            "type": "string",
+            "name": "key"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "Email address",
+            "type": "string",
+            "name": "emailAddress"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "url",
+              "label": "48 x 48",
+              "extended": true,
+              "type": "string",
+              "name": "48x48"
+             },
+             {
+              "control_type": "url",
+              "label": "24 x 24",
+              "extended": true,
+              "type": "string",
+              "name": "24x24"
+             }
+            ],
+            "label": "Avatar urls",
+            "extended": true,
+            "type": "object",
+            "name": "avatarUrls"
+           },
+           {
+            "control_type": "text",
+            "label": "Display name",
+            "type": "string",
+            "name": "displayName"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Active",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Active",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "extended": true,
+             "type": "boolean",
+             "name": "active"
+            },
+            "extended": true,
+            "type": "boolean",
+            "name": "active"
+           },
+           {
+            "control_type": "text",
+            "label": "Time zone",
+            "extended": true,
+            "type": "string",
+            "name": "timeZone"
+           }
+          ],
+          "label": "Assignee",
+          "type": "object",
+          "name": "assignee"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Updated",
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "updated"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "extended": true,
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "Description",
+            "type": "string",
+            "name": "description"
+           },
+           {
+            "control_type": "url",
+            "label": "Icon URL",
+            "extended": true,
+            "type": "string",
+            "name": "iconUrl"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "url",
+              "label": "Self",
+              "extended": true,
+              "type": "string",
+              "name": "self"
+             },
+             {
+              "control_type": "number",
+              "label": "ID",
+              "parse_output": "integer_conversion",
+              "type": "integer",
+              "name": "id"
+             },
+             {
+              "control_type": "text",
+              "label": "Key",
+              "extended": true,
+              "type": "string",
+              "name": "key"
+             },
+             {
+              "control_type": "text",
+              "label": "Color name",
+              "extended": true,
+              "type": "string",
+              "name": "colorName"
+             },
+             {
+              "control_type": "text",
+              "label": "Name",
+              "type": "string",
+              "name": "name"
+             }
+            ],
+            "label": "Status category",
+            "type": "object",
+            "name": "statusCategory"
+           }
+          ],
+          "label": "Status",
+          "type": "object",
+          "name": "status"
+         },
+         {
+          "name": "components",
+          "type": "array",
+          "of": "object",
+          "label": "Component/s",
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           }
+          ]
+         },
+         {
+          "control_type": "number",
+          "label": "Original Estimate",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "timeoriginalestimate"
+         },
+         {
+          "control_type": "text",
+          "label": "Description",
+          "type": "string",
+          "name": "description"
+         },
+         {
+          "name": "customfield_10126",
+          "type": "array",
+          "of": "string",
+          "control_type": "text",
+          "label": "Sprint"
+         },
+         {
+          "control_type": "number",
+          "label": "Story Points",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "customfield_10128"
+         },
+         {
+          "name": "attachment",
+          "type": "array",
+          "of": "object",
+          "label": "Attachment",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "Filename",
+            "type": "string",
+            "name": "filename"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "url",
+              "label": "Self url",
+              "type": "string",
+              "name": "self"
+             },
+             {
+              "control_type": "text",
+              "label": "Key",
+              "type": "string",
+              "name": "key"
+             },
+             {
+              "control_type": "text",
+              "label": "Name",
+              "event_title": true,
+              "type": "string",
+              "name": "name"
+             },
+             {
+              "control_type": "text",
+              "label": "Email address",
+              "type": "string",
+              "name": "emailAddress"
+             },
+             {
+              "properties": [
+               {
+                "control_type": "url",
+                "label": "16 x 16",
+                "type": "string",
+                "name": "16x16"
+               },
+               {
+                "control_type": "url",
+                "label": "24 x 24",
+                "type": "string",
+                "name": "24x24"
+               },
+               {
+                "control_type": "url",
+                "label": "32 x 32",
+                "type": "string",
+                "name": "32x32"
+               },
+               {
+                "control_type": "url",
+                "label": "48 x 48",
+                "type": "string",
+                "name": "48x48"
+               }
+              ],
+              "label": "Avatar urls",
+              "type": "object",
+              "name": "avatarUrls"
+             },
+             {
+              "control_type": "text",
+              "label": "Display name",
+              "type": "string",
+              "name": "displayName"
+             },
+             {
+              "control_type": "checkbox",
+              "label": "Active",
+              "render_input": {},
+              "parse_output": {},
+              "toggle_hint": "Select from option list",
+              "toggle_field": {
+               "label": "Active",
+               "control_type": "text",
+               "toggle_hint": "Use custom value",
+               "type": "boolean",
+               "name": "active"
+              },
+              "type": "boolean",
+              "name": "active"
+             },
+             {
+              "control_type": "text",
+              "label": "Time zone",
+              "type": "string",
+              "name": "timeZone"
+             }
+            ],
+            "label": "Author",
+            "type": "object",
+            "name": "author"
+           },
+           {
+            "control_type": "date_time",
+            "label": "Created",
+            "parse_output": "convert_date_time",
+            "render_input": "convert_date_time",
+            "type": "date_time",
+            "name": "created"
+           },
+           {
+            "control_type": "text",
+            "label": "Size",
+            "type": "string",
+            "name": "size"
+           },
+           {
+            "control_type": "text",
+            "label": "Mime type",
+            "type": "string",
+            "name": "mimeType"
+           },
+           {
+            "control_type": "text",
+            "label": "Content",
+            "type": "string",
+            "name": "content"
+           },
+           {
+            "control_type": "text",
+            "label": "Thumbnail",
+            "type": "string",
+            "name": "thumbnail"
+           }
+          ]
+         },
+         {
+          "control_type": "number",
+          "label": "Σ Remaining Estimate",
+          "parse_output": "float_conversion",
+          "type": "number",
+          "name": "aggregatetimeestimate"
+         },
+         {
+          "control_type": "text",
+          "label": "Summary",
+          "type": "string",
+          "name": "summary"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "extended": true,
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "url",
+            "label": "Key",
+            "extended": true,
+            "type": "string",
+            "name": "key"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "Email address",
+            "type": "string",
+            "name": "emailAddress"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "url",
+              "label": "48 x 48",
+              "extended": true,
+              "type": "string",
+              "name": "48x48"
+             },
+             {
+              "control_type": "url",
+              "label": "24 x 24",
+              "extended": true,
+              "type": "string",
+              "name": "24x24"
+             }
+            ],
+            "label": "Avatar urls",
+            "extended": true,
+            "type": "object",
+            "name": "avatarUrls"
+           },
+           {
+            "control_type": "text",
+            "label": "Display name",
+            "type": "string",
+            "name": "displayName"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Active",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Active",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "extended": true,
+             "type": "boolean",
+             "name": "active"
+            },
+            "extended": true,
+            "type": "boolean",
+            "name": "active"
+           },
+           {
+            "control_type": "text",
+            "label": "Time zone",
+            "extended": true,
+            "type": "string",
+            "name": "timeZone"
+           }
+          ],
+          "label": "Creator",
+          "type": "object",
+          "name": "creator"
+         },
+         {
+          "name": "subtasks",
+          "type": "array",
+          "of": "object",
+          "label": "Sub-tasks",
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "Key",
+            "type": "string",
+            "name": "key"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           }
+          ]
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "extended": true,
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "url",
+            "label": "Key",
+            "extended": true,
+            "type": "string",
+            "name": "key"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "Email address",
+            "type": "string",
+            "name": "emailAddress"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "url",
+              "label": "48 x 48",
+              "extended": true,
+              "type": "string",
+              "name": "48x48"
+             },
+             {
+              "control_type": "url",
+              "label": "24 x 24",
+              "extended": true,
+              "type": "string",
+              "name": "24x24"
+             }
+            ],
+            "label": "Avatar urls",
+            "extended": true,
+            "type": "object",
+            "name": "avatarUrls"
+           },
+           {
+            "control_type": "text",
+            "label": "Display name",
+            "type": "string",
+            "name": "displayName"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Active",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Active",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "extended": true,
+             "type": "boolean",
+             "name": "active"
+            },
+            "extended": true,
+            "type": "boolean",
+            "name": "active"
+           },
+           {
+            "control_type": "text",
+            "label": "Time zone",
+            "extended": true,
+            "type": "string",
+            "name": "timeZone"
+           }
+          ],
+          "label": "Reporter",
+          "type": "object",
+          "name": "reporter"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Satisfaction date",
+          "parse_output": "convert_date_time",
+          "render_input": "convert_date_time",
+          "type": "date_time",
+          "name": "customfield_10120"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "Progress",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "progress"
+           },
+           {
+            "control_type": "number",
+            "label": "Total",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "total"
+           }
+          ],
+          "label": "Σ Progress",
+          "type": "object",
+          "name": "aggregateprogress"
+         },
+         {
+          "name": "customfield_10200",
+          "type": "array",
+          "of": "string",
+          "control_type": "text",
+          "label": "Approvers"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "text",
+            "label": "Value",
+            "type": "string",
+            "name": "value"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+           }
+          ],
+          "label": "Epic Status",
+          "type": "object",
+          "name": "customfield_10123"
+         },
+         {
+          "control_type": "text",
+          "label": "Epic Name",
+          "type": "string",
+          "name": "customfield_10124"
+         },
+         {
+          "control_type": "text",
+          "label": "Epic Color",
+          "type": "string",
+          "name": "customfield_10125"
+         },
+         {
+          "control_type": "text",
+          "label": "Team",
+          "type": "string",
+          "name": "customfield_10115"
+         },
+         {
+          "control_type": "text",
+          "label": "Environment",
+          "type": "string",
+          "name": "environment"
+         },
+         {
+          "name": "customfield_10118",
+          "type": "array",
+          "of": "string",
+          "control_type": "text",
+          "label": "Request participants"
+         },
+         {
+          "control_type": "date",
+          "label": "Due Date",
+          "parse_output": "parse_date_output",
+          "render_input": "render_date_input",
+          "type": "date_time",
+          "name": "duedate"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "Progress",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "progress"
+           },
+           {
+            "control_type": "number",
+            "label": "Total",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "total"
+           }
+          ],
+          "label": "Progress",
+          "type": "object",
+          "name": "progress"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "url",
+            "label": "Self",
+            "type": "string",
+            "name": "self"
+           },
+           {
+            "control_type": "number",
+            "label": "Votes",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "votes"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Has voted",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Has voted",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "type": "boolean",
+             "name": "hasVoted"
+            },
+            "type": "boolean",
+            "name": "hasVoted"
+           }
+          ],
+          "label": "Votes",
+          "type": "object",
+          "name": "votes"
+         },
+         {
+          "name": "worklog",
+          "type": "array",
+          "of": "string",
+          "control_type": "text",
+          "label": "Log Work"
+         }
+        ],
+        "label": "Fields",
+        "type": "object",
+        "name": "fields"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "Description"
+    ],
+    "uuid": "ed7e8956-e61b-433a-aa45-ab806f66fb1c"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.jira.search_issues.issues.first.id')}",
+       "rhs": null,
+       "operand": "blank"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "jira",
+      "name": "create_issue",
+      "as": "create_issue",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "priority": "#{_('data.salesforce.updated_custom_object.Priority')}",
+       "project_issuetype": "#{_('data.workato.job_context.parameters.key')}--#{_('data.workato.job_context.parameters.issue_type')}"
+      },
+      "toggleCfg": {
+       "project_issuetype": false,
+       "priority": false
+      },
+      "input": {
+       "description": "#{_('data.salesforce.updated_custom_object.Description')}\nCase Number: #{_('data.salesforce.updated_custom_object.CaseNumber')}",
+       "summary": "SF: #{_('data.salesforce.updated_custom_object.Subject')}",
+       "project_issuetype": "#{_('data.workato.job_context.parameters.key')}--#{_('data.workato.job_context.parameters.issue_type')}",
+       "priority": "#{_('data.salesforce.updated_custom_object.Priority')}"
+      },
+      "visible_config_fields": [
+       "project_issuetype",
+       "summary",
+       "description",
+       "priority"
+      ],
+      "comment": "Create issue in JIRA if none exists",
+      "uuid": "2b26853a-959d-4b1b-bb2b-0867466007bc"
+     }
+    ],
+    "uuid": "38764d1e-39d0-4d84-912f-d3914f25e59d"
+   },
+   {
+    "number": 4,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.jira.search_issues.issues.first.id')}",
+       "rhs": ""
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 5,
+      "provider": "jira",
+      "name": "update_issue",
+      "as": "update_issue",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "project_issuetype": false,
+       "priority": false
+      },
+      "input": {
+       "issuekey": "#{_('data.jira.search_issues.issues.first.id')}",
+       "project_issuetype": "#{_('data.workato.job_context.parameters.key')}--#{_('data.workato.job_context.parameters.issue_type')}",
+       "priority": "#{_('data.salesforce.updated_custom_object.Priority')}"
+      },
+      "visible_config_fields": [
+       "issuekey",
+       "project_issuetype",
+       "priority"
+      ],
+      "comment": "Update priority in JIRA",
+      "uuid": "24fc79c5-3805-4406-a130-d3b4795c7cb7"
+     }
+    ],
+    "uuid": "d8b959ad-b440-4acd-89d5-4626b1cac2da"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "SFDC Case"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "JIRA Issue"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "JIRA Key"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.salesforce.updated_custom_object.CaseNumber')} - #{_('data.salesforce.updated_custom_object.SuppliedName')}",
+   "custom_column_2": "=_('data.jira.search_issues.issues.first.id').present? ? \"Already Exist\" : (_('data.jira.create_issue.id').present? ? \"Created\" : \"None\")",
+   "custom_column_3": "#{_('data.jira.search_issues.issues.first.key')}#{_('data.jira.create_issue.key')}"
+  },
+  "uuid": "aeb89941-e024-4ead-b360-5e7a42b4dc0c"
+ }
+}

@@ -1,0 +1,1041 @@
+{
+ "name": "quickbase",
+ "title": "Quickbase",
+ "requires_connection": true,
+ "categories": [
+  "Project Management"
+ ],
+ "aliases": [
+  "Quickbase",
+  "quickbase",
+  "Intuit"
+ ],
+ "triggers": [
+  {
+   "name": "new_record",
+   "title": "New record",
+   "description": "New record in Quickbase",
+   "help": "Triggers when a new record is created in Quickbase. Trigger checks for new records every {{authUser.membership.poll_interval}} minutes. Quickbase queries are supported to narrow down the list of records returned.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch records created after specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "hint": "Use Quickbase query to fetch only records that match your query. Query syntax is {'fid'.operator.'matching_value'}. E.g. {'7'.EX.'Test'}. Learn more about queries here"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_record_webhook_trigger",
+   "title": "New record",
+   "description": "New record in Quickbase",
+   "help": "Triggers immediately when a new record is created in a Quickbase table. You can use a maximum of 10 real time triggers ( New record - REAL TIME or New/updated record - REAL TIME ) on one Quickbase table.",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch records created after specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "scheduled_table_query",
+   "title": "Scheduled record search using query",
+   "description": "Scheduled record search using query in Quickbase",
+   "help": "Executes Quickbase query on specified schedule. Records meeting the query will be returned in lists of 1000 records per trigger event, by default.",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    },
+    {
+     "name": "schedule",
+     "type": "string",
+     "label": "Schedule",
+     "control_type": "select",
+     "required": true,
+     "default": "monthly",
+     "options": [
+      "hourly",
+      "daily",
+      "monthly"
+     ]
+    },
+    {
+     "name": "time_zone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timezone_name_global_pick_list"
+    },
+    {
+     "name": "hour",
+     "type": "integer",
+     "label": "Hour",
+     "control_type": "number",
+     "visible_if": "input.schedule != \"hourly\" || input.schedule_settings?.schedule != \"hourly\"",
+     "default": 0,
+     "hint": "Hours in 24-hour format, i.e. 11 for 11am, 23 for 11pm. Defaults to 00 (12am) if left empty."
+    },
+    {
+     "name": "minute",
+     "type": "integer",
+     "label": "Minute",
+     "control_type": "number",
+     "required": true,
+     "default": 0,
+     "hint": "Minutes past the hour, i.e 00 for 0 minutes."
+    },
+    {
+     "name": "day_of_month",
+     "type": "integer",
+     "label": "Day of month",
+     "control_type": "number",
+     "visible_if": "input.schedule == \"monthly\" || input.schedule_settings?.schedule == \"monthly\"",
+     "default": 1,
+     "hint": "1 - 31 , will be rounded down to last day of month for shorter months. Defaults to first day of the month if left empty."
+    },
+    {
+     "name": "Sunday",
+     "type": "boolean",
+     "label": "Sunday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Sunday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Monday",
+     "type": "boolean",
+     "label": "Monday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Monday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Tuesday",
+     "type": "boolean",
+     "label": "Tuesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Tuesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Wednesday",
+     "type": "boolean",
+     "label": "Wednesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Wednesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Thursday",
+     "type": "boolean",
+     "label": "Thursday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Thursday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Friday",
+     "type": "boolean",
+     "label": "Friday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Friday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Saturday",
+     "type": "boolean",
+     "label": "Saturday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Saturday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "required": true,
+     "hint": "Query syntax is {'fid'.operator.'matching_value'}. E.g. {'f_7'.EX.'Test'}. Learn more about queries here"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Minimum is 1, maximum is 1000. Default is 100."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_record",
+   "title": "New/updated record",
+   "description": "New/updated record in Quickbase",
+   "help": "Triggers when a record is created or updated in Quickbase. Trigger checks for new or updated records every {{authUser.membership.poll_interval}} minutes. Quickbase queries are supported to narrow down the list of records returned.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch records modified after specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "hint": "Use Quickbase query to fetch only records that match your query. Query syntax is {'fid'.operator.'matching_value'}. E.g. {'7'.EX.'Test'}. Learn more about queries here"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_record_webhook_trigger",
+   "title": "New/updated record",
+   "description": "New/updated record in Quickbase",
+   "help": "Triggers immediately when a record is created or updated in a Quickbase table. You can use a maximum of 10 real time triggers ( New record - REAL TIME or New/updated record - REAL TIME ) on one Quickbase table.",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch records modified after specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Quickbase (Custom)",
+   "help": "Build your own QuickBase action with a HTTP request. The request will be authorized with your QuickBase connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_record",
+   "title": "Create record",
+   "description": "Create record in Quickbase",
+   "help": "Create a record in a Quickbase table. Note that this action can support a maximum of 150 fields in a table. If your table has more than 150 fields, use Table field list to shortlist the fields you need.",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    }
+   ],
+   "output": [
+    {
+     "name": "rid",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "bulk_upsert_records",
+   "title": "Create and update records in bulk from CSV file",
+   "description": "Create and update records in bulk from CSV file into Quickbase",
+   "help": "This action takes CSV file data then creates or updates records in bulk into a Quickbase table. Maximum CSV file size is 20MB . Based on the selected merge field, this action will either create or update records accordingly. This action divides your CSV file into smaller chunks of rows to submit to …",
+   "input": [
+    {
+     "name": "table_settings",
+     "type": "object",
+     "label": "Quickbase table settings",
+     "required": true,
+     "properties": [
+      {
+       "name": "app_name",
+       "type": "string",
+       "label": "Application",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "list_applications",
+       "hint": "Select an application in your Quickbase account."
+      },
+      {
+       "name": "apptoken",
+       "type": "string",
+       "label": "Application token",
+       "control_type": "password",
+       "extends_schema": true,
+       "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+      },
+      {
+       "name": "table_id",
+       "type": "string",
+       "label": "Table",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "list_tables_upsert",
+       "extends_schema": true,
+       "toggle_field": {
+        "name": "table_id",
+        "type": "string"
+       },
+       "hint": "Select the table to create and update records."
+      },
+      {
+       "name": "record_id",
+       "type": "integer",
+       "label": "Key field",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "tabel_input_field_list_app_token_upsert",
+       "extends_schema": true,
+       "toggle_field": {
+        "name": "merge_field",
+        "type": "string"
+       },
+       "hint": "Select your Quickbase table's key field. It will control if each CSV row will create or update Quickbase record. Alternatively, select Use custom merge field to use other field that is not key field. …"
+      }
+     ]
+    },
+    {
+     "name": "csv_data",
+     "type": "object",
+     "label": "CSV file input",
+     "required": true,
+     "properties": [
+      {
+       "name": "csv",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true,
+       "hint": "File contents of the CSV file to import. File must be comma-separated and in valid UTF-8 format. Maximum file size is 20MB ."
+      },
+      {
+       "name": "skip_first_line",
+       "type": "boolean",
+       "label": "Contains header line?",
+       "control_type": "checkbox",
+       "required": true,
+       "default": "true",
+       "toggle_field": {
+        "name": "skip_first_line",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if your CSV file content has a header line, No otherwise."
+      },
+      {
+       "name": "csv_columns",
+       "type": "string",
+       "label": "Column names",
+       "control_type": "schema-designer",
+       "required": true,
+       "extends_schema": true
+      }
+     ],
+     "hint": "Describe the CSV file that you want to import. File must be comma-separated."
+    }
+   ],
+   "output": [
+    {
+     "name": "is_import_successful",
+     "type": "boolean",
+     "label": "All record successfully imported?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_import_successful",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "num_recs_added",
+     "type": "integer",
+     "label": "Number of records created",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "num_recs_updated",
+     "type": "integer",
+     "label": "Number of records updated",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "num_recs_failed",
+     "type": "integer",
+     "label": "Number of records failed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "num_recs_unchanged",
+     "type": "integer",
+     "label": "Number of records unchanged",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "records_updated",
+     "type": "array",
+     "label": "List of records created or updated",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "record_ID",
+       "type": "integer",
+       "label": "Record ID",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "contents",
+     "type": "string",
+     "label": "CSV contents of failed records",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "chunk_list",
+     "type": "array",
+     "label": "List of chunks",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "chunk_number",
+       "type": "integer",
+       "label": "Chunk number",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "success",
+       "type": "boolean",
+       "label": "Successful import to Quickbase?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "success",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "starting_row",
+       "type": "integer",
+       "label": "Starting row",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "ending_row",
+       "type": "integer",
+       "label": "Ending row",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "error_code",
+       "type": "string",
+       "label": "Error code",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "error_text",
+       "type": "string",
+       "label": "Error text",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "delete_record",
+   "title": "Delete record",
+   "description": "Delete record from Quickbase",
+   "help": "Delete a record in Quickbase using its record ID. Select the table, then specify the record ID.",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    }
+   ],
+   "output": [
+    {
+     "name": "rid",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "download_attachment",
+   "title": "Download attachment",
+   "description": "Download attachment from Quickbase",
+   "help": "This action will download an attachment from Quickbase.",
+   "input": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "File URL",
+     "control_type": "url",
+     "required": true,
+     "hint": "You can find File URL in the output of other Quickbase triggers or actions. Or you can enter the URL directly."
+    }
+   ],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "edit_record",
+   "title": "Update record",
+   "description": "Update record in Quickbase",
+   "help": "Update a record in a Quickbase table. Note that this action can support a maximum of 150 fields in a table. If your table has more than 150 fields, use Table field list to shortlist the fields you need.",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    }
+   ],
+   "output": [
+    {
+     "name": "rid",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_records_from_a_report",
+   "title": "Get records from report in Quickbase",
+   "description": "Get records from report in Quickbase",
+   "help": "This action gets records from a pre-build report in your Quickbase. This allows you to leverage on Quickbase’s record filtering capability. You can build a report with complex filtering in Quickbase, then use this action to get the records. Note that this action can support a maximum of 150 fields i…",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    },
+    {
+     "name": "report_id",
+     "type": "string",
+     "label": "Report",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_reports_in_table",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "report_id",
+      "type": "string"
+     },
+     "hint": "Select a Quickbase report. Workato will get records from this report."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "purge_records_by_query",
+   "title": "Delete records in a report",
+   "description": "Delete records in a report in Quickbase",
+   "help": "This action should be used with caution. All records that match the specified criteria in a Quickbase report will be deleted. If you only need to delete one record, use the Delete record action instead.",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    },
+    {
+     "name": "qname",
+     "type": "string",
+     "label": "Report name",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "qid",
+      "type": "string"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "num_records_deleted",
+     "type": "integer",
+     "label": "number of records deleted",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_records",
+   "title": "Search records",
+   "description": "Search for records in Quickbase",
+   "help": "Search for records in a Quickbase table. This action will return records that match all of your search criteria. By default, 100 records will be returned. Note that this action can support a maximum of 150 fields in a table. If your table has more than 150 fields, use Table field list to shortlist t…",
+   "input": [
+    {
+     "name": "app_name",
+     "type": "string",
+     "label": "Application",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_applications",
+     "hint": "Select an application in your Quickbase account."
+    },
+    {
+     "name": "apptoken",
+     "type": "string",
+     "label": "Application token",
+     "control_type": "password",
+     "extends_schema": true,
+     "hint": "Required if this application has been configured to require tokens for data access. Obtain token from the application's Settings > App properties > Manage Application Token . Learn more"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list_tables",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_id",
+      "type": "string"
+     },
+     "hint": "Select a table in this application."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

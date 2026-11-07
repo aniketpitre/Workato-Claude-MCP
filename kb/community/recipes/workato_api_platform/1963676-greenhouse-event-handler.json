@@ -1,0 +1,383 @@
+{
+ "id": 1963676,
+ "name": "greenhouse-event-handler",
+ "description": "When there is a trigger event, do action",
+ "applications": [
+  "workato_api_platform",
+  "workato_recipe_function",
+  "logger",
+  "gmail"
+ ],
+ "action_applications": [
+  "workato_recipe_function",
+  "logger",
+  "gmail"
+ ],
+ "trigger_application": "workato_api_platform",
+ "business_objects": [
+  "email"
+ ],
+ "categories": [
+  "API tool",
+  "Recipe Tools",
+  "Productivity",
+  "Sales Enablement"
+ ],
+ "copy_count": 8,
+ "curated": false,
+ "recipe_type": "apim",
+ "trigger_type": null,
+ "published_at": null,
+ "updated_at": "2021-12-20T00:28:55.418-08:00",
+ "source_url": "https://app.workato.com/recipes/1963676?community=us",
+ "steps": [
+  "workato_api_platform.receive_request",
+  "workato_recipe_function.call_recipe",
+  "logger.log_message",
+  "gmail.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "workato_api_platform",
+  "name": "receive_request",
+  "as": "fcb3cb12",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {
+   "response.responses.0.http_status_code": true
+  },
+  "input": {
+   "request": {
+    "content_type": "json",
+    "schema": "[{\"name\":\"action\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"},{\"name\":\"payload\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"},{\"name\":\"organization_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"},{\"name\":\"organization_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"}]"
+   },
+   "response": {
+    "content_type": "json",
+    "responses": [
+     {
+      "name": "successful",
+      "http_status_code": "200"
+     }
+    ]
+   }
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "context",
+    "label": "Context",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Calling IP address",
+      "optional": true,
+      "type": "string",
+      "name": "calling_ip"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Access profile ID",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Access profile name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       },
+       {
+        "control_type": "text",
+        "label": "Access profile authentication type",
+        "optional": true,
+        "type": "string",
+        "name": "type"
+       }
+      ],
+      "label": "Access profile",
+      "type": "object",
+      "name": "access_profile"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "API client ID",
+        "optional": true,
+        "type": "string",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "API client name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       }
+      ],
+      "label": "API client",
+      "type": "object",
+      "name": "client"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Issued At",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "iat"
+       },
+       {
+        "control_type": "integer",
+        "label": "Not Before",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "nbf"
+       },
+       {
+        "control_type": "integer",
+        "label": "Expiration Time",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "exp"
+       },
+       {
+        "control_type": "text",
+        "label": "Audience",
+        "optional": true,
+        "type": "string",
+        "name": "aud"
+       },
+       {
+        "control_type": "text",
+        "label": "JWT ID",
+        "optional": true,
+        "type": "string",
+        "name": "jti"
+       },
+       {
+        "control_type": "text",
+        "label": "Issuer",
+        "optional": true,
+        "type": "string",
+        "name": "iss"
+       }
+      ],
+      "label": "JWT claims",
+      "type": "object",
+      "name": "jwt_payload"
+     }
+    ]
+   },
+   {
+    "type": "object",
+    "name": "request",
+    "label": "Request parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Action",
+      "name": "action",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Payload",
+      "name": "payload",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Organization ID",
+      "name": "organization_id",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Organization name",
+      "name": "organization_name",
+      "type": "string",
+      "optional": false
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "equals_to",
+         "lhs": "#{_('data.workato_api_platform.fcb3cb12.request.action')}",
+         "rhs": "hire_candidate",
+         "uuid": "condition-e4740ed4-60ba-4121-aa2b-16f6f5a705ca"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 3,
+        "provider": "workato_recipe_function",
+        "name": "call_recipe",
+        "as": "81c12c88",
+        "title": null,
+        "description": "Call <span class=\"provider\">GH hire_candidate</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "flow_id": "hired_candidate"
+        },
+        "toggleCfg": {},
+        "input": {
+         "flow_id": "1963734",
+         "parameters": {
+          "payload": "=_('data.workato_api_platform.fcb3cb12.request.payload').to_s"
+         }
+        },
+        "extended_input_schema": [
+         {
+          "type": "object",
+          "name": "parameters",
+          "label": "Parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Payload",
+            "name": "payload",
+            "type": "string",
+            "optional": false
+           }
+          ]
+         }
+        ],
+        "uuid": "c0831eca-aa52-4f82-8092-4eca8951deca"
+       }
+      ],
+      "uuid": "c6e34fd1-9bc6-4a42-973b-ac571c2cf456"
+     },
+     {
+      "number": 4,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "equals_to",
+         "lhs": "#{_('data.workato_api_platform.fcb3cb12.request.action')}",
+         "rhs": "merge_candidate",
+         "uuid": "condition-6a320006-1158-4acd-92d3-f0766a0abd52"
+        }
+       ]
+      },
+      "block": [],
+      "uuid": "7629373b-c1e5-4705-9e03-59842f06d829"
+     },
+     {
+      "number": 5,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "equals_to",
+         "lhs": "#{_('data.workato_api_platform.fcb3cb12.request.action')}",
+         "rhs": "offer_created",
+         "uuid": "condition-378e5bce-c195-4acf-b487-c291ce22a11d"
+        }
+       ]
+      },
+      "block": [],
+      "uuid": "f4948566-5428-4e72-858a-e0ac147cbaae"
+     },
+     {
+      "number": 6,
+      "as": "775a1386",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 7,
+        "provider": "logger",
+        "name": "log_message",
+        "as": "2461d38d",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "message": "#{_('data.catch.775a1386.message')}"
+        },
+        "uuid": "6d6c6a78-1822-4b49-8c38-894faf7b4cfd",
+        "title": null,
+        "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>"
+       },
+       {
+        "number": 8,
+        "provider": "gmail",
+        "name": "send_mail",
+        "as": "01605417",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "email_type": "-- REDACTED --",
+         "to": "-- REDACTED --",
+         "subject": "error was handeled in the green house project",
+         "body": "the error is:\n#{_('data.catch.775a1386.message')}"
+        },
+        "uuid": "2dd4fc6a-3853-48fc-b9e6-c2f3032088b0",
+        "title": null,
+        "description": null
+       }
+      ],
+      "uuid": "5051c65c-a071-4fb7-9717-0d10b61f4a67"
+     }
+    ],
+    "uuid": "bca8a8bd-5d71-4942-867e-52b34f5874af"
+   }
+  ],
+  "comment": "Build a recipe to monitor/ manage other recipes, jobs, or this account",
+  "uuid": "3a245f1d-6b5c-4655-8c7a-e83181b4bb05",
+  "param": {}
+ }
+}

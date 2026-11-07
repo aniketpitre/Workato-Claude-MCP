@@ -1,0 +1,687 @@
+{
+ "name": "workato_edi",
+ "title": "Workato EDI",
+ "requires_connection": true,
+ "categories": [
+  "Workato",
+  "EDI",
+  "B2B",
+  "Integration"
+ ],
+ "aliases": [
+  "Workato EDI"
+ ],
+ "triggers": [
+  {
+   "name": "new_transactions_in_polling_bucket_batch",
+   "title": "New transactions in polling bucket",
+   "description": "New transactions in polling bucket in Workato EDI",
+   "help": "Triggers when new transactions appear in a polling bucket and returns them in configurable batches. Automatically approves each transaction's delivery to remove it from the bucket, preventing duplicate processing. Checks for new transactions every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "bucketId",
+     "type": "integer",
+     "label": "Bucket ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "The ID of the polling bucket to monitor for new transactions."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Number of transactions per batch between 1 and 100. Defaults to 100 if left blank."
+    }
+   ],
+   "output": [
+    {
+     "name": "records",
+     "type": "array",
+     "label": "Transactions",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Transaction ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "version",
+       "type": "string",
+       "label": "Version",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sender",
+       "type": "object",
+       "label": "Sender",
+       "required": true,
+       "properties": [
+        {
+         "name": "isaId",
+         "type": "string",
+         "label": "Interchange control header (ISA) ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isaIdQualifier",
+         "type": "string",
+         "label": "Interchange control header (ISA) ID qualifier",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "testIsaId",
+         "type": "string",
+         "label": "Test Interchange control header (ISA) ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "testIsaIdQualifier",
+         "type": "string",
+         "label": "Test Interchange control header (ISA) ID qualifier",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "receiver",
+       "type": "object",
+       "label": "Receiver",
+       "required": true,
+       "properties": [
+        {
+         "name": "isaId",
+         "type": "string",
+         "label": "Interchange control header (ISA) ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isaIdQualifier",
+         "type": "string",
+         "label": "Interchange control header (ISA) ID qualifier",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "testIsaId",
+         "type": "string",
+         "label": "Test Interchange control header (ISA) ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "testIsaIdQualifier",
+         "type": "string",
+         "label": "Test Interchange control header (ISA) ID qualifier",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "type",
+       "type": "object",
+       "label": "Type",
+       "required": true,
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "stream",
+       "type": "string",
+       "label": "Stream",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "businessNumber",
+       "type": "string",
+       "label": "Business number",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "referenceIdentifiers",
+       "type": "array",
+       "label": "Reference identifiers",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "owner",
+         "type": "string",
+         "label": "Owner",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "validationStatus",
+       "type": "string",
+       "label": "Validation status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "deliveryStatus",
+       "type": "string",
+       "label": "Delivery status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "acknowledgmentStatus",
+       "type": "string",
+       "label": "Acknowledgment status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "acknowledgment",
+       "type": "object",
+       "label": "Acknowledgment",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "URL",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "createdAt",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastUpdatedAt",
+       "type": "date_time",
+       "label": "Last updated at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "message",
+       "type": "object",
+       "label": "Message",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "href",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "transaction_message",
+         "type": "string",
+         "label": "Transaction message",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "download",
+         "type": "object",
+         "label": "Download",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Download URL",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "delivery",
+       "type": "object",
+       "label": "Delivery",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Delivery ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "approve",
+         "type": "object",
+         "label": "Approve",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "URL",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "fail",
+         "type": "object",
+         "label": "Fail",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "URL",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Workato EDI (Custom)",
+   "help": "Build your own Workato EDI action with an HTTP request. The request will be authorized with your Workato EDI connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "convert_data_format",
+   "title": "Convert data format",
+   "description": "Convert data format in Workato EDI",
+   "help": "This action will convert JSON into X12 or X12 into JSON.",
+   "input": [
+    {
+     "name": "data",
+     "type": "string",
+     "label": "Data",
+     "control_type": "text",
+     "required": true,
+     "hint": "Map either JSON or X12 contents into this field."
+    },
+    {
+     "name": "input_data_format",
+     "type": "string",
+     "label": "Input data format",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "data_formats",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "input_data_format",
+      "type": "string"
+     },
+     "hint": "Specify data format to send. e.g., For X12, use application/edi-x12 application/json for JSON."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_record",
+   "title": "Create record",
+   "description": "Create record in Workato EDI",
+   "help": "Create a record (e.g., a transaction) in Workato EDI.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "transaction",
+      "acknowledgment"
+     ],
+     "extends_schema": true,
+     "hint": "Select an object from the list"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "download_any_type_transaction_file",
+   "title": "Download a transaction file",
+   "description": "Download transaction file in Workato EDI",
+   "help": "Downloads file content from a transaction's download URL. Use the Download URL datapill from the trigger output.",
+   "input": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "The download URL of the transaction file. Use the Download URL datapill from the trigger output."
+    }
+   ],
+   "output": [
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "generate_label",
+   "title": "Generate label",
+   "description": "Generate label in Workato EDI",
+   "help": "Generates a label file for printing in ZPL or PDF format.",
+   "input": [
+    {
+     "name": "payload",
+     "type": "string",
+     "label": "Payload",
+     "control_type": "text-area",
+     "required": true,
+     "hint": "Input the JSON payload here. Learn more"
+    },
+    {
+     "name": "skipValidation",
+     "type": "string",
+     "label": "Skip validation",
+     "control_type": "select",
+     "options": [
+      "true",
+      "false"
+     ],
+     "hint": "Skip validation of the label data."
+    },
+    {
+     "name": "format",
+     "type": "string",
+     "label": "Format",
+     "control_type": "select",
+     "options": [
+      "zpl",
+      "pdf"
+     ],
+     "hint": "Select the output format for the generated label."
+    }
+   ],
+   "output": [
+    {
+     "name": "label",
+     "type": "string",
+     "label": "Label",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_record",
+   "title": "Get record",
+   "description": "Get record in Workato EDI",
+   "help": "Retrieve details of a specific record, e.g., transaction, in Workato EDI.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "get_object_list",
+     "extends_schema": true,
+     "hint": "Select an object from the list"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_records",
+   "title": "Search records",
+   "description": "Search records in Workato EDI",
+   "help": "Search action returns results that match all your search criteria.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "transaction",
+      "relationship"
+     ],
+     "extends_schema": true,
+     "hint": "Select any EDI object, e.g., transaction."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "send_any_type_transaction_file",
+   "title": "Send a transaction file",
+   "description": "Send transaction file in Workato EDI",
+   "help": "Sends a file as an Any File transaction to a trading partner via Workato EDI.",
+   "input": [
+    {
+     "name": "file_contents",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "The file content to send as a transaction."
+    },
+    {
+     "name": "content_type",
+     "type": "string",
+     "label": "Content type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "content_types",
+     "toggle_field": {
+      "name": "content_type",
+      "type": "string"
+     },
+     "hint": "Select the content type of the file."
+    },
+    {
+     "name": "sender_isa_id",
+     "type": "string",
+     "label": "Sender ISA ID",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "organizations_list",
+     "toggle_field": {
+      "name": "sender_isa_id",
+      "type": "string"
+     },
+     "hint": "Select an ISA ID from your organization's EDI accounts."
+    },
+    {
+     "name": "receiver_isa_id",
+     "type": "string",
+     "label": "Receiver ISA ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the trading partner's ISA ID."
+    },
+    {
+     "name": "transaction_type",
+     "type": "string",
+     "label": "Transaction type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "raw_transaction_types",
+     "toggle_field": {
+      "name": "transaction_type",
+      "type": "string"
+     },
+     "hint": "Select a transaction type."
+    },
+    {
+     "name": "stream",
+     "type": "string",
+     "label": "Stream",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "stream_list",
+     "toggle_field": {
+      "name": "stream",
+      "type": "string"
+     },
+     "hint": "Select the stream for the transaction."
+    },
+    {
+     "name": "business_number",
+     "type": "string",
+     "label": "Business number",
+     "control_type": "text",
+     "required": true,
+     "hint": "A business reference number for the transaction."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Transaction ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

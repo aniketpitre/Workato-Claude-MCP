@@ -1,0 +1,1055 @@
+{
+ "name": "zoom",
+ "title": "Zoom",
+ "requires_connection": true,
+ "categories": [
+  "Communication"
+ ],
+ "aliases": [
+  "Zoom"
+ ],
+ "triggers": [
+  {
+   "name": "new_object_events",
+   "title": "New event",
+   "description": "Webinar/Meeting/Cloud recording event in Zoom",
+   "help": "Triggers immediately when the select event happens in Zoom. Select the type of event to trigger off.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event category",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "new_object_type",
+     "extends_schema": true,
+     "hint": "Select any standard Zoom object. For example: meeting, webinar ."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Zoom (Custom)",
+   "help": "Build your own Zoom action with a HTTP request. The request will be authorized with your Zoom connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_group_member",
+   "title": "Add group members",
+   "description": "Add group member in Zoom",
+   "help": "Adds new group members to a particular group in Zoom.",
+   "input": [
+    {
+     "name": "group_id",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the ID of the group to which new member should be added."
+    },
+    {
+     "name": "members",
+     "type": "array",
+     "label": "Members",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email ID",
+       "control_type": "email",
+       "required": true,
+       "hint": "Provide the email ID of the member to be added"
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true,
+       "hint": "Provide the internal ID of the member to be added"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "ids",
+     "type": "array",
+     "label": "Added IDs",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "added_at",
+     "type": "string",
+     "label": "Added at",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "add_registrant",
+   "title": "Add registrant",
+   "description": "Add registrants to meeting/webinar/cloud recording in Zoom",
+   "help": "You may require users to register for meetings, webinars or cloud recordings in Zoom. Use this action to help your attendees register for them by adding them as registrants automatically. You may also collect their answers to registration questions in other online forms and log their answers when ad…",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "registrant_type",
+     "extends_schema": true,
+     "hint": "Select any standard Zoom object, For example, meeting, webinar, cloud recording ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_group",
+   "title": "Create group",
+   "description": "Create group in Zoom",
+   "help": "Creates a new group in Zoom with provided name.",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the name of the group to be created."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Group name",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_user",
+   "title": "Create user",
+   "description": "Create user in Zoom",
+   "help": "Creates an user in Zoom.",
+   "input": [
+    {
+     "name": "action",
+     "type": "string",
+     "label": "Action type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "user_action",
+     "toggle_field": {
+      "name": "action",
+      "type": "string"
+     },
+     "hint": "Specify how to create the new user. Find out the differences between the type here ."
+    },
+    {
+     "name": "user_info",
+     "type": "object",
+     "label": "User info",
+     "required": true,
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text",
+       "required": true,
+       "hint": "User email address. Maximum of 128 characters."
+      },
+      {
+       "name": "type",
+       "type": "integer",
+       "label": "User type",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "user_type",
+       "toggle_field": {
+        "name": "type",
+        "type": "integer"
+       },
+       "hint": "Select the license for this user. Can either be Basic, Licensed or On-prem ."
+      },
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text",
+       "hint": "User first name. Cannot contain more than 5 Chinese words."
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text",
+       "hint": "User last name. Cannot contain more than 5 Chinese words."
+      },
+      {
+       "name": "password",
+       "type": "string",
+       "label": "Password",
+       "control_type": "password",
+       "visible_if": "input.action == 'autoCreate'",
+       "hint": "User password. Minimum is 8 characters, maximum is 32 characters. Valid password format: Atleast one number and one characters and includes both upper and lower characters. Not include one identical c…"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "first_name",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text"
+    },
+    {
+     "name": "last_name",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "integer",
+     "label": "Type",
+     "control_type": "integer"
+    }
+   ]
+  },
+  {
+   "name": "delete_object",
+   "title": "Delete object",
+   "description": "Delete webinar/meeting/cloud recording/group in Zoom",
+   "help": "First, filter by the object you want then fill up the input fields which appear based on the object you have selected. Amongst other things, you’ll be able to delete remove cloud recordings from meetings, remove meetings entirely, remove groups or remove group members.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "delete_object_type",
+     "extends_schema": true
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "delete_users",
+   "title": "Delete users",
+   "description": "Delete user in Zoom",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Delete type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "delete_user_type",
+     "extends_schema": true
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "download_cloud_recording",
+   "title": "Download cloud recording",
+   "description": "Download cloud recording in Zoom",
+   "help": "If the meeting with cloud recordings is private or requires registration or is password protected, you need to register for a JWT app on the zoom marketplace and API token and secret should be saved in the connection. The download URL can be found in the output of a Zoom cloud recording trigger or f…",
+   "input": [
+    {
+     "name": "download_url",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "The download url of the file from the Zoom cloud recording."
+    },
+    {
+     "name": "download_token",
+     "type": "string",
+     "label": "Download token",
+     "control_type": "text-area",
+     "hint": "When receiving cloud recording completed webhooks, map the download token from the trigger event to this field. This allows Workato to download cloud recordings even if they are password protected."
+    }
+   ],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text"
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "File size",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_object",
+   "title": "Get object by ID",
+   "description": "Get webinar/meeting/cloud recording/transcript/group in Zoom",
+   "help": "First, filter by the object you want then fill up the input fields which appear based on the object you have selected. Amongst other things, you’ll be able to retrieve things such as past meeting details, past meeting instances, registrant details, cloud recording details, meeting transcripts and gr…",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "get_object_type",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_registrants",
+   "title": "Get registrants",
+   "description": "Get registrants for meeting/webinar/cloud recording in Zoom",
+   "help": "Use this action to get the list of people who have registered for your meeting, webinar or cloud recording.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "registrant_type",
+     "extends_schema": true,
+     "hint": "Select any standard Zoom object, For example, meeting, webinar, cloud recording ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_user",
+   "title": "Get user",
+   "description": "Get user in Zoom",
+   "help": "Get user details in Zoom.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide user ID or email address of the user."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "first_name",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text"
+    },
+    {
+     "name": "last_name",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text"
+    },
+    {
+     "name": "email",
+     "type": "string",
+     "label": "Email",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "integer",
+     "label": "Type",
+     "control_type": "integer"
+    },
+    {
+     "name": "role_name",
+     "type": "string",
+     "label": "Role name",
+     "control_type": "text"
+    },
+    {
+     "name": "pmi",
+     "type": "integer",
+     "label": "Pmi",
+     "control_type": "integer"
+    },
+    {
+     "name": "use_pmi",
+     "type": "number",
+     "label": "Use pmi",
+     "control_type": "number"
+    },
+    {
+     "name": "timezone",
+     "type": "string",
+     "label": "Timezone",
+     "control_type": "text"
+    },
+    {
+     "name": "dept",
+     "type": "string",
+     "label": "Dept",
+     "control_type": "text"
+    },
+    {
+     "name": "created_at",
+     "type": "string",
+     "label": "Created at",
+     "control_type": "text"
+    },
+    {
+     "name": "last_login_time",
+     "type": "string",
+     "label": "Last login time",
+     "control_type": "text"
+    },
+    {
+     "name": "last_client_version",
+     "type": "string",
+     "label": "Last client version",
+     "control_type": "text"
+    },
+    {
+     "name": "language",
+     "type": "string",
+     "label": "Language",
+     "control_type": "text"
+    },
+    {
+     "name": "phone_number",
+     "type": "string",
+     "label": "Phone number",
+     "control_type": "text"
+    },
+    {
+     "name": "phone_country",
+     "type": "string",
+     "label": "Phone country",
+     "control_type": "text"
+    },
+    {
+     "name": "vanity_url",
+     "type": "string",
+     "label": "Vanity URL",
+     "control_type": "text"
+    },
+    {
+     "name": "personal_meeting_url",
+     "type": "string",
+     "label": "Personal meeting URL",
+     "control_type": "text"
+    },
+    {
+     "name": "group_ids",
+     "type": "array",
+     "label": "Group ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "im_group_ids",
+     "type": "array",
+     "label": "Im group ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "verified",
+     "type": "integer",
+     "label": "Verified",
+     "control_type": "integer"
+    },
+    {
+     "name": "pic_url",
+     "type": "string",
+     "label": "Pic URL",
+     "control_type": "text"
+    },
+    {
+     "name": "cms_user_id",
+     "type": "string",
+     "label": "Cms user ID",
+     "control_type": "text"
+    },
+    {
+     "name": "account_id",
+     "type": "string",
+     "label": "Account ID",
+     "control_type": "text"
+    },
+    {
+     "name": "host_key",
+     "type": "string",
+     "label": "Host key",
+     "control_type": "text"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    },
+    {
+     "name": "jid",
+     "type": "string",
+     "label": "Jid",
+     "control_type": "text"
+    },
+    {
+     "name": "job_title",
+     "type": "string",
+     "label": "Job title",
+     "control_type": "text"
+    },
+    {
+     "name": "company",
+     "type": "string",
+     "label": "Company",
+     "control_type": "text"
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_webinar_participants",
+   "title": "Get webinar attendees",
+   "description": "Get attendees from webinar in Zoom",
+   "help": "Retrieve detailed report on each attendee of a webinar. This action retrieves the first 300 webinar attendees. Use next page token to retrieve more.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Webinar ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide webinar ID."
+    },
+    {
+     "name": "next_page_token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "Returns whenever the set of available results exceeds current page size. Expiration period for this token is 15 minutes ."
+    }
+   ],
+   "output": [
+    {
+     "name": "participants",
+     "type": "array",
+     "label": "Attendees",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "user_id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "user_email",
+       "type": "string",
+       "label": "User email",
+       "control_type": "text"
+      },
+      {
+       "name": "join_time",
+       "type": "string",
+       "label": "Join time",
+       "control_type": "text"
+      },
+      {
+       "name": "leave_time",
+       "type": "string",
+       "label": "Leave time",
+       "control_type": "text"
+      },
+      {
+       "name": "duration",
+       "type": "integer",
+       "label": "Duration",
+       "control_type": "integer"
+      },
+      {
+       "name": "attentiveness_score",
+       "type": "string",
+       "label": "Attentiveness score",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "page_size",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer"
+    },
+    {
+     "name": "page_count",
+     "type": "integer",
+     "label": "Page count",
+     "control_type": "integer"
+    },
+    {
+     "name": "total_records",
+     "type": "integer",
+     "label": "Total records",
+     "control_type": "integer"
+    },
+    {
+     "name": "next_page_token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_webinar_results",
+   "title": "Retrieve webinar results",
+   "description": "Get results of Q&A/poll from webinar in Zoom",
+   "help": "Retrieve poll or Q&A results from webinars that have ended. You’ll be able to see results based on each attendee. Use these details to find out which webinar attendees have been most active.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Result type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "webinar_result",
+     "extends_schema": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Webinar ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide webinar ID."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_object",
+   "title": "List object",
+   "description": "List objects in Zoom",
+   "help": "Retrieve list of the selected objects in Zoom.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "group",
+      "group member"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "schedule_object",
+   "title": "Schedule meeting or webinar",
+   "description": "Schedule meeting/webinar in Zoom",
+   "help": "Schedule a meeting or webinar in Zoom. First, select whether you want to create a meeting or webinar. Then fill up the input fields to schedule meetings and webinars dynamically.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "schedule_type",
+     "extends_schema": true,
+     "hint": "Select any standard Zoom object, For example, meeting, webinar ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_object",
+   "title": "Search object",
+   "description": "Search webinars/meetings/cloud recordings in Zoom",
+   "help": "First, filter by the object you want then fill up the input fields which appear based on the object you have selected. Amongst other things, you’ll be able to search for contacts in your company and cloud recordings from the past.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "search_object_type",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_users",
+   "title": "Search users",
+   "description": "Search users in Zoom",
+   "help": "Search user details by status and role in Zoom.",
+   "input": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "User status. Possible values are: active, inactive, pending ."
+    },
+    {
+     "name": "role_id",
+     "type": "string",
+     "label": "Role ID",
+     "control_type": "text",
+     "hint": "Unique identifier of role."
+    }
+   ],
+   "output": [
+    {
+     "name": "response",
+     "type": "array",
+     "label": "Users",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "first_name",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "last_name",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "integer",
+       "label": "Type",
+       "control_type": "integer"
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      },
+      {
+       "name": "pmi",
+       "type": "integer",
+       "label": "Pmi",
+       "control_type": "integer"
+      },
+      {
+       "name": "timezone",
+       "type": "string",
+       "label": "Timezone",
+       "control_type": "text"
+      },
+      {
+       "name": "dept",
+       "type": "string",
+       "label": "Dept",
+       "control_type": "text"
+      },
+      {
+       "name": "created_at",
+       "type": "string",
+       "label": "Created at",
+       "control_type": "text"
+      },
+      {
+       "name": "last_login_time",
+       "type": "string",
+       "label": "Last login time",
+       "control_type": "text"
+      },
+      {
+       "name": "last_client_version",
+       "type": "string",
+       "label": "Last client version",
+       "control_type": "text"
+      },
+      {
+       "name": "group_ids",
+       "type": "array",
+       "label": "Group ids",
+       "of": "object",
+       "properties": [
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "im_group_ids",
+       "type": "array",
+       "label": "Im group ids",
+       "of": "object",
+       "properties": [
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "verified",
+       "type": "integer",
+       "label": "Verified",
+       "control_type": "integer"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_object",
+   "title": "Update object",
+   "description": "Update webinars/meetings/cloud recordings/groups in Zoom",
+   "help": "First, filter by the object you want then fill up the input fields which appear based on the object you have selected. Amongst other things, you’ll be able to update meeting timings, update cloud recordings, update group to ensure they are password protected for security.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "update_object_type",
+     "extends_schema": true
+    },
+    {
+     "name": "poll_type",
+     "type": "string",
+     "label": "Webinar poll type",
+     "control_type": "select",
+     "visible_if": "input.object == 'webinar poll'",
+     "pick_list": "poll_action_type",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_registrant_status",
+   "title": "Update registrant status",
+   "description": "Approve/Cancel/Deny registrants for webinars/meetings/cloud recordings in Zoom",
+   "help": "Use this action to approve, cancel or deny registrants directly from recipes. You’ll be able to specify the meeting, webinar or recording by its ID and approve, cancel or deny up to 30 registrants at a time.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "registrant_type",
+     "extends_schema": true,
+     "hint": "Select any standard Zoom object, For example, meeting, webinar, cloud recording ."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "update_user",
+   "title": "Update user",
+   "description": "Update user in Zoom",
+   "help": "Update user details in Zoom.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Update type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "update_user_type",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_user_status",
+   "title": "Update user status",
+   "description": "Update user status in Zoom",
+   "help": "Activate or deactivate a Zoom user. Requires user:update:status, user:update:status:admin, or classic user:write:admin.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide user ID or email address of the user."
+    },
+    {
+     "name": "action",
+     "type": "string",
+     "label": "Action",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "deactivate",
+      "activate"
+     ],
+     "hint": "Deactivate signs the user out of Zoom and blocks login. Activate restores access."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  }
+ ]
+}

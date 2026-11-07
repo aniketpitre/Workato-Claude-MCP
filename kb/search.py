@@ -6,6 +6,8 @@ Usage:
   python3 kb/search.py "hashed token" --section MCP -n 5   # restrict to a docs section
   python3 kb/search.py --read en/recipes/building-recipes [--heading "Triggers"]
   python3 kb/search.py --sections                          # list docs sections and page counts
+  python3 kb/search.py --examples salesforce.search_sobjects [--feature try]   # real recipes using a step
+  python3 kb/search.py --connector slack [--op post_message_to_channel]        # live catalog schema
 
 
 The index (kb/index.sqlite) is a build artifact: it is rebuilt automatically whenever
@@ -214,6 +216,38 @@ def list_pages(section: str, subsection: str | None = None, limit: int = 200) ->
     return out[:limit]
 
 
+def find_examples(step: str | None, feature: str | None, limit: int) -> list[dict]:
+    rows = json.loads((ROOT / "kb" / "examples" / "index.json").read_text())
+    out = []
+    for r in rows:
+        if step and not any(s == step or s.startswith(step + ".") or step in s for s in r["steps"]):
+            continue
+        if feature and feature not in r["features"]:
+            continue
+        out.append(r)
+    rank = {"labs-template": 0, "labs-sample": 1, "workspace": 2, "community": 3}
+    out.sort(key=lambda r: (rank.get(r["source"], 9), -r.get("copies", 0), len(r["steps"])))
+    return out[:limit]
+
+
+def connector(name: str, op: str | None) -> dict:
+    p = ROOT / "kb" / "connectors" / "catalog" / f"{name}.json"
+    if not p.exists():
+        idx = json.loads((ROOT / "kb" / "connectors" / "catalog.json").read_text())
+        near = [k for k, v in idx.items() if name.lower() in k or name.lower() in (v.get("title") or "").lower()]
+        return {"error": f"connector '{name}' not in catalog", "did_you_mean": near[:15]}
+    c = json.loads(p.read_text())
+    if not op:
+        return {"name": c["name"], "title": c["title"], "requires_connection": c.get("requires_connection"),
+                "triggers": [(t["name"], t.get("title")) for t in c["triggers"]],
+                "actions": [(a["name"], a.get("title")) for a in c["actions"]]}
+    for kind in ("triggers", "actions"):
+        for o in c[kind]:
+            if o["name"] == op:
+                return {"connector": name, "kind": kind[:-1], **o}
+    return {"error": f"operation '{op}' not found", "available": [o["name"] for k in ("triggers", "actions") for o in c[k]]}
+
+
 def main() -> None:
     import argparse
     ap = argparse.ArgumentParser(description="Search the local Workato docs knowledge base")
@@ -226,7 +260,20 @@ def main() -> None:
     ap.add_argument("--list", metavar="SECTION", help="list pages in a section")
     ap.add_argument("--rebuild", action="store_true", help="force rebuild of the search index")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
+    ap.add_argument("--examples", metavar="STEP", nargs="?", const="", help="example recipes using provider[.action]")
+    ap.add_argument("--feature", help="with --examples: require a feature (try, foreach, if, custom_http, ...)")
+    ap.add_argument("--connector", metavar="NAME", help="show a connector from the live catalog")
+    ap.add_argument("--op", help="with --connector: full schema of one trigger/action")
     a = ap.parse_args()
+
+    if a.examples is not None:
+        for r in find_examples(a.examples or None, a.feature, a.limit):
+            print(f"[{r['source']}] {r['name']}  (copies {r.get('copies', 0)})\n   {r['path']}\n   "
+                  f"steps: {' > '.join(r['steps'][:8])}{' ...' if len(r['steps']) > 8 else ''}\n   features: {', '.join(r['features'])}")
+        return
+    if a.connector:
+        print(json.dumps(connector(a.connector, a.op), indent=1, ensure_ascii=False))
+        return
 
     if a.rebuild:
         print(f"indexed {build(force=True)} chunks")

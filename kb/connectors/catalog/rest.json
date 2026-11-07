@@ -1,0 +1,388 @@
+{
+ "name": "rest",
+ "title": "HTTP",
+ "requires_connection": true,
+ "categories": [
+  "Developer Tool",
+  "API Integration"
+ ],
+ "aliases": [
+  "HTTP",
+  "rest"
+ ],
+ "triggers": [
+  {
+   "name": "new_poll_event",
+   "title": "New event via polling",
+   "description": "New event via HTTP polling",
+   "help": "Create a REST request that will be executed to fetch new trigger events every {{authUser.membership.poll_interval}} minutes. If more than 100 events occur between polls, those over 100 may be dropped. Do not hard-code sensitive data like token , username/password and client ID/secret into input fiel…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Used for generating the Workato action title, e.g. New ticket or New/updated opportunity"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "The endpoint URL of the event you are polling. Learn more."
+    },
+    {
+     "name": "headers",
+     "type": "string",
+     "label": "Request headers",
+     "control_type": "text",
+     "hint": "HTTP request headers. Provide one per line, e.g. Accept: application/json Learn more Remember to make your recipe private if sending sensitive information."
+    },
+    {
+     "name": "output_type",
+     "type": "string",
+     "label": "Response content type",
+     "control_type": "select",
+     "required": true,
+     "default": "json",
+     "options": [
+      "rawdata",
+      "json",
+      "xml"
+     ],
+     "extends_schema": true,
+     "hint": "Select expected format of data response type, e.g. JSON or XML. Learn more"
+    },
+    {
+     "name": "sample_output",
+     "type": "string",
+     "label": "Response body example",
+     "control_type": "text-area",
+     "extends_schema": true,
+     "hint": "A sample schema structure of the response returned by the API call (in the response type format selected above). This is used to generate the output datatree for field mapping in subsequent steps. Lea…"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "make_request_v2",
+   "title": "Send request",
+   "description": "Send request via HTTP",
+   "help": "Send an HTTP request to an API endpoint. Do not hard-code sensitive data like token , username/password and client ID/secret into input fields. Include them in your connection or use account properties. Check out the recommended security best practices for your recipe.",
+   "input": [
+    {
+     "name": "request_name",
+     "type": "string",
+     "label": "Request name",
+     "control_type": "text",
+     "default": "Send request",
+     "extends_schema": true,
+     "hint": "Used for generating the Workato action title, e.g. Create ticket"
+    },
+    {
+     "name": "request",
+     "type": "object",
+     "label": "Request",
+     "required": true,
+     "properties": [
+      {
+       "name": "method",
+       "type": "string",
+       "label": "Method",
+       "control_type": "select",
+       "required": true,
+       "default": "GET",
+       "options": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "HEAD",
+        "PATCH"
+       ],
+       "hint": "Select a HTTP method"
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "Request URL",
+       "control_type": "text",
+       "required": true,
+       "hint": "Provide an absolute URL or relative URL (if Base URL is configured in connection)."
+      },
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Request content type",
+       "control_type": "select",
+       "visible_if": "input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH'",
+       "default": "application/json",
+       "options": [
+        "json",
+        "application/json",
+        "application/xml",
+        "text/plain",
+        "application/x-www-form-urlencoded",
+        "application/octet-stream",
+        "multipart/form-data",
+        "multipart/alternative",
+        "multipart/digest",
+        "multipart/mixed",
+        "multipart/related"
+       ],
+       "extends_schema": true,
+       "hint": "The API endpoint documentation should define what data it expects"
+      },
+      {
+       "name": "body",
+       "type": "string",
+       "label": "Request body",
+       "control_type": "text-area",
+       "visible_if": "input.request.content_type !== 'json' && input.request.content_type !== 'application/x-www-form-urlencoded' && input.request.content_type !== 'multipart/form-data' && input.request.content_type !== 'multipart/alternative' && input.request.content_type !== 'multipart/digest' && input.request.content_type !== 'multipart/mixed' && input.request.content_type !== 'multipart/related' && (input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH')",
+       "hint": "HTTP request body to send with the request. Learn more"
+      },
+      {
+       "name": "form_body",
+       "type": "array",
+       "label": "Request body",
+       "control_type": "key_value",
+       "visible_if": "input.request.content_type === 'application/x-www-form-urlencoded' && (input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH')",
+       "of": "object",
+       "properties": [
+        {
+         "name": "param",
+         "type": "string",
+         "label": "Key",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "parts",
+       "type": "array",
+       "label": "Request parts",
+       "visible_if": "(input.request.content_type === 'multipart/alternative'|| input.request.content_type === 'multipart/digest'|| input.request.content_type === 'multipart/mixed'|| input.request.content_type === 'multipart/related') && (input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH')",
+       "of": "object",
+       "properties": [
+        {
+         "name": "headers",
+         "type": "array",
+         "label": "Headers",
+         "of": "object",
+         "properties": [
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Header name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "value",
+           "type": "string",
+           "label": "Value",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "body",
+         "type": "string",
+         "label": "Raw body",
+         "control_type": "text",
+         "hint": "Raw content of the part"
+        }
+       ]
+      },
+      {
+       "name": "parameters",
+       "type": "array",
+       "label": "Request URL parameters",
+       "control_type": "key_value",
+       "visible_if": "!(input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'PATCH')",
+       "of": "object",
+       "properties": [
+        {
+         "name": "param",
+         "type": "string",
+         "label": "Parameter name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "headers",
+       "type": "array",
+       "label": "Request headers",
+       "control_type": "key_value",
+       "of": "object",
+       "properties": [
+        {
+         "name": "header",
+         "type": "string",
+         "label": "Header name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "response",
+     "type": "object",
+     "label": "Response",
+     "required": true,
+     "properties": [
+      {
+       "name": "output_type",
+       "type": "string",
+       "label": "Response content type",
+       "control_type": "select",
+       "required": true,
+       "default": "json",
+       "options": [
+        "rawdatatxt",
+        "rawdata",
+        "json",
+        "xml2"
+       ],
+       "extends_schema": true,
+       "hint": "Select expected format of data response type, e.g. JSON or XML. Learn more"
+      }
+     ]
+    },
+    {
+     "name": "test_mode",
+     "type": "string",
+     "label": "Test mode",
+     "control_type": "text",
+     "visible_if": "false"
+    },
+    {
+     "name": "keep_original_header_names",
+     "type": "string",
+     "label": "Test mode",
+     "control_type": "text",
+     "visible_if": "false"
+    },
+    {
+     "name": "wait_for_response",
+     "type": "boolean",
+     "label": "Wait for response",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "hint": "When set to yes , this action will wait for the request to complete for up to 1 hour but doesn’t guarantee ordering of job execution. Use this when your HTTP requests have frequent timeouts or are exp…"
+    },
+    {
+     "name": "completion_threshold_seconds",
+     "type": "integer",
+     "label": "Response timeout (seconds)",
+     "control_type": "number",
+     "visible_if": "input.wait_for_response == \"true\"",
+     "default": 3600,
+     "hint": "Set the maximum time (in seconds) Workato will wait for a response. If no response is received within this window, the job will fail. Must be an integer between 11 and 3600 seconds. Defaults to 3600."
+    },
+    {
+     "name": "disable_retries",
+     "type": "boolean",
+     "label": "Disable retries",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "disable_retries",
+      "type": "boolean"
+     },
+     "hint": "When set to yes , automatic retries for failed requests will be disabled. By default, HTTP GET, HEAD, PUT, DELETE, OPTIONS, and TRACE requests are automatically retried once on certain network errors.…"
+    },
+    {
+     "name": "enable_streaming",
+     "type": "boolean",
+     "label": "Enable streaming",
+     "control_type": "checkbox",
+     "visible_if": "input.wait_for_response == 'true' && (input.response.output_type == 'rawdata')",
+     "default": "false",
+     "hint": "Improves performance and enables efficient handling of large datasets by streaming data to downstream actions. Falls back to fully materialized data if unsupported. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "status_code",
+     "type": "string",
+     "label": "Status code",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "error",
+     "type": "string",
+     "label": "Error",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

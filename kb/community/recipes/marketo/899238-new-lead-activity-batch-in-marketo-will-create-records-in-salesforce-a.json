@@ -1,0 +1,3892 @@
+{
+ "id": 899238,
+ "name": "New lead activity batch in Marketo will create records in Salesforce and Snowflake",
+ "description": "1. A new lead activity in Marketo.\n2. Workato creates a tasks in Salesforce.\n3. Workato inserts a rows in Snowflake.",
+ "applications": [
+  "marketo",
+  "salesforce",
+  "snowflake"
+ ],
+ "action_applications": [
+  "salesforce",
+  "snowflake"
+ ],
+ "trigger_application": "marketo",
+ "business_objects": [
+  "task"
+ ],
+ "categories": [
+  "Marketing",
+  "CRM",
+  "Database"
+ ],
+ "copy_count": 61,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2019-02-22T04:58:46.804-08:00",
+ "source_url": "https://app.workato.com/recipes/899238?community=us",
+ "steps": [
+  "marketo.new_lead_activity_batch",
+  "salesforce.composite_create_sobject",
+  "snowflake.insert_row"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "marketo",
+  "name": "new_lead_activity_batch",
+  "as": "4e178d1d",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "=1.days.ago",
+   "activity_id": "12"
+  },
+  "extended_output_schema": [
+   {
+    "type": "array",
+    "name": "activities",
+    "label": "Activities",
+    "of": "object",
+    "properties": [
+     {
+      "control_type": "number",
+      "label": "Activity ID",
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "name": "id"
+     },
+     {
+      "control_type": "number",
+      "label": "Lead ID",
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "name": "leadId"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Activity date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "type": "date_time",
+      "name": "activityDate"
+     },
+     {
+      "control_type": "number",
+      "label": "Activity type ID",
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "name": "activityTypeId"
+     },
+     {
+      "control_type": "number",
+      "label": "Primary attribute value ID",
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "name": "primaryAttributeValueId"
+     },
+     {
+      "control_type": "text",
+      "label": "Activity primary attribute",
+      "type": "string",
+      "name": "primaryAttributeValue"
+     },
+     {
+      "name": "attributes",
+      "type": "array",
+      "of": "object",
+      "label": "Attributes",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Name",
+        "type": "string",
+        "name": "name"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Company Name",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "company",
+        "type": "string",
+        "name": "company"
+       },
+       {
+        "control_type": "text",
+        "label": "Site",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "site",
+        "type": "string",
+        "name": "site"
+       },
+       {
+        "control_type": "text",
+        "label": "Billing Address",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "billingStreet",
+        "type": "string",
+        "name": "billingStreet"
+       },
+       {
+        "control_type": "text",
+        "label": "Billing City",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "billingCity",
+        "type": "string",
+        "name": "billingCity"
+       },
+       {
+        "control_type": "text",
+        "label": "Billing State",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "billingState",
+        "type": "string",
+        "name": "billingState"
+       },
+       {
+        "control_type": "text",
+        "label": "Billing Country",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "billingCountry",
+        "type": "string",
+        "name": "billingCountry"
+       },
+       {
+        "control_type": "text",
+        "label": "Billing Postal Code",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "billingPostalCode",
+        "type": "string",
+        "name": "billingPostalCode"
+       },
+       {
+        "control_type": "url",
+        "label": "Website",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "website",
+        "type": "string",
+        "name": "website"
+       },
+       {
+        "control_type": "text",
+        "label": "Main Phone",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "mainPhone",
+        "type": "string",
+        "name": "mainPhone"
+       },
+       {
+        "control_type": "number",
+        "label": "Annual Revenue",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "annualRevenue",
+        "type": "integer",
+        "name": "annualRevenue"
+       },
+       {
+        "control_type": "integer",
+        "label": "Num Employees",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "numberOfEmployees",
+        "type": "integer",
+        "name": "numberOfEmployees"
+       },
+       {
+        "control_type": "text",
+        "label": "Industry",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "industry",
+        "type": "string",
+        "name": "industry"
+       },
+       {
+        "control_type": "text",
+        "label": "SIC Code",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "sicCode",
+        "type": "string",
+        "name": "sicCode"
+       },
+       {
+        "control_type": "text",
+        "label": "Company Notes",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoCompanyNotes",
+        "type": "string",
+        "name": "mktoCompanyNotes"
+       },
+       {
+        "control_type": "text",
+        "label": "SFDC Account Id",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sfdcAccountId",
+        "type": "string",
+        "name": "sfdcAccountId"
+       },
+       {
+        "control_type": "integer",
+        "label": "Id",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "id",
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Full Name",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoName",
+        "type": "string",
+        "name": "mktoName"
+       },
+       {
+        "control_type": "text",
+        "label": "Person Type",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "personType",
+        "type": "string",
+        "name": "personType"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is Partner",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is Partner",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "mktoIsPartner",
+         "type": "boolean",
+         "name": "mktoIsPartner"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoIsPartner",
+        "type": "boolean",
+        "name": "mktoIsPartner"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is Lead",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is Lead",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "isLead",
+         "type": "boolean",
+         "name": "isLead"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "isLead",
+        "type": "boolean",
+        "name": "isLead"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is Customer",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is Customer",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "mktoIsCustomer",
+         "type": "boolean",
+         "name": "mktoIsCustomer"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoIsCustomer",
+        "type": "boolean",
+        "name": "mktoIsCustomer"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is Anonymous",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is Anonymous",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": null,
+         "marketo_field_name": "isAnonymous",
+         "type": "boolean",
+         "name": "isAnonymous"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "isAnonymous",
+        "type": "boolean",
+        "name": "isAnonymous"
+       },
+       {
+        "control_type": "text",
+        "label": "Salutation",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "salutation",
+        "type": "string",
+        "name": "salutation"
+       },
+       {
+        "control_type": "text",
+        "label": "First Name",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "firstName",
+        "type": "string",
+        "name": "firstName"
+       },
+       {
+        "control_type": "text",
+        "label": "Middle Name",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "middleName",
+        "type": "string",
+        "name": "middleName"
+       },
+       {
+        "control_type": "text",
+        "label": "Last Name",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "lastName",
+        "type": "string",
+        "name": "lastName"
+       },
+       {
+        "control_type": "email",
+        "label": "Email Address",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "email",
+        "type": "string",
+        "name": "email"
+       },
+       {
+        "control_type": "phone",
+        "label": "Phone Number",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "phone",
+        "type": "string",
+        "name": "phone"
+       },
+       {
+        "control_type": "phone",
+        "label": "Mobile Phone Number",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "mobilePhone",
+        "type": "string",
+        "name": "mobilePhone"
+       },
+       {
+        "control_type": "phone",
+        "label": "Fax Number",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "fax",
+        "type": "string",
+        "name": "fax"
+       },
+       {
+        "control_type": "text",
+        "label": "Job Title",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "title",
+        "type": "string",
+        "name": "title"
+       },
+       {
+        "control_type": "text",
+        "label": "Contact Company",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "contactCompany",
+        "type": "string",
+        "name": "contactCompany"
+       },
+       {
+        "control_type": "date",
+        "label": "Date of Birth",
+        "render_input": "date_conversion",
+        "parse_output": "date_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "dateOfBirth",
+        "type": "date_time",
+        "name": "dateOfBirth"
+       },
+       {
+        "control_type": "text",
+        "label": "Address",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "address",
+        "type": "string",
+        "name": "address"
+       },
+       {
+        "control_type": "text",
+        "label": "City",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "city",
+        "type": "string",
+        "name": "city"
+       },
+       {
+        "control_type": "text",
+        "label": "State",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "state",
+        "type": "string",
+        "name": "state"
+       },
+       {
+        "control_type": "text",
+        "label": "Country",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "country",
+        "type": "string",
+        "name": "country"
+       },
+       {
+        "control_type": "text",
+        "label": "Postal Code",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "postalCode",
+        "type": "string",
+        "name": "postalCode"
+       },
+       {
+        "control_type": "text",
+        "label": "Original Source Type",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "originalSourceType",
+        "type": "string",
+        "name": "originalSourceType"
+       },
+       {
+        "control_type": "text",
+        "label": "Original Source Info",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "originalSourceInfo",
+        "type": "string",
+        "name": "originalSourceInfo"
+       },
+       {
+        "control_type": "text",
+        "label": "Registration Source Type",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "registrationSourceType",
+        "type": "string",
+        "name": "registrationSourceType"
+       },
+       {
+        "control_type": "text",
+        "label": "Registration Source Info",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "registrationSourceInfo",
+        "type": "string",
+        "name": "registrationSourceInfo"
+       },
+       {
+        "control_type": "text",
+        "label": "Original Search Engine",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "originalSearchEngine",
+        "type": "string",
+        "name": "originalSearchEngine"
+       },
+       {
+        "control_type": "text",
+        "label": "Original Search Phrase",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "originalSearchPhrase",
+        "type": "string",
+        "name": "originalSearchPhrase"
+       },
+       {
+        "control_type": "url",
+        "label": "Original Referrer",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "originalReferrer",
+        "type": "string",
+        "name": "originalReferrer"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Email Invalid",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Email Invalid",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": null,
+         "marketo_field_name": "emailInvalid",
+         "type": "boolean",
+         "name": "emailInvalid"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "emailInvalid",
+        "type": "boolean",
+        "name": "emailInvalid"
+       },
+       {
+        "control_type": "text",
+        "label": "Email Invalid Cause",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "emailInvalidCause",
+        "type": "string",
+        "name": "emailInvalidCause"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Unsubscribed",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Unsubscribed",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": null,
+         "marketo_field_name": "unsubscribed",
+         "type": "boolean",
+         "name": "unsubscribed"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "unsubscribed",
+        "type": "boolean",
+        "name": "unsubscribed"
+       },
+       {
+        "control_type": "text",
+        "label": "Unsubscribed Reason",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "unsubscribedReason",
+        "type": "string",
+        "name": "unsubscribedReason"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Do Not Call",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Do Not Call",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": null,
+         "marketo_field_name": "doNotCall",
+         "type": "boolean",
+         "name": "doNotCall"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "doNotCall",
+        "type": "boolean",
+        "name": "doNotCall"
+       },
+       {
+        "control_type": "text",
+        "label": "Do Not Call Cause",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoDoNotCallCause",
+        "type": "string",
+        "name": "mktoDoNotCallCause"
+       },
+       {
+        "control_type": "text",
+        "label": "Do Not Call Reason",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "doNotCallReason",
+        "type": "string",
+        "name": "doNotCallReason"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Marketing Suspended",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Marketing Suspended",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "marketingSuspended",
+         "type": "boolean",
+         "name": "marketingSuspended"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "marketingSuspended",
+        "type": "boolean",
+        "name": "marketingSuspended"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketing Suspended Cause",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "marketingSuspendedCause",
+        "type": "string",
+        "name": "marketingSuspendedCause"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Black Listed",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Black Listed",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "blackListed",
+         "type": "boolean",
+         "name": "blackListed"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "blackListed",
+        "type": "boolean",
+        "name": "blackListed"
+       },
+       {
+        "control_type": "text",
+        "label": "Black Listed Cause",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "blackListedCause",
+        "type": "string",
+        "name": "blackListedCause"
+       },
+       {
+        "control_type": "text",
+        "label": "Person Notes",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoPersonNotes",
+        "type": "string",
+        "name": "mktoPersonNotes"
+       },
+       {
+        "control_type": "text",
+        "label": "SFDC Type",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sfdcType",
+        "type": "string",
+        "name": "sfdcType"
+       },
+       {
+        "control_type": "text",
+        "label": "SFDC Contact Id",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sfdcContactId",
+        "type": "string",
+        "name": "sfdcContactId"
+       },
+       {
+        "control_type": "text",
+        "label": "Anonymous IP",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "anonymousIP",
+        "type": "string",
+        "name": "anonymousIP"
+       },
+       {
+        "control_type": "text",
+        "label": "Inferred Company",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "inferredCompany",
+        "type": "string",
+        "name": "inferredCompany"
+       },
+       {
+        "control_type": "text",
+        "label": "Inferred Country",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "inferredCountry",
+        "type": "string",
+        "name": "inferredCountry"
+       },
+       {
+        "control_type": "text",
+        "label": "Inferred City",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "inferredCity",
+        "type": "string",
+        "name": "inferredCity"
+       },
+       {
+        "control_type": "text",
+        "label": "Inferred State Region",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "inferredStateRegion",
+        "type": "string",
+        "name": "inferredStateRegion"
+       },
+       {
+        "control_type": "text",
+        "label": "Inferred Postal Code",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "inferredPostalCode",
+        "type": "string",
+        "name": "inferredPostalCode"
+       },
+       {
+        "control_type": "text",
+        "label": "Inferred Metropolitan Area",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "inferredMetropolitanArea",
+        "type": "string",
+        "name": "inferredMetropolitanArea"
+       },
+       {
+        "control_type": "text",
+        "label": "Inferred Phone Area Code",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "inferredPhoneAreaCode",
+        "type": "string",
+        "name": "inferredPhoneAreaCode"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Email Suspended",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Email Suspended",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "emailSuspended",
+         "type": "boolean",
+         "name": "emailSuspended"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "emailSuspended",
+        "type": "boolean",
+        "name": "emailSuspended"
+       },
+       {
+        "control_type": "text",
+        "label": "Email Suspended Cause",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "emailSuspendedCause",
+        "type": "string",
+        "name": "emailSuspendedCause"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Email Suspended At",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "emailSuspendedAt",
+        "type": "date_time",
+        "name": "emailSuspendedAt"
+       },
+       {
+        "control_type": "text",
+        "label": "Department",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "department",
+        "type": "string",
+        "name": "department"
+       },
+       {
+        "control_type": "text",
+        "label": "SFDC Id",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sfdcId",
+        "type": "string",
+        "name": "sfdcId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created At",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "createdAt",
+        "type": "date_time",
+        "name": "createdAt"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated At",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "updatedAt",
+        "type": "date_time",
+        "name": "updatedAt"
+       },
+       {
+        "control_type": "text",
+        "label": "Cookies",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "cookies",
+        "type": "string",
+        "name": "cookies"
+       },
+       {
+        "control_type": "text",
+        "label": "Lead Person",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "leadPerson",
+        "type": "string",
+        "name": "leadPerson"
+       },
+       {
+        "control_type": "text",
+        "label": "Role",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "leadRole",
+        "type": "string",
+        "name": "leadRole"
+       },
+       {
+        "control_type": "text",
+        "label": "Lead Source",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "leadSource",
+        "type": "string",
+        "name": "leadSource"
+       },
+       {
+        "control_type": "text",
+        "label": "Lead Status",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "leadStatus",
+        "type": "string",
+        "name": "leadStatus"
+       },
+       {
+        "control_type": "integer",
+        "label": "Lead Score",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "leadScore",
+        "type": "integer",
+        "name": "leadScore"
+       },
+       {
+        "control_type": "number",
+        "label": "Urgency",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "urgency",
+        "type": "number",
+        "name": "urgency"
+       },
+       {
+        "control_type": "integer",
+        "label": "Priority",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "priority",
+        "type": "integer",
+        "name": "priority"
+       },
+       {
+        "control_type": "integer",
+        "label": "Relative Score",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "relativeScore",
+        "type": "integer",
+        "name": "relativeScore"
+       },
+       {
+        "control_type": "integer",
+        "label": "Relative Urgency",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "relativeUrgency",
+        "type": "integer",
+        "name": "relativeUrgency"
+       },
+       {
+        "control_type": "text",
+        "label": "Lead Rating",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "rating",
+        "type": "string",
+        "name": "rating"
+       },
+       {
+        "control_type": "text",
+        "label": "SFDC Lead Id",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sfdcLeadId",
+        "type": "string",
+        "name": "sfdcLeadId"
+       },
+       {
+        "control_type": "text",
+        "label": "SFDC Lead Owner Id",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sfdcLeadOwnerId",
+        "type": "string",
+        "name": "sfdcLeadOwnerId"
+       },
+       {
+        "control_type": "text",
+        "label": "Primary Lead Interest",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "personPrimaryLeadInterest",
+        "type": "string",
+        "name": "personPrimaryLeadInterest"
+       },
+       {
+        "control_type": "text",
+        "label": "Lead Partition",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "leadPartitionId",
+        "type": "string",
+        "name": "leadPartitionId"
+       },
+       {
+        "control_type": "text",
+        "label": "Lead Revenue Cycle Model ID",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "leadRevenueCycleModelId",
+        "type": "string",
+        "name": "leadRevenueCycleModelId"
+       },
+       {
+        "control_type": "text",
+        "label": "Lead Revenue Stage ID",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "leadRevenueStageId",
+        "type": "string",
+        "name": "leadRevenueStageId"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Gender",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "gender",
+        "type": "string",
+        "name": "gender"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Facebook Display Name",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "facebookDisplayName",
+        "type": "string",
+        "name": "facebookDisplayName"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Twitter Display Name",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "twitterDisplayName",
+        "type": "string",
+        "name": "twitterDisplayName"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social LinkedIn Display Name",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "linkedInDisplayName",
+        "type": "string",
+        "name": "linkedInDisplayName"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Facebook Profile URL",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "facebookProfileURL",
+        "type": "string",
+        "name": "facebookProfileURL"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Twitter Profile URL",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "twitterProfileURL",
+        "type": "string",
+        "name": "twitterProfileURL"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social LinkedIn Profile URL",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "linkedInProfileURL",
+        "type": "string",
+        "name": "linkedInProfileURL"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Facebook Photo URL",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "facebookPhotoURL",
+        "type": "string",
+        "name": "facebookPhotoURL"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Twitter Photo URL",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "twitterPhotoURL",
+        "type": "string",
+        "name": "twitterPhotoURL"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social LinkedIn Photo URL",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "linkedInPhotoURL",
+        "type": "string",
+        "name": "linkedInPhotoURL"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Facebook Reach",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "facebookReach",
+        "type": "integer",
+        "name": "facebookReach"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Twitter Reach",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "twitterReach",
+        "type": "integer",
+        "name": "twitterReach"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social LinkedIn Reach",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "linkedInReach",
+        "type": "integer",
+        "name": "linkedInReach"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Facebook Referred Visits",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "facebookReferredVisits",
+        "type": "integer",
+        "name": "facebookReferredVisits"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Twitter Referred Visits",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "twitterReferredVisits",
+        "type": "integer",
+        "name": "twitterReferredVisits"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social LinkedIn Referred Visits",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "linkedInReferredVisits",
+        "type": "integer",
+        "name": "linkedInReferredVisits"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Total Referred Visits",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "totalReferredVisits",
+        "type": "integer",
+        "name": "totalReferredVisits"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Facebook Referred Enrollments",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "facebookReferredEnrollments",
+        "type": "integer",
+        "name": "facebookReferredEnrollments"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Twitter Referred Enrollments",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "twitterReferredEnrollments",
+        "type": "integer",
+        "name": "twitterReferredEnrollments"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social LinkedIn Referred Enrollments",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "linkedInReferredEnrollments",
+        "type": "integer",
+        "name": "linkedInReferredEnrollments"
+       },
+       {
+        "control_type": "integer",
+        "label": "Marketo Social Total Referred Enrollments",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "totalReferredEnrollments",
+        "type": "integer",
+        "name": "totalReferredEnrollments"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Marketo Social Last Referred Visit",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "lastReferredVisit",
+        "type": "date_time",
+        "name": "lastReferredVisit"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Marketo Social Last Referred Enrollment",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "lastReferredEnrollment",
+        "type": "date_time",
+        "name": "lastReferredEnrollment"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Syndication Id",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "syndicationId",
+        "type": "string",
+        "name": "syndicationId"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Facebook Id",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "facebookId",
+        "type": "string",
+        "name": "facebookId"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social Twitter Id",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "twitterId",
+        "type": "string",
+        "name": "twitterId"
+       },
+       {
+        "control_type": "text",
+        "label": "Marketo Social LinkedIn Id",
+        "optional": true,
+        "hint": null,
+        "custom": null,
+        "marketo_field_name": "linkedInId",
+        "type": "string",
+        "name": "linkedInId"
+       },
+       {
+        "control_type": "text",
+        "label": "Acquisition Program",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "acquisitionProgramId",
+        "type": "string",
+        "name": "acquisitionProgramId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Acquisition Date",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoAcquisitionDate",
+        "type": "date_time",
+        "name": "mktoAcquisitionDate"
+       },
+       {
+        "control_type": "text",
+        "label": "External Company Id",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "externalCompanyId",
+        "type": "string",
+        "name": "externalCompanyId"
+       },
+       {
+        "control_type": "text",
+        "label": "Custom Field 1",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "customField1",
+        "type": "string",
+        "name": "customField1"
+       },
+       {
+        "control_type": "text",
+        "label": "company_custom",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "companycustom",
+        "type": "string",
+        "name": "companycustom"
+       },
+       {
+        "control_type": "text",
+        "label": "External Sales Person Id",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "externalSalesPersonId",
+        "type": "string",
+        "name": "externalSalesPersonId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Joined date",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "joineddate",
+        "type": "date_time",
+        "name": "joineddate"
+       },
+       {
+        "control_type": "text",
+        "label": "test field",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "testfield",
+        "type": "string",
+        "name": "testfield"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "GDH Enrollee",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "GDH Enrollee",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "gDHEnrollee",
+         "type": "boolean",
+         "name": "gDHEnrollee"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "gDHEnrollee",
+        "type": "boolean",
+        "name": "gDHEnrollee"
+       },
+       {
+        "control_type": "number",
+        "label": "Shopify Revenue GDH",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "shopifyRevenueGDH",
+        "type": "integer",
+        "name": "shopifyRevenueGDH"
+       },
+       {
+        "control_type": "date",
+        "label": "GDH Enrollee Date",
+        "render_input": "date_conversion",
+        "parse_output": "date_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "gDHEnrolleeDate",
+        "type": "date_time",
+        "name": "gDHEnrolleeDate"
+       },
+       {
+        "control_type": "integer",
+        "label": "Shopify Revenue DN",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "shopifyRevenueBFF",
+        "type": "integer",
+        "name": "shopifyRevenueBFF"
+       },
+       {
+        "control_type": "date_time",
+        "label": "DN Purchase Date",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "dNPurchaseDate",
+        "type": "date_time",
+        "name": "dNPurchaseDate"
+       },
+       {
+        "control_type": "date",
+        "label": "UA Purchase Date",
+        "render_input": "date_conversion",
+        "parse_output": "date_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "uAPurchaseDate",
+        "type": "date_time",
+        "name": "uAPurchaseDate"
+       },
+       {
+        "control_type": "text",
+        "label": "Last Cleansing By",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "lastCleansingBy",
+        "type": "string",
+        "name": "lastCleansingBy"
+       },
+       {
+        "control_type": "date",
+        "label": "Last Cleansing Date",
+        "render_input": "date_conversion",
+        "parse_output": "date_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "lastCleansingDate",
+        "type": "date_time",
+        "name": "lastCleansingDate"
+       },
+       {
+        "control_type": "text",
+        "label": "Orders",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "orders",
+        "type": "string",
+        "name": "orders"
+       },
+       {
+        "control_type": "text",
+        "label": "Email Bounced Reason",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "EmailBouncedReason",
+        "type": "string",
+        "name": "EmailBouncedReason"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Email Bounced Date",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "EmailBouncedDate",
+        "type": "date_time",
+        "name": "EmailBouncedDate"
+       },
+       {
+        "control_type": "text",
+        "label": "SIC Code (L)",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "SICCode__c",
+        "type": "string",
+        "name": "SICCode__c"
+       },
+       {
+        "control_type": "text",
+        "label": "Product Interest",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "ProductInterest__c",
+        "type": "string",
+        "name": "ProductInterest__c"
+       },
+       {
+        "control_type": "text",
+        "label": "Primary",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "Primary__c",
+        "type": "string",
+        "name": "Primary__c"
+       },
+       {
+        "control_type": "text",
+        "label": "Current Generator(s)",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "CurrentGenerators__c",
+        "type": "string",
+        "name": "CurrentGenerators__c"
+       },
+       {
+        "control_type": "integer",
+        "label": "Number of Locations",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "NumberofLocations__c",
+        "type": "integer",
+        "name": "NumberofLocations__c"
+       },
+       {
+        "control_type": "text",
+        "label": "Customer Priority",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "CustomerPriority__c",
+        "type": "string",
+        "name": "CustomerPriority__c"
+       },
+       {
+        "control_type": "text",
+        "label": "SLA",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "SLA__c",
+        "type": "string",
+        "name": "SLA__c"
+       },
+       {
+        "control_type": "text",
+        "label": "Active",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "Active__c",
+        "type": "string",
+        "name": "Active__c"
+       },
+       {
+        "control_type": "integer",
+        "label": "Number of Locations (A)",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "NumberofLocations__c_account",
+        "type": "integer",
+        "name": "NumberofLocations__c_account"
+       },
+       {
+        "control_type": "text",
+        "label": "Upsell Opportunity",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "UpsellOpportunity__c",
+        "type": "string",
+        "name": "UpsellOpportunity__c"
+       },
+       {
+        "control_type": "text",
+        "label": "SLA Serial Number",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "SLASerialNumber__c",
+        "type": "string",
+        "name": "SLASerialNumber__c"
+       },
+       {
+        "control_type": "date",
+        "label": "SLA Expiration Date",
+        "render_input": "date_conversion",
+        "parse_output": "date_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "SLAExpirationDate__c",
+        "type": "date_time",
+        "name": "SLAExpirationDate__c"
+       },
+       {
+        "control_type": "text",
+        "label": "GU_DUNS",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "GU_DUNS__c",
+        "type": "string",
+        "name": "GU_DUNS__c"
+       },
+       {
+        "control_type": "text",
+        "label": "Level",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "Level__c",
+        "type": "string",
+        "name": "Level__c"
+       },
+       {
+        "control_type": "text",
+        "label": "Languages",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "Languages__c",
+        "type": "string",
+        "name": "Languages__c"
+       },
+       {
+        "control_type": "integer",
+        "label": "sessions",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sessions",
+        "type": "integer",
+        "name": "sessions"
+       },
+       {
+        "control_type": "number",
+        "label": "bounce rate",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "bouncerate",
+        "type": "number",
+        "name": "bouncerate"
+       },
+       {
+        "control_type": "number",
+        "label": "session duration",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sessionduration",
+        "type": "number",
+        "name": "sessionduration"
+       },
+       {
+        "control_type": "integer",
+        "label": "ad clicks",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "adclicks",
+        "type": "integer",
+        "name": "adclicks"
+       },
+       {
+        "control_type": "number",
+        "label": "screenviews per session",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "screenviewspersession",
+        "type": "number",
+        "name": "screenviewspersession"
+       },
+       {
+        "control_type": "number",
+        "label": "screenview duration",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "screenviewduration",
+        "type": "number",
+        "name": "screenviewduration"
+       },
+       {
+        "control_type": "text",
+        "label": "Person Time Zone",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "personTimeZone",
+        "type": "string",
+        "name": "personTimeZone"
+       },
+       {
+        "control_type": "text",
+        "label": "LinkedIn",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "linkedIn",
+        "type": "string",
+        "name": "linkedIn"
+       },
+       {
+        "control_type": "text",
+        "label": "LinkedIn2",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "linkedIn2",
+        "type": "string",
+        "name": "linkedIn2"
+       },
+       {
+        "control_type": "text",
+        "label": "SE-First Name",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEFirstName",
+        "type": "string",
+        "name": "sEFirstName"
+       },
+       {
+        "control_type": "text",
+        "label": "SE-Last Name",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sELastName",
+        "type": "string",
+        "name": "sELastName"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "SE-Medical Education CB",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "SE-Medical Education CB",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "sEMedicalEducationCB",
+         "type": "boolean",
+         "name": "sEMedicalEducationCB"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEMedicalEducationCB",
+        "type": "boolean",
+        "name": "sEMedicalEducationCB"
+       },
+       {
+        "control_type": "text",
+        "label": "SE-Medical Education List",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEMedicalEducationList",
+        "type": "string",
+        "name": "sEMedicalEducationList"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "SE-Product CB",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "SE-Product CB",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "sEProductCB",
+         "type": "boolean",
+         "name": "sEProductCB"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEProductCB",
+        "type": "boolean",
+        "name": "sEProductCB"
+       },
+       {
+        "control_type": "text",
+        "label": "SE-Product List",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEProductList",
+        "type": "string",
+        "name": "sEProductList"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "SE-Product Telephone",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "SE-Product Telephone",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "sEProductTelephone",
+         "type": "boolean",
+         "name": "sEProductTelephone"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEProductTelephone",
+        "type": "boolean",
+        "name": "sEProductTelephone"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "SE-Approved CB",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "SE-Approved CB",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "sEApprovedEmail",
+         "type": "boolean",
+         "name": "sEApprovedEmail"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEApprovedEmail",
+        "type": "boolean",
+        "name": "sEApprovedEmail"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "SE-Congresses CB",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "SE-Congresses CB",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "sECongressesEmail",
+         "type": "boolean",
+         "name": "sECongressesEmail"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sECongressesEmail",
+        "type": "boolean",
+        "name": "sECongressesEmail"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "SE-Industry News CB",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "SE-Industry News CB",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "hint": null,
+         "custom": true,
+         "marketo_field_name": "sEIndustryNewsCB",
+         "type": "boolean",
+         "name": "sEIndustryNewsCB"
+        },
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sEIndustryNewsCB",
+        "type": "boolean",
+        "name": "sEIndustryNewsCB"
+       },
+       {
+        "control_type": "text",
+        "label": "Custom SFDC Contact ID",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "customSFDCContactID",
+        "type": "string",
+        "name": "customSFDCContactID"
+       },
+       {
+        "control_type": "text",
+        "label": "Mkto Custom Field 1",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoCustomField1",
+        "type": "string",
+        "name": "mktoCustomField1"
+       },
+       {
+        "control_type": "text",
+        "label": "Mkto Custom Field 2",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "mktoCustomField2",
+        "type": "string",
+        "name": "mktoCustomField2"
+       },
+       {
+        "control_type": "text",
+        "label": "SFDC Custom Object ID",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "sFDCCustomObjectID",
+        "type": "string",
+        "name": "sFDCCustomObjectID"
+       },
+       {
+        "control_type": "integer",
+        "label": "Behavior Score",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "behaviorScore",
+        "type": "integer",
+        "name": "behaviorScore"
+       },
+       {
+        "control_type": "text",
+        "label": "Hospital Group",
+        "optional": true,
+        "hint": null,
+        "custom": true,
+        "marketo_field_name": "hospitalGroup",
+        "type": "string",
+        "name": "hospitalGroup"
+       }
+      ],
+      "label": "Lead",
+      "type": "object",
+      "name": "lead"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "salesforce",
+    "name": "composite_create_sobject",
+    "as": "693b9b2f",
+    "title": "Create Tasks in batches",
+    "description": "Create <span class=\"provider\">Tasks</span> in batches in <span class=\"provider\">Salesforce</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "sobject_name": "Task",
+     "records.TaskSubtype": "Task"
+    },
+    "toggleCfg": {
+     "advanced_configuration.allOrNone": true,
+     "records.TaskSubtype": true,
+     "records.Priority": false,
+     "records.Status": false
+    },
+    "input": {
+     "sobject_name": "Task",
+     "records": {
+      "attributes": {
+       "Task": "Task"
+      },
+      "____source": "#{_('data.marketo.4e178d1d.activities')}",
+      "ActivityDate": "#{_('data.marketo.4e178d1d.activities.first.activityDate')}",
+      "Priority": "=_('data.marketo.4e178d1d.activities.first.lead.priority') == 1 ? \"High\" : (_('data.marketo.4e178d1d.activities.first.lead.priority') == 2 ? \"Medium\" : \"Low\") : \"Low\"",
+      "Status": "#{_('data.marketo.4e178d1d.activities.first.lead.leadStatus')}",
+      "Subject": "The task is initiated by #{_('data.marketo.4e178d1d.activities.first.primaryAttributeValue')}",
+      "TaskSubtype": "Task"
+     },
+     "advanced_configuration": {
+      "allOrNone": "false"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "successRecords",
+      "label": "Success records",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Salesforce ID",
+        "type": "string",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Assigned To ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "OwnerId"
+       },
+       {
+        "control_type": "number",
+        "label": "Call Duration",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "CallDurationInSeconds"
+       },
+       {
+        "control_type": "text",
+        "label": "Call Object Identifier",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallObject"
+       },
+       {
+        "control_type": "text",
+        "label": "Call Result",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallDisposition"
+       },
+       {
+        "control_type": "select",
+        "label": "Call Type",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Call Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "CallType"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallType"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Create Recurring Series of Tasks",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Create Recurring Series of Tasks",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": false,
+         "type": "boolean",
+         "name": "IsRecurrence"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false,
+        "type": "boolean",
+        "name": "IsRecurrence"
+       },
+       {
+        "control_type": "text-area",
+        "label": "Description",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Description"
+       },
+       {
+        "control_type": "date",
+        "label": "Due Date Only",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "ActivityDate"
+       },
+       {
+        "control_type": "text",
+        "label": "Name ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "WhoId"
+       },
+       {
+        "control_type": "select",
+        "label": "Priority",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Priority",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Priority"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Priority"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Day of Month",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceDayOfMonth"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Day of Week Mask",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceDayOfWeekMask"
+       },
+       {
+        "control_type": "date",
+        "label": "Recurrence End",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "RecurrenceEndDateOnly"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Instance",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Instance",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceInstance"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceInstance"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Interval",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceInterval"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Month of Year",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Month of Year",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceMonthOfYear"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceMonthOfYear"
+       },
+       {
+        "control_type": "date",
+        "label": "Recurrence Start",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "RecurrenceStartDateOnly"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Time Zone",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Time Zone",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceTimeZoneSidKey"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceTimeZoneSidKey"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Type",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceType"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceType"
+       },
+       {
+        "control_type": "text",
+        "label": "Related To ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "WhatId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Reminder Date/Time",
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "ReminderDateTime"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Reminder Set",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Reminder Set",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "boolean",
+         "name": "IsReminderSet"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "boolean",
+        "name": "IsReminderSet"
+       },
+       {
+        "control_type": "select",
+        "label": "Repeat This Task",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Repeat This Task",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceRegeneratedType"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceRegeneratedType"
+       },
+       {
+        "control_type": "select",
+        "label": "Status",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Status",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Status"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Status"
+       },
+       {
+        "control_type": "text",
+        "label": "Subject",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Subject"
+       },
+       {
+        "control_type": "select",
+        "label": "Task Subtype",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Task Subtype",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": false,
+         "type": "string",
+         "name": "TaskSubtype"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false,
+        "type": "string",
+        "name": "TaskSubtype"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Success",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Success",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "success"
+        },
+        "type": "boolean",
+        "name": "success"
+       }
+      ]
+     },
+     {
+      "type": "array",
+      "name": "failedRecords",
+      "label": "Failed records",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Assigned To ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "OwnerId"
+       },
+       {
+        "control_type": "number",
+        "label": "Call Duration",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "CallDurationInSeconds"
+       },
+       {
+        "control_type": "text",
+        "label": "Call Object Identifier",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallObject"
+       },
+       {
+        "control_type": "text",
+        "label": "Call Result",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallDisposition"
+       },
+       {
+        "control_type": "select",
+        "label": "Call Type",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Call Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "CallType"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallType"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Create Recurring Series of Tasks",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Create Recurring Series of Tasks",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": false,
+         "type": "boolean",
+         "name": "IsRecurrence"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false,
+        "type": "boolean",
+        "name": "IsRecurrence"
+       },
+       {
+        "control_type": "text-area",
+        "label": "Description",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Description"
+       },
+       {
+        "control_type": "date",
+        "label": "Due Date Only",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "ActivityDate"
+       },
+       {
+        "control_type": "text",
+        "label": "Name ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "WhoId"
+       },
+       {
+        "control_type": "select",
+        "label": "Priority",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Priority",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Priority"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Priority"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Day of Month",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceDayOfMonth"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Day of Week Mask",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceDayOfWeekMask"
+       },
+       {
+        "control_type": "date",
+        "label": "Recurrence End",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "RecurrenceEndDateOnly"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Instance",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Instance",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceInstance"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceInstance"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Interval",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceInterval"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Month of Year",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Month of Year",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceMonthOfYear"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceMonthOfYear"
+       },
+       {
+        "control_type": "date",
+        "label": "Recurrence Start",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "RecurrenceStartDateOnly"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Time Zone",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Time Zone",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceTimeZoneSidKey"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceTimeZoneSidKey"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Type",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceType"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceType"
+       },
+       {
+        "control_type": "text",
+        "label": "Related To ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "WhatId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Reminder Date/Time",
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "ReminderDateTime"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Reminder Set",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Reminder Set",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "boolean",
+         "name": "IsReminderSet"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "boolean",
+        "name": "IsReminderSet"
+       },
+       {
+        "control_type": "select",
+        "label": "Repeat This Task",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Repeat This Task",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceRegeneratedType"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceRegeneratedType"
+       },
+       {
+        "control_type": "select",
+        "label": "Status",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Status",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Status"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Status"
+       },
+       {
+        "control_type": "text",
+        "label": "Subject",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Subject"
+       },
+       {
+        "control_type": "select",
+        "label": "Task Subtype",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Task Subtype",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": false,
+         "type": "string",
+         "name": "TaskSubtype"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false,
+        "type": "string",
+        "name": "TaskSubtype"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Success",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Success",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "success"
+        },
+        "type": "boolean",
+        "name": "success"
+       },
+       {
+        "name": "errors",
+        "type": "array",
+        "of": "object",
+        "label": "Errors",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Status code",
+          "type": "string",
+          "name": "statusCode"
+         },
+         {
+          "control_type": "text",
+          "label": "Message",
+          "type": "string",
+          "name": "message"
+         },
+         {
+          "name": "fields",
+          "type": "array",
+          "of": "string",
+          "control_type": "text",
+          "label": "Fields"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "array",
+      "name": "records",
+      "label": "Tasks",
+      "of": "object",
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Task",
+          "ngIf": "false",
+          "optional": true,
+          "default": "Task",
+          "type": "string",
+          "name": "Task",
+          "parent": "records.attributes"
+         }
+        ],
+        "label": "Attributes",
+        "ngIf": "false",
+        "render_input": "set_attribute",
+        "type": "object",
+        "name": "attributes",
+        "parent": "records"
+       },
+       {
+        "control_type": "text",
+        "label": "Assigned To ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "OwnerId",
+        "parent": "records"
+       },
+       {
+        "control_type": "number",
+        "label": "Call Duration",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "CallDurationInSeconds",
+        "parent": "records"
+       },
+       {
+        "control_type": "text",
+        "label": "Call Object Identifier",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallObject",
+        "parent": "records"
+       },
+       {
+        "control_type": "text",
+        "label": "Call Result",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallDisposition",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Call Type",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Call Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "CallType",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "CallType",
+        "parent": "records"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Create Recurring Series of Tasks",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Create Recurring Series of Tasks",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": false,
+         "type": "boolean",
+         "name": "IsRecurrence",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false,
+        "type": "boolean",
+        "name": "IsRecurrence",
+        "parent": "records"
+       },
+       {
+        "control_type": "text-area",
+        "label": "Description",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Description",
+        "parent": "records"
+       },
+       {
+        "control_type": "date",
+        "label": "Due Date Only",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "ActivityDate",
+        "parent": "records"
+       },
+       {
+        "control_type": "text",
+        "label": "Name ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "WhoId",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Priority",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Priority",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Priority",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Priority",
+        "parent": "records"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Day of Month",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceDayOfMonth",
+        "parent": "records"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Day of Week Mask",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceDayOfWeekMask",
+        "parent": "records"
+       },
+       {
+        "control_type": "date",
+        "label": "Recurrence End",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "RecurrenceEndDateOnly",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Instance",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Instance",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceInstance",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceInstance",
+        "parent": "records"
+       },
+       {
+        "control_type": "number",
+        "label": "Recurrence Interval",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "integer",
+        "name": "RecurrenceInterval",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Month of Year",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Month of Year",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceMonthOfYear",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceMonthOfYear",
+        "parent": "records"
+       },
+       {
+        "control_type": "date",
+        "label": "Recurrence Start",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "RecurrenceStartDateOnly",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Time Zone",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Time Zone",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceTimeZoneSidKey",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceTimeZoneSidKey",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Recurrence Type",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Recurrence Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceType",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceType",
+        "parent": "records"
+       },
+       {
+        "control_type": "text",
+        "label": "Related To ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "WhatId",
+        "parent": "records"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Reminder Date/Time",
+        "render_input": "render_iso8601_timestamp",
+        "parse_output": "parse_iso8601_timestamp",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "date_time",
+        "name": "ReminderDateTime",
+        "parent": "records"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Reminder Set",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Reminder Set",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "boolean",
+         "name": "IsReminderSet",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "boolean",
+        "name": "IsReminderSet",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Repeat This Task",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Repeat This Task",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "RecurrenceRegeneratedType",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "RecurrenceRegeneratedType",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Status",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Status",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Status",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Status",
+        "parent": "records"
+       },
+       {
+        "control_type": "text",
+        "label": "Subject",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Subject",
+        "parent": "records"
+       },
+       {
+        "control_type": "select",
+        "label": "Task Subtype",
+        "pick_list": "sobject_field_values_list",
+        "pick_list_params": {
+         "sobject_name": "\"Task\""
+        },
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Task Subtype",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": false,
+         "type": "string",
+         "name": "TaskSubtype",
+         "parent": "records"
+        },
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": false,
+        "type": "string",
+        "name": "TaskSubtype",
+        "parent": "records"
+       }
+      ]
+     },
+     {
+      "type": "object",
+      "name": "advanced_configuration",
+      "label": "Advanced configuration",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "checkbox",
+        "label": "Roll back records when errors occur?",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Roll back records when errors occur?",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "default": false,
+         "optional": true,
+         "hint": "                          When <b>Yes</b>, the batch is rolled back when the creation of an object fails.\n                          If the batch is larger than 200 records, only the\n                          <a href=\"https://docs.workato.com/connectors/salesforce/batch-operations.html#advanced-configuration\" target=_blank>affected batch</a>\n                          is rolled back. The default, <b>No</b>, is recommended.\n",
+         "type": "boolean",
+         "name": "allOrNone",
+         "parent": "advanced_configuration"
+        },
+        "default": "false",
+        "optional": true,
+        "hint": "                          When <b>Yes</b>, the batch is rolled back when the creation of an object fails.\n                          If the batch is larger than 200 records, only the\n                          <a href=\"https://docs.workato.com/connectors/salesforce/batch-operations.html#advanced-configuration\" target=_blank>affected batch</a>\n                          is rolled back. The default, <b>No</b>, is recommended.\n",
+        "type": "boolean",
+        "name": "allOrNone",
+        "parent": "advanced_configuration"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "sobject_name",
+     "records",
+     "records.attributes",
+     "records.attributes.Task",
+     "advanced_configuration",
+     "advanced_configuration.allOrNone",
+     "records.ActivityDate",
+     "records.Subject",
+     "records.TaskSubtype",
+     "records.Priority",
+     "records.Status"
+    ],
+    "uuid": "b189b56b-6aac-4f77-8479-b4b75aa67c74"
+   },
+   {
+    "number": 2,
+    "as": "fa8f27df",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 3,
+      "provider": "snowflake",
+      "name": "insert_row",
+      "as": "c09296ab",
+      "title": "Insert row in PUBLIC.SALESFORCETASK",
+      "description": "Insert <span class=\"provider\">row</span> in <span class=\"provider\">PUBLIC.SALESFORCETASK</span> table in <span class=\"provider\">Snowflake</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "table": "PUBLIC.SALESFORCETASK"
+      },
+      "toggleCfg": {
+       "table": true
+      },
+      "input": {
+       "table": "PUBLIC.SALESFORCETASK",
+       "columns": {
+        "due_date": "#{_('data.foreach.fa8f27df.activityDate')}",
+        "priority": "=_('data.foreach.fa8f27df.lead.priority')== 1 ? \"High\" : (_('data.foreach.fa8f27df.lead.priority') == 2 ? \"Medium\" : \"Low\") : \"Low\"",
+        "status": "#{_('data.foreach.fa8f27df.lead.leadStatus')}",
+        "subject": "The task is initiated by #{_('data.foreach.fa8f27df.primaryAttributeValue')}"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "columns",
+        "label": "Columns",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "SUBJECT",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "SUBJECT",
+           "length": 250,
+           "precision": 250,
+           "scale": null
+          },
+          "parse_output": "fix_encoding",
+          "optional": true,
+          "hint": "varchar, max length 250",
+          "type": "string",
+          "name": "subject",
+          "parent": "columns"
+         },
+         {
+          "control_type": "date_time",
+          "label": "DUE_DATE",
+          "render_input": "convert_date_time",
+          "parse_output": "convert_date_time",
+          "details": {
+           "primary_key": false,
+           "data_type": "date",
+           "column_name": "DUE_DATE",
+           "length": null,
+           "precision": null,
+           "scale": null
+          },
+          "optional": true,
+          "hint": "date",
+          "type": "date_time",
+          "name": "due_date",
+          "parent": "columns"
+         },
+         {
+          "control_type": "text",
+          "label": "PRIORITY",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "PRIORITY",
+           "length": 25,
+           "precision": 25,
+           "scale": null
+          },
+          "parse_output": "fix_encoding",
+          "optional": true,
+          "hint": "varchar, max length 25",
+          "type": "string",
+          "name": "priority",
+          "parent": "columns"
+         },
+         {
+          "control_type": "text",
+          "label": "STATUS",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "STATUS",
+           "length": 25,
+           "precision": 25,
+           "scale": null
+          },
+          "parse_output": "fix_encoding",
+          "optional": true,
+          "hint": "varchar, max length 25",
+          "type": "string",
+          "name": "status",
+          "parent": "columns"
+         }
+        ]
+       }
+      ],
+      "visible_config_fields": [
+       "table",
+       "columns",
+       "columns.subject",
+       "columns.due_date",
+       "columns.priority",
+       "columns.status"
+      ],
+      "uuid": "098dc8ce-5875-40b2-ac45-ad41f4d9afb1"
+     }
+    ],
+    "source": "#{_('data.marketo.4e178d1d.activities')}",
+    "uuid": "9a776150-f370-4271-9662-784ec39ea633"
+   }
+  ],
+  "uuid": "895f1b79-c336-4a72-9897-fce61848eadb",
+  "param": {}
+ }
+}

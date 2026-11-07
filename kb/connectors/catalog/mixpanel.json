@@ -1,0 +1,383 @@
+{
+ "name": "mixpanel",
+ "title": "Mixpanel",
+ "requires_connection": true,
+ "categories": [
+  "Business analytics",
+  "Marketing"
+ ],
+ "aliases": [
+  "Mixpanel"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Mixpanel (Custom)",
+   "help": "Build your own Mixpanel action with a HTTP request.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_funnel_data",
+   "title": "Get funnel data",
+   "description": "Get funnel data in Mixpanel",
+   "input": [
+    {
+     "name": "funnel_id",
+     "type": "string",
+     "label": "Funnel",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "funnel_pick_list",
+     "toggle_field": {
+      "name": "funnel_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "from_date",
+     "type": "date_time",
+     "label": "From date",
+     "control_type": "date",
+     "hint": "The first (inclusive) date from which a user can begin the first step in the funnel"
+    },
+    {
+     "name": "to_date",
+     "type": "date_time",
+     "label": "To date",
+     "control_type": "date",
+     "hint": "The last (inclusive) date from which a user can begin the first step in the funnel. The date range may not be more than 90 days."
+    },
+    {
+     "name": "interval",
+     "type": "integer",
+     "label": "Interval",
+     "control_type": "text",
+     "hint": "The number of days you want your results bucketed into. Defaults to 1"
+    },
+    {
+     "name": "unit",
+     "type": "string",
+     "label": "Unit",
+     "control_type": "text",
+     "hint": "An alternate way of specifying interval and can be 'day' or 'week'"
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Data",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "date",
+       "type": "string",
+       "label": "Date",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "steps",
+       "type": "array",
+       "label": "Steps",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "count",
+         "type": "integer",
+         "label": "Count",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "step_conv_ratio",
+         "type": "integer",
+         "label": "Step conv ratio",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "goal",
+         "type": "string",
+         "label": "Goal",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "overall_conv_ratio",
+         "type": "integer",
+         "label": "Overall conv ratio",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "avg_time",
+         "type": "integer",
+         "label": "Avg time",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "event",
+         "type": "string",
+         "label": "Event",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "analysis",
+       "type": "object",
+       "label": "Analysis",
+       "required": true,
+       "properties": [
+        {
+         "name": "completion",
+         "type": "integer",
+         "label": "Completion",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "starting_amount",
+         "type": "integer",
+         "label": "Starting amount",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "steps",
+         "type": "integer",
+         "label": "Steps",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "worst",
+         "type": "integer",
+         "label": "Worst",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_funnel_list",
+   "title": "Get funnel list",
+   "description": "Get funnel list in Mixpanel",
+   "input": [],
+   "output": [
+    {
+     "name": "funnels",
+     "type": "array",
+     "label": "Funnels",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "funnel_id",
+       "type": "integer",
+       "label": "Funnel ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_user_info",
+   "title": "Get user info",
+   "description": "Get user info in Mixpanel",
+   "input": [
+    {
+     "name": "email",
+     "type": "string",
+     "label": "Email",
+     "control_type": "text"
+    },
+    {
+     "name": "first_name",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text"
+    },
+    {
+     "name": "last_name",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text"
+    }
+   ],
+   "output": [
+    {
+     "name": "users",
+     "type": "array",
+     "label": "Users",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "distinct_id",
+       "type": "string",
+       "label": "Distinct ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "properties",
+       "type": "object",
+       "label": "Properties",
+       "required": true,
+       "properties": [
+        {
+         "name": "city",
+         "type": "string",
+         "label": "City",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "country_code",
+         "type": "string",
+         "label": "Country code",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "created",
+         "type": "date_time",
+         "label": "Created",
+         "control_type": "date_time",
+         "required": true
+        },
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "first_name",
+         "type": "string",
+         "label": "First name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "last_name",
+         "type": "string",
+         "label": "Last name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "region",
+         "type": "string",
+         "label": "Region",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "timezone",
+         "type": "string",
+         "label": "Timezone",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "user_id",
+         "type": "string",
+         "label": "User ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "last_seen",
+         "type": "date_time",
+         "label": "Last seen",
+         "control_type": "date_time",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "set_property",
+   "title": "Set property",
+   "description": "Set property in Mixpanel",
+   "input": [
+    {
+     "name": "property",
+     "type": "string",
+     "label": "Property type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "user",
+      "group"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": [
+    {
+     "name": "result",
+     "type": "string",
+     "label": "Result",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

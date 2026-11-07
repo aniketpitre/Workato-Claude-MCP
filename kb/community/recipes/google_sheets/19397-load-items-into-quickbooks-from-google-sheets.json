@@ -1,0 +1,187 @@
+{
+ "id": 19397,
+ "name": "Load Items into QuickBooks from Google Sheets",
+ "description": "This integration loads items into QuickBooks Online from a Google Sheet. \n\n---------------------------\n\nTo run this recipe, make sure the file in exists in Google Sheets. Copy the sample sheet to create one. \n[See sample Google Sheet here](https://docs.google.com/spreadsheets/d/1nyXX-XMIxvkRh3YTYth6gbgNkl4tm6xxc-s-p_hkPdA/edit?usp=sharing)\n\n**Name** : \"Copy of Workato Sample: QuickBooks Item Master Upload\"\n**Sheet**: \"Sheet1\"\n**Column names**:\nName, Description, Price, Taxable\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+ "applications": [
+  "google_sheets",
+  "quickbooks"
+ ],
+ "action_applications": [
+  "quickbooks"
+ ],
+ "trigger_application": "google_sheets",
+ "business_objects": [
+  "spreadsheet row",
+  "item"
+ ],
+ "categories": [
+  "Utilities",
+  "Accounting",
+  "Finance"
+ ],
+ "copy_count": 792,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-06-21T12:54:53.170-07:00",
+ "source_url": "https://app.workato.com/recipes/19397?community=us",
+ "steps": [
+  "google_sheets.new_spreadsheet_row_v4",
+  "quickbooks.search_item",
+  "quickbooks.create_item"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "google_sheets",
+  "name": "new_spreadsheet_row_v4",
+  "as": "new_spreadsheet_row",
+  "title": "New row in sheet in My Drive",
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "spreadsheet": "Copy of Workato Sample: QuickBooks Item Master Upload"
+  },
+  "toggleCfg": {
+   "header_fl": true
+  },
+  "input": {
+   "spreadsheet": "1SvQj6SfBJaNMcm45x0qG7irqQcAOUa_MJb49l-w3fTc",
+   "sheet": "Sheet1",
+   "header_fl": "false"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "columns",
+    "label": "Columns",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Name - Col 1",
+      "optional": true,
+      "type": "string",
+      "name": "col_1"
+     },
+     {
+      "control_type": "text",
+      "label": "Description - Col 2",
+      "optional": true,
+      "type": "string",
+      "name": "col_2"
+     },
+     {
+      "control_type": "text",
+      "label": "Price - Col 3",
+      "optional": true,
+      "type": "string",
+      "name": "col_3"
+     },
+     {
+      "control_type": "text",
+      "label": "Taxable - Col 4",
+      "optional": true,
+      "type": "string",
+      "name": "col_4"
+     }
+    ]
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "sheet",
+    "control_type": "select",
+    "label": "Sheet",
+    "hint": "Select the sheet to fetch new rows for",
+    "pick_list": [
+     [
+      "Sheet1",
+      "Sheet1"
+     ]
+    ],
+    "optional": false,
+    "extends_schema": true
+   }
+  ],
+  "visible_config_fields": [
+   "spreadsheet",
+   "header_fl",
+   "sheet",
+   "columns"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "quickbooks",
+    "name": "search_item",
+    "as": "search_item",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Name": "#{_('data.google_sheets.new_spreadsheet_row.columns.col_1')}"
+    },
+    "visible_config_fields": [
+     "Name"
+    ],
+    "comment": "Search for existing item in QuickBooks by item name",
+    "uuid": "7d6c7b03-b476-41c0-866e-169a069a9dda",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.quickbooks.search_item.items.first.Id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "quickbooks",
+      "name": "create_item",
+      "as": "create_item",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "IncomeAccountRefSource2": true,
+       "Taxable": false
+      },
+      "input": {
+       "IncomeAccountRef": "#{_('data.google_sheets.new_spreadsheet_row.columns.col_3')}",
+       "Name": "#{_('data.google_sheets.new_spreadsheet_row.columns.col_1')}",
+       "Description": "#{_('data.google_sheets.new_spreadsheet_row.columns.col_2')}",
+       "UnitPrice": "#{_('data.google_sheets.new_spreadsheet_row.columns.col_3')}",
+       "Taxable": "=_('data.google_sheets.new_spreadsheet_row.columns.col_4') ? \"Yes\" : \"No\""
+      },
+      "visible_config_fields": [
+       "Name",
+       "Description",
+       "UnitPrice",
+       "Taxable"
+      ],
+      "uuid": "a7808cbb-c3f8-436f-ab05-1ec94da99809",
+      "title": null,
+      "description": null
+     }
+    ],
+    "comment": "If item does not exist already, create one",
+    "uuid": "6b885602-e1bc-45e5-ba74-00c373d72bc4"
+   }
+  ],
+  "uuid": "41229fda-354f-49fc-b91f-9e7f738c2ed7",
+  "param": {}
+ }
+}

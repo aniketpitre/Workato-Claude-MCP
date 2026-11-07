@@ -1,0 +1,2981 @@
+{
+ "name": "JavaScript - Mark invalid contacts (Salesforce Contacts to Snowflake)",
+ "description": "1. Incremental changes in Salesforce are picked up in batches.\n2. Run validation script to mark bad contacts\n3 . Insert/Update rows into Snowflake table\n4. Send notification if invalid contact details are found",
+ "source": "workspace",
+ "recipe_id": 372896,
+ "config": [
+  {
+   "keyword": "application",
+   "provider": "snowflake",
+   "skip_validation": false,
+   "name": "snowflake",
+   "account_id": null
+  },
+  {
+   "keyword": "application",
+   "provider": "salesforce",
+   "skip_validation": false,
+   "name": "salesforce",
+   "account_id": null
+  },
+  {
+   "keyword": "application",
+   "provider": "js_eval",
+   "skip_validation": false,
+   "name": "js_eval",
+   "account_id": null
+  }
+ ],
+ "code": {
+  "number": 0,
+  "provider": "salesforce",
+  "name": "sobject_batch_created",
+  "as": "575c2d99",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "sobject_name": "Contact"
+  },
+  "toggleCfg": {},
+  "input": {
+   "batch_size": "100",
+   "sobject_name": "Contact"
+  },
+  "extended_output_schema": [
+   {
+    "control_type": "text",
+    "label": "First Contact name",
+    "name": "first_Contact_name",
+    "type": "string",
+    "event_title": true
+   },
+   {
+    "control_type": "text",
+    "label": "Last Contact name",
+    "name": "last_Contact_name",
+    "type": "string",
+    "event_title": true
+   },
+   {
+    "label": "Contacts",
+    "name": "Contact",
+    "of": "object",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Account ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "AccountId"
+     },
+     {
+      "control_type": "text",
+      "label": "Assistant's Name",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "AssistantName"
+     },
+     {
+      "control_type": "phone",
+      "label": "Asst. Phone",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "AssistantPhone"
+     },
+     {
+      "control_type": "date",
+      "label": "Birthdate",
+      "render_input": "render_iso8601_date",
+      "parse_output": "parse_iso8601_date",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "date_time",
+      "name": "Birthdate"
+     },
+     {
+      "control_type": "phone",
+      "label": "Business Fax",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Fax"
+     },
+     {
+      "control_type": "phone",
+      "label": "Business Phone",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Phone"
+     },
+     {
+      "control_type": "select",
+      "label": "Clean Status",
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Contact\"",
+       "field_name": "\"CleanStatus\""
+      },
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Clean Status",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "CleanStatus"
+      },
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "CleanStatus"
+     },
+     {
+      "control_type": "text-area",
+      "label": "Contact Description",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Description"
+     },
+     {
+      "control_type": "text",
+      "label": "Contact ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "string",
+      "name": "Id"
+     },
+     {
+      "control_type": "text",
+      "label": "Created By ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "string",
+      "name": "CreatedById"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Created Date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "CreatedDate"
+     },
+     {
+      "control_type": "text",
+      "label": "Data.com Key",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Jigsaw"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Deleted",
+      "render_input": {},
+      "parse_output": {},
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Deleted",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": false,
+       "sfdc_updateable": false,
+       "type": "boolean",
+       "name": "IsDeleted"
+      },
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "boolean",
+      "name": "IsDeleted"
+     },
+     {
+      "control_type": "text",
+      "label": "Department",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Department"
+     },
+     {
+      "control_type": "text",
+      "label": "Email",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Email"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Email Bounced Date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "date_time",
+      "name": "EmailBouncedDate"
+     },
+     {
+      "control_type": "text",
+      "label": "Email Bounced Reason",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "EmailBouncedReason"
+     },
+     {
+      "control_type": "text",
+      "label": "First Name",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "FirstName"
+     },
+     {
+      "control_type": "text",
+      "label": "Full Name",
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "string",
+      "name": "Name"
+     },
+     {
+      "control_type": "phone",
+      "label": "Home Phone",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "HomePhone"
+     },
+     {
+      "control_type": "text",
+      "label": "Individual ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "IndividualId"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Is Email Bounced",
+      "render_input": {},
+      "parse_output": {},
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Is Email Bounced",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": false,
+       "sfdc_updateable": false,
+       "type": "boolean",
+       "name": "IsEmailBounced"
+      },
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "boolean",
+      "name": "IsEmailBounced"
+     },
+     {
+      "control_type": "text",
+      "label": "Jigsaw Contact ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "string",
+      "name": "JigsawContactId"
+     },
+     {
+      "control_type": "date",
+      "label": "Last Activity",
+      "render_input": "render_iso8601_date",
+      "parse_output": "parse_iso8601_date",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "LastActivityDate"
+     },
+     {
+      "control_type": "text",
+      "label": "Last Modified By ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "string",
+      "name": "LastModifiedById"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Last Modified Date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "LastModifiedDate"
+     },
+     {
+      "control_type": "text",
+      "label": "Last Name",
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "LastName"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Last Referenced Date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "LastReferencedDate"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Last Stay-in-Touch Request Date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "LastCURequestDate"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Last Stay-in-Touch Save Date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "LastCUUpdateDate"
+     },
+     {
+      "control_type": "date_time",
+      "label": "Last Viewed Date",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "LastViewedDate"
+     },
+     {
+      "control_type": "select",
+      "label": "Lead Source",
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Contact\"",
+       "field_name": "\"LeadSource\""
+      },
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Lead Source",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "LeadSource"
+      },
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "LeadSource"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "City",
+        "type": "string",
+        "name": "city"
+       },
+       {
+        "control_type": "text",
+        "label": "Country",
+        "type": "string",
+        "name": "country"
+       },
+       {
+        "control_type": "text",
+        "label": "Country code",
+        "type": "string",
+        "name": "countryCode"
+       },
+       {
+        "control_type": "text",
+        "label": "Geocode accuracy",
+        "type": "string",
+        "name": "geocodeAccuracy"
+       },
+       {
+        "control_type": "text",
+        "label": "Latitude",
+        "type": "string",
+        "name": "latitude"
+       },
+       {
+        "control_type": "text",
+        "label": "Longitude",
+        "type": "string",
+        "name": "longitude"
+       },
+       {
+        "control_type": "text",
+        "label": "Postal code",
+        "type": "string",
+        "name": "postalCode"
+       },
+       {
+        "control_type": "text",
+        "label": "State",
+        "type": "string",
+        "name": "state"
+       },
+       {
+        "control_type": "text",
+        "label": "State code",
+        "type": "string",
+        "name": "stateCode"
+       },
+       {
+        "control_type": "text",
+        "label": "Street",
+        "type": "string",
+        "name": "street"
+       }
+      ],
+      "label": "Mailing Address",
+      "sdfc_address_attribute": true,
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "object",
+      "name": "MailingAddress"
+     },
+     {
+      "control_type": "text",
+      "label": "Mailing City",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "MailingCity"
+     },
+     {
+      "control_type": "text",
+      "label": "Mailing Country",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "MailingCountry"
+     },
+     {
+      "control_type": "select",
+      "label": "Mailing Geocode Accuracy",
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Contact\"",
+       "field_name": "\"MailingGeocodeAccuracy\""
+      },
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Mailing Geocode Accuracy",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "MailingGeocodeAccuracy"
+      },
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "MailingGeocodeAccuracy"
+     },
+     {
+      "control_type": "number",
+      "label": "Mailing Latitude",
+      "parse_output": "float_conversion",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "number",
+      "name": "MailingLatitude"
+     },
+     {
+      "control_type": "number",
+      "label": "Mailing Longitude",
+      "parse_output": "float_conversion",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "number",
+      "name": "MailingLongitude"
+     },
+     {
+      "control_type": "text",
+      "label": "Mailing State/Province",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "MailingState"
+     },
+     {
+      "control_type": "text-area",
+      "label": "Mailing Street",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "MailingStreet"
+     },
+     {
+      "control_type": "text",
+      "label": "Mailing Zip/Postal Code",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "MailingPostalCode"
+     },
+     {
+      "control_type": "text",
+      "label": "Master Record ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "string",
+      "name": "MasterRecordId"
+     },
+     {
+      "control_type": "phone",
+      "label": "Mobile Phone",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "MobilePhone"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "City",
+        "type": "string",
+        "name": "city"
+       },
+       {
+        "control_type": "text",
+        "label": "Country",
+        "type": "string",
+        "name": "country"
+       },
+       {
+        "control_type": "text",
+        "label": "Country code",
+        "type": "string",
+        "name": "countryCode"
+       },
+       {
+        "control_type": "text",
+        "label": "Geocode accuracy",
+        "type": "string",
+        "name": "geocodeAccuracy"
+       },
+       {
+        "control_type": "text",
+        "label": "Latitude",
+        "type": "string",
+        "name": "latitude"
+       },
+       {
+        "control_type": "text",
+        "label": "Longitude",
+        "type": "string",
+        "name": "longitude"
+       },
+       {
+        "control_type": "text",
+        "label": "Postal code",
+        "type": "string",
+        "name": "postalCode"
+       },
+       {
+        "control_type": "text",
+        "label": "State",
+        "type": "string",
+        "name": "state"
+       },
+       {
+        "control_type": "text",
+        "label": "State code",
+        "type": "string",
+        "name": "stateCode"
+       },
+       {
+        "control_type": "text",
+        "label": "Street",
+        "type": "string",
+        "name": "street"
+       }
+      ],
+      "label": "Other Address",
+      "sdfc_address_attribute": true,
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "object",
+      "name": "OtherAddress"
+     },
+     {
+      "control_type": "text",
+      "label": "Other City",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OtherCity"
+     },
+     {
+      "control_type": "text",
+      "label": "Other Country",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OtherCountry"
+     },
+     {
+      "control_type": "select",
+      "label": "Other Geocode Accuracy",
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Contact\"",
+       "field_name": "\"OtherGeocodeAccuracy\""
+      },
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Other Geocode Accuracy",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "OtherGeocodeAccuracy"
+      },
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OtherGeocodeAccuracy"
+     },
+     {
+      "control_type": "number",
+      "label": "Other Latitude",
+      "parse_output": "float_conversion",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "number",
+      "name": "OtherLatitude"
+     },
+     {
+      "control_type": "number",
+      "label": "Other Longitude",
+      "parse_output": "float_conversion",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "number",
+      "name": "OtherLongitude"
+     },
+     {
+      "control_type": "phone",
+      "label": "Other Phone",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OtherPhone"
+     },
+     {
+      "control_type": "text",
+      "label": "Other State/Province",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OtherState"
+     },
+     {
+      "control_type": "text-area",
+      "label": "Other Street",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OtherStreet"
+     },
+     {
+      "control_type": "text",
+      "label": "Other Zip/Postal Code",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OtherPostalCode"
+     },
+     {
+      "control_type": "text",
+      "label": "Owner ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "OwnerId"
+     },
+     {
+      "control_type": "url",
+      "label": "Photo URL",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "string",
+      "name": "PhotoUrl"
+     },
+     {
+      "control_type": "text",
+      "label": "Reports To ID",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "ReportsToId"
+     },
+     {
+      "control_type": "select",
+      "label": "Salutation",
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Contact\"",
+       "field_name": "\"Salutation\""
+      },
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Salutation",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "Salutation"
+      },
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Salutation"
+     },
+     {
+      "control_type": "date_time",
+      "label": "System Modstamp",
+      "render_input": "render_iso8601_timestamp",
+      "parse_output": "parse_iso8601_timestamp",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": false,
+      "sfdc_updateable": false,
+      "type": "date_time",
+      "name": "SystemModstamp"
+     },
+     {
+      "control_type": "text",
+      "label": "Title",
+      "optional": true,
+      "custom": false,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Title"
+     },
+     {
+      "control_type": "text",
+      "label": "Languages",
+      "optional": true,
+      "custom": true,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Languages__c"
+     },
+     {
+      "control_type": "select",
+      "label": "Level",
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Contact\"",
+       "field_name": "\"Level__c\""
+      },
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Level",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": true,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "Level__c"
+      },
+      "optional": true,
+      "custom": true,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "Level__c"
+     },
+     {
+      "control_type": "text",
+      "label": "gong-test-field",
+      "optional": true,
+      "custom": true,
+      "sfdc_createable": true,
+      "sfdc_updateable": true,
+      "type": "string",
+      "name": "gong_test_field__c"
+     }
+    ],
+    "type": "array"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "js_eval",
+    "name": "invoke_custom_js_code",
+    "as": "299491bf",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "code": "const _ = require(\"lodash\");\n\nclass ContactValidator {\n  static validContact = (phone) => {\n    const count = this.validPhoneNumber(phone);\n    return count \n  };\n  static validPhoneNumber = (phone) => {\n    let phone_regex = /\\(?\\d{3}\\)?-? *\\d{3}-? *-?\\d{4}/;\n    if (phone === null){\n      return false;\n    } else {\n      return phone.match(phone_regex) !== null;\n    }\n  };\n\n  static validate = function(contacts) {\n    let bad_contacts = 0;\n    const val_contacts = _.map(contacts, (contact) => {\n      let phone = _.get(contact, ['Phone']);\n      contact['valid'] = true;\n      const validity= this.validContact(phone);\n      if (!validity) {\n        contact['valid'] = false;\n        bad_contacts++;\n      }\n      return contact;\n    })\n    return { val_contacts: val_contacts, bad_contacts: bad_contacts }\n  };\n\n}\n\nexports.main = ({ contacts }) => {\n  return ContactValidator.validate(contacts);\n}",
+     "name": "Validate contacts",
+     "code_input": {
+      "schema": "[{\"name\":\"contacts\",\"type\":\"string\",\"optional\":true,\"label\":\"contacts\",\"control_type\":\"text\"}]",
+      "data": {
+       "contacts": "=_('data.salesforce.575c2d99.Contact')"
+      }
+     },
+     "code_output_schema_json": "[{\"name\":\"val_contacts\",\"type\":\"array\",\"of\":\"object\",\"label\":\"Val contacts\",\"properties\":[{\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"text\",\"label\":\"URL\",\"type\":\"string\",\"name\":\"url\"}],\"label\":\"Attributes\",\"type\":\"object\",\"name\":\"attributes\"},{\"control_type\":\"text\",\"label\":\"Account ID\",\"type\":\"string\",\"name\":\"AccountId\"},{\"control_type\":\"text\",\"label\":\"Assistant name\",\"type\":\"string\",\"name\":\"AssistantName\"},{\"control_type\":\"text\",\"label\":\"Assistant phone\",\"type\":\"string\",\"name\":\"AssistantPhone\"},{\"control_type\":\"text\",\"label\":\"Birthdate\",\"type\":\"string\",\"name\":\"Birthdate\"},{\"control_type\":\"text\",\"label\":\"Fax\",\"type\":\"string\",\"name\":\"Fax\"},{\"control_type\":\"text\",\"label\":\"Phone\",\"type\":\"string\",\"name\":\"Phone\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"Description\"},{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"Id\"},{\"control_type\":\"text\",\"label\":\"Created by ID\",\"type\":\"string\",\"name\":\"CreatedById\"},{\"control_type\":\"text\",\"label\":\"Created date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"CreatedDate\"},{\"control_type\":\"text\",\"label\":\"Jigsaw\",\"type\":\"string\",\"name\":\"Jigsaw\"},{\"control_type\":\"text\",\"label\":\"Is deleted\",\"render_input\":{},\"parse_output\":{},\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is deleted\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"IsDeleted\"},\"type\":\"boolean\",\"name\":\"IsDeleted\"},{\"control_type\":\"text\",\"label\":\"Department\",\"type\":\"string\",\"name\":\"Department\"},{\"control_type\":\"text\",\"label\":\"Email\",\"type\":\"string\",\"name\":\"Email\"},{\"control_type\":\"text\",\"label\":\"Email bounced date\",\"type\":\"string\",\"name\":\"EmailBouncedDate\"},{\"control_type\":\"text\",\"label\":\"Email bounced reason\",\"type\":\"string\",\"name\":\"EmailBouncedReason\"},{\"control_type\":\"text\",\"label\":\"First name\",\"type\":\"string\",\"name\":\"FirstName\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"Name\"},{\"control_type\":\"text\",\"label\":\"Home phone\",\"type\":\"string\",\"name\":\"HomePhone\"},{\"control_type\":\"text\",\"label\":\"Individual ID\",\"type\":\"string\",\"name\":\"IndividualId\"},{\"control_type\":\"text\",\"label\":\"Is email bounced\",\"render_input\":{},\"parse_output\":{},\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is email bounced\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"IsEmailBounced\"},\"type\":\"boolean\",\"name\":\"IsEmailBounced\"},{\"control_type\":\"text\",\"label\":\"Jigsaw contact ID\",\"type\":\"string\",\"name\":\"JigsawContactId\"},{\"control_type\":\"text\",\"label\":\"Last activity date\",\"type\":\"string\",\"name\":\"LastActivityDate\"},{\"control_type\":\"text\",\"label\":\"Last modified by ID\",\"type\":\"string\",\"name\":\"LastModifiedById\"},{\"control_type\":\"text\",\"label\":\"Last modified date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"LastModifiedDate\"},{\"control_type\":\"text\",\"label\":\"Last name\",\"type\":\"string\",\"name\":\"LastName\"},{\"control_type\":\"text\",\"label\":\"Last referenced date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"LastReferencedDate\"},{\"control_type\":\"text\",\"label\":\"Last CU request date\",\"type\":\"string\",\"name\":\"LastCURequestDate\"},{\"control_type\":\"text\",\"label\":\"Last CU update date\",\"type\":\"string\",\"name\":\"LastCUUpdateDate\"},{\"control_type\":\"text\",\"label\":\"Last viewed date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"LastViewedDate\"},{\"control_type\":\"text\",\"label\":\"Lead source\",\"type\":\"string\",\"name\":\"LeadSource\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"City\",\"type\":\"string\",\"name\":\"city\"},{\"control_type\":\"text\",\"label\":\"Country\",\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"Geocode accuracy\",\"type\":\"string\",\"name\":\"geocodeAccuracy\"},{\"control_type\":\"text\",\"label\":\"Latitude\",\"type\":\"string\",\"name\":\"latitude\"},{\"control_type\":\"text\",\"label\":\"Longitude\",\"type\":\"string\",\"name\":\"longitude\"},{\"control_type\":\"text\",\"label\":\"Postal code\",\"type\":\"string\",\"name\":\"postalCode\"},{\"control_type\":\"text\",\"label\":\"State\",\"type\":\"string\",\"name\":\"state\"},{\"control_type\":\"text\",\"label\":\"Street\",\"type\":\"string\",\"name\":\"street\"}],\"label\":\"Mailing address\",\"type\":\"object\",\"name\":\"MailingAddress\"},{\"control_type\":\"text\",\"label\":\"Mailing city\",\"type\":\"string\",\"name\":\"MailingCity\"},{\"control_type\":\"text\",\"label\":\"Mailing country\",\"type\":\"string\",\"name\":\"MailingCountry\"},{\"control_type\":\"text\",\"label\":\"Mailing geocode accuracy\",\"type\":\"string\",\"name\":\"MailingGeocodeAccuracy\"},{\"control_type\":\"text\",\"label\":\"Mailing latitude\",\"type\":\"string\",\"name\":\"MailingLatitude\"},{\"control_type\":\"text\",\"label\":\"Mailing longitude\",\"type\":\"string\",\"name\":\"MailingLongitude\"},{\"control_type\":\"text\",\"label\":\"Mailing state\",\"type\":\"string\",\"name\":\"MailingState\"},{\"control_type\":\"text\",\"label\":\"Mailing street\",\"type\":\"string\",\"name\":\"MailingStreet\"},{\"control_type\":\"text\",\"label\":\"Mailing postal code\",\"type\":\"string\",\"name\":\"MailingPostalCode\"},{\"control_type\":\"text\",\"label\":\"Master record ID\",\"type\":\"string\",\"name\":\"MasterRecordId\"},{\"control_type\":\"text\",\"label\":\"Mobile phone\",\"type\":\"string\",\"name\":\"MobilePhone\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"City\",\"type\":\"string\",\"name\":\"city\"},{\"control_type\":\"text\",\"label\":\"Country\",\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"Geocode accuracy\",\"type\":\"string\",\"name\":\"geocodeAccuracy\"},{\"control_type\":\"text\",\"label\":\"Latitude\",\"type\":\"string\",\"name\":\"latitude\"},{\"control_type\":\"text\",\"label\":\"Longitude\",\"type\":\"string\",\"name\":\"longitude\"},{\"control_type\":\"text\",\"label\":\"Postal code\",\"type\":\"string\",\"name\":\"postalCode\"},{\"control_type\":\"text\",\"label\":\"State\",\"type\":\"string\",\"name\":\"state\"},{\"control_type\":\"text\",\"label\":\"Street\",\"type\":\"string\",\"name\":\"street\"}],\"label\":\"Other address\",\"type\":\"object\",\"name\":\"OtherAddress\"},{\"control_type\":\"text\",\"label\":\"Other city\",\"type\":\"string\",\"name\":\"OtherCity\"},{\"control_type\":\"text\",\"label\":\"Other country\",\"type\":\"string\",\"name\":\"OtherCountry\"},{\"control_type\":\"text\",\"label\":\"Other geocode accuracy\",\"type\":\"string\",\"name\":\"OtherGeocodeAccuracy\"},{\"control_type\":\"text\",\"label\":\"Other latitude\",\"type\":\"string\",\"name\":\"OtherLatitude\"},{\"control_type\":\"text\",\"label\":\"Other longitude\",\"type\":\"string\",\"name\":\"OtherLongitude\"},{\"control_type\":\"text\",\"label\":\"Other phone\",\"type\":\"string\",\"name\":\"OtherPhone\"},{\"control_type\":\"text\",\"label\":\"Other state\",\"type\":\"string\",\"name\":\"OtherState\"},{\"control_type\":\"text\",\"label\":\"Other street\",\"type\":\"string\",\"name\":\"OtherStreet\"},{\"control_type\":\"text\",\"label\":\"Other postal code\",\"type\":\"string\",\"name\":\"OtherPostalCode\"},{\"control_type\":\"text\",\"label\":\"Owner ID\",\"type\":\"string\",\"name\":\"OwnerId\"},{\"control_type\":\"text\",\"label\":\"Photo URL\",\"type\":\"string\",\"name\":\"PhotoUrl\"},{\"control_type\":\"text\",\"label\":\"Reports to ID\",\"type\":\"string\",\"name\":\"ReportsToId\"},{\"control_type\":\"text\",\"label\":\"Salutation\",\"type\":\"string\",\"name\":\"Salutation\"},{\"control_type\":\"text\",\"label\":\"System modstamp\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"SystemModstamp\"},{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"Title\"},{\"control_type\":\"text\",\"label\":\"Campaign 2 c\",\"type\":\"string\",\"name\":\"Campaign2__c\"},{\"control_type\":\"text\",\"label\":\"Newcamp c\",\"type\":\"string\",\"name\":\"newcamp__c\"},{\"control_type\":\"text\",\"label\":\"Category c\",\"type\":\"string\",\"name\":\"Category__c\"},{\"control_type\":\"text\",\"label\":\"Customer type c\",\"type\":\"string\",\"name\":\"Customer_Type__c\"},{\"control_type\":\"text\",\"label\":\"Date time cf c\",\"type\":\"string\",\"name\":\"Date_time_cf__c\"},{\"control_type\":\"text\",\"label\":\"External ID del c\",\"type\":\"string\",\"name\":\"External_ID_del__c\"},{\"control_type\":\"text\",\"label\":\"Level c\",\"type\":\"string\",\"name\":\"Level__c\"},{\"control_type\":\"text\",\"label\":\"Multi select custom c\",\"type\":\"string\",\"name\":\"Multi_select_custom__c\"},{\"control_type\":\"text\",\"label\":\"Target IDE c\",\"type\":\"string\",\"name\":\"Target_IDE__c\"},{\"control_type\":\"text\",\"label\":\"Cf c\",\"type\":\"string\",\"name\":\"cf__c\"},{\"control_type\":\"text\",\"label\":\"Cf 2 c\",\"type\":\"string\",\"name\":\"cf2__c\"},{\"control_type\":\"text\",\"label\":\"Checkbox up 1 c\",\"render_input\":{},\"parse_output\":{},\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Checkbox up 1 c\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"checkbox_up1__c\"},\"type\":\"boolean\",\"name\":\"checkbox_up1__c\"},{\"control_type\":\"text\",\"label\":\"External unique ID c\",\"type\":\"string\",\"name\":\"external_unique_id__c\"},{\"control_type\":\"text\",\"label\":\"Issue c\",\"type\":\"string\",\"name\":\"issue__c\"},{\"control_type\":\"text\",\"label\":\"Combined attachments\",\"type\":\"string\",\"name\":\"CombinedAttachments\"},{\"control_type\":\"text\",\"label\":\"Valid\",\"render_input\":{},\"parse_output\":{},\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Valid\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"valid\"},\"type\":\"boolean\",\"name\":\"valid\"}]},{\"control_type\":\"number\",\"label\":\"Bad contacts\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"bad_contacts\"},{\"control_type\":\"text\",\"label\":\"Log\",\"type\":\"string\",\"name\":\"log\"}]"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Output",
+      "name": "output",
+      "properties": [
+       {
+        "name": "val_contacts",
+        "type": "array",
+        "of": "object",
+        "label": "Val contacts",
+        "properties": [
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Type",
+            "type": "string",
+            "name": "type"
+           },
+           {
+            "control_type": "text",
+            "label": "URL",
+            "type": "string",
+            "name": "url"
+           }
+          ],
+          "label": "Attributes",
+          "type": "object",
+          "name": "attributes"
+         },
+         {
+          "control_type": "text",
+          "label": "Account ID",
+          "type": "string",
+          "name": "AccountId"
+         },
+         {
+          "control_type": "text",
+          "label": "Assistant name",
+          "type": "string",
+          "name": "AssistantName"
+         },
+         {
+          "control_type": "text",
+          "label": "Assistant phone",
+          "type": "string",
+          "name": "AssistantPhone"
+         },
+         {
+          "control_type": "text",
+          "label": "Birthdate",
+          "type": "string",
+          "name": "Birthdate"
+         },
+         {
+          "control_type": "text",
+          "label": "Fax",
+          "type": "string",
+          "name": "Fax"
+         },
+         {
+          "control_type": "text",
+          "label": "Phone",
+          "type": "string",
+          "name": "Phone"
+         },
+         {
+          "control_type": "text",
+          "label": "Description",
+          "type": "string",
+          "name": "Description"
+         },
+         {
+          "control_type": "text",
+          "label": "ID",
+          "type": "string",
+          "name": "Id"
+         },
+         {
+          "control_type": "text",
+          "label": "Created by ID",
+          "type": "string",
+          "name": "CreatedById"
+         },
+         {
+          "control_type": "text",
+          "label": "Created date",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "type": "date_time",
+          "name": "CreatedDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Jigsaw",
+          "type": "string",
+          "name": "Jigsaw"
+         },
+         {
+          "control_type": "text",
+          "label": "Is deleted",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Is deleted",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "type": "boolean",
+           "name": "IsDeleted"
+          },
+          "type": "boolean",
+          "name": "IsDeleted"
+         },
+         {
+          "control_type": "text",
+          "label": "Department",
+          "type": "string",
+          "name": "Department"
+         },
+         {
+          "control_type": "text",
+          "label": "Email",
+          "type": "string",
+          "name": "Email"
+         },
+         {
+          "control_type": "text",
+          "label": "Email bounced date",
+          "type": "string",
+          "name": "EmailBouncedDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Email bounced reason",
+          "type": "string",
+          "name": "EmailBouncedReason"
+         },
+         {
+          "control_type": "text",
+          "label": "First name",
+          "type": "string",
+          "name": "FirstName"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "type": "string",
+          "name": "Name"
+         },
+         {
+          "control_type": "text",
+          "label": "Home phone",
+          "type": "string",
+          "name": "HomePhone"
+         },
+         {
+          "control_type": "text",
+          "label": "Individual ID",
+          "type": "string",
+          "name": "IndividualId"
+         },
+         {
+          "control_type": "text",
+          "label": "Is email bounced",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Is email bounced",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "type": "boolean",
+           "name": "IsEmailBounced"
+          },
+          "type": "boolean",
+          "name": "IsEmailBounced"
+         },
+         {
+          "control_type": "text",
+          "label": "Jigsaw contact ID",
+          "type": "string",
+          "name": "JigsawContactId"
+         },
+         {
+          "control_type": "text",
+          "label": "Last activity date",
+          "type": "string",
+          "name": "LastActivityDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Last modified by ID",
+          "type": "string",
+          "name": "LastModifiedById"
+         },
+         {
+          "control_type": "text",
+          "label": "Last modified date",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "type": "date_time",
+          "name": "LastModifiedDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Last name",
+          "type": "string",
+          "name": "LastName"
+         },
+         {
+          "control_type": "text",
+          "label": "Last referenced date",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "type": "date_time",
+          "name": "LastReferencedDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Last CU request date",
+          "type": "string",
+          "name": "LastCURequestDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Last CU update date",
+          "type": "string",
+          "name": "LastCUUpdateDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Last viewed date",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "type": "date_time",
+          "name": "LastViewedDate"
+         },
+         {
+          "control_type": "text",
+          "label": "Lead source",
+          "type": "string",
+          "name": "LeadSource"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "City",
+            "type": "string",
+            "name": "city"
+           },
+           {
+            "control_type": "text",
+            "label": "Country",
+            "type": "string",
+            "name": "country"
+           },
+           {
+            "control_type": "text",
+            "label": "Geocode accuracy",
+            "type": "string",
+            "name": "geocodeAccuracy"
+           },
+           {
+            "control_type": "text",
+            "label": "Latitude",
+            "type": "string",
+            "name": "latitude"
+           },
+           {
+            "control_type": "text",
+            "label": "Longitude",
+            "type": "string",
+            "name": "longitude"
+           },
+           {
+            "control_type": "text",
+            "label": "Postal code",
+            "type": "string",
+            "name": "postalCode"
+           },
+           {
+            "control_type": "text",
+            "label": "State",
+            "type": "string",
+            "name": "state"
+           },
+           {
+            "control_type": "text",
+            "label": "Street",
+            "type": "string",
+            "name": "street"
+           }
+          ],
+          "label": "Mailing address",
+          "type": "object",
+          "name": "MailingAddress"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing city",
+          "type": "string",
+          "name": "MailingCity"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing country",
+          "type": "string",
+          "name": "MailingCountry"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing geocode accuracy",
+          "type": "string",
+          "name": "MailingGeocodeAccuracy"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing latitude",
+          "type": "string",
+          "name": "MailingLatitude"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing longitude",
+          "type": "string",
+          "name": "MailingLongitude"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing state",
+          "type": "string",
+          "name": "MailingState"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing street",
+          "type": "string",
+          "name": "MailingStreet"
+         },
+         {
+          "control_type": "text",
+          "label": "Mailing postal code",
+          "type": "string",
+          "name": "MailingPostalCode"
+         },
+         {
+          "control_type": "text",
+          "label": "Master record ID",
+          "type": "string",
+          "name": "MasterRecordId"
+         },
+         {
+          "control_type": "text",
+          "label": "Mobile phone",
+          "type": "string",
+          "name": "MobilePhone"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "City",
+            "type": "string",
+            "name": "city"
+           },
+           {
+            "control_type": "text",
+            "label": "Country",
+            "type": "string",
+            "name": "country"
+           },
+           {
+            "control_type": "text",
+            "label": "Geocode accuracy",
+            "type": "string",
+            "name": "geocodeAccuracy"
+           },
+           {
+            "control_type": "text",
+            "label": "Latitude",
+            "type": "string",
+            "name": "latitude"
+           },
+           {
+            "control_type": "text",
+            "label": "Longitude",
+            "type": "string",
+            "name": "longitude"
+           },
+           {
+            "control_type": "text",
+            "label": "Postal code",
+            "type": "string",
+            "name": "postalCode"
+           },
+           {
+            "control_type": "text",
+            "label": "State",
+            "type": "string",
+            "name": "state"
+           },
+           {
+            "control_type": "text",
+            "label": "Street",
+            "type": "string",
+            "name": "street"
+           }
+          ],
+          "label": "Other address",
+          "type": "object",
+          "name": "OtherAddress"
+         },
+         {
+          "control_type": "text",
+          "label": "Other city",
+          "type": "string",
+          "name": "OtherCity"
+         },
+         {
+          "control_type": "text",
+          "label": "Other country",
+          "type": "string",
+          "name": "OtherCountry"
+         },
+         {
+          "control_type": "text",
+          "label": "Other geocode accuracy",
+          "type": "string",
+          "name": "OtherGeocodeAccuracy"
+         },
+         {
+          "control_type": "text",
+          "label": "Other latitude",
+          "type": "string",
+          "name": "OtherLatitude"
+         },
+         {
+          "control_type": "text",
+          "label": "Other longitude",
+          "type": "string",
+          "name": "OtherLongitude"
+         },
+         {
+          "control_type": "text",
+          "label": "Other phone",
+          "type": "string",
+          "name": "OtherPhone"
+         },
+         {
+          "control_type": "text",
+          "label": "Other state",
+          "type": "string",
+          "name": "OtherState"
+         },
+         {
+          "control_type": "text",
+          "label": "Other street",
+          "type": "string",
+          "name": "OtherStreet"
+         },
+         {
+          "control_type": "text",
+          "label": "Other postal code",
+          "type": "string",
+          "name": "OtherPostalCode"
+         },
+         {
+          "control_type": "text",
+          "label": "Owner ID",
+          "type": "string",
+          "name": "OwnerId"
+         },
+         {
+          "control_type": "text",
+          "label": "Photo URL",
+          "type": "string",
+          "name": "PhotoUrl"
+         },
+         {
+          "control_type": "text",
+          "label": "Reports to ID",
+          "type": "string",
+          "name": "ReportsToId"
+         },
+         {
+          "control_type": "text",
+          "label": "Salutation",
+          "type": "string",
+          "name": "Salutation"
+         },
+         {
+          "control_type": "text",
+          "label": "System modstamp",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "type": "date_time",
+          "name": "SystemModstamp"
+         },
+         {
+          "control_type": "text",
+          "label": "Title",
+          "type": "string",
+          "name": "Title"
+         },
+         {
+          "control_type": "text",
+          "label": "Campaign 2 c",
+          "type": "string",
+          "name": "Campaign2__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Newcamp c",
+          "type": "string",
+          "name": "newcamp__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Category c",
+          "type": "string",
+          "name": "Category__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Customer type c",
+          "type": "string",
+          "name": "Customer_Type__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Date time cf c",
+          "type": "string",
+          "name": "Date_time_cf__c"
+         },
+         {
+          "control_type": "text",
+          "label": "External ID del c",
+          "type": "string",
+          "name": "External_ID_del__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Level c",
+          "type": "string",
+          "name": "Level__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Multi select custom c",
+          "type": "string",
+          "name": "Multi_select_custom__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Target IDE c",
+          "type": "string",
+          "name": "Target_IDE__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Cf c",
+          "type": "string",
+          "name": "cf__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Cf 2 c",
+          "type": "string",
+          "name": "cf2__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Checkbox up 1 c",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Checkbox up 1 c",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "type": "boolean",
+           "name": "checkbox_up1__c"
+          },
+          "type": "boolean",
+          "name": "checkbox_up1__c"
+         },
+         {
+          "control_type": "text",
+          "label": "External unique ID c",
+          "type": "string",
+          "name": "external_unique_id__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Issue c",
+          "type": "string",
+          "name": "issue__c"
+         },
+         {
+          "control_type": "text",
+          "label": "Combined attachments",
+          "type": "string",
+          "name": "CombinedAttachments"
+         },
+         {
+          "control_type": "text",
+          "label": "Valid",
+          "render_input": {},
+          "parse_output": {},
+          "toggle_hint": "Select from option list",
+          "toggle_field": {
+           "label": "Valid",
+           "control_type": "text",
+           "toggle_hint": "Use custom value",
+           "type": "boolean",
+           "name": "valid"
+          },
+          "type": "boolean",
+          "name": "valid"
+         }
+        ]
+       },
+       {
+        "control_type": "number",
+        "label": "Bad contacts",
+        "parse_output": "float_conversion",
+        "type": "number",
+        "name": "bad_contacts"
+       },
+       {
+        "control_type": "text",
+        "label": "Log",
+        "type": "string",
+        "name": "log"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "form-schema-builder",
+      "hint": "Define the input fields that will be passed to your JavaScript code",
+      "label": "Input fields",
+      "name": "code_input",
+      "optional": true,
+      "override": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "contacts",
+          "name": "contacts",
+          "type": "string",
+          "optional": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "sticky": true,
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "name",
+     "code_input",
+     "code_output_schema_json",
+     "code",
+     "code_input.data.contacts"
+    ],
+    "uuid": "73be80d4-9ea4-4f75-8a2c-202d7e659e25",
+    "skip": false
+   },
+   {
+    "number": 2,
+    "provider": "snowflake",
+    "name": "sync_objects_to_snowflake_v2",
+    "as": "b59722a8",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table": "PUBLIC.SFDC_CONTACT_TEST",
+     "key_columns": [
+      {
+       "label": "ID",
+       "value": "Id"
+      }
+     ]
+    },
+    "toggleCfg": {
+     "flatten_columns": true,
+     "table": true,
+     "key_columns": true
+    },
+    "input": {
+     "rows": "=_('data.js_eval.299491bf.output.val_contacts')",
+     "flatten_columns": "true",
+     "flatten_level": "1",
+     "table": "PUBLIC.SFDC_CONTACT_TEST",
+     "key_columns": "Id"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "multiselect",
+      "delimiter": "\n",
+      "hint": "Select one or more unique keys to identify duplicate rows.",
+      "label": "Unique keys",
+      "name": "key_columns",
+      "optional": false,
+      "pick_list": [
+       [
+        "Attributes",
+        "attributes"
+       ],
+       [
+        "Account ID",
+        "AccountId"
+       ],
+       [
+        "Assistant name",
+        "AssistantName"
+       ],
+       [
+        "Assistant phone",
+        "AssistantPhone"
+       ],
+       [
+        "Birthdate",
+        "Birthdate"
+       ],
+       [
+        "Fax",
+        "Fax"
+       ],
+       [
+        "Phone",
+        "Phone"
+       ],
+       [
+        "Description",
+        "Description"
+       ],
+       [
+        "ID",
+        "Id"
+       ],
+       [
+        "Created by ID",
+        "CreatedById"
+       ],
+       [
+        "Created date",
+        "CreatedDate"
+       ],
+       [
+        "Jigsaw",
+        "Jigsaw"
+       ],
+       [
+        "Is deleted",
+        "IsDeleted"
+       ],
+       [
+        "Department",
+        "Department"
+       ],
+       [
+        "Email",
+        "Email"
+       ],
+       [
+        "Email bounced date",
+        "EmailBouncedDate"
+       ],
+       [
+        "Email bounced reason",
+        "EmailBouncedReason"
+       ],
+       [
+        "First name",
+        "FirstName"
+       ],
+       [
+        "Name",
+        "Name"
+       ],
+       [
+        "Home phone",
+        "HomePhone"
+       ],
+       [
+        "Individual ID",
+        "IndividualId"
+       ],
+       [
+        "Is email bounced",
+        "IsEmailBounced"
+       ],
+       [
+        "Jigsaw contact ID",
+        "JigsawContactId"
+       ],
+       [
+        "Last activity date",
+        "LastActivityDate"
+       ],
+       [
+        "Last modified by ID",
+        "LastModifiedById"
+       ],
+       [
+        "Last modified date",
+        "LastModifiedDate"
+       ],
+       [
+        "Last name",
+        "LastName"
+       ],
+       [
+        "Last referenced date",
+        "LastReferencedDate"
+       ],
+       [
+        "Last CU request date",
+        "LastCURequestDate"
+       ],
+       [
+        "Last CU update date",
+        "LastCUUpdateDate"
+       ],
+       [
+        "Last viewed date",
+        "LastViewedDate"
+       ],
+       [
+        "Lead source",
+        "LeadSource"
+       ],
+       [
+        "Mailing address",
+        "MailingAddress"
+       ],
+       [
+        "Mailing city",
+        "MailingCity"
+       ],
+       [
+        "Mailing country",
+        "MailingCountry"
+       ],
+       [
+        "Mailing geocode accuracy",
+        "MailingGeocodeAccuracy"
+       ],
+       [
+        "Mailing latitude",
+        "MailingLatitude"
+       ],
+       [
+        "Mailing longitude",
+        "MailingLongitude"
+       ],
+       [
+        "Mailing state",
+        "MailingState"
+       ],
+       [
+        "Mailing street",
+        "MailingStreet"
+       ],
+       [
+        "Mailing postal code",
+        "MailingPostalCode"
+       ],
+       [
+        "Master record ID",
+        "MasterRecordId"
+       ],
+       [
+        "Mobile phone",
+        "MobilePhone"
+       ],
+       [
+        "Other address",
+        "OtherAddress"
+       ],
+       [
+        "Other city",
+        "OtherCity"
+       ],
+       [
+        "Other country",
+        "OtherCountry"
+       ],
+       [
+        "Other geocode accuracy",
+        "OtherGeocodeAccuracy"
+       ],
+       [
+        "Other latitude",
+        "OtherLatitude"
+       ],
+       [
+        "Other longitude",
+        "OtherLongitude"
+       ],
+       [
+        "Other phone",
+        "OtherPhone"
+       ],
+       [
+        "Other state",
+        "OtherState"
+       ],
+       [
+        "Other street",
+        "OtherStreet"
+       ],
+       [
+        "Other postal code",
+        "OtherPostalCode"
+       ],
+       [
+        "Owner ID",
+        "OwnerId"
+       ],
+       [
+        "Photo URL",
+        "PhotoUrl"
+       ],
+       [
+        "Reports to ID",
+        "ReportsToId"
+       ],
+       [
+        "Salutation",
+        "Salutation"
+       ],
+       [
+        "System modstamp",
+        "SystemModstamp"
+       ],
+       [
+        "Title",
+        "Title"
+       ],
+       [
+        "Campaign 2 c",
+        "Campaign2__c"
+       ],
+       [
+        "Newcamp c",
+        "newcamp__c"
+       ],
+       [
+        "Category c",
+        "Category__c"
+       ],
+       [
+        "Customer type c",
+        "Customer_Type__c"
+       ],
+       [
+        "Date time cf c",
+        "Date_time_cf__c"
+       ],
+       [
+        "External ID del c",
+        "External_ID_del__c"
+       ],
+       [
+        "Level c",
+        "Level__c"
+       ],
+       [
+        "Multi select custom c",
+        "Multi_select_custom__c"
+       ],
+       [
+        "Target IDE c",
+        "Target_IDE__c"
+       ],
+       [
+        "Cf c",
+        "cf__c"
+       ],
+       [
+        "Cf 2 c",
+        "cf2__c"
+       ],
+       [
+        "Checkbox up 1 c",
+        "checkbox_up1__c"
+       ],
+       [
+        "External unique ID c",
+        "external_unique_id__c"
+       ],
+       [
+        "Issue c",
+        "issue__c"
+       ],
+       [
+        "Combined attachments",
+        "CombinedAttachments"
+       ],
+       [
+        "Valid",
+        "valid"
+       ]
+      ],
+      "sticky": true,
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Key columns",
+       "toggle_hint": "Enter unique keys",
+       "hint": "Enter one or more unique keys to identify duplicate rows, each on one line.",
+       "optional": false,
+       "toggle_to_primary_hint": "Select unique keys",
+       "toggle_to_secondary_hint": "Enter unique keys",
+       "type": "string",
+       "name": "key_columns"
+      },
+      "toggle_hint": "Select unique keys",
+      "type": "string",
+      "list_schema_details": {
+       "rows": [
+        {
+         "properties": [
+          {
+           "control_type": "text",
+           "label": "Type",
+           "type": "string",
+           "name": "type"
+          },
+          {
+           "control_type": "text",
+           "label": "URL",
+           "type": "string",
+           "name": "url"
+          }
+         ],
+         "label": "Attributes",
+         "type": "object",
+         "name": "attributes"
+        },
+        {
+         "control_type": "text",
+         "label": "Account ID",
+         "type": "string",
+         "name": "AccountId"
+        },
+        {
+         "control_type": "text",
+         "label": "Assistant name",
+         "type": "string",
+         "name": "AssistantName"
+        },
+        {
+         "control_type": "text",
+         "label": "Assistant phone",
+         "type": "string",
+         "name": "AssistantPhone"
+        },
+        {
+         "control_type": "text",
+         "label": "Birthdate",
+         "type": "string",
+         "name": "Birthdate"
+        },
+        {
+         "control_type": "text",
+         "label": "Fax",
+         "type": "string",
+         "name": "Fax"
+        },
+        {
+         "control_type": "text",
+         "label": "Phone",
+         "type": "string",
+         "name": "Phone"
+        },
+        {
+         "control_type": "text",
+         "label": "Description",
+         "type": "string",
+         "name": "Description"
+        },
+        {
+         "control_type": "text",
+         "label": "ID",
+         "type": "string",
+         "name": "Id"
+        },
+        {
+         "control_type": "text",
+         "label": "Created by ID",
+         "type": "string",
+         "name": "CreatedById"
+        },
+        {
+         "control_type": "text",
+         "label": "Created date",
+         "render_input": "date_time_conversion",
+         "parse_output": "date_time_conversion",
+         "type": "date_time",
+         "name": "CreatedDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Jigsaw",
+         "type": "string",
+         "name": "Jigsaw"
+        },
+        {
+         "control_type": "text",
+         "label": "Is deleted",
+         "render_input": {},
+         "parse_output": {},
+         "toggle_hint": "Select from option list",
+         "toggle_field": {
+          "label": "Is deleted",
+          "control_type": "text",
+          "toggle_hint": "Use custom value",
+          "type": "boolean",
+          "name": "IsDeleted"
+         },
+         "type": "boolean",
+         "name": "IsDeleted"
+        },
+        {
+         "control_type": "text",
+         "label": "Department",
+         "type": "string",
+         "name": "Department"
+        },
+        {
+         "control_type": "text",
+         "label": "Email",
+         "type": "string",
+         "name": "Email"
+        },
+        {
+         "control_type": "text",
+         "label": "Email bounced date",
+         "type": "string",
+         "name": "EmailBouncedDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Email bounced reason",
+         "type": "string",
+         "name": "EmailBouncedReason"
+        },
+        {
+         "control_type": "text",
+         "label": "First name",
+         "type": "string",
+         "name": "FirstName"
+        },
+        {
+         "control_type": "text",
+         "label": "Name",
+         "type": "string",
+         "name": "Name"
+        },
+        {
+         "control_type": "text",
+         "label": "Home phone",
+         "type": "string",
+         "name": "HomePhone"
+        },
+        {
+         "control_type": "text",
+         "label": "Individual ID",
+         "type": "string",
+         "name": "IndividualId"
+        },
+        {
+         "control_type": "text",
+         "label": "Is email bounced",
+         "render_input": {},
+         "parse_output": {},
+         "toggle_hint": "Select from option list",
+         "toggle_field": {
+          "label": "Is email bounced",
+          "control_type": "text",
+          "toggle_hint": "Use custom value",
+          "type": "boolean",
+          "name": "IsEmailBounced"
+         },
+         "type": "boolean",
+         "name": "IsEmailBounced"
+        },
+        {
+         "control_type": "text",
+         "label": "Jigsaw contact ID",
+         "type": "string",
+         "name": "JigsawContactId"
+        },
+        {
+         "control_type": "text",
+         "label": "Last activity date",
+         "type": "string",
+         "name": "LastActivityDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Last modified by ID",
+         "type": "string",
+         "name": "LastModifiedById"
+        },
+        {
+         "control_type": "text",
+         "label": "Last modified date",
+         "render_input": "date_time_conversion",
+         "parse_output": "date_time_conversion",
+         "type": "date_time",
+         "name": "LastModifiedDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Last name",
+         "type": "string",
+         "name": "LastName"
+        },
+        {
+         "control_type": "text",
+         "label": "Last referenced date",
+         "render_input": "date_time_conversion",
+         "parse_output": "date_time_conversion",
+         "type": "date_time",
+         "name": "LastReferencedDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Last CU request date",
+         "type": "string",
+         "name": "LastCURequestDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Last CU update date",
+         "type": "string",
+         "name": "LastCUUpdateDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Last viewed date",
+         "render_input": "date_time_conversion",
+         "parse_output": "date_time_conversion",
+         "type": "date_time",
+         "name": "LastViewedDate"
+        },
+        {
+         "control_type": "text",
+         "label": "Lead source",
+         "type": "string",
+         "name": "LeadSource"
+        },
+        {
+         "properties": [
+          {
+           "control_type": "text",
+           "label": "City",
+           "type": "string",
+           "name": "city"
+          },
+          {
+           "control_type": "text",
+           "label": "Country",
+           "type": "string",
+           "name": "country"
+          },
+          {
+           "control_type": "text",
+           "label": "Geocode accuracy",
+           "type": "string",
+           "name": "geocodeAccuracy"
+          },
+          {
+           "control_type": "text",
+           "label": "Latitude",
+           "type": "string",
+           "name": "latitude"
+          },
+          {
+           "control_type": "text",
+           "label": "Longitude",
+           "type": "string",
+           "name": "longitude"
+          },
+          {
+           "control_type": "text",
+           "label": "Postal code",
+           "type": "string",
+           "name": "postalCode"
+          },
+          {
+           "control_type": "text",
+           "label": "State",
+           "type": "string",
+           "name": "state"
+          },
+          {
+           "control_type": "text",
+           "label": "Street",
+           "type": "string",
+           "name": "street"
+          }
+         ],
+         "label": "Mailing address",
+         "type": "object",
+         "name": "MailingAddress"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing city",
+         "type": "string",
+         "name": "MailingCity"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing country",
+         "type": "string",
+         "name": "MailingCountry"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing geocode accuracy",
+         "type": "string",
+         "name": "MailingGeocodeAccuracy"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing latitude",
+         "type": "string",
+         "name": "MailingLatitude"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing longitude",
+         "type": "string",
+         "name": "MailingLongitude"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing state",
+         "type": "string",
+         "name": "MailingState"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing street",
+         "type": "string",
+         "name": "MailingStreet"
+        },
+        {
+         "control_type": "text",
+         "label": "Mailing postal code",
+         "type": "string",
+         "name": "MailingPostalCode"
+        },
+        {
+         "control_type": "text",
+         "label": "Master record ID",
+         "type": "string",
+         "name": "MasterRecordId"
+        },
+        {
+         "control_type": "text",
+         "label": "Mobile phone",
+         "type": "string",
+         "name": "MobilePhone"
+        },
+        {
+         "properties": [
+          {
+           "control_type": "text",
+           "label": "City",
+           "type": "string",
+           "name": "city"
+          },
+          {
+           "control_type": "text",
+           "label": "Country",
+           "type": "string",
+           "name": "country"
+          },
+          {
+           "control_type": "text",
+           "label": "Geocode accuracy",
+           "type": "string",
+           "name": "geocodeAccuracy"
+          },
+          {
+           "control_type": "text",
+           "label": "Latitude",
+           "type": "string",
+           "name": "latitude"
+          },
+          {
+           "control_type": "text",
+           "label": "Longitude",
+           "type": "string",
+           "name": "longitude"
+          },
+          {
+           "control_type": "text",
+           "label": "Postal code",
+           "type": "string",
+           "name": "postalCode"
+          },
+          {
+           "control_type": "text",
+           "label": "State",
+           "type": "string",
+           "name": "state"
+          },
+          {
+           "control_type": "text",
+           "label": "Street",
+           "type": "string",
+           "name": "street"
+          }
+         ],
+         "label": "Other address",
+         "type": "object",
+         "name": "OtherAddress"
+        },
+        {
+         "control_type": "text",
+         "label": "Other city",
+         "type": "string",
+         "name": "OtherCity"
+        },
+        {
+         "control_type": "text",
+         "label": "Other country",
+         "type": "string",
+         "name": "OtherCountry"
+        },
+        {
+         "control_type": "text",
+         "label": "Other geocode accuracy",
+         "type": "string",
+         "name": "OtherGeocodeAccuracy"
+        },
+        {
+         "control_type": "text",
+         "label": "Other latitude",
+         "type": "string",
+         "name": "OtherLatitude"
+        },
+        {
+         "control_type": "text",
+         "label": "Other longitude",
+         "type": "string",
+         "name": "OtherLongitude"
+        },
+        {
+         "control_type": "text",
+         "label": "Other phone",
+         "type": "string",
+         "name": "OtherPhone"
+        },
+        {
+         "control_type": "text",
+         "label": "Other state",
+         "type": "string",
+         "name": "OtherState"
+        },
+        {
+         "control_type": "text",
+         "label": "Other street",
+         "type": "string",
+         "name": "OtherStreet"
+        },
+        {
+         "control_type": "text",
+         "label": "Other postal code",
+         "type": "string",
+         "name": "OtherPostalCode"
+        },
+        {
+         "control_type": "text",
+         "label": "Owner ID",
+         "type": "string",
+         "name": "OwnerId"
+        },
+        {
+         "control_type": "text",
+         "label": "Photo URL",
+         "type": "string",
+         "name": "PhotoUrl"
+        },
+        {
+         "control_type": "text",
+         "label": "Reports to ID",
+         "type": "string",
+         "name": "ReportsToId"
+        },
+        {
+         "control_type": "text",
+         "label": "Salutation",
+         "type": "string",
+         "name": "Salutation"
+        },
+        {
+         "control_type": "text",
+         "label": "System modstamp",
+         "render_input": "date_time_conversion",
+         "parse_output": "date_time_conversion",
+         "type": "date_time",
+         "name": "SystemModstamp"
+        },
+        {
+         "control_type": "text",
+         "label": "Title",
+         "type": "string",
+         "name": "Title"
+        },
+        {
+         "control_type": "text",
+         "label": "Campaign 2 c",
+         "type": "string",
+         "name": "Campaign2__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Newcamp c",
+         "type": "string",
+         "name": "newcamp__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Category c",
+         "type": "string",
+         "name": "Category__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Customer type c",
+         "type": "string",
+         "name": "Customer_Type__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Date time cf c",
+         "type": "string",
+         "name": "Date_time_cf__c"
+        },
+        {
+         "control_type": "text",
+         "label": "External ID del c",
+         "type": "string",
+         "name": "External_ID_del__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Level c",
+         "type": "string",
+         "name": "Level__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Multi select custom c",
+         "type": "string",
+         "name": "Multi_select_custom__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Target IDE c",
+         "type": "string",
+         "name": "Target_IDE__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Cf c",
+         "type": "string",
+         "name": "cf__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Cf 2 c",
+         "type": "string",
+         "name": "cf2__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Checkbox up 1 c",
+         "render_input": {},
+         "parse_output": {},
+         "toggle_hint": "Select from option list",
+         "toggle_field": {
+          "label": "Checkbox up 1 c",
+          "control_type": "text",
+          "toggle_hint": "Use custom value",
+          "type": "boolean",
+          "name": "checkbox_up1__c"
+         },
+         "type": "boolean",
+         "name": "checkbox_up1__c"
+        },
+        {
+         "control_type": "text",
+         "label": "External unique ID c",
+         "type": "string",
+         "name": "external_unique_id__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Issue c",
+         "type": "string",
+         "name": "issue__c"
+        },
+        {
+         "control_type": "text",
+         "label": "Combined attachments",
+         "type": "string",
+         "name": "CombinedAttachments"
+        },
+        {
+         "control_type": "text",
+         "label": "Valid",
+         "render_input": {},
+         "parse_output": {},
+         "toggle_hint": "Select from option list",
+         "toggle_field": {
+          "label": "Valid",
+          "control_type": "text",
+          "toggle_hint": "Use custom value",
+          "type": "boolean",
+          "name": "valid"
+         },
+         "type": "boolean",
+         "name": "valid"
+        },
+        {
+         "control_type": "text",
+         "label": "List size",
+         "name": "____Size",
+         "parse_output": "integer_conversion",
+         "pill_method": "list_meta",
+         "synthetic": true,
+         "type": "integer"
+        },
+        {
+         "control_type": "text",
+         "label": "List index",
+         "name": "____Index",
+         "parse_output": "integer_conversion",
+         "pill_method": "path",
+         "synthetic": true,
+         "type": "integer"
+        }
+       ]
+      }
+     },
+     {
+      "control_type": "multiselect",
+      "delimiter": "\n",
+      "hint": "Select the columns to exclude while replicating rows.",
+      "label": "Exclude columns",
+      "name": "exclude_columns",
+      "optional": true,
+      "pick_list": [
+       [
+        "Attributes",
+        "attributes"
+       ],
+       [
+        "Account ID",
+        "AccountId"
+       ],
+       [
+        "Assistant name",
+        "AssistantName"
+       ],
+       [
+        "Assistant phone",
+        "AssistantPhone"
+       ],
+       [
+        "Birthdate",
+        "Birthdate"
+       ],
+       [
+        "Fax",
+        "Fax"
+       ],
+       [
+        "Phone",
+        "Phone"
+       ],
+       [
+        "Description",
+        "Description"
+       ],
+       [
+        "ID",
+        "Id"
+       ],
+       [
+        "Created by ID",
+        "CreatedById"
+       ],
+       [
+        "Created date",
+        "CreatedDate"
+       ],
+       [
+        "Jigsaw",
+        "Jigsaw"
+       ],
+       [
+        "Is deleted",
+        "IsDeleted"
+       ],
+       [
+        "Department",
+        "Department"
+       ],
+       [
+        "Email",
+        "Email"
+       ],
+       [
+        "Email bounced date",
+        "EmailBouncedDate"
+       ],
+       [
+        "Email bounced reason",
+        "EmailBouncedReason"
+       ],
+       [
+        "First name",
+        "FirstName"
+       ],
+       [
+        "Name",
+        "Name"
+       ],
+       [
+        "Home phone",
+        "HomePhone"
+       ],
+       [
+        "Individual ID",
+        "IndividualId"
+       ],
+       [
+        "Is email bounced",
+        "IsEmailBounced"
+       ],
+       [
+        "Jigsaw contact ID",
+        "JigsawContactId"
+       ],
+       [
+        "Last activity date",
+        "LastActivityDate"
+       ],
+       [
+        "Last modified by ID",
+        "LastModifiedById"
+       ],
+       [
+        "Last modified date",
+        "LastModifiedDate"
+       ],
+       [
+        "Last name",
+        "LastName"
+       ],
+       [
+        "Last referenced date",
+        "LastReferencedDate"
+       ],
+       [
+        "Last CU request date",
+        "LastCURequestDate"
+       ],
+       [
+        "Last CU update date",
+        "LastCUUpdateDate"
+       ],
+       [
+        "Last viewed date",
+        "LastViewedDate"
+       ],
+       [
+        "Lead source",
+        "LeadSource"
+       ],
+       [
+        "Mailing address",
+        "MailingAddress"
+       ],
+       [
+        "Mailing city",
+        "MailingCity"
+       ],
+       [
+        "Mailing country",
+        "MailingCountry"
+       ],
+       [
+        "Mailing geocode accuracy",
+        "MailingGeocodeAccuracy"
+       ],
+       [
+        "Mailing latitude",
+        "MailingLatitude"
+       ],
+       [
+        "Mailing longitude",
+        "MailingLongitude"
+       ],
+       [
+        "Mailing state",
+        "MailingState"
+       ],
+       [
+        "Mailing street",
+        "MailingStreet"
+       ],
+       [
+        "Mailing postal code",
+        "MailingPostalCode"
+       ],
+       [
+        "Master record ID",
+        "MasterRecordId"
+       ],
+       [
+        "Mobile phone",
+        "MobilePhone"
+       ],
+       [
+        "Other address",
+        "OtherAddress"
+       ],
+       [
+        "Other city",
+        "OtherCity"
+       ],
+       [
+        "Other country",
+        "OtherCountry"
+       ],
+       [
+        "Other geocode accuracy",
+        "OtherGeocodeAccuracy"
+       ],
+       [
+        "Other latitude",
+        "OtherLatitude"
+       ],
+       [
+        "Other longitude",
+        "OtherLongitude"
+       ],
+       [
+        "Other phone",
+        "OtherPhone"
+       ],
+       [
+        "Other state",
+        "OtherState"
+       ],
+       [
+        "Other street",
+        "OtherStreet"
+       ],
+       [
+        "Other postal code",
+        "OtherPostalCode"
+       ],
+       [
+        "Owner ID",
+        "OwnerId"
+       ],
+       [
+        "Photo URL",
+        "PhotoUrl"
+       ],
+       [
+        "Reports to ID",
+        "ReportsToId"
+       ],
+       [
+        "Salutation",
+        "Salutation"
+       ],
+       [
+        "System modstamp",
+        "SystemModstamp"
+       ],
+       [
+        "Title",
+        "Title"
+       ],
+       [
+        "Campaign 2 c",
+        "Campaign2__c"
+       ],
+       [
+        "Newcamp c",
+        "newcamp__c"
+       ],
+       [
+        "Category c",
+        "Category__c"
+       ],
+       [
+        "Customer type c",
+        "Customer_Type__c"
+       ],
+       [
+        "Date time cf c",
+        "Date_time_cf__c"
+       ],
+       [
+        "External ID del c",
+        "External_ID_del__c"
+       ],
+       [
+        "Level c",
+        "Level__c"
+       ],
+       [
+        "Multi select custom c",
+        "Multi_select_custom__c"
+       ],
+       [
+        "Target IDE c",
+        "Target_IDE__c"
+       ],
+       [
+        "Cf c",
+        "cf__c"
+       ],
+       [
+        "Cf 2 c",
+        "cf2__c"
+       ],
+       [
+        "Checkbox up 1 c",
+        "checkbox_up1__c"
+       ],
+       [
+        "External unique ID c",
+        "external_unique_id__c"
+       ],
+       [
+        "Issue c",
+        "issue__c"
+       ],
+       [
+        "Combined attachments",
+        "CombinedAttachments"
+       ],
+       [
+        "Valid",
+        "valid"
+       ]
+      ],
+      "sticky": false,
+      "type": "string"
+     }
+    ],
+    "uuid": "c4e684f7-0d1a-456b-9dec-76fc995d1279"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Rows"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.snowflake.6de62109.rows_affected')}"
+  },
+  "uuid": "389d8dbb-f63c-4d61-9b3d-ea8e7a064939"
+ }
+}

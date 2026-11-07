@@ -1,0 +1,433 @@
+{
+ "name": "google_workspace",
+ "title": "Google Workspace",
+ "requires_connection": true,
+ "categories": [
+  "Directory Services",
+  "Cloud Platform"
+ ],
+ "aliases": [
+  "Google Workspace"
+ ],
+ "triggers": [
+  {
+   "name": "new_admin_activity_event",
+   "title": "New admin activity event",
+   "description": "New admin activity event in Google Workspace",
+   "help": "Use this trigger to capture events related to the admin console oradmin-level activities for a particular application. For eg. Creating a resource in Calendar or Gmail setting change for an organizational unit.",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start a recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested…"
+    },
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "The event name to receive the corresponding admin activities. E.g change_gmail_setting . Please find the event names here ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_application_activity_event",
+   "title": "New application activity event",
+   "description": "New application activity event in Google Workspace",
+   "help": "Use this trigger to capture audit activities related to google applications. For eg., a subscription added to a Google Calendar or when a document is removed from Google Drive.",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start a recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested…"
+    },
+    {
+     "name": "application_name",
+     "type": "string",
+     "label": "Application name",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "calendar",
+      "chat",
+      "drive",
+      "gcp",
+      "gplus",
+      "groups",
+      "groups_enterprise",
+      "jamboard",
+      "login",
+      "meet",
+      "mobile",
+      "rules",
+      "saml",
+      "token",
+      "user_accounts",
+      "context_aware_access",
+      "chrome",
+      "data_studio"
+     ],
+     "extends_schema": true,
+     "hint": "The application name to receive the corresponding application activities."
+    },
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "The event name to receive the corresponding application activities. E.g change_calendar_acls . Please find the event names here ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_user_event",
+   "title": "New user event",
+   "description": "New user event in Google Workspace",
+   "help": "Triggers when user event is logged in Google Workspace.",
+   "input": [
+    {
+     "name": "event",
+     "type": "string",
+     "label": "User event",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "user_events",
+     "extends_schema": true,
+     "hint": "Select user event. User undeleted event is picked up after a delay of 30 minutes due to google workspace limitation."
+    },
+    {
+     "name": "domain",
+     "type": "string",
+     "label": "Domain",
+     "control_type": "select",
+     "pick_list": "domain_name",
+     "extends_schema": true,
+     "hint": "Select domain to get users from only specific domain. Leave blank to return all users."
+    },
+    {
+     "name": "viewType",
+     "type": "string",
+     "label": "View type",
+     "control_type": "select",
+     "options": [
+      "admin_view",
+      "domain_public"
+     ],
+     "extends_schema": true,
+     "hint": "Select view type."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "primaryEmail",
+     "type": "string",
+     "label": "Primary email",
+     "control_type": "text"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Resource",
+     "control_type": "text"
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text"
+    },
+    {
+     "name": "eventType",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Google Workspace (Custom)",
+   "help": "Build your own Google Workspace action with a HTTP request. The request will be authorized with your Google Workspace connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_object",
+   "title": "Add record",
+   "description": "Add record in Google Workspace",
+   "help": "First select the object you would like to add. After selecting the object, fill in any relevant input fields related to that object.",
+   "input": [
+    {
+     "name": "gsuite_object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "gsuite_add_objects_picklist",
+     "extends_schema": true,
+     "hint": "Select an object."
+    },
+    {
+     "name": "custom_schema_options",
+     "type": "string",
+     "label": "Custom field schemas",
+     "control_type": "multiselect",
+     "visible_if": "input.gsuite_object == 'user'",
+     "pick_list": "get_custom_fields_pick_list",
+     "extends_schema": true,
+     "hint": "Select custom field schema(s) for user."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_object",
+   "title": "Delete record",
+   "description": "Delete record in Google Workspace",
+   "help": "First select the object you would like to delete. After selecting the object, fill in email address field delete that object.",
+   "input": [
+    {
+     "name": "gsuite_object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "gsuite_delete_objects_picklist",
+     "extends_schema": true,
+     "hint": "Select an object."
+    }
+   ],
+   "output": [
+    {
+     "name": "deleted",
+     "type": "number",
+     "label": "Deleted",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "get_object",
+   "title": "Get record",
+   "description": "Get record in Google Workspace",
+   "help": "First select the object you would like to get. After selecting the object, fill in any relevant input fields related to that object.",
+   "input": [
+    {
+     "name": "gsuite_object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "gsuite_get_objects_picklist",
+     "extends_schema": true,
+     "hint": "Select an object."
+    },
+    {
+     "name": "custom_schema_options",
+     "type": "string",
+     "label": "Custom field schemas",
+     "control_type": "multiselect",
+     "visible_if": "input.gsuite_object == 'user'",
+     "pick_list": "get_custom_fields_pick_list",
+     "extends_schema": true,
+     "hint": "Select custom field schema(s) for user. If left blank, the default will be all custom fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "mobile_device_action",
+   "title": "Mobile device action",
+   "description": "Takes an action that affects a mobile device.",
+   "input": [],
+   "output": [
+    {
+     "name": "success",
+     "type": "number",
+     "label": "Success",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "error",
+     "type": "string",
+     "label": "Error message",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "search_object",
+   "title": "Search records",
+   "description": "Search records in Google Workspace",
+   "help": "First select the object you would like to search. After selecting the object, fill in any relevant input fields related to that object.",
+   "input": [
+    {
+     "name": "gsuite_object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "gsuite_search_objects_picklist",
+     "extends_schema": true,
+     "hint": "Select an object."
+    },
+    {
+     "name": "custom_schema_options",
+     "type": "string",
+     "label": "Custom field schemas",
+     "control_type": "multiselect",
+     "visible_if": "input.gsuite_object == 'user'",
+     "pick_list": "get_custom_fields_pick_list",
+     "extends_schema": true,
+     "hint": "Select custom field schema(s) for user."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "suspend_user",
+   "title": "Suspend user",
+   "description": "Suspend user in Google Workspace",
+   "help": "Sets the Directory user suspended field to true.",
+   "input": [
+    {
+     "name": "user_key",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "email",
+     "required": true,
+     "toggle_field": {
+      "name": "user_key",
+      "type": "string"
+     },
+     "hint": "Provide email address of the user to suspend."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text"
+    },
+    {
+     "name": "primaryEmail",
+     "type": "string",
+     "label": "Primary email",
+     "control_type": "text"
+    },
+    {
+     "name": "suspended",
+     "type": "number",
+     "label": "Is suspended",
+     "control_type": "number"
+    },
+    {
+     "name": "name",
+     "type": "object",
+     "label": "Name",
+     "properties": [
+      {
+       "name": "familyName",
+       "type": "string",
+       "label": "Surname",
+       "control_type": "text"
+      },
+      {
+       "name": "givenName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "transfer_data_v2",
+   "title": "Transfer Data",
+   "description": "Inserts a data transfer request",
+   "help": "This action transfers resources owned by the old owner to a new user. Often used during employee offboarding to transfer ownership of assets in Google Drive, Google Calendar and other Google office suite apps before the employee account is deprovisioned. Toggle the \"wait for data transfer to complet…",
+   "input": [],
+   "output": []
+  },
+  {
+   "name": "update_object",
+   "title": "Update record",
+   "description": "Update record in Google Workspace",
+   "help": "First select the object you would like to update. After selecting the object, fill in any relevant input fields related to that object.",
+   "input": [
+    {
+     "name": "gsuite_object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "gsuite_update_objects_picklist",
+     "extends_schema": true,
+     "hint": "Select an object."
+    },
+    {
+     "name": "custom_schema_options",
+     "type": "string",
+     "label": "Custom field schemas",
+     "control_type": "multiselect",
+     "visible_if": "input.gsuite_object == 'user'",
+     "pick_list": "get_custom_fields_pick_list",
+     "extends_schema": true,
+     "hint": "Select custom field schema(s) for user."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

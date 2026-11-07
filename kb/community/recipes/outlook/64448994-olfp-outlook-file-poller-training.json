@@ -1,0 +1,2391 @@
+{
+ "id": 64448994,
+ "name": "[OLFP]-Outlook file poller training",
+ "description": null,
+ "applications": [
+  "outlook",
+  "workato_variable",
+  "file_connector",
+  "open_ai_utility",
+  "workato_workflow_task",
+  "workato_db_table",
+  "workato_recipe_function"
+ ],
+ "action_applications": [
+  "workato_variable",
+  "file_connector",
+  "open_ai_utility",
+  "workato_workflow_task",
+  "workato_db_table",
+  "workato_recipe_function"
+ ],
+ "trigger_application": "outlook",
+ "business_objects": [
+  "email",
+  "file",
+  "38901",
+  "mail"
+ ],
+ "categories": [
+  "Productivity",
+  "Sales Enablement",
+  "Recipe Tools",
+  "Workato",
+  "Document/File",
+  "Marketing",
+  "Utilities",
+  "Artificial Intelligence"
+ ],
+ "copy_count": 8,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2025-12-08T04:00:49.553-08:00",
+ "source_url": "https://app.workato.com/recipes/64448994?community=us",
+ "steps": [
+  "outlook.new_email",
+  "workato_variable.declare_list",
+  "workato_variable.declare_list",
+  "workato_variable.declare_variable",
+  "workato_variable.declare_variable",
+  "workato_variable.update_variables",
+  "workato_variable.update_variables",
+  "outlook.get_attachments",
+  "file_connector.transform_image",
+  "open_ai_utility.analyse_image",
+  "workato_workflow_task.add_request",
+  "workato_workflow_task.add_request",
+  "workato_variable.insert_to_list",
+  "workato_variable.insert_to_list",
+  "workato_db_table.add_record",
+  "outlook.send_mail",
+  "outlook.send_mail",
+  "outlook.send_mail",
+  "outlook.send_mail",
+  "workato_recipe_function.call_recipe"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "outlook",
+  "name": "new_email",
+  "as": "6d0f4ea4",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "_obj_path": {
+    "ids": [
+     "mailfolders('AQMkADk1YmViZWI5LWQxY2EtNGZhMS1hYmNiLTJiYzU5ZDZhN2ZjMAAuAAADJZ6VgUdCf0Gz51VP4olBlwEAeLBgBah3zkSLRw41IMOx1gAAAgEMAAAA')/messages"
+    ],
+    "titles": [
+     "Inbox"
+    ]
+   }
+  },
+  "toggleCfg": {
+   "atp_scanning": true
+  },
+  "input": {
+   "atp_scanning": "-- REDACTED --",
+   "shared_mailbox": "user@example.com",
+   "_obj_path": "mailfolders('AQMkADk1YmViZWI5LWQxY2EtNGZhMS1hYmNiLTJiYzU5ZDZhN2ZjMAAuAAADJZ6VgUdCf0Gz51VP4olBlwEAeLBgBah3zkSLRw41IMOx1gAAAgEMAAAA')/messages",
+   "since": "2025-07-20T00:00:00+03:00"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "is_true",
+     "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"HasAttachments\"]}')}",
+     "rhs": "",
+     "uuid": "9a1af1d8-ab37-4149-83ce-e01bf12608a6"
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "workato_variable",
+      "name": "declare_list",
+      "as": "692398e5",
+      "keyword": "action",
+      "input": {
+       "name": "recID_of_invoices",
+       "list_item_schema_json": "[{\"name\":\"recID\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Rec ID\"}]"
+      },
+      "extended_output_schema": [
+       {
+        "hint": "",
+        "label": "recID_of_invoices",
+        "name": "list_items",
+        "of": "object",
+        "optional": false,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Rec ID",
+          "name": "recID",
+          "type": "string",
+          "optional": false
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+        "label": "Items",
+        "name": "list_items",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Rec ID",
+          "name": "recID",
+          "type": "string",
+          "optional": false
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "comment": "to relate files to the relative invoice, via the recIDs of the data table",
+      "uuid": "82dfc119-7663-4b92-a301-0a2206ec86db",
+      "skip": false,
+      "title": " Create recID_of_invoices list",
+      "description": "Create <span class=\"provider\">recID_of_invoices</span> list"
+     },
+     {
+      "number": 3,
+      "provider": "workato_variable",
+      "name": "declare_list",
+      "as": "0f1ab7b2",
+      "keyword": "action",
+      "input": {
+       "name": "not_invoices",
+       "list_item_schema_json": "[{\"name\":\"file\",\"type\":\"object\",\"optional\":false,\"properties\":[{\"name\":\"type\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Type\"},{\"name\":\"content\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Content\"},{\"name\":\"name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Name\"}],\"label\":\"File\"}]"
+      },
+      "extended_output_schema": [
+       {
+        "hint": "",
+        "label": "not_invoices",
+        "name": "list_items",
+        "of": "object",
+        "optional": false,
+        "properties": [
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Type",
+            "name": "type",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Content",
+            "name": "content",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "name": "name",
+            "type": "string",
+            "optional": false
+           }
+          ],
+          "label": "File",
+          "name": "file",
+          "type": "object",
+          "optional": false
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+        "label": "Items",
+        "name": "list_items",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Type",
+            "name": "type",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Content",
+            "name": "content",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "name": "name",
+            "type": "string",
+            "optional": false
+           }
+          ],
+          "label": "File",
+          "name": "file",
+          "type": "object",
+          "optional": false
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "comment": "list of files that are not invoices, initiates empty.",
+      "uuid": "751dc990-0f04-4a2b-bd0d-dd6816f33f15",
+      "skip": false,
+      "title": " Create not_invoices list",
+      "description": "Create <span class=\"provider\">not_invoices</span> list"
+     },
+     {
+      "number": 4,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "f4c41925",
+      "keyword": "action",
+      "toggleCfg": {
+       "variables.data.deal_iv": false
+      },
+      "input": {
+       "variables": {
+        "schema": "[{\"control_type\":\"text\",\"label\":\"authorized_dealer_number\",\"name\":\"authorized_dealer_number\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"authorized_dealer_number\"},\"parent\":[\"variables\",\"data\"],\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true},{\"name\":\"deal_iv\",\"type\":\"boolean\",\"optional\":true,\"label\":\"deal_iv\",\"details\":{\"real_name\":\"deal_iv\"},\"control_type\":\"checkbox\",\"parent\":[\"variables\",\"data\"]}]",
+        "data": {
+         "authorized_dealer_number": "=_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Subject\"]}').gsub(/\\D/, \"\")",
+         "deal_iv": "=_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Subject\"]}').match?(/עסקה/)"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "text",
+        "hint": "Defaults to nil if not supplied.",
+        "label": "authorized_dealer_number",
+        "name": "authorized_dealer_number",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "details": {
+         "real_name": "authorized_dealer_number"
+        }
+       },
+       {
+        "control_type": "checkbox",
+        "label": "deal_iv",
+        "name": "deal_iv",
+        "optional": true,
+        "parse_output": "boolean_conversion",
+        "toggle_field": {
+         "label": "deal_iv",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "name": "deal_iv",
+         "type": "boolean",
+         "optional": true,
+         "details": {
+          "real_name": "deal_iv"
+         },
+         "parent": [
+          "variables",
+          "data"
+         ]
+        },
+        "toggle_hint": "Select from option list",
+        "type": "boolean",
+        "details": {
+         "real_name": "deal_iv"
+        },
+        "render_input": "boolean_conversion"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_field_label": "Add a variable",
+        "control_type": "form-schema-builder",
+        "empty_schema_title": "Add variables by giving them a name, type and default value",
+        "exclude_fields": [
+         "hint"
+        ],
+        "item_label": "variable",
+        "label": "Variables",
+        "mark_as_required": true,
+        "name": "variables",
+        "ngIf": "!input.name",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "authorized_dealer_number",
+            "name": "authorized_dealer_number",
+            "type": "string",
+            "optional": true,
+            "details": {
+             "real_name": "authorized_dealer_number"
+            },
+            "parent": [
+             "variables",
+             "data"
+            ],
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           },
+           {
+            "control_type": "checkbox",
+            "label": "deal_iv",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "name": "deal_iv",
+            "type": "boolean",
+            "optional": true,
+            "details": {
+             "real_name": "deal_iv"
+            },
+            "parent": [
+             "variables",
+             "data"
+            ],
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "deal_iv",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "name": "deal_iv",
+             "type": "boolean",
+             "optional": true,
+             "details": {
+              "real_name": "deal_iv"
+             },
+             "parent": [
+              "variables",
+              "data"
+             ]
+            },
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.authorized_dealer_number",
+       "variables",
+       "variables.schema",
+       "variables.data.deal_iv"
+      ],
+      "comment": "if deal_iv is true, iv is of deal type",
+      "uuid": "aa4b63c7-ef95-43f3-8574-db35bf88f744",
+      "skip": false,
+      "title": "  Create variables authorized_dealer_number, deal_iv",
+      "description": "Create variables <span class=\"provider\">authorized_dealer_number</span>, <span class=\"provider\">deal_iv</span>"
+     },
+     {
+      "number": 5,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "b18e568c",
+      "keyword": "action",
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"iv_type_id\",\"type\":\"string\",\"optional\":true,\"label\":\"iv_type_id\",\"details\":{\"real_name\":\"iv_type_id\"},\"control_type\":\"text\",\"parent\":[\"variables\",\"data\"]}]"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "text",
+        "label": "iv_type_id",
+        "name": "iv_type_id",
+        "optional": true,
+        "type": "string",
+        "details": {
+         "real_name": "iv_type_id"
+        }
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_field_label": "Add a variable",
+        "control_type": "form-schema-builder",
+        "empty_schema_title": "Add variables by giving them a name, type and default value",
+        "exclude_fields": [
+         "hint"
+        ],
+        "item_label": "variable",
+        "label": "Variables",
+        "mark_as_required": true,
+        "name": "variables",
+        "ngIf": "!input.name",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "iv_type_id",
+            "name": "iv_type_id",
+            "type": "string",
+            "optional": true,
+            "details": {
+             "real_name": "iv_type_id"
+            },
+            "parent": [
+             "variables",
+             "data"
+            ],
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.iv_type_id"
+      ],
+      "uuid": "aaaa2521-d9f8-433c-91f6-746c3ddc37d8",
+      "skip": false,
+      "title": "  Create variable iv_type_id",
+      "description": "Create variable <span class=\"provider\">iv_type_id</span>"
+     },
+     {
+      "number": 6,
+      "keyword": "if",
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "is_true",
+         "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"f4c41925\",\"path\":[\"deal_iv\"]}')}",
+         "rhs": "",
+         "uuid": "1fa59935-4aba-4182-ae6a-cf4e86f68a99"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 7,
+        "provider": "workato_variable",
+        "name": "update_variables",
+        "as": "16d37092",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "name": [
+          {
+           "label": "iv_type_id (step 6)",
+           "value": "aaaa2521-d9f8-433c-91f6-746c3ddc37d8:b18e568c:iv_type_id"
+          }
+         ]
+        },
+        "input": {
+         "name": "aaaa2521-d9f8-433c-91f6-746c3ddc37d8:b18e568c:iv_type_id",
+         "iv_type_id": "c04c013c-3eb5-4330-a880-b9d3d6cb4067"
+        },
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+          "label": "iv_type_id",
+          "name": "iv_type_id",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "strip_interpolation": true
+         }
+        ],
+        "uuid": "e0208ae1-d793-4376-a797-16f1b0b260b0",
+        "skip": false,
+        "title": null,
+        "description": "Update variables <span class=\"provider\">iv_type_id</span>"
+       },
+       {
+        "number": 8,
+        "keyword": "else",
+        "input": {},
+        "block": [
+         {
+          "number": 9,
+          "provider": "workato_variable",
+          "name": "update_variables",
+          "as": "170dfc4b",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "name": [
+            {
+             "label": "iv_type_id (step 6)",
+             "value": "aaaa2521-d9f8-433c-91f6-746c3ddc37d8:b18e568c:iv_type_id"
+            }
+           ]
+          },
+          "input": {
+           "name": "aaaa2521-d9f8-433c-91f6-746c3ddc37d8:b18e568c:iv_type_id",
+           "iv_type_id": "2842c598-cd1b-4ed6-a59e-740c7788c737"
+          },
+          "extended_input_schema": [
+           {
+            "control_type": "text",
+            "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+            "label": "iv_type_id",
+            "name": "iv_type_id",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "strip_interpolation": true
+           }
+          ],
+          "uuid": "d5c6c668-95fb-436e-b732-874b3945baae",
+          "skip": false,
+          "title": null,
+          "description": "Update variables <span class=\"provider\">iv_type_id</span>"
+         }
+        ],
+        "uuid": "d81ee868-f8b0-4924-b71c-6ba1582401c1",
+        "skip": false
+       }
+      ],
+      "uuid": "48d84644-6ac0-44d6-af21-36550877fb1e",
+      "skip": false
+     },
+     {
+      "number": 10,
+      "provider": "outlook",
+      "name": "get_attachments",
+      "as": "c70672a0",
+      "keyword": "action",
+      "input": {
+       "email_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Id\"]}')}",
+       "shared_mailbox": "user@example.com"
+      },
+      "uuid": "835b565d-e8f4-460a-b6cf-d6bb588b026b",
+      "skip": false,
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 11,
+      "as": "e3699ad7",
+      "keyword": "foreach",
+      "repeat_mode": "simple",
+      "clear_scope": "false",
+      "input": {},
+      "block": [
+       {
+        "number": 12,
+        "keyword": "if",
+        "input": {
+         "type": "compound",
+         "operand": "or",
+         "conditions": [
+          {
+           "operand": "equals_to",
+           "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentType\"]}')}",
+           "rhs": "application/pdf",
+           "uuid": "8520a169-2bcb-405c-96f7-ed3db3d37056"
+          },
+          {
+           "operand": "equals_to",
+           "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentType\"]}')}",
+           "rhs": "image/webp",
+           "uuid": "55646287-f2a5-4c37-87cf-8196593516de"
+          },
+          {
+           "operand": "equals_to",
+           "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentType\"]}')}",
+           "rhs": "image/jpeg",
+           "uuid": "dcb8b09a-7ea6-4fb6-8fc5-fd810cfd949b"
+          },
+          {
+           "operand": "equals_to",
+           "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentType\"]}')}",
+           "rhs": "image/png",
+           "uuid": "da8327e3-d71d-4086-b092-a364c65dd474"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 13,
+          "provider": "file_connector",
+          "name": "transform_image",
+          "as": "1557e05d",
+          "keyword": "action",
+          "input": {
+           "input_image": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentBytes\"]}')}",
+           "convert_to_type": "png",
+           "resize_to": {
+            "pad_image": "false",
+            "width": "1024",
+            "height": "1024"
+           }
+          },
+          "uuid": "37bb69b5-865e-4d19-a4ef-f5d0b54067d3",
+          "title": null,
+          "description": null
+         },
+         {
+          "number": 14,
+          "provider": "open_ai_utility",
+          "name": "analyse_image",
+          "as": "7f3f77d7",
+          "keyword": "action",
+          "toggleCfg": {
+           "file_type": true
+          },
+          "input": {
+           "file_contents": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"file_connector\",\"line\":\"1557e05d\",\"path\":[\"transformed_image\"]}')}",
+           "question": "identify if the file is an invoice/receipt or not. respond only with 'invoice' and 'not invoice'",
+           "_settings_version": "2",
+           "file_type": "png"
+          },
+          "visible_config_fields": [
+           "file_contents",
+           "question",
+           "_settings_version",
+           "file_type"
+          ],
+          "hidden_config_fields": [
+           "file_name"
+          ],
+          "uuid": "62f0df34-c4e4-4468-b405-3de843f0867c",
+          "skip": false,
+          "title": null,
+          "description": null
+         },
+         {
+          "number": 15,
+          "keyword": "if",
+          "input": {
+           "type": "compound",
+           "operand": "and",
+           "conditions": [
+            {
+             "operand": "equals_to",
+             "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"open_ai_utility\",\"line\":\"7f3f77d7\",\"path\":[\"response\"]}')}",
+             "rhs": "invoice",
+             "uuid": "92e3a49e-55fa-42b3-a1e9-7bd2e939a17e"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 16,
+            "provider": "workato_workflow_task",
+            "name": "add_request",
+            "as": "abeec0f5",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "app_id": "[IDP] - malam training"
+            },
+            "input": {
+             "app_id": "13588",
+             "parameters": {
+              "530221bb_f21a_45ad_ae11_640383ff11e0": {
+               "filename": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"Name\"]}')}",
+               "file_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentBytes\"]}')}"
+              },
+              "f7ec2a20_8ad6_4a8e_b20c_e4086450f6df": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Sender\",\"EmailAddress\",\"Address\"]}')}",
+              "5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"f4c41925\",\"path\":[\"authorized_dealer_number\"]}')}",
+              "1282318d_f7b8_4aa0_9a19_0f44c016a8b1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"b18e568c\",\"path\":[\"iv_type_id\"]}')}"
+             }
+            },
+            "extended_output_schema": [
+             {
+              "label": "Request",
+              "name": "request",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Record ID",
+                "type": "string",
+                "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "File name",
+                  "type": "string",
+                  "name": "filename"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "File contents",
+                  "type": "string",
+                  "name": "file_content"
+                 }
+                ],
+                "label": "Input File",
+                "custom_type": "file",
+                "type": "object",
+                "name": "530221bb_f21a_45ad_ae11_640383ff11e0"
+               },
+               {
+                "control_type": "text",
+                "label": "Invoice_ID",
+                "type": "string",
+                "name": "414696cd_b37b_4bdd_9d6d_077928659bdd"
+               },
+               {
+                "control_type": "text",
+                "label": "Description",
+                "type": "string",
+                "name": "b0451747_a8b9_444f_9da1_08a857e2ca83"
+               },
+               {
+                "control_type": "number",
+                "label": "Invoice_Amount",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "b24efbff_76e1_4ae0_a629_72747a9af266"
+               },
+               {
+                "control_type": "text",
+                "label": "Currency",
+                "type": "string",
+                "name": "e4db277f_d506_4574_9996_48e55eb5e605"
+               },
+               {
+                "control_type": "date",
+                "label": "Invoice_Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "type": "date",
+                "name": "718a3c07_81f6_49f6_8dc9_b780af36a982"
+               },
+               {
+                "control_type": "text",
+                "label": "Company_Name",
+                "type": "string",
+                "name": "c6914609_e1e3_4db2_8d8e_34301439a4cb"
+               },
+               {
+                "control_type": "text",
+                "label": "Low_Confidence_Score_Fields",
+                "type": "string",
+                "name": "41df3a1f_8557_40be_afab_f45118778b4c"
+               },
+               {
+                "control_type": "text",
+                "label": "User",
+                "type": "string",
+                "name": "f7ec2a20_8ad6_4a8e_b20c_e4086450f6df"
+               },
+               {
+                "control_type": "text",
+                "label": "Approved By",
+                "type": "string",
+                "name": "5d129402_33b1_4729_bbf2_7309bfcbfff5"
+               },
+               {
+                "control_type": "date",
+                "label": "Approved Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "type": "date",
+                "name": "d3113200_d8de_4539_8959_eb933bcf0eb0"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejection Reason",
+                "type": "string",
+                "name": "7407a545_3050_4196_b5da_83750a14fcfe"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected By",
+                "type": "string",
+                "name": "eaf06653_1757_42c6_93d0_ef4be7564470"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected Date",
+                "type": "string",
+                "name": "95c40472_6d17_4072_bed6_6dcc91c049b7"
+               },
+               {
+                "control_type": "text",
+                "label": "Authorized_Dealer_Number",
+                "type": "string",
+                "name": "5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb"
+               },
+               {
+                "control_type": "text",
+                "label": "Supname",
+                "type": "string",
+                "name": "b5edbbdd_de25_49ff_a2d7_d6f9b7fd2b5a"
+               },
+               {
+                "control_type": "text",
+                "label": "BookNum",
+                "type": "string",
+                "name": "6740db9f_c13c_4bb8_8064_0c385cd950d6"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "Record ID",
+                  "type": "string",
+                  "name": "record_id"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Invoice types",
+                  "type": "string",
+                  "name": "display_name"
+                 }
+                ],
+                "label": "Invoice_Type",
+                "custom_type": "relation",
+                "custom_field_id": "Invoice types",
+                "type": "object",
+                "name": "1282318d_f7b8_4aa0_9a19_0f44c016a8b1"
+               },
+               {
+                "control_type": "text",
+                "label": "assignment_number",
+                "type": "string",
+                "name": "f361c670_6791_42fa_978e_c6265672e650"
+               },
+               {
+                "control_type": "text",
+                "label": "status",
+                "type": "string",
+                "name": "59763578_7b7f_4694_bf1c_a2055225bc18"
+               },
+               {
+                "control_type": "text",
+                "label": "error",
+                "type": "string",
+                "name": "64148427_6aa0_46d6_a86f_844e5ecc2437"
+               },
+               {
+                "control_type": "text",
+                "label": "hit rate",
+                "type": "string",
+                "name": "b2859181_7d05_49be_93be_3224666e9a76"
+               },
+               {
+                "control_type": "text",
+                "label": "suptypecode",
+                "type": "string",
+                "name": "0f16f323_c490_4c37_9b31_5f3207faadef"
+               },
+               {
+                "control_type": "text",
+                "label": "portal pilot",
+                "type": "string",
+                "name": "12011640_757b_49e1_a6a6_24413fb852a1"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "User ID",
+                  "type": "string",
+                  "name": "id"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "User name",
+                  "type": "string",
+                  "name": "name"
+                 },
+                 {
+                  "control_type": "email",
+                  "label": "Email",
+                  "type": "string",
+                  "name": "email"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Status",
+                  "type": "string",
+                  "name": "status"
+                 },
+                 {
+                  "name": "user_groups",
+                  "type": "array",
+                  "of": "object",
+                  "label": "Groups",
+                  "properties": [
+                   {
+                    "control_type": "text",
+                    "label": "Group ID",
+                    "type": "string",
+                    "name": "id"
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Group name",
+                    "type": "string",
+                    "name": "name"
+                   }
+                  ]
+                 },
+                 {
+                  "control_type": "checkbox",
+                  "label": "Guest user",
+                  "toggle_hint": "Select from option list",
+                  "toggle_field": {
+                   "label": "Guest user",
+                   "control_type": "text",
+                   "toggle_hint": "Use custom value",
+                   "render_input": null,
+                   "parse_output": null,
+                   "type": "boolean",
+                   "name": "is_guest"
+                  },
+                  "type": "boolean",
+                  "name": "is_guest"
+                 }
+                ],
+                "label": "Created by",
+                "type": "object",
+                "name": "created_by"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "Stage ID",
+                  "type": "string",
+                  "name": "id"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Stage name",
+                  "type": "string",
+                  "name": "name"
+                 }
+                ],
+                "label": "Stage",
+                "type": "object",
+                "name": "stage"
+               },
+               {
+                "control_type": "date_time",
+                "label": "Created at",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "type": "date_time",
+                "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+               },
+               {
+                "control_type": "date_time",
+                "label": "Updated at",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "type": "date_time",
+                "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "extended_input_schema": [
+             {
+              "hint": "Fill the fields for the new request",
+              "label": "New request fields",
+              "name": "parameters",
+              "properties": [
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "File name",
+                  "type": "string",
+                  "name": "filename"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "File contents",
+                  "strip_interpolation": true,
+                  "type": "string",
+                  "name": "file_content"
+                 }
+                ],
+                "label": "Input File",
+                "optional": true,
+                "custom_type": "file",
+                "type": "object",
+                "name": "530221bb_f21a_45ad_ae11_640383ff11e0"
+               },
+               {
+                "control_type": "text",
+                "label": "Invoice_ID",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "414696cd_b37b_4bdd_9d6d_077928659bdd"
+               },
+               {
+                "control_type": "text",
+                "label": "Description",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "b0451747_a8b9_444f_9da1_08a857e2ca83"
+               },
+               {
+                "control_type": "number",
+                "label": "Invoice_Amount",
+                "parse_output": "float_conversion",
+                "optional": true,
+                "sticky": true,
+                "render_input": "float_conversion",
+                "type": "number",
+                "name": "b24efbff_76e1_4ae0_a629_72747a9af266"
+               },
+               {
+                "control_type": "text",
+                "label": "Currency",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "e4db277f_d506_4574_9996_48e55eb5e605"
+               },
+               {
+                "control_type": "date",
+                "label": "Invoice_Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "optional": true,
+                "sticky": false,
+                "type": "date",
+                "name": "718a3c07_81f6_49f6_8dc9_b780af36a982"
+               },
+               {
+                "control_type": "text",
+                "label": "Company_Name",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "c6914609_e1e3_4db2_8d8e_34301439a4cb"
+               },
+               {
+                "control_type": "text",
+                "label": "Low_Confidence_Score_Fields",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "41df3a1f_8557_40be_afab_f45118778b4c"
+               },
+               {
+                "control_type": "text",
+                "label": "User",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "f7ec2a20_8ad6_4a8e_b20c_e4086450f6df"
+               },
+               {
+                "control_type": "text",
+                "label": "Approved By",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "5d129402_33b1_4729_bbf2_7309bfcbfff5"
+               },
+               {
+                "control_type": "date",
+                "label": "Approved Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "optional": true,
+                "sticky": false,
+                "type": "date",
+                "name": "d3113200_d8de_4539_8959_eb933bcf0eb0"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejection Reason",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "7407a545_3050_4196_b5da_83750a14fcfe"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected By",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "eaf06653_1757_42c6_93d0_ef4be7564470"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected Date",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "95c40472_6d17_4072_bed6_6dcc91c049b7"
+               },
+               {
+                "control_type": "text",
+                "label": "Authorized_Dealer_Number",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb"
+               },
+               {
+                "control_type": "text",
+                "label": "Supname",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "b5edbbdd_de25_49ff_a2d7_d6f9b7fd2b5a"
+               },
+               {
+                "control_type": "text",
+                "label": "BookNum",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "6740db9f_c13c_4bb8_8064_0c385cd950d6"
+               },
+               {
+                "control_type": "text",
+                "label": "Invoice_Type Record ID",
+                "optional": true,
+                "custom_type": "relation",
+                "custom_field_id": "Invoice types",
+                "type": "string",
+                "name": "1282318d_f7b8_4aa0_9a19_0f44c016a8b1"
+               },
+               {
+                "control_type": "text",
+                "label": "assignment_number",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "f361c670_6791_42fa_978e_c6265672e650"
+               },
+               {
+                "control_type": "text",
+                "label": "status",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "59763578_7b7f_4694_bf1c_a2055225bc18"
+               },
+               {
+                "control_type": "text",
+                "label": "error",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "64148427_6aa0_46d6_a86f_844e5ecc2437"
+               },
+               {
+                "control_type": "text",
+                "label": "hit rate",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "b2859181_7d05_49be_93be_3224666e9a76"
+               },
+               {
+                "control_type": "text",
+                "label": "suptypecode",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "0f16f323_c490_4c37_9b31_5f3207faadef"
+               },
+               {
+                "control_type": "text",
+                "label": "portal pilot",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "12011640_757b_49e1_a6a6_24413fb852a1"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "visible_config_fields": [
+             "app_id",
+             "parameters",
+             "parameters.530221bb_f21a_45ad_ae11_640383ff11e0",
+             "parameters.530221bb_f21a_45ad_ae11_640383ff11e0.filename",
+             "parameters.530221bb_f21a_45ad_ae11_640383ff11e0.file_content",
+             "parameters.1282318d_f7b8_4aa0_9a19_0f44c016a8b1",
+             "parameters.5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb",
+             "parameters.f7ec2a20_8ad6_4a8e_b20c_e4086450f6df"
+            ],
+            "hidden_config_fields": [
+             "parameters.414696cd_b37b_4bdd_9d6d_077928659bdd",
+             "parameters.b0451747_a8b9_444f_9da1_08a857e2ca83",
+             "parameters.b24efbff_76e1_4ae0_a629_72747a9af266",
+             "parameters.e4db277f_d506_4574_9996_48e55eb5e605"
+            ],
+            "uuid": "d2b53e4a-c3bd-4479-bf30-537e25b52382",
+            "title": null,
+            "description": "Create a new request in <span class=\"provider\">[IDP] - malam training</span>"
+           },
+           {
+            "number": 17,
+            "provider": "workato_workflow_task",
+            "name": "add_request",
+            "as": "e84dc900",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "app_id": "[IDP] - malam training"
+            },
+            "input": {
+             "app_id": "13588",
+             "parameters": {
+              "530221bb_f21a_45ad_ae11_640383ff11e0": {
+               "filename": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"Name\"]}')}",
+               "file_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentBytes\"]}')}"
+              },
+              "f7ec2a20_8ad6_4a8e_b20c_e4086450f6df": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Sender\",\"EmailAddress\",\"Address\"]}')}",
+              "5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"f4c41925\",\"path\":[\"authorized_dealer_number\"]}')}",
+              "1282318d_f7b8_4aa0_9a19_0f44c016a8b1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"b18e568c\",\"path\":[\"iv_type_id\"]}')}"
+             }
+            },
+            "extended_output_schema": [
+             {
+              "label": "Request",
+              "name": "request",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Record ID",
+                "type": "string",
+                "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "File name",
+                  "type": "string",
+                  "name": "filename"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "File contents",
+                  "type": "string",
+                  "name": "file_content"
+                 }
+                ],
+                "label": "Input File",
+                "custom_type": "file",
+                "type": "object",
+                "name": "530221bb_f21a_45ad_ae11_640383ff11e0"
+               },
+               {
+                "control_type": "text",
+                "label": "Invoice_ID",
+                "type": "string",
+                "name": "414696cd_b37b_4bdd_9d6d_077928659bdd"
+               },
+               {
+                "control_type": "text",
+                "label": "Description",
+                "type": "string",
+                "name": "b0451747_a8b9_444f_9da1_08a857e2ca83"
+               },
+               {
+                "control_type": "number",
+                "label": "Invoice_Amount",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "b24efbff_76e1_4ae0_a629_72747a9af266"
+               },
+               {
+                "control_type": "text",
+                "label": "Currency",
+                "type": "string",
+                "name": "e4db277f_d506_4574_9996_48e55eb5e605"
+               },
+               {
+                "control_type": "date",
+                "label": "Invoice_Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "type": "date",
+                "name": "718a3c07_81f6_49f6_8dc9_b780af36a982"
+               },
+               {
+                "control_type": "text",
+                "label": "Company_Name",
+                "type": "string",
+                "name": "c6914609_e1e3_4db2_8d8e_34301439a4cb"
+               },
+               {
+                "control_type": "text",
+                "label": "Low_Confidence_Score_Fields",
+                "type": "string",
+                "name": "41df3a1f_8557_40be_afab_f45118778b4c"
+               },
+               {
+                "control_type": "text",
+                "label": "User",
+                "type": "string",
+                "name": "f7ec2a20_8ad6_4a8e_b20c_e4086450f6df"
+               },
+               {
+                "control_type": "text",
+                "label": "Approved By",
+                "type": "string",
+                "name": "5d129402_33b1_4729_bbf2_7309bfcbfff5"
+               },
+               {
+                "control_type": "date",
+                "label": "Approved Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "type": "date",
+                "name": "d3113200_d8de_4539_8959_eb933bcf0eb0"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejection Reason",
+                "type": "string",
+                "name": "7407a545_3050_4196_b5da_83750a14fcfe"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected By",
+                "type": "string",
+                "name": "eaf06653_1757_42c6_93d0_ef4be7564470"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected Date",
+                "type": "string",
+                "name": "95c40472_6d17_4072_bed6_6dcc91c049b7"
+               },
+               {
+                "control_type": "text",
+                "label": "Authorized_Dealer_Number",
+                "type": "string",
+                "name": "5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb"
+               },
+               {
+                "control_type": "text",
+                "label": "Supname",
+                "type": "string",
+                "name": "b5edbbdd_de25_49ff_a2d7_d6f9b7fd2b5a"
+               },
+               {
+                "control_type": "text",
+                "label": "BookNum",
+                "type": "string",
+                "name": "6740db9f_c13c_4bb8_8064_0c385cd950d6"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "Record ID",
+                  "type": "string",
+                  "name": "record_id"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Invoice types",
+                  "type": "string",
+                  "name": "display_name"
+                 }
+                ],
+                "label": "Invoice_Type",
+                "custom_type": "relation",
+                "custom_field_id": "Invoice types",
+                "type": "object",
+                "name": "1282318d_f7b8_4aa0_9a19_0f44c016a8b1"
+               },
+               {
+                "control_type": "text",
+                "label": "assignment_number",
+                "type": "string",
+                "name": "f361c670_6791_42fa_978e_c6265672e650"
+               },
+               {
+                "control_type": "text",
+                "label": "status",
+                "type": "string",
+                "name": "59763578_7b7f_4694_bf1c_a2055225bc18"
+               },
+               {
+                "control_type": "text",
+                "label": "error",
+                "type": "string",
+                "name": "64148427_6aa0_46d6_a86f_844e5ecc2437"
+               },
+               {
+                "control_type": "text",
+                "label": "hit rate",
+                "type": "string",
+                "name": "b2859181_7d05_49be_93be_3224666e9a76"
+               },
+               {
+                "control_type": "text",
+                "label": "suptypecode",
+                "type": "string",
+                "name": "0f16f323_c490_4c37_9b31_5f3207faadef"
+               },
+               {
+                "control_type": "text",
+                "label": "portal pilot",
+                "type": "string",
+                "name": "12011640_757b_49e1_a6a6_24413fb852a1"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "User ID",
+                  "type": "string",
+                  "name": "id"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "User name",
+                  "type": "string",
+                  "name": "name"
+                 },
+                 {
+                  "control_type": "email",
+                  "label": "Email",
+                  "type": "string",
+                  "name": "email"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Status",
+                  "type": "string",
+                  "name": "status"
+                 },
+                 {
+                  "name": "user_groups",
+                  "type": "array",
+                  "of": "object",
+                  "label": "Groups",
+                  "properties": [
+                   {
+                    "control_type": "text",
+                    "label": "Group ID",
+                    "type": "string",
+                    "name": "id"
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Group name",
+                    "type": "string",
+                    "name": "name"
+                   }
+                  ]
+                 },
+                 {
+                  "control_type": "checkbox",
+                  "label": "Guest user",
+                  "toggle_hint": "Select from option list",
+                  "toggle_field": {
+                   "label": "Guest user",
+                   "control_type": "text",
+                   "toggle_hint": "Use custom value",
+                   "render_input": null,
+                   "parse_output": null,
+                   "type": "boolean",
+                   "name": "is_guest"
+                  },
+                  "type": "boolean",
+                  "name": "is_guest"
+                 }
+                ],
+                "label": "Created by",
+                "type": "object",
+                "name": "created_by"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "Stage ID",
+                  "type": "string",
+                  "name": "id"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Stage name",
+                  "type": "string",
+                  "name": "name"
+                 }
+                ],
+                "label": "Stage",
+                "type": "object",
+                "name": "stage"
+               },
+               {
+                "control_type": "date_time",
+                "label": "Created at",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "type": "date_time",
+                "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+               },
+               {
+                "control_type": "date_time",
+                "label": "Updated at",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "type": "date_time",
+                "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "extended_input_schema": [
+             {
+              "hint": "Fill the fields for the new request",
+              "label": "New request fields",
+              "name": "parameters",
+              "properties": [
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "File name",
+                  "type": "string",
+                  "name": "filename"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "File contents",
+                  "strip_interpolation": true,
+                  "type": "string",
+                  "name": "file_content"
+                 }
+                ],
+                "label": "Input File",
+                "optional": true,
+                "custom_type": "file",
+                "type": "object",
+                "name": "530221bb_f21a_45ad_ae11_640383ff11e0"
+               },
+               {
+                "control_type": "text",
+                "label": "Invoice_ID",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "414696cd_b37b_4bdd_9d6d_077928659bdd"
+               },
+               {
+                "control_type": "text",
+                "label": "Description",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "b0451747_a8b9_444f_9da1_08a857e2ca83"
+               },
+               {
+                "control_type": "number",
+                "label": "Invoice_Amount",
+                "parse_output": "float_conversion",
+                "optional": true,
+                "sticky": true,
+                "render_input": "float_conversion",
+                "type": "number",
+                "name": "b24efbff_76e1_4ae0_a629_72747a9af266"
+               },
+               {
+                "control_type": "text",
+                "label": "Currency",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "e4db277f_d506_4574_9996_48e55eb5e605"
+               },
+               {
+                "control_type": "date",
+                "label": "Invoice_Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "optional": true,
+                "sticky": false,
+                "type": "date",
+                "name": "718a3c07_81f6_49f6_8dc9_b780af36a982"
+               },
+               {
+                "control_type": "text",
+                "label": "Company_Name",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "c6914609_e1e3_4db2_8d8e_34301439a4cb"
+               },
+               {
+                "control_type": "text",
+                "label": "Low_Confidence_Score_Fields",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "41df3a1f_8557_40be_afab_f45118778b4c"
+               },
+               {
+                "control_type": "text",
+                "label": "User",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "f7ec2a20_8ad6_4a8e_b20c_e4086450f6df"
+               },
+               {
+                "control_type": "text",
+                "label": "Approved By",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "5d129402_33b1_4729_bbf2_7309bfcbfff5"
+               },
+               {
+                "control_type": "date",
+                "label": "Approved Date",
+                "render_input": "date_conversion",
+                "parse_output": "date_conversion",
+                "optional": true,
+                "sticky": false,
+                "type": "date",
+                "name": "d3113200_d8de_4539_8959_eb933bcf0eb0"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejection Reason",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "7407a545_3050_4196_b5da_83750a14fcfe"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected By",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "eaf06653_1757_42c6_93d0_ef4be7564470"
+               },
+               {
+                "control_type": "text",
+                "label": "Rejected Date",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "95c40472_6d17_4072_bed6_6dcc91c049b7"
+               },
+               {
+                "control_type": "text",
+                "label": "Authorized_Dealer_Number",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb"
+               },
+               {
+                "control_type": "text",
+                "label": "Supname",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "b5edbbdd_de25_49ff_a2d7_d6f9b7fd2b5a"
+               },
+               {
+                "control_type": "text",
+                "label": "BookNum",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "6740db9f_c13c_4bb8_8064_0c385cd950d6"
+               },
+               {
+                "control_type": "text",
+                "label": "Invoice_Type Record ID",
+                "optional": true,
+                "custom_type": "relation",
+                "custom_field_id": "Invoice types",
+                "type": "string",
+                "name": "1282318d_f7b8_4aa0_9a19_0f44c016a8b1"
+               },
+               {
+                "control_type": "text",
+                "label": "assignment_number",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "f361c670_6791_42fa_978e_c6265672e650"
+               },
+               {
+                "control_type": "text",
+                "label": "status",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "59763578_7b7f_4694_bf1c_a2055225bc18"
+               },
+               {
+                "control_type": "text",
+                "label": "error",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "64148427_6aa0_46d6_a86f_844e5ecc2437"
+               },
+               {
+                "control_type": "text",
+                "label": "hit rate",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "b2859181_7d05_49be_93be_3224666e9a76"
+               },
+               {
+                "control_type": "text",
+                "label": "suptypecode",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "0f16f323_c490_4c37_9b31_5f3207faadef"
+               },
+               {
+                "control_type": "text",
+                "label": "portal pilot",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "12011640_757b_49e1_a6a6_24413fb852a1"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "visible_config_fields": [
+             "app_id",
+             "parameters.f7ec2a20_8ad6_4a8e_b20c_e4086450f6df",
+             "parameters",
+             "parameters.530221bb_f21a_45ad_ae11_640383ff11e0",
+             "parameters.530221bb_f21a_45ad_ae11_640383ff11e0.filename",
+             "parameters.530221bb_f21a_45ad_ae11_640383ff11e0.file_content",
+             "parameters.1282318d_f7b8_4aa0_9a19_0f44c016a8b1",
+             "parameters.5a7dce3e_fb3c_4f7b_bcc9_d988274c70bb"
+            ],
+            "hidden_config_fields": [
+             "parameters.414696cd_b37b_4bdd_9d6d_077928659bdd",
+             "parameters.b0451747_a8b9_444f_9da1_08a857e2ca83",
+             "parameters.b24efbff_76e1_4ae0_a629_72747a9af266",
+             "parameters.e4db277f_d506_4574_9996_48e55eb5e605"
+            ],
+            "uuid": "2207e4c9-2fdc-4d14-b519-a43233c41122",
+            "skip": true
+           },
+           {
+            "number": 18,
+            "provider": "workato_variable",
+            "name": "insert_to_list",
+            "as": "b55d2efd",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "name": "recID_of_invoices (step 3)"
+            },
+            "input": {
+             "location": "end",
+             "name": "82dfc119-7663-4b92-a301-0a2206ec86db:692398e5",
+             "list_item": {
+              "recID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_workflow_task\",\"line\":\"abeec0f5\",\"path\":[\"request\",\"11fbe9a6_a16d_4d7e_86ea_afe42ec03005\"]}')}"
+             }
+            },
+            "extended_input_schema": [
+             {
+              "hint": "",
+              "label": "List item",
+              "name": "list_item",
+              "optional": false,
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Rec ID",
+                "name": "recID",
+                "type": "string",
+                "optional": false
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "uuid": "4a914c87-3a93-4932-a8c0-8a99683ef3cd",
+            "skip": false,
+            "title": "Add items to recID_of_invoices list",
+            "description": "Add <span class=\"provider\">items</span> to <span class=\"provider\">recID_of_invoices</span> list"
+           },
+           {
+            "number": 19,
+            "keyword": "else",
+            "input": {},
+            "block": [
+             {
+              "number": 20,
+              "provider": "workato_variable",
+              "name": "insert_to_list",
+              "as": "85cc107c",
+              "keyword": "action",
+              "dynamicPickListSelection": {
+               "name": "not_invoices (step 4)"
+              },
+              "input": {
+               "location": "end",
+               "name": "751dc990-0f04-4a2b-bd0d-dd6816f33f15:0f1ab7b2",
+               "list_item": {
+                "file": {
+                 "content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentBytes\"]}')}",
+                 "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"Name\"]}')}",
+                 "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3699ad7\",\"path\":[\"ContentType\"]}')}"
+                }
+               }
+              },
+              "extended_input_schema": [
+               {
+                "hint": "",
+                "label": "List item",
+                "name": "list_item",
+                "optional": false,
+                "properties": [
+                 {
+                  "properties": [
+                   {
+                    "control_type": "text",
+                    "label": "Type",
+                    "name": "type",
+                    "type": "string",
+                    "optional": false
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Content",
+                    "name": "content",
+                    "type": "string",
+                    "optional": false
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "string",
+                    "optional": false
+                   }
+                  ],
+                  "label": "File",
+                  "name": "file",
+                  "type": "object",
+                  "optional": false
+                 }
+                ],
+                "type": "object"
+               }
+              ],
+              "uuid": "6e2dd6b8-0e2f-44a4-a79d-56e2bc27e4d9",
+              "skip": false,
+              "title": "Add items to not_invoices list",
+              "description": "Add <span class=\"provider\">items</span> to <span class=\"provider\">not_invoices</span> list"
+             }
+            ],
+            "uuid": "9d96dfce-16cb-4833-a3cc-79b4ce3b600a",
+            "skip": false
+           }
+          ],
+          "uuid": "35f27422-d855-4b57-b60c-3cb7b77c1c5a",
+          "skip": false
+         }
+        ],
+        "uuid": "9f82bf8e-5d80-430b-8c2b-caa48d0abb3f",
+        "skip": false
+       }
+      ],
+      "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"c70672a0\",\"path\":[\"Attachments\"]}')}",
+      "uuid": "58969ed5-d0d3-4165-9903-a2619959f143",
+      "skip": false
+     },
+     {
+      "number": 21,
+      "as": "0f766d8a",
+      "keyword": "foreach",
+      "repeat_mode": "simple",
+      "clear_scope": "false",
+      "input": {},
+      "block": [
+       {
+        "number": 22,
+        "as": "a935c1af",
+        "keyword": "foreach",
+        "repeat_mode": "simple",
+        "clear_scope": "false",
+        "input": {},
+        "block": [
+         {
+          "number": 23,
+          "provider": "workato_db_table",
+          "name": "add_record",
+          "as": "cb919df2",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "table_id": "IDP_file_to_recID"
+          },
+          "input": {
+           "table_id": "38901",
+           "parameters": {
+            "1d1b544e_0d20_4857_8ff2_9fadacdda48d": {
+             "filename": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"a935c1af\",\"path\":[\"file\",\"name\"]}')}",
+             "file_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"a935c1af\",\"path\":[\"file\",\"content\"]}')}"
+            },
+            "1ee9b525_11de_4dd2_a297_9e91d0ba4f9c": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"a935c1af\",\"path\":[\"file\",\"type\"]}')}",
+            "957025b7_5ee9_481c_9e8e_22192c444695": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"0f766d8a\",\"path\":[\"recID\"]}')}"
+           }
+          },
+          "extended_output_schema": [
+           {
+            "label": "Record",
+            "name": "record",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Record ID",
+              "type": "string",
+              "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+             },
+             {
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "File name",
+                "type": "string",
+                "name": "filename"
+               },
+               {
+                "control_type": "text",
+                "label": "File contents",
+                "type": "string",
+                "name": "file_content"
+               }
+              ],
+              "label": "file",
+              "custom_type": "file",
+              "type": "object",
+              "name": "1d1b544e_0d20_4857_8ff2_9fadacdda48d"
+             },
+             {
+              "control_type": "text",
+              "label": "file type",
+              "type": "string",
+              "name": "1ee9b525_11de_4dd2_a297_9e91d0ba4f9c"
+             },
+             {
+              "control_type": "text",
+              "label": "recID_of_invoice",
+              "type": "string",
+              "name": "957025b7_5ee9_481c_9e8e_22192c444695"
+             },
+             {
+              "control_type": "date_time",
+              "label": "Created at",
+              "render_input": "date_time_conversion",
+              "parse_output": "date_time_conversion",
+              "type": "date_time",
+              "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+             },
+             {
+              "control_type": "date_time",
+              "label": "Updated at",
+              "render_input": "date_time_conversion",
+              "parse_output": "date_time_conversion",
+              "type": "date_time",
+              "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "extended_input_schema": [
+           {
+            "hint": "Fill the fields for the new record",
+            "label": "New record fields",
+            "name": "parameters",
+            "properties": [
+             {
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "File name",
+                "type": "string",
+                "name": "filename"
+               },
+               {
+                "control_type": "text",
+                "label": "File contents",
+                "strip_interpolation": true,
+                "type": "string",
+                "name": "file_content"
+               }
+              ],
+              "label": "file",
+              "optional": true,
+              "custom_type": "file",
+              "type": "object",
+              "name": "1d1b544e_0d20_4857_8ff2_9fadacdda48d"
+             },
+             {
+              "control_type": "text",
+              "label": "file type",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "name": "1ee9b525_11de_4dd2_a297_9e91d0ba4f9c"
+             },
+             {
+              "control_type": "text",
+              "label": "recID_of_invoice",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "name": "957025b7_5ee9_481c_9e8e_22192c444695"
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "uuid": "ec06a252-8c36-43e1-9f8d-42261970bf18",
+          "skip": false,
+          "title": null,
+          "description": "Create a new record in <span class=\"provider\">a data table</span>"
+         }
+        ],
+        "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f1ab7b2\",\"path\":[\"list_items\"]}')}",
+        "uuid": "9de63bf7-8894-49e4-b428-f711454d489f",
+        "skip": false
+       }
+      ],
+      "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"692398e5\",\"path\":[\"list_items\"]}')}",
+      "uuid": "f521b900-daaf-4c85-a591-992df9a410a9",
+      "skip": false
+     },
+     {
+      "number": 24,
+      "keyword": "if",
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "equals_to",
+         "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"692398e5\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')}",
+         "rhs": "0",
+         "uuid": "d83ee3db-7200-4cb7-9d32-9f678a0778b4"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 25,
+        "provider": "outlook",
+        "name": "send_mail",
+        "as": "3f892557",
+        "keyword": "action",
+        "toggleCfg": {
+         "ContentType": true
+        },
+        "input": {
+         "ContentType": "-- REDACTED --",
+         "ToRecipients": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Sender\",\"EmailAddress\",\"Address\"]}')}",
+         "Subject": "לא נמצאה חשבונית",
+         "Content": "<!DOCTYPE html>\n<html lang=\"he\" dir=\"rtl\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>דוא\"ל לא נמצאה חשבונית</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      background-color: #e6f0ff; /* light blue background */\n      margin: 0;\n      padding: 0;\n      direction: rtl;\n    }\n    .email-container {\n      background-color: #ffffff;\n      max-width: 600px;\n      margin: 40px auto;\n      padding: 20px;\n      border-radius: 8px;\n      border: 2px solid #004080; /* dark blue border */\n      box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n    }\n    .headline {\n      font-size: 26px;\n      color: #cc0000; /* red headline */\n      margin-bottom: 20px;\n      text-align: center;\n    }\n    .content {\n      font-size: 16px;\n      color: #003366; /* dark blue text */\n      line-height: 1.6;\n      text-align: right;\n    }\n    .label {\n      font-weight: bold;\n      color: #cc0000; /* red labels */\n    }\n  </style>\n</head>\n<body>\n  <div class=\"email-container\">\n    <div class=\"headline\">לא נמצאה חשבונית במייל</div>\n    <div class=\"content\">\n      <p>במייל שנשלח נמצאו: #{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"c70672a0\",\"path\":[\"Attachments\",{\"path_element_type\":\"size\"}]}')} קבצים, אך לא נמצאה חשבונית. אנה ודא\\י כי אין קבצים מיותרים במייל (חתימות\\לוגואים וכו') שעלולים להטעות את המערכת.</p>\n\t  <p><span class=\"label\">מספר עוסק מורשה\\ח.פ.: </span>#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"f4c41925\",\"path\":[\"authorized_dealer_number\"]}')}</p>\n      <p>אם לדעתך המייל עם חשבונית תקינה ועדיין קיבלת מייל זה, אנא פנה\\י לצוות אפליקציות:</p>\n      <p>עליזה - 0537170379\nבר- 0547510425</p>\n    </div>\n"
+        },
+        "uuid": "57165ba8-ef89-407b-a9ca-ab5bc489fe23",
+        "skip": false,
+        "title": null,
+        "description": null
+       },
+       {
+        "number": 26,
+        "provider": "outlook",
+        "name": "send_mail",
+        "as": "e162ef19",
+        "keyword": "action",
+        "toggleCfg": {
+         "ContentType": true
+        },
+        "input": {
+         "ContentType": "-- REDACTED --",
+         "ToRecipients": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Sender\",\"EmailAddress\",\"Address\"]}')}",
+         "Subject": "לא נמצאה חשבונית",
+         "Content": "שלום,\nבמייל שנשלח נמצאו #{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"c70672a0\",\"path\":[\"Attachments\",{\"path_element_type\":\"size\"}]}')}קבצים, אך לא נמצאה חשבונית.\nאנה ודא\\י כי אין קבצים מיותרים במייל (חתימות\\לוגואים וכו') שעלולים להטעות את המערכת.\nאם לדעתך המייל עם חשבונית תקינה ועדיין קיבלת מייל זה, אנא פנה\\י לצוות אפליקציות:\nעליזה - 0537170379\nבר- 0547510425"
+        },
+        "uuid": "99a285ec-66a9-4a16-b7c2-9e370e2d6202",
+        "skip": true
+       },
+       {
+        "number": 27,
+        "keyword": "else",
+        "input": {},
+        "block": [
+         {
+          "number": 28,
+          "provider": "outlook",
+          "name": "send_mail",
+          "as": "c15bd8ad",
+          "keyword": "action",
+          "toggleCfg": {
+           "ContentType": true
+          },
+          "input": {
+           "ContentType": "-- REDACTED --",
+           "ToRecipients": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Sender\",\"EmailAddress\",\"Address\"]}')}",
+           "Subject": "חשבוניות התקבלו והחלו תהליך קליטה",
+           "Content": "<!DOCTYPE html>\n<html lang=\"he\" dir=\"rtl\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>דוא\"ל התקבלו חשבוניות</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      background-color: #e6f0ff; /* light blue background */\n      margin: 0;\n      padding: 0;\n      direction: rtl;\n    }\n    .email-container {\n      background-color: #ffffff;\n      max-width: 600px;\n      margin: 40px auto;\n      padding: 20px;\n      border-radius: 8px;\n      border: 2px solid #004080; /* dark blue border */\n      box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n    }\n    .headline {\n      font-size: 26px;\n      color: #cc0000; /* red headline */\n      margin-bottom: 20px;\n      text-align: center;\n    }\n    .content {\n      font-size: 16px;\n      color: #003366; /* dark blue text */\n      line-height: 1.6;\n      text-align: right;\n    }\n    .label {\n      font-weight: bold;\n      color: #cc0000; /* red labels */\n    }\n  </style>\n</head>\n<body>\n  <div class=\"email-container\">\n    <div class=\"headline\">חשבוניות התקבלו והחלו תהליך קליטה</div>\n    <div class=\"content\">\n      <p>התקבלו #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"692398e5\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')} חשבוניות והחלו תהליך קליטה.\nאם כמות החשבוניות שנשלחה בפועל קטנה יותר, אנא לוודא להבא כי לא שולחים במייל קבצים מיותרים כמו חתימות ולוגואים.</p>\n\t  <p><span class=\"label\">מספר עוסק מורשה\\ח.פ.:</span>#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"f4c41925\",\"path\":[\"authorized_dealer_number\"]}')}</p>\n    </div>\n"
+          },
+          "uuid": "abbd5865-ab4a-4063-b7fc-a71c6df1af23",
+          "skip": false,
+          "title": null,
+          "description": null
+         },
+         {
+          "number": 29,
+          "provider": "outlook",
+          "name": "send_mail",
+          "as": "e2a0aaed",
+          "keyword": "action",
+          "toggleCfg": {
+           "ContentType": true
+          },
+          "input": {
+           "ContentType": "-- REDACTED --",
+           "ToRecipients": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Sender\",\"EmailAddress\",\"Address\"]}')}",
+           "Subject": "חשבוניות התקבלו והחלו תהליך קליטה",
+           "Content": "שלום,\nהתקבלו #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"692398e5\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')} חשבוניות והחלו תהליך קליטה.\nאם כמות החשבוניות שנשלחה בפועל קטנה יותר, אנא לוודא להבא כי לא שולחים במייל קבצים מיותרים כמו חתימות ולוגואים."
+          },
+          "uuid": "5fb21056-ec5d-457a-85f8-29dd1b61e7bc",
+          "skip": true
+         }
+        ],
+        "uuid": "e7c22b92-2135-427e-a3fd-ea49bd547784",
+        "skip": false
+       }
+      ],
+      "uuid": "f4899e12-774f-4505-b47c-a69597c059bd",
+      "skip": false
+     },
+     {
+      "number": 30,
+      "as": "e3846a45",
+      "keyword": "catch",
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 31,
+        "provider": "workato_recipe_function",
+        "name": "call_recipe",
+        "as": "e7a6dc49",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "flow_id": "[SHARED] RF-001 | Error Handler"
+        },
+        "toggleCfg": {
+         "parameters.Open_Case": true
+        },
+        "input": {
+         "flow_id": "46064775",
+         "parameters": {
+          "Job_URL": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+          "Email_Recipient_List": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Email_Recipients_LIst\"}')}",
+          "Error_Message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e3846a45\",\"path\":[\"message\"]}')}",
+          "Recipe_Name": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+          "Job_ID": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+          "Open_Case": "true"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "label": "Result",
+          "name": "result",
+          "properties": [
+           {
+            "control_type": "checkbox",
+            "label": "Send successfully",
+            "render_input": {},
+            "parse_output": {},
+            "name": "Send_Successfully",
+            "type": "boolean",
+            "optional": false,
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Send successfully",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "name": "Send_Successfully",
+             "type": "boolean",
+             "optional": false
+            }
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "label": "Parameters",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Job URL",
+            "name": "Job_URL",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Email recipient list",
+            "name": "Email_Recipient_List",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Error message",
+            "name": "Error_Message",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Recipe name",
+            "name": "Recipe_Name",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Job ID",
+            "name": "Job_ID",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Open case",
+            "render_input": {},
+            "parse_output": {},
+            "name": "Open_Case",
+            "type": "boolean",
+            "optional": false,
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Open case",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "name": "Open_Case",
+             "type": "boolean",
+             "optional": false
+            }
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "9752809e-f1b6-4318-8bb4-7441042a7f63",
+        "skip": false,
+        "title": null,
+        "description": "Call <span class=\"provider\">[SHARED] RF-001 | Error Handler</span>"
+       }
+      ],
+      "uuid": "e7836010-b306-4dfa-a5b5-c0f260594aae",
+      "skip": false
+     }
+    ],
+    "uuid": "b909d755-afcf-466e-8d9e-bb2eae415409",
+    "skip": false
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_0",
+    "label": "from"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "subject"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "number of attachments"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"From\",\"EmailAddress\",\"Address\"]}')}",
+   "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"6d0f4ea4\",\"path\":[\"Subject\"]}')}",
+   "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"outlook\",\"line\":\"c70672a0\",\"path\":[\"Attachments\",{\"path_element_type\":\"size\"}]}')}"
+  },
+  "uuid": "b1ee45b2-74a7-48bf-9e23-6493b885712f",
+  "unfinished": false,
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

@@ -1,0 +1,3067 @@
+{
+ "name": "onedrive",
+ "title": "OneDrive",
+ "requires_connection": true,
+ "categories": [
+  "Document/File",
+  "Marketing"
+ ],
+ "aliases": [
+  "OneDrive",
+  "microsoft"
+ ],
+ "triggers": [
+  {
+   "name": "new_csv_line",
+   "title": "New line in CSV file",
+   "description": "New line in CSV file in OneDrive",
+   "help": "On recipe start, trigger will pick up all existing lines in the provided CSV file. Each line will be processed as a single trigger event. Subsequently, new lines must be appended to the end of the file to be picked up properly.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "file_id",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file_id",
+      "type": "string"
+     },
+     "hint": "Full file path including extension and folders, e.g. folder 1/file name.csv"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column separator",
+     "control_type": "select",
+     "required": true,
+     "default": ",",
+     "options": [
+      ",",
+      "space",
+      "tab",
+      "colon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "Delimiter separating the values"
+    }
+   ],
+   "output": [
+    {
+     "name": "line",
+     "type": "integer",
+     "label": "Line",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_event_trigger",
+   "title": "New event",
+   "description": "New event in OneDrive",
+   "help": "Fetches trigger events as soon as they occur.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Provide folder path, e.g. folder 1/folder 2"
+    },
+    {
+     "name": "include_subfolders",
+     "type": "string",
+     "label": "Monitor subfolders?",
+     "control_type": "switch",
+     "default": false,
+     "extends_schema": true,
+     "hint": "If No , only the parent folder will be monitored, subfolders will not monitored for new activities. If Yes , subfolders will be monitored for new activities too, on top of the parent folder. However, …"
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Monitor for files or folders",
+     "control_type": "select",
+     "default": "Both",
+     "options": [
+      "Files",
+      "Folders",
+      "Both"
+     ],
+     "hint": "Select whether to monitor files, folders or both"
+    },
+    {
+     "name": "activity_type",
+     "type": "string",
+     "label": "Activity to monitor",
+     "control_type": "multiselect",
+     "required": true,
+     "options": [
+      "Updated",
+      "Deleted"
+     ],
+     "hint": "Choose one or more activities to monitor"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "CTag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "ETag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parentReference",
+     "type": "object",
+     "label": "Parent reference",
+     "required": true,
+     "properties": [
+      {
+       "name": "driveId",
+       "type": "string",
+       "label": "Drive ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "driveType",
+       "type": "string",
+       "label": "Drive type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "siteId",
+       "type": "string",
+       "label": "Site ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "fileSystemInfo",
+     "type": "object",
+     "label": "File system info",
+     "required": true,
+     "properties": [
+      {
+       "name": "createdDateTime",
+       "type": "string",
+       "label": "Created date time",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastModifiedDateTime",
+       "type": "string",
+       "label": "Last modified date time",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "folder",
+     "type": "object",
+     "label": "Folder",
+     "required": true,
+     "properties": [
+      {
+       "name": "childCount",
+       "type": "integer",
+       "label": "Child count",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "view",
+       "type": "object",
+       "label": "View",
+       "required": true,
+       "properties": [
+        {
+         "name": "viewType",
+         "type": "string",
+         "label": "View type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "sortBy",
+         "type": "string",
+         "label": "Sort by",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "sortOrder",
+         "type": "string",
+         "label": "Sort order",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified at",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "application",
+       "type": "object",
+       "label": "Application",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "application",
+       "type": "object",
+       "label": "Application",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "microsoft_graph_download_url",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "reactions",
+     "type": "object",
+     "label": "Reactions",
+     "required": true,
+     "properties": [
+      {
+       "name": "commentCount",
+       "type": "integer",
+       "label": "Comment count",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "likeCount",
+       "type": "integer",
+       "label": "Like count",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "reactionType",
+       "type": "integer",
+       "label": "Reaction type",
+       "control_type": "integer",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "file",
+     "type": "object",
+     "label": "File",
+     "required": true,
+     "properties": [
+      {
+       "name": "mimeType",
+       "type": "string",
+       "label": "Mime type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "hashes",
+       "type": "object",
+       "label": "Hashes",
+       "required": true,
+       "properties": [
+        {
+         "name": "quickXorHash",
+         "type": "string",
+         "label": "Quick xor hash",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "sha1Hash",
+         "type": "string",
+         "label": "Sha 1 hash",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "sha256Hash",
+         "type": "string",
+         "label": "Sha 256 hash",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "shared",
+     "type": "object",
+     "label": "Shared",
+     "required": true,
+     "properties": [
+      {
+       "name": "scope",
+       "type": "string",
+       "label": "Scope",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "owner",
+       "type": "object",
+       "label": "Owner",
+       "required": true,
+       "properties": [
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "deleted",
+     "type": "object",
+     "label": "Deleted",
+     "required": true,
+     "properties": [
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "new_file",
+   "title": "New file",
+   "description": "New file in OneDrive",
+   "help": "Triggers when a new file is added in the selected folder. Subfolders will not be monitored. Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_drive_folders",
+     "extends_schema": true,
+     "hint": "Select folder to monitor for files. Subfolders will not be monitored."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "File or folder"
+    },
+    {
+     "name": "downloadUrl",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "C tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "new_folder",
+   "title": "New folder",
+   "description": "New folder in OneDrive",
+   "help": "Triggers when a new folder is added in the selected folder. Subfolders will not be monitored. Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_drive_folders",
+     "extends_schema": true,
+     "hint": "Select folder to monitor for files. Subfolders will not be monitored."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "File or folder"
+    },
+    {
+     "name": "downloadUrl",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "C tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "updated_file",
+   "title": "New/updated file",
+   "description": "New/updated file in OneDrive",
+   "help": "Triggers when a new file is added or existing file is updated in the selected folder. Subfolders will not be monitored. Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_drive_folders",
+     "extends_schema": true,
+     "hint": "Select folder to monitor for files. Subfolders will not be monitored."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "File or folder"
+    },
+    {
+     "name": "downloadUrl",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "C tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in OneDrive (Custom)",
+   "help": "Build your own OneDrive action with a HTTP request. The request will be authorized with your OneDrive connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_folder",
+   "title": "Create folder",
+   "description": "Create folder in Microsoft OneDrive",
+   "help": "Creates a new folder in drive with a specified parent item or path, If already a folder exists with the same name, a new folder will be created with different name.",
+   "input": [
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter folder name."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Provide folder path in which new folder has to be created, e.g. folder 1/folder 2 . If left empty folder will be created in root folder."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "CTag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "ETag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parentReference",
+     "type": "object",
+     "label": "Parent reference",
+     "required": true,
+     "properties": [
+      {
+       "name": "driveId",
+       "type": "string",
+       "label": "Drive ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "driveType",
+       "type": "string",
+       "label": "Drive type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "siteId",
+       "type": "string",
+       "label": "Site ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "fileSystemInfo",
+     "type": "object",
+     "label": "File system info",
+     "required": true,
+     "properties": [
+      {
+       "name": "createdDateTime",
+       "type": "string",
+       "label": "Created date time",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastModifiedDateTime",
+       "type": "string",
+       "label": "Last modified date time",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "folder",
+     "type": "object",
+     "label": "Folder",
+     "required": true,
+     "properties": [
+      {
+       "name": "childCount",
+       "type": "integer",
+       "label": "Child count",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "view",
+       "type": "object",
+       "label": "View",
+       "required": true,
+       "properties": [
+        {
+         "name": "viewType",
+         "type": "string",
+         "label": "View type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "sortBy",
+         "type": "string",
+         "label": "Sort by",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "sortOrder",
+         "type": "string",
+         "label": "Sort order",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified at",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "application",
+       "type": "object",
+       "label": "Application",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "application",
+       "type": "object",
+       "label": "Application",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_permission",
+   "title": "Add permission",
+   "description": "Add permission to a file or folder in Microsoft OneDrive",
+   "help": "Add permission to a file or folder for the specified recipents in Onedrive.",
+   "input": [
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "File/folder ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "item_id",
+      "type": "string"
+     },
+     "hint": "Provide file or folder ID. Example: 01G65C3RKY7QJD67NCMVAYKVFGW3KBGK75 ."
+    },
+    {
+     "name": "roles",
+     "type": "string",
+     "label": "Role",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "roles",
+      "type": "string"
+     },
+     "hint": "The type of permission. Allowed values: read or write ."
+    },
+    {
+     "name": "recipients",
+     "type": "array",
+     "label": "Recipients",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "email",
+       "hint": "Email address of the recipient."
+      }
+     ],
+     "hint": "Only one of these values is required."
+    },
+    {
+     "name": "message",
+     "type": "string",
+     "label": "Message",
+     "control_type": "text",
+     "hint": "A plain text formatted message that is included in the sharing invitation. Maximum length 2000 characters."
+    },
+    {
+     "name": "requireSignIn",
+     "type": "boolean",
+     "label": "Require sign in",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "requireSignIn",
+      "type": "boolean"
+     },
+     "hint": "Specifies whether the recipient of the invitation is required to sign-in to view the shared item."
+    },
+    {
+     "name": "sendInvitation",
+     "type": "boolean",
+     "label": "Send invitation",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "sendInvitation",
+      "type": "boolean"
+     },
+     "hint": "If true , a sharing link is sent to the recipient. Otherwise, a permission is granted directly without sending a notification."
+    }
+   ],
+   "output": [
+    {
+     "name": "roles",
+     "type": "array",
+     "label": "Roles",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "grantedToIdentities",
+     "type": "array",
+     "label": "Granted to identities",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "email",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "grantedTo",
+     "type": "object",
+     "label": "Granted to",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "link",
+     "type": "object",
+     "label": "Link",
+     "required": true,
+     "properties": [
+      {
+       "name": "preventsDownload",
+       "type": "boolean",
+       "label": "Prevents download",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "preventsDownload",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "scope",
+       "type": "string",
+       "label": "Scope",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "webUrl",
+       "type": "string",
+       "label": "Web URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "invitation",
+     "type": "object",
+     "label": "Invitation",
+     "required": true,
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "signInRequired",
+       "type": "boolean",
+       "label": "Sign in required",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "signInRequired",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "delete_file_or_folder",
+   "title": "Delete file or folder",
+   "description": "Delete file or folder in Microsoft OneDrive",
+   "help": "Note that this action removes the specified file/folder to the recycle bin and does not permanently delete it. To delete file or folder from a folder that is shared with you, enter the ID of the folder in the Drive ID field. The Drive ID field can be found in the optional fields.",
+   "input": [
+    {
+     "name": "shared_drive_id",
+     "type": "string",
+     "label": "Drive ID",
+     "control_type": "text",
+     "hint": "Provide the drive ID from which you want to delete the file or folder. Drive ID can be found in the OneDrive URL as the cid parameter. E.g., in 'https://onedrive.live.com/?id=244DDFC44A57%21103&cid=24…"
+    },
+    {
+     "name": "file_or_folder",
+     "type": "string",
+     "label": "Delete file or folder?",
+     "control_type": "select",
+     "required": true,
+     "default": true,
+     "options": [
+      "File",
+      "Folder"
+     ],
+     "extends_schema": true,
+     "hint": "Specify the object to delete."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "string",
+     "label": "Success",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "delete_permission",
+   "title": "Remove permission",
+   "description": "Remove permission for a file or folder in Microsoft OneDrive",
+   "help": "Removes permission for a file or folder in Onedrive.",
+   "input": [
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "File/folder ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "item_id",
+      "type": "string"
+     },
+     "hint": "Provide file or folder ID. Example: 01G65C3RKY7QJD67NCMVAYKVFGW3KBGK75 ."
+    },
+    {
+     "name": "permission_id",
+     "type": "string",
+     "label": "Permission ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "permission_id",
+      "type": "string"
+     },
+     "hint": "Provide permission ID. Example: aTowIy5mfG1lbWJlcnNoaXB8ZGVtb0B3b3JrYXRvei5vbm1pY3Jvc29mdC5jb20 ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "download_file",
+   "title": "Download File",
+   "description": "Download file contents in Microsoft OneDrive",
+   "help": "This action downloads contents of a file in Microsoft OneDrive. File contents can be used in subsequent recipe steps to upload the file into another app. There is no fixed limit on file size. Maximum file size depends on if the upload can finish within the job timeout limit. Trying to download a fol…",
+   "input": [
+    {
+     "name": "shared_drive_id",
+     "type": "string",
+     "label": "Drive ID",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Provide the drive ID from which you want to download the file.Drive ID can be found in the OneDrive URL as the cid parameter. E.g., in 'https://onedrive.live.com/?id=244DDFC44A57%21103&cid=24C9A8FC44A…"
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "File ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "item_id",
+      "type": "string"
+     },
+     "hint": "Provide file ID. Example: 01G65C3RKY7QJD67NCMVAYKVFGW3KBGK75 ."
+    },
+    {
+     "name": "chunks_number",
+     "type": "integer",
+     "label": "Chunk size (multiples of 320KB)",
+     "control_type": "number",
+     "hint": "Configure this to optimize throughput. Larger chunk size will increase throughput, but may hit API limit. The value entered will be multiplied by 320KB. Default is 5 ie. 1600 KB. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "payload",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "list_files_folders",
+   "title": "List files and folders",
+   "description": "List files and folders in Microsoft OneDrive",
+   "help": "List files and folders in the selected parent folder. Items in subfolders will not be listed. To list files and folders from a folder that is shared with you, enter the ID of the folder in the Drive ID field. The Drive ID field can be found in the optional fields.",
+   "input": [
+    {
+     "name": "shared_drive_id",
+     "type": "string",
+     "label": "Drive ID",
+     "control_type": "text",
+     "hint": "Provide the drive ID from which you want to list files and folder. Drive ID can be found in the OneDrive URL as the cid parameter. E.g., in 'https://onedrive.live.com/?id=244DDFC44A57%21103&cid=24C9A8…"
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Provide folder path, e.g. folder 1/folder 2 ."
+    },
+    {
+     "name": "list_type",
+     "type": "string",
+     "label": "List files or folders?",
+     "control_type": "select",
+     "required": true,
+     "default": "Both",
+     "options": [
+      "Files",
+      "Folders",
+      "Both"
+     ],
+     "hint": "Select whether to list files, folders or both"
+    }
+   ],
+   "output": [
+    {
+     "name": "items",
+     "type": "array",
+     "label": "Items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "webUrl",
+       "type": "string",
+       "label": "Web URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "cTag",
+       "type": "string",
+       "label": "CTag",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "eTag",
+       "type": "string",
+       "label": "ETag",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "parentReference",
+       "type": "object",
+       "label": "Parent reference",
+       "required": true,
+       "properties": [
+        {
+         "name": "driveId",
+         "type": "string",
+         "label": "Drive ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "driveType",
+         "type": "string",
+         "label": "Drive type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "path",
+         "type": "string",
+         "label": "Path",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "siteId",
+         "type": "string",
+         "label": "Site ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "fileSystemInfo",
+       "type": "object",
+       "label": "File system info",
+       "required": true,
+       "properties": [
+        {
+         "name": "createdDateTime",
+         "type": "string",
+         "label": "Created date time",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "lastModifiedDateTime",
+         "type": "string",
+         "label": "Last modified date time",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "folder",
+       "type": "object",
+       "label": "Folder",
+       "required": true,
+       "properties": [
+        {
+         "name": "childCount",
+         "type": "integer",
+         "label": "Child count",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "view",
+         "type": "object",
+         "label": "View",
+         "required": true,
+         "properties": [
+          {
+           "name": "viewType",
+           "type": "string",
+           "label": "View type",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "sortBy",
+           "type": "string",
+           "label": "Sort by",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "sortOrder",
+           "type": "string",
+           "label": "Sort order",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "createdDateTime",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "lastModifiedDateTime",
+       "type": "date_time",
+       "label": "Last modified at",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "createdBy",
+       "type": "object",
+       "label": "Created by",
+       "required": true,
+       "properties": [
+        {
+         "name": "application",
+         "type": "object",
+         "label": "Application",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "email",
+           "type": "string",
+           "label": "Email",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "lastModifiedBy",
+       "type": "object",
+       "label": "Last modified by",
+       "required": true,
+       "properties": [
+        {
+         "name": "application",
+         "type": "object",
+         "label": "Application",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "email",
+           "type": "string",
+           "label": "Email",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "microsoft_graph_download_url",
+       "type": "string",
+       "label": "Download URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "reactions",
+       "type": "object",
+       "label": "Reactions",
+       "required": true,
+       "properties": [
+        {
+         "name": "commentCount",
+         "type": "integer",
+         "label": "Comment count",
+         "control_type": "integer",
+         "required": true
+        },
+        {
+         "name": "likeCount",
+         "type": "integer",
+         "label": "Like count",
+         "control_type": "integer",
+         "required": true
+        },
+        {
+         "name": "reactionType",
+         "type": "integer",
+         "label": "Reaction type",
+         "control_type": "integer",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "file",
+       "type": "object",
+       "label": "File",
+       "required": true,
+       "properties": [
+        {
+         "name": "mimeType",
+         "type": "string",
+         "label": "Mime type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "hashes",
+         "type": "object",
+         "label": "Hashes",
+         "required": true,
+         "properties": [
+          {
+           "name": "quickXorHash",
+           "type": "string",
+           "label": "Quick xor hash",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "sha1Hash",
+           "type": "string",
+           "label": "Sha 1 hash",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "sha256Hash",
+           "type": "string",
+           "label": "Sha 256 hash",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "shared",
+       "type": "object",
+       "label": "Shared",
+       "required": true,
+       "properties": [
+        {
+         "name": "scope",
+         "type": "string",
+         "label": "Scope",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "owner",
+         "type": "object",
+         "label": "Owner",
+         "required": true,
+         "properties": [
+          {
+           "name": "user",
+           "type": "object",
+           "label": "User",
+           "required": true,
+           "properties": [
+            {
+             "name": "id",
+             "type": "string",
+             "label": "ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "displayName",
+             "type": "string",
+             "label": "Display name",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_permission",
+   "title": "List permissions",
+   "description": "List permissions for a file or folder in Microsoft OneDrive",
+   "help": "List permissions for a file or folder in Onedrive.",
+   "input": [
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "File/folder ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "item_id",
+      "type": "string"
+     },
+     "hint": "Provide file or folder ID. Example: 01G65C3RKY7QJD67NCMVAYKVFGW3KBGK75 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "value",
+     "type": "array",
+     "label": "Value",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "hasPassword",
+       "type": "boolean",
+       "label": "Has password",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "hasPassword",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "roles",
+       "type": "array",
+       "label": "Roles",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "role",
+         "type": "string",
+         "label": "Role",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "grantedToIdentities",
+       "type": "array",
+       "label": "Granted to identities",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "required": true,
+         "properties": [
+          {
+           "name": "email",
+           "type": "string",
+           "label": "Email",
+           "control_type": "email",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "grantedTo",
+       "type": "object",
+       "label": "Granted to",
+       "required": true,
+       "properties": [
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "link",
+       "type": "object",
+       "label": "Link",
+       "required": true,
+       "properties": [
+        {
+         "name": "preventsDownload",
+         "type": "boolean",
+         "label": "Prevents download",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "preventsDownload",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "scope",
+         "type": "string",
+         "label": "Scope",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "webUrl",
+         "type": "string",
+         "label": "Web URL",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "inheritedFrom",
+       "type": "object",
+       "label": "Inherited from",
+       "required": true,
+       "properties": [
+        {
+         "name": "driveId",
+         "type": "string",
+         "label": "Drive ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "path",
+         "type": "string",
+         "label": "Path",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_files_new",
+   "title": "Search files",
+   "description": "Search files in Microsoft OneDrive",
+   "help": "Action will search partially when file name , metadata and file content are used in search query field. For exact match, search using file name followed with extension . Search is performed on the selected folder and its subfolders.",
+   "input": [],
+   "output": [
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "File size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "kind",
+       "type": "string",
+       "label": "Kind",
+       "control_type": "text",
+       "required": true,
+       "hint": "File or folder"
+      },
+      {
+       "name": "downloadUrl",
+       "type": "string",
+       "label": "Download URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "webUrl",
+       "type": "string",
+       "label": "Web URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdBy",
+       "type": "object",
+       "label": "Created by",
+       "required": true,
+       "properties": [
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "required": true,
+         "properties": [
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "createdDateTime",
+       "type": "date_time",
+       "label": "Created date time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "lastModifiedDateTime",
+       "type": "date_time",
+       "label": "Last modified date time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "cTag",
+       "type": "string",
+       "label": "C tag",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "eTag",
+       "type": "string",
+       "label": "E tag",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastModifiedBy",
+       "type": "object",
+       "label": "Last modified by",
+       "required": true,
+       "properties": [
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "required": true,
+         "properties": [
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "upload_file",
+   "title": "Upload file via file content",
+   "description": "Upload file via file content in Microsoft OneDrive",
+   "help": "Upload a file by providing the file contents. Max file size of 4MB.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_drive_folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select folder to upload files to"
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name with extensions, e.g. New csv file.csv . New data will overwrite existing file with the same name and extension."
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents in text or binary format",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "File or folder"
+    },
+    {
+     "name": "downloadUrl",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "C tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "upload_file_from_url",
+   "title": "Upload file from URL",
+   "description": "Upload file from URL to Microsoft OneDrive",
+   "help": "Upload a file by providing as input the public URL where the file can be found. Action will fail if the file name provided already exists.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_drive_folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select the folder where new file will be uploaded"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "Source URL",
+     "control_type": "url",
+     "required": true,
+     "hint": "Upload file from this URL"
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "hint": "File name with extensions, e.g. New csv file.csv . New data will overwrite existing file with the same name and extension."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "File or folder"
+    },
+    {
+     "name": "downloadUrl",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "C tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "upload_file_session",
+   "title": "Upload large file via session",
+   "description": "Upload large file via file session to Microsoft OneDrive",
+   "help": "This action uploads a file to Microsoft OneDrive. There is no fixed limit on file size. Maximum file size depends on if the upload can finish within the job timeout limit.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_drive_folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select folder to upload files to"
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name with extensions, e.g. New csv file.csv . New data will overwrite existing file with the same name and extension."
+    },
+    {
+     "name": "file_size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "number",
+     "required": true,
+     "hint": "Enter the size of the file (in bytes)"
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents in text or binary format",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "chunks_number",
+     "type": "integer",
+     "label": "Chunk size (multiples of 320KB)",
+     "control_type": "number",
+     "hint": "Configure this to optimize throughput. Larger chunk size will increase throughput, but may hit API limit. The value entered will be multiplied by 320KB. Default is 5 ie. 1600 KB. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text",
+     "required": true,
+     "hint": "File or folder"
+    },
+    {
+     "name": "downloadUrl",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webUrl",
+     "type": "string",
+     "label": "Web URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDateTime",
+     "type": "date_time",
+     "label": "Created date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastModifiedDateTime",
+     "type": "date_time",
+     "label": "Last modified date time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "cTag",
+     "type": "string",
+     "label": "C tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eTag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastModifiedBy",
+     "type": "object",
+     "label": "Last modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

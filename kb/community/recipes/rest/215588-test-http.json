@@ -1,0 +1,113 @@
+{
+ "id": 215588,
+ "name": "Test HTTP",
+ "description": "When there is a new event via HTTP webhook, make request via HTTP",
+ "applications": [
+  "rest",
+  "rest",
+  "sms"
+ ],
+ "action_applications": [
+  "rest",
+  "sms"
+ ],
+ "trigger_application": "rest",
+ "business_objects": [
+  "sms"
+ ],
+ "categories": [
+  "Developer",
+  "Utilities",
+  "Telephony"
+ ],
+ "copy_count": 119,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "webhook",
+ "published_at": null,
+ "updated_at": "2016-09-27T16:36:20.366-07:00",
+ "source_url": "https://app.workato.com/recipes/215588?community=us",
+ "steps": [
+  "rest.new_event",
+  "rest.make_request",
+  "sms.send_sms"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "rest",
+  "name": "new_event",
+  "as": "new_event",
+  "title": null,
+  "description": "<span class=\"provider\">My event</span> via <span class=\"provider\">HTTP webhook</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "webhook_type": "json",
+   "webhook_suffix": "My Event",
+   "sample_payload": "{\"test\":\"hello\"}"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "payload",
+    "label": "Payload",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Test",
+      "type": "string",
+      "name": "test"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "rest",
+    "name": "make_request",
+    "as": "make_request",
+    "title": null,
+    "description": "<span class=\"provider\">Test json blob</span> via <span class=\"provider\">HTTP</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "expected_encodingSource2": true
+    },
+    "input": {
+     "request_name": "Test JSON BLOB"
+    },
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "sample_output",
+      "control_type": "text-area",
+      "label": "Response body example",
+      "hint": "Provide response body example",
+      "optional": true,
+      "extends_schema": true,
+      "change_on_blur": true
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "provider": "sms",
+    "name": "send_sms",
+    "as": "send_sms",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "To": "-- REDACTED --",
+     "Body": "test #{_('data.rest.make_request.status_code')}#{_('data.rest.new_event.payload.test')}#{_('data.rest.make_request.body')}"
+    }
+   }
+  ],
+  "param": {}
+ }
+}

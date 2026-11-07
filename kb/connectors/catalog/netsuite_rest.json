@@ -1,0 +1,1913 @@
+{
+ "name": "netsuite_rest",
+ "title": "NetSuite REST",
+ "requires_connection": true,
+ "categories": [
+  "Accounting",
+  "ERP",
+  "CRM",
+  "Ecommerce",
+  "Financial Management",
+  "HR management"
+ ],
+ "aliases": [
+  "NetSuite REST"
+ ],
+ "triggers": [
+  {
+   "name": "new_classification_record",
+   "title": "New classification record",
+   "description": "New classification record in NetSuite",
+   "help": "Triggers when a record without date fields is created in NetSuite. These records (Billing account, Email template, Subscription, Price book, etc.) lack created/modified date fields, so polling is done by internal ID. You can add filters using a search query or input fields. Do not filter by id — it …",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "ns_classification_object",
+     "type": "string",
+     "label": "Record type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_classification_records_list",
+     "extends_schema": true,
+     "hint": "Select the NetSuite classification record type to monitor"
+    },
+    {
+     "name": "since_id",
+     "type": "integer",
+     "label": "When first started, this recipe should pick up events from ID",
+     "control_type": "number",
+     "hint": "When you start recipe for the first time, it picks up records with ID greater than this value. Leave empty to start from ID 0."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "hint": "Provide a search query to filter records. Example: name CONTAIN test . Do not filter by id — this field is managed by the trigger."
+    },
+    {
+     "name": "search_settings",
+     "type": "object",
+     "label": "Search settings",
+     "properties": [
+      {
+       "name": "string_fields_operator",
+       "type": "string",
+       "label": "String fields",
+       "control_type": "select",
+       "default": "CONTAIN",
+       "options": [
+        "CONTAIN",
+        "CONTAIN_NOT",
+        "IS",
+        "IS_NOT",
+        "START_WITH",
+        "START_WITH_NOT",
+        "END_WITH",
+        "END_WITH_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all String fields. Default is CONTAIN ."
+      },
+      {
+       "name": "number_fields_operator",
+       "type": "string",
+       "label": "Number fields",
+       "control_type": "select",
+       "default": "EQUAL",
+       "options": [
+        "ANY_OF",
+        "ANY_OF_NOT",
+        "BETWEEN",
+        "BETWEEN_NOT",
+        "EQUAL",
+        "EQUAL_NOT",
+        "GREATER",
+        "GREATER_NOT",
+        "GREATER_OR_EQUAL",
+        "GREATER_OR_EQUAL_NOT",
+        "LESS",
+        "LESS_NOT",
+        "LESS_OR_EQUAL",
+        "LESS_OR_EQUAL_NOT",
+        "WITHIN",
+        "WITHIN_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Integer, Number, Float, Double, Duration fields. Default is EQUAL ."
+      },
+      {
+       "name": "date_fields_operator",
+       "type": "string",
+       "label": "Date/Time fields",
+       "control_type": "select",
+       "default": "ON",
+       "options": [
+        "AFTER",
+        "AFTER_NOT",
+        "BEFORE",
+        "BEFORE_NOT",
+        "ON",
+        "ON_NOT",
+        "ON_OR_AFTER",
+        "ON_OR_AFTER_NOT",
+        "ON_OR_BEFORE",
+        "ON_OR_BEFORE_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Date, Time, DateTime fields. Default is ON ."
+      }
+     ],
+     "hint": "Learn more about Record Collection Filtering"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_custom_record",
+   "title": "New custom record",
+   "description": "New custom record in NetSuite",
+   "help": "Triggers when a custom record is created in NetSuite. Choose a polling strategy: By internal ID always works; By created date requires enabling 'Show Created Date' on the custom record type in NetSuite (Customization > Records > Record Types).",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_record",
+   "title": "New standard record",
+   "description": "New record in NetSuite",
+   "help": "Triggers when a standard record is created in NetSuite. Polls by the record's creation date field. You can add filters using a search query or input fields. Do not filter by the date field used for polling — it is managed by the trigger.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_custom_record",
+   "title": "New or updated custom record",
+   "description": "New or updated custom record in NetSuite",
+   "help": "Triggers when a custom record is created or updated in NetSuite. Polls by the lastmodified field. Requires enabling 'Show Last Modified' on the custom record type in NetSuite (Customization > Records > Record Types).",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record type",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter a NetSuite custom record type ID. Example: customrecord_1087_testing . You can get the ID from Customization > Records > Record Types ."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records in the last hour."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "hint": "Provide a search query to filter records. Do not filter by lastmodified — it is managed by the trigger."
+    },
+    {
+     "name": "search_settings",
+     "type": "object",
+     "label": "Search settings",
+     "properties": [
+      {
+       "name": "string_fields_operator",
+       "type": "string",
+       "label": "String fields",
+       "control_type": "select",
+       "default": "CONTAIN",
+       "options": [
+        "CONTAIN",
+        "CONTAIN_NOT",
+        "IS",
+        "IS_NOT",
+        "START_WITH",
+        "START_WITH_NOT",
+        "END_WITH",
+        "END_WITH_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all String fields. Default is CONTAIN ."
+      },
+      {
+       "name": "number_fields_operator",
+       "type": "string",
+       "label": "Number fields",
+       "control_type": "select",
+       "default": "EQUAL",
+       "options": [
+        "ANY_OF",
+        "ANY_OF_NOT",
+        "BETWEEN",
+        "BETWEEN_NOT",
+        "EQUAL",
+        "EQUAL_NOT",
+        "GREATER",
+        "GREATER_NOT",
+        "GREATER_OR_EQUAL",
+        "GREATER_OR_EQUAL_NOT",
+        "LESS",
+        "LESS_NOT",
+        "LESS_OR_EQUAL",
+        "LESS_OR_EQUAL_NOT",
+        "WITHIN",
+        "WITHIN_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Integer, Number, Float, Double, Duration fields. Default is EQUAL ."
+      },
+      {
+       "name": "date_fields_operator",
+       "type": "string",
+       "label": "Date/Time fields",
+       "control_type": "select",
+       "default": "ON",
+       "options": [
+        "AFTER",
+        "AFTER_NOT",
+        "BEFORE",
+        "BEFORE_NOT",
+        "ON",
+        "ON_NOT",
+        "ON_OR_AFTER",
+        "ON_OR_AFTER_NOT",
+        "ON_OR_BEFORE",
+        "ON_OR_BEFORE_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Date, Time, DateTime fields. Default is ON ."
+      }
+     ],
+     "hint": "Learn more about Record Collection Filtering"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_record",
+   "title": "New or updated standard record",
+   "description": "New or updated standard record in NetSuite",
+   "help": "Triggers when a record is created or updated in NetSuite. You can add filters using a search query or input fields. Do not filter by the date field used for polling — it is managed by the trigger.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_standard_records_list",
+     "extends_schema": true,
+     "hint": "Select a NetSuite record to monitor. Only REST Web Services Supported Records are shown in the picklist."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records in the last hour."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "hint": "Provide a search query to filter records. Example: email START_WITH barbara . Do not filter by the date field used for polling — it is managed by the trigger."
+    },
+    {
+     "name": "search_settings",
+     "type": "object",
+     "label": "Search settings",
+     "properties": [
+      {
+       "name": "string_fields_operator",
+       "type": "string",
+       "label": "String fields",
+       "control_type": "select",
+       "default": "CONTAIN",
+       "options": [
+        "CONTAIN",
+        "CONTAIN_NOT",
+        "IS",
+        "IS_NOT",
+        "START_WITH",
+        "START_WITH_NOT",
+        "END_WITH",
+        "END_WITH_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all String fields. Default is CONTAIN ."
+      },
+      {
+       "name": "number_fields_operator",
+       "type": "string",
+       "label": "Number fields",
+       "control_type": "select",
+       "default": "EQUAL",
+       "options": [
+        "ANY_OF",
+        "ANY_OF_NOT",
+        "BETWEEN",
+        "BETWEEN_NOT",
+        "EQUAL",
+        "EQUAL_NOT",
+        "GREATER",
+        "GREATER_NOT",
+        "GREATER_OR_EQUAL",
+        "GREATER_OR_EQUAL_NOT",
+        "LESS",
+        "LESS_NOT",
+        "LESS_OR_EQUAL",
+        "LESS_OR_EQUAL_NOT",
+        "WITHIN",
+        "WITHIN_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Integer, Number, Float, Double, Duration fields. Default is EQUAL ."
+      },
+      {
+       "name": "date_fields_operator",
+       "type": "string",
+       "label": "Date/Time fields",
+       "control_type": "select",
+       "default": "ON",
+       "options": [
+        "AFTER",
+        "AFTER_NOT",
+        "BEFORE",
+        "BEFORE_NOT",
+        "ON",
+        "ON_NOT",
+        "ON_OR_AFTER",
+        "ON_OR_AFTER_NOT",
+        "ON_OR_BEFORE",
+        "ON_OR_BEFORE_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Date, Time, DateTime fields. Default is ON ."
+      }
+     ],
+     "hint": "Learn more about Record Collection Filtering"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in NetSuite REST (Custom)",
+   "help": "Build your own NetSuite REST action with a HTTP request. The request will be authorized with your NetSuite REST connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "attach_contact_to_record",
+   "title": "Attach contact to a record",
+   "description": "Attach contact to a record in NetSuite",
+   "help": "This action attaches a contact to a NetSuite record. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Only REST Web Services Supported Records are shown in the picklist, toggle to use any custom records."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of the record to attach the contact to."
+    },
+    {
+     "name": "attached_id",
+     "type": "integer",
+     "label": "Contact ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of the contact to attach."
+    },
+    {
+     "name": "role",
+     "type": "string",
+     "label": "Contact role ID",
+     "control_type": "text",
+     "hint": "Internal ID of the contact role to assign to the contact. Find it under Setup > Company > Contact Roles (Internal ID column)."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "attach_file_to_record",
+   "title": "Attach file to a record",
+   "description": "Attach file to a record in NetSuite",
+   "help": "This action attaches a file to a NetSuite record. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Only REST Web Services Supported Records are shown in the picklist, toggle to use any custom records."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of the record to attach the file to."
+    },
+    {
+     "name": "attached_id",
+     "type": "integer",
+     "label": "File ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of an existing File Cabinet file to attach. This links a file already in NetSuite; it does not upload file contents."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "create_custom_record",
+   "title": "Create custom record",
+   "description": "Create custom record in NetSuite",
+   "help": "This action can be used to insert a custom record into NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "custom_object",
+     "type": "string",
+     "label": "Custom record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_custom_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite custom record type. The list is populated from the custom record types in your account ( Customization > Records > Record Types ). Toggle to enter a custom value."
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_record",
+   "title": "Create a record",
+   "description": "Create a record in NetSuite",
+   "help": "This action can be used to insert a record into NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_creatable_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Records that don't support create via REST are hidden; toggle to use any custom records."
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_record_async",
+   "title": "Create records (async)",
+   "description": "Create multiple records records in NetSuite asynchronously",
+   "help": "This action can be used to insert multiple records into NetSuite asynchronously. All records are submitted as a single batch async request, returning one job ID for the entire batch. Maximum number of records per batch is 100. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_creatable_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Records that don't support create via REST are hidden; toggle to use any custom records."
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "integer",
+     "label": "Async job ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Job enqueued at",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "custom_http_action",
+   "title": "Custom action v2",
+   "description": "Build your own NetSuite REST action with a HTTP request",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_custom_record",
+   "title": "Delete custom record",
+   "description": "Delete custom record in NetSuite",
+   "help": "This action can be used to remove a custom record from NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "custom_object",
+     "type": "string",
+     "label": "Custom record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_custom_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite custom record type. The list is populated from the custom record types in your account ( Customization > Records > Record Types ). Toggle to enter a custom value."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "integer",
+     "required": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_record",
+   "title": "Delete a record",
+   "description": "Delete a record in NetSuite",
+   "help": "This action can be used to remove a record from NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_deletable_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Records that don't support delete via REST are hidden; toggle to use any custom records."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "integer",
+     "required": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_record_async",
+   "title": "Delete records (async)",
+   "description": "Delete multiple records records in NetSuite asynchronously",
+   "help": "This action can be used to delete multiple records from NetSuite asynchronously. All records are submitted as a single batch async request, returning one job ID for the entire batch. Maximum number of records per batch is 100. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_deletable_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Records that don't support delete via REST are hidden; toggle to use any custom records."
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "integer",
+     "label": "Async job ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Job enqueued at",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "detach_contact_from_record",
+   "title": "Detach contact from a record",
+   "description": "Detach contact from a record in NetSuite",
+   "help": "This action detaches a contact from a NetSuite record. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Only REST Web Services Supported Records are shown in the picklist, toggle to use any custom records."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of the record to detach the contact from."
+    },
+    {
+     "name": "attached_id",
+     "type": "integer",
+     "label": "Contact ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of the contact to detach."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "detach_file_from_record",
+   "title": "Detach file from a record",
+   "description": "Detach file from a record in NetSuite",
+   "help": "This action detaches a file from a NetSuite record. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Only REST Web Services Supported Records are shown in the picklist, toggle to use any custom records."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of the record to detach the file from."
+    },
+    {
+     "name": "attached_id",
+     "type": "integer",
+     "label": "File ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Internal ID of the File Cabinet file to detach."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "execute_restlet",
+   "title": "Execute RESTlet script",
+   "description": "Execute RESTlet script in NetSuite",
+   "help": "This action can be used to export or import data in NetSuite.",
+   "input": [
+    {
+     "name": "operation",
+     "type": "string",
+     "label": "Operation",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "export",
+      "import"
+     ],
+     "extends_schema": true,
+     "hint": "Select the RESTlet operation to perform. Export would use GET and Import would use POST HTTP methods to interact with RESTlet APIs."
+    },
+    {
+     "name": "script_id",
+     "type": "string",
+     "label": "Script ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the RESTlet script ID to perform the operation. You can get the script ID from Customization > Scripting > Scripts > NetSuite script record ."
+    },
+    {
+     "name": "deployment_id",
+     "type": "string",
+     "label": "Deployment ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the RESTlet script deployment ID to perform the operation. You can get the deployment ID from Customization > Scripting > Scripts > NetSuite script record > Deployments ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "execute_suiteql",
+   "title": "Execute SuiteQL query",
+   "description": "Execute SuiteQL query in NetSuite",
+   "help": "Use SuiteQL to execute custom query against NetSuite database. Only SELECT query is supported.",
+   "input": [
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SuiteQL query",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide a valid SuiteQL query."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Number of records to be fetched. Maximum is 1000 . Default is 100 ."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Starting position from which records should be fetched. Default is 0 ."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output schema",
+     "control_type": "schema-designer",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_custom_record",
+   "title": "Get custom record by ID",
+   "description": "Get custom record in NetSuite",
+   "help": "This action can be used to fetch a custom record by its internal ID from NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "custom_object",
+     "type": "string",
+     "label": "Custom record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_custom_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite custom record type. The list is populated from the custom record types in your account ( Customization > Records > Record Types ). Toggle to enter a custom value."
+    },
+    {
+     "name": "internal_id",
+     "type": "string",
+     "label": "Internal ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the internal ID of the record to fetch."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_job_result",
+   "title": "Get async job result",
+   "description": "Get the status and result of an asynchronous job in NetSuite",
+   "help": "This action retrieves the status and result of an asynchronous job created by async create, update, upsert, or delete actions. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "job_id",
+     "type": "integer",
+     "label": "Async job ID",
+     "control_type": "integer",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "started_at",
+     "type": "date_time",
+     "label": "Started at",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "completed_at",
+     "type": "date_time",
+     "label": "Completed at",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "progress",
+     "type": "string",
+     "label": "Progress",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "task_results",
+     "type": "array",
+     "label": "Task results",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "task_id",
+       "type": "integer",
+       "label": "Task ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "location",
+       "type": "string",
+       "label": "Location",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Internal ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "error",
+       "type": "string",
+       "label": "Error",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_record",
+   "title": "Get a record by ID",
+   "description": "Get a record by ID in NetSuite",
+   "help": "This action can be used to fetch a record by its internal ID or external ID from NetSuite. Provide at least one ID. When both are set, the internal ID is used. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Only REST Web Services Supported Records are shown in the picklist, toggle to use any custom records."
+    },
+    {
+     "name": "internal_id",
+     "type": "string",
+     "label": "Internal ID",
+     "control_type": "text",
+     "hint": "Required if External ID is blank. When both are provided, Internal ID is used."
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "label": "External ID",
+     "control_type": "text",
+     "hint": "Required if Internal ID is blank."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "initialize_record",
+   "title": "Initialize record",
+   "description": "Initialize Record by referencing Record in NetSuite",
+   "help": "In REST web services, you can retrieve a record pre-filled with data transformed from an existing record, without creating it, using NetSuite's create-form operation. For example, you can retrieve a pre-filled invoice record from an existing sales order record, using data from the sales order. See S…",
+   "input": [
+    {
+     "name": "transform_to",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_rest_initialize_targets",
+     "extends_schema": true,
+     "hint": "Select the record type to be initialized."
+    },
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Reference record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_rest_initialize_sources",
+     "extends_schema": true,
+     "hint": "Select the record type of the existing reference record instance."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Reference record ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "The internal ID of the existing reference record instance."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_custom_record",
+   "title": "Search custom records",
+   "description": "Search custom records in NetSuite",
+   "help": "This action can be used to search custom records in NetSuite. You can input a Search query or use the input fields with search settings to filter records. On specifying both, the Search query will be used. Note: Only fields with known data types are supported for filtering in the input fields. For a…",
+   "input": [
+    {
+     "name": "custom_object",
+     "type": "string",
+     "label": "Custom record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_custom_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite custom record type. The list is populated from the custom record types in your account ( Customization > Records > Record Types ). Toggle to enter a custom value."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "hint": "Provide a search query to filter records. Example: name START_WITH test . See NetSuite Records Catalog for more information on Field Name, Type, Availability etc."
+    },
+    {
+     "name": "search_settings",
+     "type": "object",
+     "label": "Search settings",
+     "properties": [
+      {
+       "name": "string_fields_operator",
+       "type": "string",
+       "label": "String fields",
+       "control_type": "select",
+       "default": "CONTAIN",
+       "options": [
+        "CONTAIN",
+        "CONTAIN_NOT",
+        "IS",
+        "IS_NOT",
+        "START_WITH",
+        "START_WITH_NOT",
+        "END_WITH",
+        "END_WITH_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all String fields. Default is CONTAIN ."
+      },
+      {
+       "name": "number_fields_operator",
+       "type": "string",
+       "label": "Number fields",
+       "control_type": "select",
+       "default": "EQUAL",
+       "options": [
+        "ANY_OF",
+        "ANY_OF_NOT",
+        "BETWEEN",
+        "BETWEEN_NOT",
+        "EQUAL",
+        "EQUAL_NOT",
+        "GREATER",
+        "GREATER_NOT",
+        "GREATER_OR_EQUAL",
+        "GREATER_OR_EQUAL_NOT",
+        "LESS",
+        "LESS_NOT",
+        "LESS_OR_EQUAL",
+        "LESS_OR_EQUAL_NOT",
+        "WITHIN",
+        "WITHIN_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Integer, Number, Float, Double, Duration fields. Default is EQUAL ."
+      },
+      {
+       "name": "date_fields_operator",
+       "type": "string",
+       "label": "Date/Time fields",
+       "control_type": "select",
+       "default": "ON",
+       "options": [
+        "AFTER",
+        "AFTER_NOT",
+        "BEFORE",
+        "BEFORE_NOT",
+        "ON",
+        "ON_NOT",
+        "ON_OR_AFTER",
+        "ON_OR_AFTER_NOT",
+        "ON_OR_BEFORE",
+        "ON_OR_BEFORE_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Date, Time, DateTime fields. Default is ON ."
+      }
+     ],
+     "hint": "Learn more about Record Collection Filtering"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 200,
+     "hint": "Number of records to be fetched on a single page. Maximum is 1000 . Default is 200 ."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Starting position from which records should be fetched. Default is 0 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "items",
+     "type": "array",
+     "label": "Items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Internal ID",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "array",
+       "label": "Links",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "rel",
+         "type": "string",
+         "label": "Rel",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "hasMore",
+     "type": "boolean",
+     "label": "Has more",
+     "control_type": "boolean",
+     "required": true,
+     "toggle_field": {
+      "name": "hasMore",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "count",
+     "type": "integer",
+     "label": "Count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "totalResults",
+     "type": "integer",
+     "label": "Total results",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_records",
+   "title": "Search records",
+   "description": "Search records in NetSuite",
+   "help": "This action can be used to search records in NetSuite. You can input a Search query or use the input fields with search settings to filter records. On specifying both, the Search query will be used. Note: Only fields with known data types are supported for filtering in the input fields. For any othe…",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_searchable_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Records that don't support search are hidden; toggle to use any custom records."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "hint": "Provide a search query to filter records. Example: email START_WITH barbara . See NetSuite Records Catalog for more information on Field Name, Type, Availability etc."
+    },
+    {
+     "name": "search_settings",
+     "type": "object",
+     "label": "Search settings",
+     "properties": [
+      {
+       "name": "string_fields_operator",
+       "type": "string",
+       "label": "String fields",
+       "control_type": "select",
+       "default": "CONTAIN",
+       "options": [
+        "CONTAIN",
+        "CONTAIN_NOT",
+        "IS",
+        "IS_NOT",
+        "START_WITH",
+        "START_WITH_NOT",
+        "END_WITH",
+        "END_WITH_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all String fields. Default is CONTAIN ."
+      },
+      {
+       "name": "number_fields_operator",
+       "type": "string",
+       "label": "Number fields",
+       "control_type": "select",
+       "default": "EQUAL",
+       "options": [
+        "ANY_OF",
+        "ANY_OF_NOT",
+        "BETWEEN",
+        "BETWEEN_NOT",
+        "EQUAL",
+        "EQUAL_NOT",
+        "GREATER",
+        "GREATER_NOT",
+        "GREATER_OR_EQUAL",
+        "GREATER_OR_EQUAL_NOT",
+        "LESS",
+        "LESS_NOT",
+        "LESS_OR_EQUAL",
+        "LESS_OR_EQUAL_NOT",
+        "WITHIN",
+        "WITHIN_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Integer, Number, Float, Double, Duration fields. Default is EQUAL ."
+      },
+      {
+       "name": "date_fields_operator",
+       "type": "string",
+       "label": "Date/Time fields",
+       "control_type": "select",
+       "default": "ON",
+       "options": [
+        "AFTER",
+        "AFTER_NOT",
+        "BEFORE",
+        "BEFORE_NOT",
+        "ON",
+        "ON_NOT",
+        "ON_OR_AFTER",
+        "ON_OR_AFTER_NOT",
+        "ON_OR_BEFORE",
+        "ON_OR_BEFORE_NOT"
+       ],
+       "extends_schema": true,
+       "hint": "Select the search operator for all Date, Time, DateTime fields. Default is ON ."
+      }
+     ],
+     "hint": "Learn more about Record Collection Filtering"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 200,
+     "hint": "Number of records to be fetched on a single page. Maximum is 1000 . Default is 200 ."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Starting position from which records should be fetched. Default is 0 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "items",
+     "type": "array",
+     "label": "Items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Internal ID",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "array",
+       "label": "Links",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "rel",
+         "type": "string",
+         "label": "Rel",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "hasMore",
+     "type": "boolean",
+     "label": "Has more",
+     "control_type": "boolean",
+     "required": true,
+     "toggle_field": {
+      "name": "hasMore",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "count",
+     "type": "integer",
+     "label": "Count",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "totalResults",
+     "type": "integer",
+     "label": "Total results",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "transform_record",
+   "title": "Transform record",
+   "description": "Transform Record to Record in NetSuite",
+   "help": "In REST web services, you can transform a record from one type into an another, using data from an existing records. For example, you can create an invoice record from an existing sales order record, using data from the sales order. See Supported Transformation Types for valid pairs. For more inform…",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Source record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_rest_transform_sources",
+     "extends_schema": true,
+     "hint": "Select the record type of the existing record instance being transformed."
+    },
+    {
+     "name": "transform_to",
+     "type": "string",
+     "label": "Transform to",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_rest_transform_targets",
+     "extends_schema": true,
+     "hint": "Select the target record type to be returned after transformation."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "The internal ID of the existing source record instance being transformed."
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_custom_record",
+   "title": "Update custom record",
+   "description": "Update custom record in NetSuite",
+   "help": "This action can be used to modify a custom record in NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "custom_object",
+     "type": "string",
+     "label": "Custom record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_custom_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite custom record type. The list is populated from the custom record types in your account ( Customization > Records > Record Types ). Toggle to enter a custom value."
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_record",
+   "title": "Update a record",
+   "description": "Update a record in NetSuite",
+   "help": "This action can be used to modify a record in NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_updatable_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Records that don't support update via REST are hidden; toggle to use any custom records."
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_record_async",
+   "title": "Update records (async)",
+   "description": "Update multiple records records in NetSuite asynchronously",
+   "help": "This action can be used to update multiple records in NetSuite asynchronously. All records are submitted as a single batch async request, returning one job ID for the entire batch. Maximum number of records per batch is 100. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_updatable_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Records that don't support update via REST are hidden; toggle to use any custom records."
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "integer",
+     "label": "Async job ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Job enqueued at",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upsert_custom_record",
+   "title": "Upsert custom record",
+   "description": "Upsert custom record in NetSuite",
+   "help": "This action can be used to upsert a custom record in NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "custom_object",
+     "type": "string",
+     "label": "Custom record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_custom_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite custom record type. The list is populated from the custom record types in your account ( Customization > Records > Record Types ). Toggle to enter a custom value."
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Internal ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upsert_record",
+   "title": "Upsert a record",
+   "description": "Upsert a record in NetSuite",
+   "help": "This action can be used to upsert a record in NetSuite. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Only REST Web Services Supported Records are shown in the picklist, toggle to use any custom records."
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "InternalID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upsert_record_async",
+   "title": "Upsert records (async)",
+   "description": "Upsert multiple records records in NetSuite asynchronously",
+   "help": "This action can be used to upsert multiple records in NetSuite asynchronously. All records are submitted as a single batch async request, returning one job ID for the entire batch. Maximum number of records per batch is 100. For more information, see REST Web Services Prerequisites and Setup .",
+   "input": [
+    {
+     "name": "ns_object",
+     "type": "string",
+     "label": "Record",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "netsuite_records",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "ns_object",
+      "type": "string"
+     },
+     "hint": "Select a NetSuite record to perform. Only REST Web Services Supported Records are shown in the picklist, toggle to use any custom records."
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "integer",
+     "label": "Async job ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Job enqueued at",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

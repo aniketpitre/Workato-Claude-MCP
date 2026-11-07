@@ -1,0 +1,1473 @@
+{
+ "name": "google_tasks",
+ "title": "Google Tasks",
+ "requires_connection": true,
+ "categories": [
+  "Productivity"
+ ],
+ "aliases": [
+  "Google Tasks"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Google Tasks (Custom)",
+   "help": "Build your own Google Tasks action with a HTTP request. The request will be authorized with your Google Tasks connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_task",
+   "title": "Create task",
+   "description": "Create task in Google Tasks",
+   "help": "Creates a task in the specified task list.",
+   "input": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list",
+     "control_type": "select",
+     "pick_list": "tasklists",
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     },
+     "hint": "Defaults to @default when omitted."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text-area"
+    },
+    {
+     "name": "due",
+     "type": "date",
+     "label": "Due date",
+     "control_type": "date",
+     "hint": "Stores only the calendar date in Google Tasks."
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent task ID",
+     "control_type": "text",
+     "hint": "Use to create a subtask under an existing task. Assigned tasks cannot be used as parent tasks."
+    }
+   ],
+   "output": [
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "due",
+     "type": "date",
+     "label": "Due",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "completed",
+     "type": "date_time",
+     "label": "Completed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "position",
+     "type": "string",
+     "label": "Position",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "web_view_link",
+     "type": "string",
+     "label": "Web view link",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "assignment_info",
+     "type": "object",
+     "label": "Assignment info",
+     "required": true,
+     "properties": [
+      {
+       "name": "link_to_task",
+       "type": "string",
+       "label": "Link to task",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "surface_type",
+       "type": "string",
+       "label": "Surface type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "drive_resource_info",
+       "type": "object",
+       "label": "Drive resource info",
+       "required": true,
+       "properties": [
+        {
+         "name": "drive_file_id",
+         "type": "string",
+         "label": "Drive file ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "deleted",
+     "type": "boolean",
+     "label": "Deleted",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "deleted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "hidden",
+     "type": "boolean",
+     "label": "Hidden",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "hidden",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "links",
+     "type": "array",
+     "label": "Links",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "link",
+       "type": "string",
+       "label": "Link",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_task_list",
+   "title": "Create task list",
+   "description": "Create task list in Google Tasks",
+   "help": "Creates a new task list.",
+   "input": [
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "delete_task",
+   "title": "Delete task",
+   "description": "Delete task in Google Tasks",
+   "help": "Deletes a task by ID.",
+   "input": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tasklists",
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The Google Tasks task ID."
+    },
+    {
+     "name": "reject_assigned_tasks",
+     "type": "boolean",
+     "label": "Block tasks assigned from Docs or Chat",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "reject_assigned_tasks",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to block tasks assigned from Google Docs or Google Chat. Default is No."
+    }
+   ],
+   "output": [
+    {
+     "name": "deleted",
+     "type": "boolean",
+     "label": "Deleted",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "deleted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_task",
+   "title": "Get task",
+   "description": "Get task in Google Tasks",
+   "help": "Gets a task by ID.",
+   "input": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tasklists",
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The Google Tasks task ID."
+    },
+    {
+     "name": "reject_assigned_tasks",
+     "type": "boolean",
+     "label": "Block tasks assigned from Docs or Chat",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "reject_assigned_tasks",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to block tasks assigned from Google Docs or Google Chat. Default is No."
+    }
+   ],
+   "output": [
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "due",
+     "type": "date",
+     "label": "Due",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "completed",
+     "type": "date_time",
+     "label": "Completed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "position",
+     "type": "string",
+     "label": "Position",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "web_view_link",
+     "type": "string",
+     "label": "Web view link",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "assignment_info",
+     "type": "object",
+     "label": "Assignment info",
+     "required": true,
+     "properties": [
+      {
+       "name": "link_to_task",
+       "type": "string",
+       "label": "Link to task",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "surface_type",
+       "type": "string",
+       "label": "Surface type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "drive_resource_info",
+       "type": "object",
+       "label": "Drive resource info",
+       "required": true,
+       "properties": [
+        {
+         "name": "drive_file_id",
+         "type": "string",
+         "label": "Drive file ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "deleted",
+     "type": "boolean",
+     "label": "Deleted",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "deleted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "hidden",
+     "type": "boolean",
+     "label": "Hidden",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "hidden",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "links",
+     "type": "array",
+     "label": "Links",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "link",
+       "type": "string",
+       "label": "Link",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_task_lists",
+   "title": "List task lists",
+   "description": "List task lists in Google Tasks",
+   "help": "Lists one page of the user's task lists.",
+   "input": [
+    {
+     "name": "max_results",
+     "type": "integer",
+     "label": "Maximum results",
+     "control_type": "integer",
+     "hint": "Defaults to 20 when omitted. Allowed values: 1 to 100."
+    },
+    {
+     "name": "page_token",
+     "type": "string",
+     "label": "Page token",
+     "control_type": "text",
+     "hint": "Use the next_page_token from a previous List task lists response to fetch the next page."
+    }
+   ],
+   "output": [
+    {
+     "name": "task_lists",
+     "type": "array",
+     "label": "Task lists",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "list_id",
+       "type": "string",
+       "label": "Task list ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "updated",
+       "type": "date_time",
+       "label": "Updated",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page_token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "list_tasks",
+   "title": "List tasks",
+   "description": "List tasks in Google Tasks",
+   "help": "Lists tasks in the specified task list.",
+   "input": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list",
+     "control_type": "select",
+     "pick_list": "tasklists",
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     },
+     "hint": "Defaults to @default when omitted."
+    },
+    {
+     "name": "include_completed",
+     "type": "boolean",
+     "label": "Include completed",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "include_completed",
+      "type": "boolean"
+     },
+     "hint": "Defaults to No when omitted. Set to Yes to include both active and completed tasks. To include completed tasks hidden after clear-completed in Google Tasks, also set Show hidden to Yes."
+    },
+    {
+     "name": "due_state",
+     "type": "string",
+     "label": "Due state",
+     "control_type": "select",
+     "options": [
+      "any",
+      "dated",
+      "undated",
+      "overdue"
+     ],
+     "toggle_field": {
+      "name": "due_state",
+      "type": "string"
+     }
+    },
+    {
+     "name": "completed_max",
+     "type": "date_time",
+     "label": "Completed before",
+     "control_type": "date_time"
+    },
+    {
+     "name": "completed_min",
+     "type": "date_time",
+     "label": "Completed after",
+     "control_type": "date_time"
+    },
+    {
+     "name": "due_max",
+     "type": "date",
+     "label": "Due before",
+     "control_type": "date"
+    },
+    {
+     "name": "due_min",
+     "type": "date",
+     "label": "Due after",
+     "control_type": "date"
+    },
+    {
+     "name": "max_results",
+     "type": "integer",
+     "label": "Maximum results",
+     "control_type": "integer",
+     "hint": "Defaults to 20 when omitted. Allowed values: 1 to 100."
+    },
+    {
+     "name": "page_token",
+     "type": "string",
+     "label": "Page token",
+     "control_type": "text",
+     "hint": "Use the next_page_token from a previous List tasks response to fetch the next page."
+    },
+    {
+     "name": "show_assigned",
+     "type": "boolean",
+     "label": "Show assigned tasks",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "show_assigned",
+      "type": "boolean"
+     },
+     "hint": "Defaults to No when omitted."
+    },
+    {
+     "name": "show_deleted",
+     "type": "boolean",
+     "label": "Show deleted",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "show_deleted",
+      "type": "boolean"
+     },
+     "hint": "Defaults to No when omitted."
+    },
+    {
+     "name": "show_hidden",
+     "type": "boolean",
+     "label": "Show hidden",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "show_hidden",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to include hidden tasks. Completed tasks cleared from the Google Tasks UI stay hidden unless this is enabled."
+    }
+   ],
+   "output": [
+    {
+     "name": "tasks",
+     "type": "array",
+     "label": "Tasks",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "task_id",
+       "type": "string",
+       "label": "Task ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "list_id",
+       "type": "string",
+       "label": "Task list ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "due",
+       "type": "date",
+       "label": "Due",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "completed",
+       "type": "date_time",
+       "label": "Completed",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "updated",
+       "type": "date_time",
+       "label": "Updated",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "parent",
+       "type": "string",
+       "label": "Parent",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "position",
+       "type": "string",
+       "label": "Position",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "web_view_link",
+       "type": "string",
+       "label": "Web view link",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "assignment_info",
+       "type": "object",
+       "label": "Assignment info",
+       "required": true,
+       "properties": [
+        {
+         "name": "link_to_task",
+         "type": "string",
+         "label": "Link to task",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "surface_type",
+         "type": "string",
+         "label": "Surface type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "drive_resource_info",
+         "type": "object",
+         "label": "Drive resource info",
+         "required": true,
+         "properties": [
+          {
+           "name": "drive_file_id",
+           "type": "string",
+           "label": "Drive file ID",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page_token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "move_task",
+   "title": "Move task",
+   "description": "Move task in Google Tasks",
+   "help": "Moves a task to a different position or task list.",
+   "input": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tasklists",
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The Google Tasks task ID."
+    },
+    {
+     "name": "parent_mode",
+     "type": "string",
+     "label": "Parent mode",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "keep",
+      "top_level",
+      "under_task"
+     ],
+     "toggle_field": {
+      "name": "parent_mode",
+      "type": "string"
+     },
+     "hint": "Choose how to place the task in the parent hierarchy. Set to Under task to require Parent task ID."
+    },
+    {
+     "name": "parent_task_id",
+     "type": "string",
+     "label": "Parent task ID",
+     "control_type": "text",
+     "hint": "Required when Parent mode is set to Under task."
+    },
+    {
+     "name": "position_mode",
+     "type": "string",
+     "label": "Position mode",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "keep",
+      "first",
+      "after_task"
+     ],
+     "toggle_field": {
+      "name": "position_mode",
+      "type": "string"
+     },
+     "hint": "Choose where to place the task among siblings. Set to After task to require Previous task ID."
+    },
+    {
+     "name": "previous_task_id",
+     "type": "string",
+     "label": "Previous task ID",
+     "control_type": "text",
+     "hint": "Required when Position mode is set to After task. It must be a visible sibling under the selected parent."
+    },
+    {
+     "name": "destination_list_id",
+     "type": "string",
+     "label": "Destination task list ID",
+     "control_type": "text",
+     "hint": "Optional for cross-list moves. Do not set this when Parent mode is Keep. If you change the parent or list, Position mode cannot be Keep."
+    },
+    {
+     "name": "reject_assigned_tasks",
+     "type": "boolean",
+     "label": "Block tasks assigned from Docs or Chat",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "reject_assigned_tasks",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to block tasks assigned from Google Docs or Google Chat. Default is No."
+    }
+   ],
+   "output": [
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "due",
+     "type": "date",
+     "label": "Due",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "completed",
+     "type": "date_time",
+     "label": "Completed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "position",
+     "type": "string",
+     "label": "Position",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "web_view_link",
+     "type": "string",
+     "label": "Web view link",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "assignment_info",
+     "type": "object",
+     "label": "Assignment info",
+     "required": true,
+     "properties": [
+      {
+       "name": "link_to_task",
+       "type": "string",
+       "label": "Link to task",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "surface_type",
+       "type": "string",
+       "label": "Surface type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "drive_resource_info",
+       "type": "object",
+       "label": "Drive resource info",
+       "required": true,
+       "properties": [
+        {
+         "name": "drive_file_id",
+         "type": "string",
+         "label": "Drive file ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "deleted",
+     "type": "boolean",
+     "label": "Deleted",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "deleted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "hidden",
+     "type": "boolean",
+     "label": "Hidden",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "hidden",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "links",
+     "type": "array",
+     "label": "Links",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "link",
+       "type": "string",
+       "label": "Link",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_task",
+   "title": "Update task",
+   "description": "Update task in Google Tasks",
+   "help": "Updates a task by ID.",
+   "input": [
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tasklists",
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The Google Tasks task ID."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text-area"
+    },
+    {
+     "name": "due",
+     "type": "date",
+     "label": "Due date",
+     "control_type": "date",
+     "hint": "Stores only the calendar date in Google Tasks."
+    },
+    {
+     "name": "reject_assigned_tasks",
+     "type": "boolean",
+     "label": "Block tasks assigned from Docs or Chat",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "reject_assigned_tasks",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to block tasks assigned from Google Docs or Google Chat. Default is No."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "select",
+     "options": [
+      "needsAction",
+      "completed"
+     ],
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "Set to Completed to complete a task, or Needs action to reopen a completed task."
+    },
+    {
+     "name": "completed_at",
+     "type": "date_time",
+     "label": "Completed at",
+     "control_type": "date_time",
+     "hint": "Optional when setting Status to Completed. Defaults to the current UTC time when omitted."
+    },
+    {
+     "name": "clear_due",
+     "type": "boolean",
+     "label": "Clear due date",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "clear_due",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to remove the due date. Do not use this together with Due date."
+    },
+    {
+     "name": "clear_completed",
+     "type": "boolean",
+     "label": "Clear completed timestamp",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "clear_completed",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to clear Completed at. Do not use this together with Completed at."
+    },
+    {
+     "name": "clear_notes",
+     "type": "boolean",
+     "label": "Clear notes",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "clear_notes",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to remove Notes. Do not use this together with Notes."
+    }
+   ],
+   "output": [
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Task list ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "due",
+     "type": "date",
+     "label": "Due",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "completed",
+     "type": "date_time",
+     "label": "Completed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updated",
+     "type": "date_time",
+     "label": "Updated",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Parent",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "position",
+     "type": "string",
+     "label": "Position",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "web_view_link",
+     "type": "string",
+     "label": "Web view link",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "assignment_info",
+     "type": "object",
+     "label": "Assignment info",
+     "required": true,
+     "properties": [
+      {
+       "name": "link_to_task",
+       "type": "string",
+       "label": "Link to task",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "surface_type",
+       "type": "string",
+       "label": "Surface type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "drive_resource_info",
+       "type": "object",
+       "label": "Drive resource info",
+       "required": true,
+       "properties": [
+        {
+         "name": "drive_file_id",
+         "type": "string",
+         "label": "Drive file ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "etag",
+     "type": "string",
+     "label": "Etag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "deleted",
+     "type": "boolean",
+     "label": "Deleted",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "deleted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "hidden",
+     "type": "boolean",
+     "label": "Hidden",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "hidden",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "links",
+     "type": "array",
+     "label": "Links",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "link",
+       "type": "string",
+       "label": "Link",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

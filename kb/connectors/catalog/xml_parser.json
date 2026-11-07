@@ -1,0 +1,475 @@
+{
+ "name": "xml_parser",
+ "title": "XML tools by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Data Parser",
+  "Marketing",
+  "Utilities",
+  "Workato"
+ ],
+ "aliases": [
+  "XML tools by Workato",
+  "utility",
+  "workato",
+  "utilities"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "generate_xml_from_sample",
+   "title": "Generate XML document from a sample XML",
+   "description": "Generates an XML document from a sample XML",
+   "help": "Use this action when you don't have an XSD, or when your XSD contains anyType /wildcard elements that can't be mapped directly. Provide a representative sample XML, and Workato will infer the element structure. Best suited for simpler or loosely-typed XML payloads where a full schema isn't available…",
+   "input": [
+    {
+     "name": "sample_xml",
+     "type": "string",
+     "label": "Sample XML document",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Paste a representative XML document. Its structure will be used to generate the input fields for this action."
+    },
+    {
+     "name": "payload_asset_type",
+     "type": "string",
+     "label": "XSD Document",
+     "control_type": "select",
+     "default": "inline",
+     "options": [
+      "static_asset",
+      "inline"
+     ],
+     "extends_schema": true,
+     "hint": "Optionally validate the generated XML against an XSD. • Define manually — Add any referenced XSDs under XSD references below. • Use a resource — References are resolved based on the file's folder path…"
+    },
+    {
+     "name": "xsd_document",
+     "type": "string",
+     "label": "XSD document",
+     "control_type": "code",
+     "visible_if": "input.payload_asset_type == 'inline'",
+     "extends_schema": true,
+     "hint": "Optionally enter an XSD document to validate the generated XML against."
+    },
+    {
+     "name": "xsd_refs",
+     "type": "array",
+     "label": "XSD references",
+     "visible_if": "input.payload_asset_type == 'inline'",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required_when_visible": true,
+       "extends_schema": true,
+       "hint": "Enter the XSD name as defined in the schemaLocation attribute of the XSD import/include tag. Use a simple file name without paths, for example: \"imported.xsd\"."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "code",
+       "required_when_visible": true,
+       "extends_schema": true,
+       "hint": "Enter the XSD document to be imported/included."
+      }
+     ],
+     "hint": "If the XSD document includes any import or include references, list the names and corresponding values of the imported XSDs below."
+    },
+    {
+     "name": "xsd_document_static_asset",
+     "type": "string",
+     "label": "XSD Resource",
+     "control_type": "tree",
+     "visible_if": "input.payload_asset_type == 'static_asset'",
+     "pick_list": "xsd_static_assets",
+     "extends_schema": true,
+     "hint": "Select an XSD resource to be used for validating the generated XML."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "generate_xml_xsd",
+   "title": "Generate XML document from XSD",
+   "description": "Generates an XML document from the XSD provided",
+   "help": "This action creates an XML document structured according to the XSD schema and its referenced definitions supplied by the user. The content of the XML is derived from user input. The combined size of the XSD files must not exceed 10MB. Supports XSDs with up to 5000 elements. XSDs that exceed these l…",
+   "input": [
+    {
+     "name": "xsd_document",
+     "type": "string",
+     "label": "XSD document",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter the XSD document on which XML should be generated."
+    },
+    {
+     "name": "xsd_refs",
+     "type": "array",
+     "label": "XSD references",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required_when_visible": true,
+       "extends_schema": true,
+       "hint": "Enter the XSD name as defined in the schemaLocation attribute of the XSD import/include tag. Use a simple file name without paths, for example: \"imported.xsd\"."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "code",
+       "required_when_visible": true,
+       "extends_schema": true,
+       "hint": "Enter the XSD document to be imported/included."
+      }
+     ],
+     "hint": "If the XSD document includes any import or include references, list the names and corresponding values of the imported XSDs below."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "parse_xml",
+   "title": "Parse XML document (Deprecated)",
+   "description": "Parse XML document (Deprecated)",
+   "help": "Parse XML content to be used in subsequent recipe steps. First, provide a sample XML to generate the output datatree, then map the source of XML content. NOTE: This action is deprecated . Please use the new action.",
+   "input": [
+    {
+     "name": "type",
+     "type": "string",
+     "label": "XML type",
+     "control_type": "select",
+     "default": "xml",
+     "options": [
+      "xml",
+      "xml2"
+     ],
+     "extends_schema": true,
+     "hint": "Select the type of XML to parse according to the level of detail needed."
+    },
+    {
+     "name": "sample_document",
+     "type": "string",
+     "label": "Sample document",
+     "control_type": "text-area",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Used to generate the Workato output datatree for use in subsequent recipe steps"
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    },
+    {
+     "name": "document",
+     "type": "string",
+     "label": "Document",
+     "control_type": "text",
+     "required": true,
+     "hint": "Input the content to be processed as data for use in subsequent steps"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "parse_xml_v2",
+   "title": "Parse XML document",
+   "description": "Parse XML document",
+   "help": "Converts an XML document into structured output for use in later recipe steps. Provide a representative sample to build the output fields, or enable streaming to produce a data stream for larger XML documents.",
+   "input": [
+    {
+     "name": "streaming",
+     "type": "boolean",
+     "label": "Enable streaming?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "streaming",
+      "type": "boolean"
+     },
+     "hint": "Enable when you expect XML documents larger than 10MB. Output is streamed to support documents up to 200MB, optimized for throughput rather than latency. Learn more ."
+    },
+    {
+     "name": "sample_document",
+     "type": "string",
+     "label": "Sample XML document",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "A representative XML sample used to build this action's output fields."
+    },
+    {
+     "name": "document",
+     "type": "string",
+     "label": "XML document",
+     "control_type": "code",
+     "required": true,
+     "hint": "The actual XML parsed at runtime."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "transform_xml_xslt",
+   "title": "Transform XML using XSLT (Deprecated)",
+   "description": "Transform XML using XSLT (Deprecated)",
+   "help": "This action performs an XSLT (eXtensible Stylesheet Language Transformation) on an XML document. NOTE: This action is deprecated . Please use the new action.",
+   "input": [
+    {
+     "name": "xml",
+     "type": "string",
+     "label": "Document",
+     "control_type": "code",
+     "required": true,
+     "hint": "Enter the XML document on which XSLT should be performed."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    },
+    {
+     "name": "xslt",
+     "type": "string",
+     "label": "XSLT",
+     "control_type": "code",
+     "required": true,
+     "hint": "Enter the XSLT to be applied on the XML document. Ensure that any imports/includes does not contain any paths, for example: \"imported.xsl\"."
+    },
+    {
+     "name": "xslt_refs",
+     "type": "array",
+     "label": "XSLT references",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required_when_visible": true,
+       "hint": "Enter the XSLT name as defined in the href attribute of the XSLT import/include tag. Ensure that it does not contain any paths, for example: \"imported.xsl\"."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "code",
+       "required_when_visible": true,
+       "hint": "Enter the XSLT to be imported/included. Ensure that any imports/includes does not contain any paths, for example: \"imported.xsl\"."
+      }
+     ],
+     "hint": "If the XSLT above contains imports/includes references, provide the stylesheet names and values below. You may add up to 5 references."
+    },
+    {
+     "name": "xslt_params",
+     "type": "array",
+     "label": "XSLT parameters",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "param",
+       "type": "string",
+       "label": "Parameter name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "If any of the XSLTs above contains parameters, provide the values below."
+    },
+    {
+     "name": "output_type",
+     "type": "string",
+     "label": "Response content type",
+     "control_type": "select",
+     "default": "rawdatatxt",
+     "options": [
+      "rawdatatxt",
+      "xml2"
+     ],
+     "extends_schema": true,
+     "hint": "Select expected format of data response type, e.g. JSON or XML. If the response is not in the expected format, the action will fail."
+    },
+    {
+     "name": "sample_output",
+     "type": "string",
+     "label": "Response body example",
+     "control_type": "text-area",
+     "visible_if": "input.output_type !== 'rawdatatxt'",
+     "extends_schema": true,
+     "hint": "Provide a sample document to generate output schema with. When left blank, Workato will only generate a datapill containing the raw transformation output."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "transform_xml_xslt_v2",
+   "title": "Transform XML using XSLT",
+   "description": "Transform XML using XSLT",
+   "help": "This action performs an XSLT (eXtensible Stylesheet Language Transformation) on an XML document.",
+   "input": [
+    {
+     "name": "streaming",
+     "type": "boolean",
+     "label": "Enable streaming?",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "streaming",
+      "type": "boolean"
+     },
+     "hint": "Enable when you expect XML documents larger than 10MB. Output is streamed to support larger documents, optimized for throughput rather than latency. Learn more ."
+    },
+    {
+     "name": "xml",
+     "type": "string",
+     "label": "XML Document",
+     "control_type": "code",
+     "required": true,
+     "hint": "Enter the XML document on which XSLT should be performed."
+    },
+    {
+     "name": "payload_asset_type",
+     "type": "string",
+     "label": "XSLT Document",
+     "control_type": "select",
+     "required": true,
+     "default": "inline",
+     "options": [
+      "static_asset",
+      "inline"
+     ],
+     "extends_schema": true,
+     "hint": "• Define manually — Add any referenced XSLTs under XSLT references below. • Use a resource — References are resolved based on the file's folder path and Workato folder structure."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "validate_xml",
+   "title": "Validate XML document with XSD",
+   "description": "Validate XML document with XSD",
+   "help": "Validates an XML document against a provided XSD to ensure it's well-formed and schema-compliant. Returns the XML as a string if valid, otherwise raises an error. It is recommended to use datapills for large XML/XSD inputs. The combined size of the XML and XSD files must not exceed 10MB.",
+   "input": [
+    {
+     "name": "streaming",
+     "type": "boolean",
+     "label": "Enable streaming?",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "streaming",
+      "type": "boolean"
+     },
+     "hint": "Enable if you expect XML documents larger than 10MB. The validated XML is delivered as a file rather than inline; consume it in a downstream step if needed. Learn more ."
+    },
+    {
+     "name": "xml_document",
+     "type": "string",
+     "label": "XML Document",
+     "control_type": "code",
+     "required": true,
+     "hint": "Enter the XML document to be validated."
+    },
+    {
+     "name": "payload_asset_type",
+     "type": "string",
+     "label": "XSD Document",
+     "control_type": "select",
+     "default": "inline",
+     "options": [
+      "static_asset",
+      "inline"
+     ],
+     "hint": "• Define manually — Add any referenced XSDs under XSD references below. • Use a resource — References are resolved based on the file's folder path and Workato folder structure."
+    },
+    {
+     "name": "xsd_document",
+     "type": "string",
+     "label": "XSD Contents",
+     "control_type": "code",
+     "required_when_visible": true,
+     "visible_if": "input.payload_asset_type == 'inline'",
+     "hint": "The XSD schema content."
+    },
+    {
+     "name": "xsd_refs",
+     "type": "array",
+     "label": "XSD references",
+     "visible_if": "input.payload_asset_type == 'inline'",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required_when_visible": true,
+       "hint": "Enter the XSD name as defined in the schemaLocation attribute of the XSD import/include tag. Use a simple file name without paths, for example: \"imported.xsd\"."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "code",
+       "required_when_visible": true,
+       "hint": "Enter the XSD document to be imported/included."
+      }
+     ],
+     "hint": "Provide the filename and content for any XSDs imported or included by the schema above."
+    },
+    {
+     "name": "xsd_document_static_asset",
+     "type": "string",
+     "label": "XSD Resource",
+     "control_type": "tree",
+     "required_when_visible": true,
+     "visible_if": "input.payload_asset_type == 'static_asset'",
+     "pick_list": "xsd_static_assets",
+     "hint": "Select an XSD resource to be used for validating the XML Structure."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

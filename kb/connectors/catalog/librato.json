@@ -1,0 +1,570 @@
+{
+ "name": "librato",
+ "title": "Librato",
+ "requires_connection": true,
+ "categories": [
+  "Application Monitoring"
+ ],
+ "aliases": [
+  "Librato"
+ ],
+ "triggers": [
+  {
+   "name": "triggered_alerts",
+   "title": "Triggered alerts",
+   "description": "Triggered alerts in Librato",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number"
+    },
+    {
+     "name": "triggered_at",
+     "type": "integer",
+     "label": "Triggered at",
+     "control_type": "number"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "get_alert_by_id",
+   "title": "Get alert by ID",
+   "description": "Get alert by ID in Librato",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "hint": "Must be 255 or fewer characters, and may only consist of A-Za-z0-9.:-. Dotted decimal notation (e.g. production.web.frontend.responsetime) is recommended"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "conditions",
+     "type": "array",
+     "label": "Conditions",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      },
+      {
+       "name": "metric_name",
+       "type": "string",
+       "label": "Metric name",
+       "control_type": "text"
+      },
+      {
+       "name": "source",
+       "type": "string",
+       "label": "Source",
+       "control_type": "text"
+      },
+      {
+       "name": "threshold",
+       "type": "string",
+       "label": "Threshold",
+       "control_type": "text"
+      },
+      {
+       "name": "duration",
+       "type": "string",
+       "label": "Duration",
+       "control_type": "text"
+      },
+      {
+       "name": "summary_function",
+       "type": "string",
+       "label": "Summary function",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "services",
+     "type": "array",
+     "label": "Services",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      },
+      {
+       "name": "settings",
+       "type": "array",
+       "label": "Settings",
+       "of": "object",
+       "properties": [
+        {
+         "name": "url",
+         "type": "string",
+         "label": "URL",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "attributes",
+     "type": "object",
+     "label": "Attributes",
+     "properties": [
+      {
+       "name": "runbook_url",
+       "type": "string",
+       "label": "Runbook URL",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "active",
+     "type": "number",
+     "label": "Active",
+     "control_type": "number",
+     "hint": "Identifies whether the alert is active (can be triggered). Defaults to true"
+    },
+    {
+     "name": "created_at",
+     "type": "integer",
+     "label": "Created at",
+     "control_type": "number"
+    },
+    {
+     "name": "updated_at",
+     "type": "integer",
+     "label": "Updated at",
+     "control_type": "number"
+    },
+    {
+     "name": "version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "hint": "Identifies the alert as v1 or v2. Defaults to '2'. For v1 alerts (deprecated) this must be submitted as '1'"
+    },
+    {
+     "name": "rearm_seconds",
+     "type": "string",
+     "label": "Rearm seconds",
+     "control_type": "text"
+    },
+    {
+     "name": "rearm_per_signal",
+     "type": "string",
+     "label": "Rearm per signal",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "search_alerts",
+   "title": "Search alerts",
+   "description": "Search alerts in Librato",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "hint": "Must be 255 or fewer characters, and may only consist of A-Za-z0-9.:-. Dotted decimal notation (e.g. production.web.frontend.responsetime) is recommended"
+    },
+    {
+     "name": "version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "hint": "Identifies the alert as v1 or v2. Defaults to '2'. For v1 alerts (deprecated) this must be submitted as '1'"
+    }
+   ],
+   "output": [
+    {
+     "name": "alerts",
+     "type": "array",
+     "label": "Alerts",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "hint": "Must be 255 or fewer characters, and may only consist of A-Za-z0-9.:-. Dotted decimal notation (e.g. production.web.frontend.responsetime) is recommended"
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "conditions",
+       "type": "array",
+       "label": "Conditions",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "ID",
+         "control_type": "number"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "metric_name",
+         "type": "string",
+         "label": "Metric name",
+         "control_type": "text"
+        },
+        {
+         "name": "source",
+         "type": "string",
+         "label": "Source",
+         "control_type": "text"
+        },
+        {
+         "name": "threshold",
+         "type": "string",
+         "label": "Threshold",
+         "control_type": "text"
+        },
+        {
+         "name": "duration",
+         "type": "string",
+         "label": "Duration",
+         "control_type": "text"
+        },
+        {
+         "name": "summary_function",
+         "type": "string",
+         "label": "Summary function",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "services",
+       "type": "array",
+       "label": "Services",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "ID",
+         "control_type": "number"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "settings",
+         "type": "array",
+         "label": "Settings",
+         "of": "object",
+         "properties": [
+          {
+           "name": "url",
+           "type": "string",
+           "label": "URL",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "title",
+         "type": "string",
+         "label": "Title",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "attributes",
+       "type": "object",
+       "label": "Attributes",
+       "properties": [
+        {
+         "name": "runbook_url",
+         "type": "string",
+         "label": "Runbook URL",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "active",
+       "type": "number",
+       "label": "Active",
+       "control_type": "number",
+       "hint": "Identifies whether the alert is active (can be triggered). Defaults to true"
+      },
+      {
+       "name": "created_at",
+       "type": "integer",
+       "label": "Created at",
+       "control_type": "number"
+      },
+      {
+       "name": "updated_at",
+       "type": "integer",
+       "label": "Updated at",
+       "control_type": "number"
+      },
+      {
+       "name": "version",
+       "type": "string",
+       "label": "Version",
+       "control_type": "text",
+       "hint": "Identifies the alert as v1 or v2. Defaults to '2'. For v1 alerts (deprecated) this must be submitted as '1'"
+      },
+      {
+       "name": "rearm_seconds",
+       "type": "string",
+       "label": "Rearm seconds",
+       "control_type": "text"
+      },
+      {
+       "name": "rearm_per_signal",
+       "type": "string",
+       "label": "Rearm per signal",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_metrics",
+   "title": "Search metrics",
+   "description": "Search metrics in Librato",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "hint": "Valid characters for metric names are ‘A-Za-z0-9.:-_’. The metric namespace is case insensitive."
+    }
+   ],
+   "output": [
+    {
+     "name": "metrics",
+     "type": "array",
+     "label": "Metrics",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "hint": "Valid characters for metric names are ‘A-Za-z0-9.:-_’. The metric namespace is case insensitive."
+      },
+      {
+       "name": "period",
+       "type": "integer",
+       "label": "Period",
+       "control_type": "number"
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "display_name",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "attributes",
+       "type": "object",
+       "label": "Attributes",
+       "properties": [
+        {
+         "name": "display_max",
+         "type": "string",
+         "label": "Display max",
+         "control_type": "text"
+        },
+        {
+         "name": "display_min",
+         "type": "string",
+         "label": "Display min",
+         "control_type": "text"
+        },
+        {
+         "name": "display_stacked",
+         "type": "string",
+         "label": "Display stacked",
+         "control_type": "text"
+        },
+        {
+         "name": "display_transform",
+         "type": "string",
+         "label": "Display transform",
+         "control_type": "text"
+        },
+        {
+         "name": "display_units_long",
+         "type": "string",
+         "label": "Display units long",
+         "control_type": "text"
+        },
+        {
+         "name": "display_units_short",
+         "type": "string",
+         "label": "Display units short",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_alert",
+   "title": "Update alert",
+   "description": "Update alert in Librato",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "hint": "Must be 255 or fewer characters, and may only consist of A-Za-z0-9.:-. Dotted decimal notation (e.g. production.web.frontend.responsetime) is recommended"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "active",
+     "type": "number",
+     "label": "Active",
+     "control_type": "number",
+     "hint": "Identifies whether the alert is active (can be triggered). Defaults to true"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

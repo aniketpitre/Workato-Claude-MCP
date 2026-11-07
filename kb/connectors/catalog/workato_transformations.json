@@ -1,0 +1,488 @@
+{
+ "name": "workato_transformations",
+ "title": "SQL Transformations by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Workato"
+ ],
+ "aliases": [
+  "SQL Transformations by Workato",
+  "utility",
+  "utilities",
+  "workato",
+  "SQL",
+  "transform",
+  "transformation",
+  "ETL",
+  "ELT",
+  "query",
+  "CSV"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "query_data",
+   "title": "Query data",
+   "description": "Query data",
+   "help": "This action allows users to choose data sources and perform query on the data. To get started on using the action, please refer to the video guide here , and our documentation here .",
+   "input": [
+    {
+     "name": "sources",
+     "type": "array",
+     "label": "Data Sources",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "table_name",
+       "type": "string",
+       "label": "Data source name",
+       "control_type": "text",
+       "required": true,
+       "hint": "Provide an alias name for the data source. E.g: contacts, orders. This name is to be used in the query."
+      },
+      {
+       "name": "data_source_type",
+       "type": "string",
+       "label": "Data source type",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "data_sources_list",
+       "extends_schema": true,
+       "hint": "Provide the data source type. To pass file content directly from upstream action/trigger chooser Content Stream. You can also refer to a file in Workato FileStorage or a table from Data tables."
+      },
+      {
+       "name": "source_stream",
+       "type": "string",
+       "label": "Content input stream",
+       "control_type": "text-area",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type === 'content_stream'",
+       "hint": "Pass the contents or file contents reference pill here from an upstream action or trigger."
+      },
+      {
+       "name": "wf_file_path",
+       "type": "string",
+       "label": "FileStorage file",
+       "control_type": "text",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type === 'wf_file'",
+       "extends_schema": true,
+       "toggle_field": {
+        "name": "wf_file_path",
+        "type": "string"
+       },
+       "hint": "Provide the FileStorage file full path here to fetch the data. For example, “samplepath/filename.csv”."
+      },
+      {
+       "name": "table_id",
+       "type": "string",
+       "label": "Data table",
+       "control_type": "select",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type === 'wdb_table'",
+       "pick_list": "current_user_table_list",
+       "extends_schema": true,
+       "hint": "Select a data table to fetch the data."
+      },
+      {
+       "name": "file_format",
+       "type": "string",
+       "label": "File format",
+       "control_type": "select",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table'",
+       "default": "csv",
+       "pick_list": "file_formats_list",
+       "extends_schema": true,
+       "hint": "Choose the data format."
+      },
+      {
+       "name": "json_jq_expression",
+       "type": "string",
+       "label": "jq expression",
+       "control_type": "code",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'json'",
+       "hint": "Provide a jq expression to convert your JSON data into CSV format. For example, .items[] | [ keys[] as $k | .[$k] ] | @csv ."
+      },
+      {
+       "name": "excel_sheet_name",
+       "type": "string",
+       "label": "Worksheet",
+       "control_type": "text",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+       "hint": "Provide the sheet name from the Excel file where the data is available."
+      },
+      {
+       "name": "excel_range",
+       "type": "string",
+       "label": "Range",
+       "control_type": "text",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel'",
+       "hint": "Provide the cell range of the data. e.g A5:F2000. Make sure to include the header row if the schema type selected is ‘Infer’."
+      },
+      {
+       "name": "schema_type",
+       "type": "string",
+       "label": "Column schema type",
+       "control_type": "select",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table'",
+       "default": "defined",
+       "options": [
+        "defined",
+        "dynamic",
+        "infer"
+       ],
+       "extends_schema": true,
+       "hint": "Choose ‘Define' to provide column names and types explicitly in the action. Choose ‘Dynamic’ to pass schema as array data pill from upstream action. Choose ‘Infer’ to infer column names and schema aut…"
+      },
+      {
+       "name": "table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "schema-designer",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' &&(parentInput.file_format === 'csv' || parentInput.file_format === 'json') &&parentInput.schema_type === 'defined'",
+       "hint": "Describe the column schema of the data in this data source."
+      },
+      {
+       "name": "dynamic_table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "list",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' &&(parentInput.file_format === 'csv' || parentInput.file_format === 'json') &&parentInput.schema_type === 'dynamic'",
+       "default": "=",
+       "extends_schema": true,
+       "hint": "Provide the data pill with a schema."
+      },
+      {
+       "name": "excel_table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "schema-designer",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel' && parentInput.schema_type === 'defined'",
+       "hint": "Describe the schema of the columns of the data source."
+      },
+      {
+       "name": "excel_dynamic_table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "list",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel' && parentInput.schema_type === 'dynamic'",
+       "default": "=",
+       "extends_schema": true,
+       "hint": "Provide the sheet name from the Excel file where the data is available."
+      },
+      {
+       "name": "parquet_table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "schema-designer",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'parquet' && parentInput.schema_type === 'defined'",
+       "hint": "Describe the schema of the columns of the Parquet data source."
+      },
+      {
+       "name": "parquet_dynamic_table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "list",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'parquet' && parentInput.schema_type === 'dynamic'",
+       "default": "=",
+       "extends_schema": true,
+       "hint": "Provide the data pill with a schema for the Parquet data source."
+      },
+      {
+       "name": "avro_table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "schema-designer",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'avro' && parentInput.schema_type === 'defined'",
+       "hint": "Describe the schema of the columns of the Avro data source."
+      },
+      {
+       "name": "avro_dynamic_table_schema",
+       "type": "string",
+       "label": "Data schema",
+       "control_type": "list",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'avro' && parentInput.schema_type === 'dynamic'",
+       "default": "=",
+       "extends_schema": true,
+       "hint": "Provide the data pill with a schema for the Avro data source."
+      },
+      {
+       "name": "allow_relaxed_schema",
+       "type": "boolean",
+       "label": "Column relaxation",
+       "control_type": "checkbox",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.schema_type === 'defined'",
+       "default": "false",
+       "toggle_field": {
+        "name": "allow_relaxed_schema",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if the incoming source data may contain additional columns than the schema provided. Select No to exactly match schema with the data, and it returns error if additional columns are encounte…"
+      },
+      {
+       "name": "csv_ignore_header",
+       "type": "boolean",
+       "label": "Contains header",
+       "control_type": "checkbox",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv' && parentInput.schema_type !== 'infer'",
+       "default": "false",
+       "toggle_field": {
+        "name": "csv_ignore_header",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if the incoming data contains header as the first row. If so, SQL transformations will understand the columns in the file by name matching the first row in the file with the schema provided…"
+      },
+      {
+       "name": "excel_ignore_header",
+       "type": "boolean",
+       "label": "Contains header",
+       "control_type": "checkbox",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'excel' && parentInput.schema_type !== 'infer'",
+       "default": "false",
+       "toggle_field": {
+        "name": "excel_ignore_header",
+        "type": "boolean"
+       },
+       "hint": "Set to Yes if the Excel range contain a header row that needs to be ignored. Default is set to No."
+      },
+      {
+       "name": "matching_mode",
+       "type": "string",
+       "label": "Header matching",
+       "control_type": "select",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.schema_type !== 'infer' &&((parentInput.file_format == 'csv' && parentInput.csv_ignore_header === 'true') || (parentInput.file_format == 'excel' && parentInput.excel_ignore_header === 'true'))",
+       "default": "ordered",
+       "options": [
+        "ordered",
+        "named"
+       ],
+       "hint": "Choose how to match header with schema columns"
+      },
+      {
+       "name": "csv_delimiter",
+       "type": "string",
+       "label": "Column delimiter",
+       "control_type": "select",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type !== 'wdb_table' && parentInput.file_format === 'csv'",
+       "default": "comma",
+       "pick_list": "csv_delimiters",
+       "hint": "Select the character that separates columns in the CSV contents. Default is set to comma."
+      }
+     ],
+     "hint": "Specify data-sources to perform SQL over them"
+    },
+    {
+     "name": "query",
+     "type": "object",
+     "label": "Query",
+     "required": true,
+     "properties": [
+      {
+       "name": "parameters",
+       "type": "object",
+       "label": "Query parameters",
+       "control_type": "form-schema-builder",
+       "properties": [
+        {
+         "name": "schema",
+         "type": "string",
+         "label": "Schema",
+         "control_type": "text",
+         "required": true,
+         "extends_schema": true
+        },
+        {
+         "name": "data",
+         "type": "object",
+         "label": "Data"
+        }
+       ],
+       "hint": "Add the parameters to be used in the WHERE condition of the query below. e.g. id. Next, add the actual parameter value, which can be static or datapills. Select the closest corresponding data type tha…"
+      },
+      {
+       "name": "sql_select_query",
+       "type": "string",
+       "label": "SQL query",
+       "control_type": "code",
+       "required": true,
+       "hint": "Add SQL select statement to query one or more data sources. Joins and more complex functions are also supported, more details available here . To add parameters in the WHERE condition, use bind variab…"
+      },
+      {
+       "name": "engine",
+       "type": "string",
+       "label": "Engine",
+       "control_type": "select",
+       "default": "datafusion_v53",
+       "pick_list": "query_engines",
+       "hint": "Choose the engine used to execute the query."
+      }
+     ]
+    },
+    {
+     "name": "output",
+     "type": "object",
+     "label": "Output",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Output type",
+       "control_type": "select",
+       "required": true,
+       "default": "content_stream",
+       "options": [
+        "content_stream",
+        "wf_file"
+       ],
+       "extends_schema": true,
+       "hint": "Select the type of the output. Use “Content stream” to share the contents as a streamable data pill to downstream actions. Use FileStorage file option to save output as a file in FileStorage system."
+      },
+      {
+       "name": "wf_file_path",
+       "type": "string",
+       "label": "FileStorage output folder",
+       "control_type": "tree",
+       "required_when_visible": true,
+       "visible_if": "input.output.type && input.output.type === 'wf_file'",
+       "pick_list": "wf_folders_list",
+       "toggle_field": {
+        "name": "wf_file_path",
+        "type": "string"
+       },
+       "hint": "Choose or enter the path where the output file needs to be stored in Workato FileStorage. For example, “samplepath/path1/”"
+      },
+      {
+       "name": "wf_file_name",
+       "type": "string",
+       "label": "FileStorage output file name",
+       "control_type": "text",
+       "visible_if": "input.output.type && input.output.type === 'wf_file'",
+       "hint": "Define the name of the output file that needs to be stored in Workato FileStorage."
+      },
+      {
+       "name": "mode",
+       "type": "string",
+       "label": "File action",
+       "control_type": "select",
+       "visible_if": "input.output.type && input.output.type === 'wf_file'",
+       "default": "create",
+       "options": [
+        "create",
+        "append_or_create",
+        "create_or_overwrite"
+       ],
+       "hint": "Choose how the destination file in FileStorage should be handled when the transformation runs. Create fails if the file already exists. Append and Overwrite create the file if it does not exist, or ap…"
+      },
+      {
+       "name": "file_format",
+       "type": "string",
+       "label": "File type",
+       "control_type": "select",
+       "required_when_visible": true,
+       "default": "csv",
+       "options": [
+        "csv",
+        "excel",
+        "parquet"
+       ],
+       "hint": "Select the file format of the output data."
+      },
+      {
+       "name": "excel_include_header",
+       "type": "boolean",
+       "label": "Include header row",
+       "control_type": "checkbox",
+       "visible_if": "input.output.file_format && input.output.file_format === 'excel'",
+       "default": "false",
+       "toggle_field": {
+        "name": "excel_include_header",
+        "type": "boolean"
+       },
+       "hint": "Set to Yes if the column names from the SQL needs to be added as header row in the file. This is useful if file is to be viewed or for generating reports. Default is set to no."
+      },
+      {
+       "name": "excel_sheet_name",
+       "type": "string",
+       "label": "Sheet name",
+       "control_type": "text",
+       "visible_if": "input.output.file_format && input.output.file_format === 'excel'",
+       "default": "Sheet 1",
+       "hint": "Set custom sheet name for the Excel file, note that the output data will always be added in the first sheet with this name. Defaults to “Sheet 1“ if no name is provided\""
+      },
+      {
+       "name": "excel_start_from",
+       "type": "string",
+       "label": "Start from",
+       "control_type": "text",
+       "visible_if": "input.output.file_format && input.output.file_format === 'excel'",
+       "default": "A1",
+       "hint": "Enter the cell to start inserting the data from. For ex: ‘C1'. Defaults to 'A1’."
+      },
+      {
+       "name": "csv_include_header",
+       "type": "boolean",
+       "label": "Include header row",
+       "control_type": "checkbox",
+       "visible_if": "input.output.file_format && input.output.file_format === 'csv'",
+       "default": "false",
+       "toggle_field": {
+        "name": "csv_include_header",
+        "type": "boolean"
+       },
+       "hint": "Set to Yes if the column names from the SQL needs to be added as header row in the file. This is useful if file is to be viewed or for generating reports. Default is set to no."
+      },
+      {
+       "name": "csv_delimiter",
+       "type": "string",
+       "label": "Column delimiter",
+       "control_type": "select",
+       "visible_if": "input.output.file_format && input.output.file_format === 'csv'",
+       "default": "comma",
+       "pick_list": "csv_delimiters",
+       "hint": "Select the character that separates columns in the CSV contents. Default is set to comma."
+      },
+      {
+       "name": "csv_quote_style",
+       "type": "string",
+       "label": "Quote type",
+       "control_type": "select",
+       "visible_if": "input.output.file_format && input.output.file_format === 'csv'",
+       "default": "necessary",
+       "options": [
+        "always",
+        "necessary"
+       ],
+       "hint": "Choose whether to use quotation marks around the values in the output. Default is \"Use when necessary\""
+      },
+      {
+       "name": "csv_quote",
+       "type": "string",
+       "label": "Quote character",
+       "control_type": "select",
+       "visible_if": "input.output.file_format && input.output.file_format === 'csv'",
+       "default": "double",
+       "options": [
+        "double",
+        "single"
+       ],
+       "hint": "Choose the type of quotation marks to use around the values in the output. Default is \"Double\""
+      }
+     ]
+    }
+   ],
+   "output": []
+  }
+ ]
+}

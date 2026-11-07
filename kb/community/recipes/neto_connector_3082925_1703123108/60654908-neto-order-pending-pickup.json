@@ -1,0 +1,1185 @@
+{
+ "id": 60654908,
+ "name": "Neto - Order Pending Pickup",
+ "description": "When an order is dispatched in Neto, send an automated review request from Coax.",
+ "applications": [
+  "neto_connector_3082925_1703123108",
+  "workato_db_table",
+  "coax_connector_3082925_1699932125",
+  "workato_variable",
+  "clock"
+ ],
+ "action_applications": [
+  "workato_db_table",
+  "coax_connector_3082925_1699932125",
+  "workato_variable",
+  "clock"
+ ],
+ "trigger_application": "neto_connector_3082925_1703123108",
+ "business_objects": [
+  "54104"
+ ],
+ "categories": [
+  "Recipe Tools",
+  "Workato",
+  "Marketing"
+ ],
+ "copy_count": 6,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2025-11-30T19:23:14.768-08:00",
+ "source_url": "https://app.workato.com/recipes/60654908?community=us",
+ "steps": [
+  "neto_connector_3082925_1703123108.updated_order_status",
+  "workato_db_table.get_records",
+  "coax_connector_3082925_1699932125.parse_phone_number",
+  "workato_variable.declare_variable",
+  "coax_connector_3082925_1699932125.upsert_contact",
+  "coax_connector_3082925_1699932125.create_activity",
+  "workato_db_table.add_record",
+  "clock.wait_until_time",
+  "coax_connector_3082925_1699932125.send_message"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "neto_connector_3082925_1703123108",
+  "name": "updated_order_status",
+  "as": "e2ba5b92",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "OrderStatus": "Pending Pickup"
+  },
+  "input": {
+   "OrderStatus": "Pending Pickup"
+  },
+  "visible_config_fields": [
+   "OrderStatus"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "workato_db_table",
+    "name": "get_records",
+    "as": "dd825dee",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table_id": "Neto Dedup Table",
+     "filters.0.field_id": "Order ID",
+     "filters.1.field_id": "Status"
+    },
+    "input": {
+     "order_direction": "asc",
+     "limit": "1",
+     "table_id": "54104",
+     "e448f55b-2441-4e11-b836-22f9666cfd5e": "string",
+     "e4053644-cfd2-4b4b-9d8c-9216402051cf": "string",
+     "6ee485be-0d16-42b9-8f1b-8d1b232e920f": "string",
+     "d43bd556-4d80-4397-b4f0-b6b33fd3dea3": "string",
+     "3dcfceb6-51a1-46e0-b2d5-2dcc236c7598": "string",
+     "0e84b416-6425-4e13-8aac-6ed1ee63aefc": "string",
+     "71dd345f-3acd-4540-883b-9709233b629d": "string",
+     "0d3214af-0efd-4f60-8ad7-cbc032f85ac4": "string",
+     "4f8b17ed-805b-4864-a882-9be9e8f2fdc3": "string",
+     "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+     "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+     "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+     "filters": [
+      {
+       "field_id": "e4053644-cfd2-4b4b-9d8c-9216402051cf",
+       "op_default": "eq",
+       "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderID\"]}')}"
+      },
+      {
+       "field_id": "3dcfceb6-51a1-46e0-b2d5-2dcc236c7598",
+       "op_default": "eq",
+       "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderStatus\"]}')}"
+      }
+     ]
+    },
+    "extended_output_schema": [
+     {
+      "label": "Records",
+      "name": "records",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Record ID",
+        "type": "string",
+        "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+       },
+       {
+        "control_type": "text",
+        "label": "Platform",
+        "type": "string",
+        "name": "e448f55b_2441_4e11_b836_22f9666cfd5e"
+       },
+       {
+        "control_type": "text",
+        "label": "Order ID",
+        "type": "string",
+        "name": "e4053644_cfd2_4b4b_9d8c_9216402051cf"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "type": "string",
+        "name": "6ee485be_0d16_42b9_8f1b_8d1b232e920f"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "type": "string",
+        "name": "d43bd556_4d80_4397_b4f0_b6b33fd3dea3"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "type": "string",
+        "name": "3dcfceb6_51a1_46e0_b2d5_2dcc236c7598"
+       },
+       {
+        "control_type": "text",
+        "label": "Shipping Option",
+        "type": "string",
+        "name": "0e84b416_6425_4e13_8aac_6ed1ee63aefc"
+       },
+       {
+        "control_type": "text",
+        "label": "Sales Channel",
+        "type": "string",
+        "name": "71dd345f_3acd_4540_883b_9709233b629d"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Status",
+        "type": "string",
+        "name": "0d3214af_0efd_4f60_8ad7_cbc032f85ac4"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Sent",
+        "type": "string",
+        "name": "4f8b17ed_805b_4864_a882_9be9e8f2fdc3"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+       }
+      ],
+      "type": "array"
+     },
+     {
+      "control_type": "text",
+      "label": "Next Page Token",
+      "name": "continuation_token",
+      "type": "string"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_e448f55b-2441-4e11-b836-22f9666cfd5e",
+      "name": "e448f55b-2441-4e11-b836-22f9666cfd5e",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_e4053644-cfd2-4b4b-9d8c-9216402051cf",
+      "name": "e4053644-cfd2-4b4b-9d8c-9216402051cf",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_6ee485be-0d16-42b9-8f1b-8d1b232e920f",
+      "name": "6ee485be-0d16-42b9-8f1b-8d1b232e920f",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_d43bd556-4d80-4397-b4f0-b6b33fd3dea3",
+      "name": "d43bd556-4d80-4397-b4f0-b6b33fd3dea3",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_3dcfceb6-51a1-46e0-b2d5-2dcc236c7598",
+      "name": "3dcfceb6-51a1-46e0-b2d5-2dcc236c7598",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_0e84b416-6425-4e13-8aac-6ed1ee63aefc",
+      "name": "0e84b416-6425-4e13-8aac-6ed1ee63aefc",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_71dd345f-3acd-4540-883b-9709233b629d",
+      "name": "71dd345f-3acd-4540-883b-9709233b629d",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_0d3214af-0efd-4f60-8ad7-cbc032f85ac4",
+      "name": "0d3214af-0efd-4f60-8ad7-cbc032f85ac4",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_4f8b17ed-805b-4864-a882-9be9e8f2fdc3",
+      "name": "4f8b17ed-805b-4864-a882-9be9e8f2fdc3",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "id",
+      "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "date_time",
+      "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "date_time",
+      "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+      "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     }
+    ],
+    "uuid": "9d39789b-38df-4446-b385-d0692c5a2333",
+    "title": null,
+    "description": "Search records in <span class=\"provider\">a data table</span>"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "greater_than",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"dd825dee\",\"path\":[\"records\",{\"path_element_type\":\"size\"}]}')}",
+       "rhs": "0",
+       "uuid": "bf459260-a5b2-4cdb-8602-62d096b948d2"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "as": "3a14a319",
+      "keyword": "stop",
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "c0d7baa6-0257-4cea-a6f3-32d3890e7ba5"
+     }
+    ],
+    "uuid": "152b2156-8b95-4fe0-a4e9-307f5f4bc6f8"
+   },
+   {
+    "number": 4,
+    "keyword": "try",
+    "input": {},
+    "block": [
+     {
+      "number": 5,
+      "provider": "coax_connector_3082925_1699932125",
+      "name": "parse_phone_number",
+      "as": "2c4814e1",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "input": {
+       "number": "=_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipPhone\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipPhone\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"BillPhone\"]}')",
+       "country_code": "=_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipCountry\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipCountry\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"BillCountry\"]}')"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "phone",
+        "label": "Phone Number",
+        "name": "number",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Country Code (ISO2 or ISO3)",
+        "name": "country_code",
+        "optional": true,
+        "type": "string"
+       }
+      ],
+      "visible_config_fields": [
+       "country_code"
+      ],
+      "uuid": "02c2fddd-bdf5-4b9b-918d-514488d92328"
+     },
+     {
+      "number": 6,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "27a1b0d1",
+      "keyword": "action",
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"Phone\",\"type\":\"string\",\"optional\":true,\"label\":\"Phone\",\"details\":{\"real_name\":\"Phone\"},\"control_type\":\"text\"}]",
+        "data": {
+         "Phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"2c4814e1\",\"path\":[\"body\",\"code\"]}')}#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"2c4814e1\",\"path\":[\"body\",\"phone\"]}')}"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "name": "Phone",
+        "optional": true,
+        "type": "string",
+        "details": {
+         "real_name": "Phone"
+        }
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_field_label": "Add a variable",
+        "control_type": "form-schema-builder",
+        "empty_schema_title": "Add variables by giving them a name, type and default value",
+        "exclude_fields": [
+         "hint"
+        ],
+        "item_label": "variable",
+        "label": "Variables",
+        "mark_as_required": true,
+        "name": "variables",
+        "ngIf": "!input.name",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Phone",
+            "name": "Phone",
+            "type": "string",
+            "optional": true,
+            "details": {
+             "real_name": "Phone"
+            },
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.Phone"
+      ],
+      "uuid": "cca84935-7631-4777-9a26-3a597b0e371e",
+      "title": "  Create variable Phone",
+      "description": "Create variable <span class=\"provider\">Phone</span>"
+     },
+     {
+      "number": 7,
+      "as": "8e5d297c",
+      "keyword": "catch",
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [],
+      "uuid": "0b52e82c-fda7-44dd-af95-d685e0d9529d"
+     }
+    ],
+    "uuid": "08713f4d-db64-45ef-8571-1a73815ffe8f"
+   },
+   {
+    "number": 8,
+    "provider": "coax_connector_3082925_1699932125",
+    "name": "upsert_contact",
+    "as": "248fe207",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "input": {
+     "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipFirstName\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipLastName\"]}')}",
+     "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"Email\"]}')}",
+     "phone": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"27a1b0d1\",\"path\":[\"Phone\"]}').presence",
+     "added_tags": "=[\"Via Neto\"]",
+     "address": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipStreetLine1\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipStreetLine2\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipCity\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipState\"]}')} "
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "label": "Contact Name",
+      "name": "name",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Address",
+      "name": "address",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "email",
+      "label": "Contact Email",
+      "name": "email",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "phone",
+      "label": "Receiving Phone Number",
+      "name": "phone",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Company Name",
+      "name": "company_name",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Skip Update",
+      "name": "do_not_update",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "hint": "This will replace all existing tags on the contact. Please use following format: [\"tag1\", \"tag2\"]",
+      "label": "Add Tags",
+      "name": "tags",
+      "of": "string",
+      "optional": true,
+      "type": "array"
+     },
+     {
+      "hint": "This will append the provided tags to existing tags on a contact. Please use following format: [\"tag1\", \"tag2\"]",
+      "label": "Update To Tags",
+      "name": "added_tags",
+      "of": "string",
+      "optional": true,
+      "type": "array"
+     },
+     {
+      "control_type": "text",
+      "label": "Enquiry ID",
+      "name": "enquiry_id",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "select",
+      "label": "Location",
+      "name": "location_id",
+      "optional": true,
+      "pick_list": "locations",
+      "type": "string"
+     }
+    ],
+    "visible_config_fields": [
+     "phone",
+     "email",
+     "name",
+     "address",
+     "added_tags"
+    ],
+    "uuid": "cb7d6128-db85-487a-94a4-5cbc8c7be9b3"
+   },
+   {
+    "number": 9,
+    "provider": "coax_connector_3082925_1699932125",
+    "name": "create_activity",
+    "as": "ce6a79e7",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "type": "Order Fulfilled"
+    },
+    "input": {
+     "type": "order_fulfilled",
+     "description": "Order: ##{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderID\"]}')} ready for pickup.",
+     "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"Email\"]}')}",
+     "phone": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"27a1b0d1\",\"path\":[\"Phone\"]}').presence",
+     "tracking_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderLine\",{\"path_element_type\":\"current_item\"},\"ShippingTracking\"]}')}",
+     "meta": [
+      {
+       "key": "order_id",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderID\"]}')}"
+      },
+      {
+       "key": "order_name",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipFirstName\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipLastName\"]}')}"
+      },
+      {
+       "key": "order_shipping_method",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderLine\",{\"path_element_type\":\"current_item\"},\"ShippingMethod\"]}')}"
+      },
+      {
+       "key": "order_shipping_tracking",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderLine\",{\"path_element_type\":\"current_item\"},\"ShippingTracking\"]}')}"
+      },
+      {
+       "key": "order_shipping_tracking_url",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderLine\",{\"path_element_type\":\"current_item\"},\"ShippingTrackingUrl\"]}')}"
+      },
+      {
+       "key": "order_total",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"GrandTotal\"]}')}"
+      },
+      {
+       "key": "order_status",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderStatus\"]}')}"
+      },
+      {
+       "key": "order_sales_channel",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"SalesChannel\"]}')}"
+      },
+      {
+       "key": "order_date",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"DatePlaced\"]}')}"
+      },
+      {
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"DateInvoiced\"]}')}",
+       "key": "order_invoice_date"
+      },
+      {
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"DatePaid\"]}')}",
+       "key": "order_paid_date"
+      },
+      {
+       "key": "platform",
+       "value": "neto"
+      },
+      {
+       "key": "view_order",
+       "value": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"neto_store_url\"}')}/_cpanel/order/vieworder?id=#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderID\"]}')}"
+      },
+      {
+       "key": "view_customer",
+       "value": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"neto_store_url\"}')}/_cpanel/customer/view?id=#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"Username\"]}')}"
+      }
+     ],
+     "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+     "job_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "label": "Recipe ID",
+      "name": "recipe_id",
+      "optional": false,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Job ID",
+      "name": "job_id",
+      "optional": false,
+      "type": "string"
+     },
+     {
+      "control_type": "select",
+      "label": "Activity Type",
+      "name": "type",
+      "optional": false,
+      "pick_list": "activity_type",
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Activity Description",
+      "name": "description",
+      "optional": false,
+      "type": "string"
+     },
+     {
+      "control_type": "email",
+      "label": "Customer Email",
+      "name": "email",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "phone",
+      "label": "Receiving Phone Number",
+      "name": "phone",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Tracking Number",
+      "name": "tracking_number",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "select",
+      "label": "Location",
+      "name": "location_id",
+      "optional": true,
+      "pick_list": "locations",
+      "type": "string"
+     },
+     {
+      "control_type": "key_value",
+      "empty_list_title": "Add metadata",
+      "item_label": "Metadata",
+      "label": "Metadata",
+      "name": "meta",
+      "of": "object",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Key",
+        "optional": true,
+        "type": "string",
+        "name": "key"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ],
+      "type": "array"
+     },
+     {
+      "control_type": "text",
+      "label": "Enquiry ID",
+      "name": "enquiry_id",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Metadata JSON",
+      "name": "meta_text",
+      "optional": true,
+      "type": "string"
+     }
+    ],
+    "uuid": "ca48e6db-70d0-497d-9aaa-85c440cf4fe9"
+   },
+   {
+    "number": 10,
+    "provider": "workato_db_table",
+    "name": "add_record",
+    "as": "69787cf4",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table_id": "Neto Dedup Table"
+    },
+    "input": {
+     "table_id": "54104",
+     "parameters": {
+      "e4053644_cfd2_4b4b_9d8c_9216402051cf": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderID\"]}')}",
+      "e448f55b_2441_4e11_b836_22f9666cfd5e": "Neto",
+      "6ee485be_0d16_42b9_8f1b_8d1b232e920f": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipFirstName\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipLastName\"]}')}",
+      "d43bd556_4d80_4397_b4f0_b6b33fd3dea3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"27a1b0d1\",\"path\":[\"Phone\"]}')}",
+      "3dcfceb6_51a1_46e0_b2d5_2dcc236c7598": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderStatus\"]}')}",
+      "0e84b416_6425_4e13_8aac_6ed1ee63aefc": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShippingOption\"]}')}",
+      "71dd345f_3acd_4540_883b_9709233b629d": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"SalesChannel\"]}')}",
+      "0d3214af_0efd_4f60_8ad7_cbc032f85ac4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderStatus\"]}')}",
+      "4f8b17ed_805b_4864_a882_9be9e8f2fdc3": "=now.to_date()"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Record",
+      "name": "record",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Record ID",
+        "type": "string",
+        "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+       },
+       {
+        "control_type": "text",
+        "label": "Platform",
+        "type": "string",
+        "name": "e448f55b_2441_4e11_b836_22f9666cfd5e"
+       },
+       {
+        "control_type": "text",
+        "label": "Order ID",
+        "type": "string",
+        "name": "e4053644_cfd2_4b4b_9d8c_9216402051cf"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "type": "string",
+        "name": "6ee485be_0d16_42b9_8f1b_8d1b232e920f"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "type": "string",
+        "name": "d43bd556_4d80_4397_b4f0_b6b33fd3dea3"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "type": "string",
+        "name": "3dcfceb6_51a1_46e0_b2d5_2dcc236c7598"
+       },
+       {
+        "control_type": "text",
+        "label": "Shipping Option",
+        "type": "string",
+        "name": "0e84b416_6425_4e13_8aac_6ed1ee63aefc"
+       },
+       {
+        "control_type": "text",
+        "label": "Sales Channel",
+        "type": "string",
+        "name": "71dd345f_3acd_4540_883b_9709233b629d"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Status",
+        "type": "string",
+        "name": "0d3214af_0efd_4f60_8ad7_cbc032f85ac4"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Sent",
+        "type": "string",
+        "name": "4f8b17ed_805b_4864_a882_9be9e8f2fdc3"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Fill the fields for the new record",
+      "label": "New record fields",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Platform",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "e448f55b_2441_4e11_b836_22f9666cfd5e"
+       },
+       {
+        "control_type": "text",
+        "label": "Order ID",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "e4053644_cfd2_4b4b_9d8c_9216402051cf"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "6ee485be_0d16_42b9_8f1b_8d1b232e920f"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "d43bd556_4d80_4397_b4f0_b6b33fd3dea3"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "3dcfceb6_51a1_46e0_b2d5_2dcc236c7598"
+       },
+       {
+        "control_type": "text",
+        "label": "Shipping Option",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "0e84b416_6425_4e13_8aac_6ed1ee63aefc"
+       },
+       {
+        "control_type": "text",
+        "label": "Sales Channel",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "71dd345f_3acd_4540_883b_9709233b629d"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Status",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "0d3214af_0efd_4f60_8ad7_cbc032f85ac4"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Sent",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "4f8b17ed_805b_4864_a882_9be9e8f2fdc3"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "table_id",
+     "parameters.e448f55b_2441_4e11_b836_22f9666cfd5e",
+     "parameters.e4053644_cfd2_4b4b_9d8c_9216402051cf",
+     "parameters.6ee485be_0d16_42b9_8f1b_8d1b232e920f",
+     "parameters.d43bd556_4d80_4397_b4f0_b6b33fd3dea3",
+     "parameters.3dcfceb6_51a1_46e0_b2d5_2dcc236c7598",
+     "parameters.71dd345f_3acd_4540_883b_9709233b629d",
+     "parameters.0e84b416_6425_4e13_8aac_6ed1ee63aefc",
+     "parameters.0d3214af_0efd_4f60_8ad7_cbc032f85ac4",
+     "parameters.4f8b17ed_805b_4864_a882_9be9e8f2fdc3"
+    ],
+    "uuid": "3cbc4bb6-1fa4-4810-99c5-0d3cee0fc1b0",
+    "title": null,
+    "description": "Create a new record in <span class=\"provider\">a data table</span>"
+   },
+   {
+    "number": 11,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"27a1b0d1\",\"path\":[\"Phone\"]}')}",
+       "rhs": "",
+       "uuid": "c1a84cd7-38d1-4f70-a3d2-922685232f88"
+      },
+      {
+       "operand": "not_equals_to",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"2c4814e1\",\"path\":[\"body\",\"normalized_type\"]}')}",
+       "rhs": "fixed_line",
+       "uuid": "4b3b3d9f-6e41-4b37-92d1-4b72a661ddf9"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 12,
+      "keyword": "if",
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "greater_than",
+         "lhs": "=now.in_time_zone(\"Australia/Brisbane\")",
+         "rhs": "=today.in_time_zone(\"Australia/Brisbane\") + 18.hours",
+         "uuid": "43bcc891-1331-420c-9afe-7fdef6d6bdf5"
+        },
+        {
+         "operand": "less_than",
+         "lhs": "=now.in_time_zone(\"Australia/Brisbane\")",
+         "rhs": "=today.in_time_zone(\"Australia/Brisbane\") + 1.days + 9.hours",
+         "uuid": "233b4fd9-8328-49d2-bb2b-d635196df4cf"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 13,
+        "provider": "clock",
+        "name": "wait_until_time",
+        "as": "b99366cf",
+        "keyword": "action",
+        "input": {
+         "time": "=today.in_time_zone(\"Australia/Brisbane\") + 1.days + 9.hours"
+        },
+        "uuid": "99952921-cb9a-4546-b3b3-88d710ff7b29",
+        "skip": false,
+        "title": null,
+        "description": null
+       }
+      ],
+      "comment": "Added delay for triggers after hours messaging (6PM - 10AM)",
+      "uuid": "ac2625b9-042c-4330-b884-0ac3a3189d9c",
+      "skip": false
+     },
+     {
+      "number": 14,
+      "provider": "coax_connector_3082925_1699932125",
+      "name": "send_message",
+      "as": "7a9cbb96",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "input": {
+       "message": "Hi #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipFirstName\"]}')}, \n\nYour order ##{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderID\"]}')} is ready for pick up.",
+       "phone": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"27a1b0d1\",\"path\":[\"Phone\"]}').presence"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "text",
+        "label": "Message",
+        "name": "message",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Receiver Name",
+        "name": "name",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "phone",
+        "label": "Receiving Phone Number",
+        "name": "phone",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Enquiry ID",
+        "name": "enquiry_id",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Skip Update",
+        "name": "do_not_update",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "select",
+        "label": "Activity Type",
+        "name": "activity_type",
+        "optional": true,
+        "pick_list": "activity_type",
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Activity Description",
+        "name": "activity_description",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "label": "Attachment URLs",
+        "name": "attachment_urls",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "URL",
+          "optional": true,
+          "type": "string",
+          "name": "url"
+         }
+        ],
+        "type": "array"
+       },
+       {
+        "control_type": "select",
+        "label": "Location",
+        "name": "location_id",
+        "optional": true,
+        "pick_list": "locations",
+        "type": "string"
+       },
+       {
+        "control_type": "key_value",
+        "empty_list_title": "Add metadata",
+        "item_label": "Metadata",
+        "label": "Metadata",
+        "name": "meta",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Key",
+          "optional": true,
+          "type": "string",
+          "name": "key"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "visible_config_fields": [
+       "message",
+       "phone",
+       "meta",
+       "activity_description",
+       "activity_type"
+      ],
+      "uuid": "f771cdce-7a24-4eaa-941b-aab9a063f87f",
+      "skip": false
+     }
+    ],
+    "uuid": "838364df-c830-44d2-8a6b-b327ec7eb7b7",
+    "skip": false
+   }
+  ],
+  "comment": "Pending Pickup",
+  "job_report_schema": [
+   {
+    "name": "custom_column_0",
+    "label": "Order ID"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "Name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Phone"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Shipping Option"
+   },
+   {
+    "name": "custom_column_4",
+    "label": "Shipping Method"
+   },
+   {
+    "name": "custom_column_5",
+    "label": "Sales Channel"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderID\"]}')}",
+   "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipFirstName\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipLastName\"]}')}",
+   "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShipPhone\"]}')}",
+   "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"ShippingOption\"]}')}",
+   "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"OrderLine\",{\"path_element_type\":\"current_item\"},\"ShippingMethod\"]}')}",
+   "custom_column_5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"neto_connector_3082925_1703123108\",\"line\":\"e2ba5b92\",\"path\":[\"SalesChannel\"]}')}"
+  },
+  "uuid": "dbed3883-7554-4574-9587-bfe172bcc527",
+  "unfinished": false,
+  "param": {}
+ }
+}

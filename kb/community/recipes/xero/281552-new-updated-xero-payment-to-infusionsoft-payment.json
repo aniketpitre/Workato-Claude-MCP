@@ -1,0 +1,540 @@
+{
+ "id": 281552,
+ "name": "New/updated Xero Payment to Infusionsoft Payment",
+ "description": "### Recipe Title New/Updated Xero payment to Infusionsoft\n\n------------------------------------------\n\nImportant Notes : Please read the description before running the recipe.\n\n---------------------------------------------------\n\n**What this recipe Does :**\n\n- Payments are matched to Infusionsoft invoices that were synced with Workato. This means that the existing Infusionsoft invoice should have an existing Xero Invoice ID present in its Job Title field.\n- If the amount due is less than the payment amount, finish\n- If payment type is Credit, add payment and link to credit account\n- If payment type is not Credit, add payment and link to payment account\n- The created Payment in Infunsionsoft will contain the matching Infusionsoft's Invoice ID\n- This recipe compliments with the order-invoice sync recipes.\n\n**This recipe DOES NOT :**\n\n - Sync Payments that are greater amount that the total due of the invoice=\n \n\n_Flagging_\nWorkato uses flagging to keep track of documents syncing. It is extremely important that these flags are not deleted after sync, as it will cause deduplication to occur.\n\nThe necessary flags that will exists are\n\n- Payment Description field in Infusionsoft payment will contain Xero Invoice ID and the phrase \"Xero Payment ID: \" follows with the Xero InvoiceID\n- Invoices in Infusionsoft MUST contain the relevant Xero Invoice ID in the invoice Job Title field.\n- If the Xero Invoice was created by Workato, it will contain Infusionsoft InvoiceID in it's Reference field. It will be used for matching with Infusionsoft invoices as well.\n\n### Parameters\n\n\nPayment Account Code - Account code for all payments except Credits\nCredit Account Code - Account code for Credits\n\n### Support\n\nFor all enquiries, troubleshooting, and recipe behaviour related questions, please post them here :\n\nhttps://support.workato.com/support/discussions\n\nLearn more about Workato\nhttps://support.workato.com/support/solutions",
+ "applications": [
+  "xero",
+  "clock",
+  "xero",
+  "infusionsoft",
+  "email"
+ ],
+ "action_applications": [
+  "clock",
+  "xero",
+  "infusionsoft",
+  "email"
+ ],
+ "trigger_application": "xero",
+ "business_objects": [
+  "payment",
+  "invoice",
+  "email"
+ ],
+ "categories": [
+  "Accounting",
+  "Utilities",
+  "CRM",
+  "Marketing"
+ ],
+ "copy_count": 294,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-07-28T10:52:58.521-07:00",
+ "source_url": "https://app.workato.com/recipes/281552?community=us",
+ "steps": [
+  "xero.updated_payment",
+  "clock.pause",
+  "xero.get_invoice_by_id",
+  "infusionsoft.get_invoice",
+  "email.send_mail",
+  "infusionsoft.add_payment_to_invoice",
+  "infusionsoft.search_orders",
+  "infusionsoft.add_payment_to_invoice"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "xero",
+  "name": "updated_payment",
+  "as": "updated_payment",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "=now"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "not_contains",
+     "lhs": "#{_('data.xero.updated_payment.Reference')}",
+     "rhs": "Infusionsoft"
+    },
+    {
+     "operand": "blank",
+     "lhs": "#{_('data.xero.updated_payment.Reference')}",
+     "rhs": null
+    }
+   ],
+   "operand": "or",
+   "type": "compound"
+  },
+  "parameters_schema": "[\n{\n    \"label\": \"Additional wait time\",\n    \"name\": \"Additionalwaittime\",\n    \"type\": \"string\",\n    \"control_type\": \"select\",\n    \"pick_list\": [\n      [\"True\", \"True\"],\n      [\"False\", \"False\"]\n    ],\n    \"hint\": \"Would you like 5 minutes wait time to ensure the Xero payment was synced properly before processing?\"\n  }\n]",
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_('data.workato.job_context.parameters.Additionalwaittime')}",
+       "rhs": "True"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "clock",
+      "name": "pause",
+      "as": "pause",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "minutes": "5"
+      },
+      "comment": "wait 5 mins to make sure Invoice is synced before processing payment",
+      "uuid": "ea06b43d-58ff-4617-9865-dc63f711b628",
+      "title": null,
+      "description": null
+     }
+    ],
+    "uuid": "c9eb14e7-fb9c-4308-b914-a7dc379fe274"
+   },
+   {
+    "number": 3,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.xero.updated_payment.Reference')}",
+       "rhs": "Infusionsoft Invoice ID:"
+      }
+     ]
+    },
+    "comment": "Don't process payments that came from Infusionsoft",
+    "uuid": "264532a0-d433-4459-b325-406522c8204c"
+   },
+   {
+    "number": 4,
+    "provider": "xero",
+    "name": "get_invoice_by_id",
+    "as": "get_invoice_by_id",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "InvoiceID": "#{_('data.xero.updated_payment.Invoice.InvoiceID')}"
+    },
+    "comment": "Get the associated Invoice in Xero using the Invoice ID",
+    "uuid": "0152783e-c52c-4a72-9083-bd7949099656",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 5,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.xero.get_invoice_by_id.Reference')}",
+       "rhs": "Infusionsoft",
+       "operand": "contains"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 6,
+      "provider": "infusionsoft",
+      "name": "get_invoice",
+      "as": "get_invoice",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "Id": "=_('data.xero.get_invoice_by_id.Reference').split(\": \").last"
+      },
+      "comment": "Get the Infusionsoft ID",
+      "uuid": "501f1166-d973-4491-a66a-b74173f66417",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 7,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "present",
+         "lhs": "#{_('data.infusionsoft.get_invoice.Id')}",
+         "rhs": null
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 8,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "greater_than",
+           "lhs": "=_('data.xero.updated_payment.Amount').to_f",
+           "rhs": "=_('data.infusionsoft.get_invoice.InvoiceTotal').to_f - _('data.infusionsoft.get_invoice.TotalPaid').to_f"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 9,
+          "provider": "email",
+          "name": "send_mail",
+          "as": "send_mail",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "to": "#{_('data.workato.job_context.user_email')}",
+           "subject": "Xero payment for Invoice number #{_('data.xero.updated_payment.Invoice.InvoiceNumber')} could not be transferred to Infusionsoft",
+           "body": "A Payment from Xero cannot be matched against an Order in Infusionsoft. The Payment amount exceeded the Order Total due amount.\n\nPayment details:\nContact: #{_('data.xero.updated_payment.Invoice.Contact.Name')}\nDate: #{_('data.xero.updated_payment.Date')}\nPayment amount: #{_('data.xero.updated_payment.Amount')}\n--------------------------------------------------------\nThis Payment from Xero was matched against the following Infusionsoft Order : \n\nInfusionsoft invoice ID: #{_('data.infusionsoft.get_invoice.Id')}\nInfusionsoft invoice amount due is less than payment made of #{_('data.xero.updated_payment.Amount')}.\n\nPlease check on this record and edit accordingly. Then, re-run the job if you wish to try again.\n\n---------------------------------------------------------\nThis is an automated notification email sent by Workato Integration App recipe. To stop receiving emails like this, please log in to your Workato account and turn Email notifications off on your recipe.\n\nJob ID : #{_('data.workato.job_context.job_id')}\nJob URL : #{_('data.workato.job_context.job_url')}\nRecipe URL : #{_('data.workato.job_context.recipe_url')}\nJob Created At : #{_('data.workato.job_context.job_created_at')}\n"
+          },
+          "uuid": "9e4ff06e-5c32-40de-b497-513f388143ed",
+          "title": null,
+          "description": null
+         },
+         {
+          "number": 10,
+          "keyword": "filter",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "type": "compound",
+           "operand": "and",
+           "conditions": [
+            {
+             "operand": "greater_than",
+             "lhs": "#{_('data.xero.updated_payment.Amount')}",
+             "rhs": "=_('data.infusionsoft.get_invoice.InvoiceTotal') - _('data.infusionsoft.get_invoice.TotalPaid')"
+            }
+           ]
+          },
+          "uuid": "5d844ae4-8af6-4d49-99ad-0818bc7995b7"
+         }
+        ],
+        "uuid": "13d97d42-8029-4f7e-9ce1-f652eacaca44"
+       },
+       {
+        "number": 11,
+        "provider": "infusionsoft",
+        "name": "add_payment_to_invoice",
+        "as": "add_payment_to_invoice",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "bypassCommissions": "false",
+         "invoiceID": "=_('data.xero.get_invoice_by_id.Reference').split(\": \").last",
+         "amt": "#{_('data.xero.updated_payment.Amount')}",
+         "paymentType": "Cash",
+         "paymentDate": "#{_('data.xero.updated_payment.Date')}",
+         "paymentDescription": "Xero Payment ID: #{_('data.xero.updated_payment.PaymentID')}"
+        },
+        "comment": "Add the payment to the Infusionsoft invoice",
+        "uuid": "b0e9310f-b4cb-49db-a29e-2ee8cad33e28",
+        "title": null,
+        "description": null
+       },
+       {
+        "number": 12,
+        "keyword": "stop",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "stop_with_error": "false"
+        },
+        "uuid": "ee9c5371-b20d-41c1-bb15-cf0c3235a793"
+       }
+      ],
+      "uuid": "bf2c672d-70e7-481f-a945-11c7f9e46dfc"
+     }
+    ],
+    "comment": "If the invoice came from Infusionsoft, it will have the id in the reference field",
+    "uuid": "1f07a8d1-7b9d-4c31-bcca-2d95dc8ee77f"
+   },
+   {
+    "number": 13,
+    "provider": "infusionsoft",
+    "name": "search_orders",
+    "as": "search_orders",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "JobTitle": "=\"Xero Invoice: \" + _('data.xero.get_invoice_by_id.InvoiceNumber')"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "orders",
+      "label": "Orders",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Contact ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "ContactId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date created",
+        "parse_output": {},
+        "type": "date_time",
+        "name": "DateCreated"
+       },
+       {
+        "control_type": "date",
+        "label": "Due date",
+        "parse_output": "parse_date_output",
+        "render_input": "render_date_input",
+        "type": "date_time",
+        "name": "DueDate"
+       },
+       {
+        "control_type": "number",
+        "label": "Order ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "Id"
+       },
+       {
+        "control_type": "text",
+        "label": "Job notes",
+        "type": "string",
+        "name": "JobNotes"
+       },
+       {
+        "control_type": "number",
+        "label": "Job recurring ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "JobRecurringId"
+       },
+       {
+        "control_type": "text",
+        "label": "Job status",
+        "type": "string",
+        "name": "JobStatus"
+       },
+       {
+        "control_type": "text",
+        "label": "Job title",
+        "event_title": true,
+        "type": "string",
+        "name": "JobTitle"
+       },
+       {
+        "control_type": "number",
+        "label": "Order status",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "OrderStatus"
+       },
+       {
+        "control_type": "text",
+        "label": "Order type",
+        "type": "string",
+        "name": "OrderType"
+       },
+       {
+        "control_type": "number",
+        "label": "Product ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "ProductId"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship city",
+        "type": "string",
+        "name": "ShipCity"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship company",
+        "type": "string",
+        "name": "ShipCompany"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship country",
+        "type": "string",
+        "name": "ShipCountry"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship first name",
+        "type": "string",
+        "name": "ShipFirstName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship last name",
+        "type": "string",
+        "name": "ShipLastName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship middle name",
+        "type": "string",
+        "name": "ShipMiddleName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship phone",
+        "type": "string",
+        "name": "ShipPhone"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship state",
+        "type": "string",
+        "name": "ShipState"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship street 1",
+        "type": "string",
+        "name": "ShipStreet1"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship street 2",
+        "type": "string",
+        "name": "ShipStreet2"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship zip",
+        "type": "string",
+        "name": "ShipZip"
+       },
+       {
+        "control_type": "date",
+        "label": "Start date",
+        "parse_output": "parse_date_output",
+        "render_input": "render_date_input",
+        "type": "date_time",
+        "name": "StartDate"
+       }
+      ]
+     }
+    ],
+    "uuid": "3473e284-f9f8-4c74-a52e-5118d4202540"
+   },
+   {
+    "number": 14,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.infusionsoft.search_orders.orders.first.Id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 15,
+      "provider": "infusionsoft",
+      "name": "add_payment_to_invoice",
+      "as": "add_payment_to_invoice1",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "orderIDSource2": false
+      },
+      "input": {
+       "bypassCommissions": "false",
+       "invoiceID": "=",
+       "amt": "#{_('data.xero.updated_payment.Amount')}",
+       "paymentType": "Cash",
+       "paymentDate": "#{_('data.xero.updated_payment.Date')}",
+       "paymentDescription": "Xero Payment ID: #{_('data.xero.updated_payment.PaymentID')}",
+       "orderID": "#{_('data.infusionsoft.search_orders.orders.first.Id')}"
+      },
+      "comment": "Add the payment to the Infusionsoft order",
+      "uuid": "d5760327-50ea-47ea-a2ae-d60517b72f67",
+      "title": null,
+      "description": null
+     }
+    ],
+    "uuid": "1f092cc0-ff03-4911-bf5a-04faa1dc55b2"
+   }
+  ],
+  "comment": "New or Updated payments in Xero that did not come from Infusionsoft",
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Xero Invoice ID"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "IFS Invoice ID"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Payment ID | Amount"
+   },
+   {
+    "name": "custom_column_4",
+    "label": "Contact"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.xero.get_invoice_by_id.InvoiceID')}",
+   "custom_column_2": "=_('data.infusionsoft.get_invoice.Id') or _('data.infusionsoft.search_orders.orders.first.Id') or \"Not found\"",
+   "custom_column_3": "#{_('data.xero.updated_payment.PaymentID')} | #{_('data.xero.updated_payment.Amount')}",
+   "custom_column_4": "#{_('data.xero.updated_payment.Invoice.Contact.Name')}"
+  },
+  "uuid": "b1d18062-3ac1-4b7b-b1d8-5394b82aafed",
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

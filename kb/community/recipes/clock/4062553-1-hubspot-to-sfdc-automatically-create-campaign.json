@@ -1,0 +1,1056 @@
+{
+ "id": 4062553,
+ "name": "1. Hubspot to SFDC | Automatically Create Campaign",
+ "description": "When there is a trigger event, do action",
+ "applications": [
+  "clock",
+  "hubspot",
+  "lookup_table",
+  "salesforce",
+  "logger",
+  "teams_bot"
+ ],
+ "action_applications": [
+  "hubspot",
+  "lookup_table",
+  "salesforce",
+  "logger",
+  "teams_bot"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "campaign"
+ ],
+ "categories": [
+  "Recipe Tools",
+  "Marketing",
+  "CRM"
+ ],
+ "copy_count": 7,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2023-01-20T08:42:48.194-08:00",
+ "source_url": "https://app.workato.com/recipes/4062553?community=us",
+ "steps": [
+  "clock.scheduled_event",
+  "hubspot.__adhoc_http_action",
+  "lookup_table.search_entries",
+  "hubspot.__adhoc_http_action",
+  "salesforce.create_custom_object",
+  "lookup_table.add_entry",
+  "logger.log_message",
+  "teams_bot.post_blocks_message"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "scheduled_event",
+  "as": "d8001b21",
+  "title": null,
+  "description": "<span class=\"provider\">Trigger</span> every 5 minutes",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "time_unit": "minutes",
+   "trigger_every": "5"
+  },
+  "extended_input_schema": [
+   {
+    "control_type": "integer",
+    "default": "5",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Define repeating schedule. Enter whole numbers only.\n                        This field can be set to a minimum of 5 minutes.",
+    "label": "Trigger every",
+    "name": "trigger_every",
+    "optional": false,
+    "suffix": {
+     "text": "minutes"
+    },
+    "type": "string"
+   },
+   {
+    "control_type": "date_time",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+    "label": "Start after",
+    "name": "start_after",
+    "optional": true,
+    "since_field": true,
+    "type": "date_time",
+    "parse_output": "date_time_conversion",
+    "render_input": "date_time_conversion"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "hubspot",
+      "name": "__adhoc_http_action",
+      "as": "d1ef5edb",
+      "title": "Custom action | Get all Campaign IDs",
+      "description": "Custom <span class=\"provider\">action | Get all Campaign IDs</span> in <span class=\"provider\">HubSpot</span> (Custom)",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {},
+      "extended_output_schema": [
+       {
+        "control_type": "text",
+        "label": "Has more",
+        "name": "hasMore",
+        "optional": true,
+        "toggle_field": {
+         "label": "Has more",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "hasMore"
+        },
+        "toggle_hint": "Select from option list",
+        "type": "number",
+        "parse_output": {},
+        "render_input": {}
+       },
+       {
+        "control_type": "text",
+        "label": "Offset",
+        "name": "offset",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "label": "Campaigns",
+        "name": "campaigns",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "ID",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "type": "number",
+          "name": "id"
+         },
+         {
+          "control_type": "number",
+          "label": "App ID",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "type": "number",
+          "name": "appId"
+         },
+         {
+          "control_type": "text",
+          "label": "App name",
+          "optional": true,
+          "type": "string",
+          "name": "appName"
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "control_type": "text",
+        "hint": "Base URI is <b>https://api.hubapi.com/contacts/v1/</b> - path will be appended to this URI. Use absolute URI to override this base URI.",
+        "label": "Path",
+        "name": "path",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "select",
+        "default": "json",
+        "extends_schema": true,
+        "label": "Response type",
+        "name": "response_type",
+        "optional": true,
+        "pick_list": [
+         [
+          "JSON response",
+          "json"
+         ],
+         [
+          "Raw response",
+          "raw"
+         ]
+        ],
+        "sticky": false,
+        "type": "string"
+       },
+       {
+        "add_field_label": "Add URL parameter",
+        "control_type": "form-schema-builder",
+        "label": "Request URL parameters",
+        "name": "input",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "sticky": true,
+          "optional": true,
+          "type": "string",
+          "name": "schema"
+         }
+        ],
+        "sticky": true,
+        "type": "object"
+       },
+       {
+        "control_type": "key_value",
+        "empty_list_text": "Refer to the API documentation and add required headers to this HTTP request",
+        "empty_list_title": "Does this HTTP request require headers?",
+        "item_label": "Header",
+        "label": "Request headers",
+        "name": "request_headers",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "type": "string",
+          "name": "name"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "type": "array"
+       },
+       {
+        "control_type": "schema-designer",
+        "extends_schema": true,
+        "label": "Response body",
+        "name": "output",
+        "optional": true,
+        "sample_data_type": "json_http",
+        "sticky": true,
+        "type": "string",
+        "schema_neutral": true
+       },
+       {
+        "control_type": "schema-designer",
+        "extends_schema": true,
+        "label": "Response headers",
+        "name": "response_headers",
+        "optional": true,
+        "sample_data_type": "json_http",
+        "sticky": false,
+        "type": "string",
+        "schema_neutral": true
+       }
+      ],
+      "visible_config_fields": [
+       "mnemonic",
+       "verb",
+       "path",
+       "response_type",
+       "input",
+       "input.schema",
+       "output",
+       "input.data.id",
+       "input.data.appId",
+       "input.data.appName"
+      ],
+      "uuid": "c1c0c677-124f-405c-b278-53b6d98f1bfe"
+     },
+     {
+      "number": 3,
+      "as": "4dda42e2",
+      "keyword": "foreach",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "repeat_mode": "simple",
+      "clear_scope": "false",
+      "input": {},
+      "block": [
+       {
+        "number": 4,
+        "provider": "lookup_table",
+        "name": "search_entries",
+        "as": "e24ad29d",
+        "title": null,
+        "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">SixDegrees | Campaign ID Lookup Table</span> lookup table",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "lookup_table_id": "SixDegrees | Campaign ID Lookup Table"
+        },
+        "toggleCfg": {},
+        "input": {
+         "lookup_table_id": "330931",
+         "parameters": {
+          "col1": "#{_('data.foreach.4dda42e2.id')}"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "label": "Entries",
+          "name": "entries",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "Entry ID",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "id"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "CampaignID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "CampaignName",
+              "name": "col2",
+              "type": "string",
+              "sticky": true
+             }
+            ],
+            "label": "Entry",
+            "type": "object",
+            "name": "entry"
+           }
+          ],
+          "type": "array"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "hint": "Provide one or more entry fields to search the entry",
+          "label": "Search by",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "CampaignID",
+            "name": "col1",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "CampaignName",
+            "name": "col2",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "5ff5ca72-701f-427f-b32f-070045d66391"
+       },
+       {
+        "number": 5,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "equals_to",
+           "lhs": "#{_('data.lookup_table.e24ad29d.entries.first.____Size', 'list_meta', '____Size', 'data.lookup_table.e24ad29d.entries')}",
+           "rhs": "0",
+           "uuid": "condition-8cc464c2-252a-4727-8981-6a0a433d8148"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 6,
+          "provider": "hubspot",
+          "name": "__adhoc_http_action",
+          "as": "33d04a1c",
+          "title": "Custom action | Get Campaign Data by ID",
+          "description": "Custom <span class=\"provider\">action | Get Campaign Data by ID</span> in <span class=\"provider\">HubSpot</span> (Custom)",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {},
+          "extended_output_schema": [
+           {
+            "control_type": "number",
+            "label": "App ID",
+            "name": "appId",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion"
+           },
+           {
+            "control_type": "text",
+            "label": "App name",
+            "name": "appName",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "number",
+            "label": "Content ID",
+            "name": "contentId",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion"
+           },
+           {
+            "label": "Counters",
+            "name": "counters",
+            "optional": true,
+            "properties": [
+             {
+              "control_type": "number",
+              "label": "Delivered",
+              "parse_output": "float_conversion",
+              "optional": true,
+              "type": "number",
+              "name": "delivered"
+             },
+             {
+              "control_type": "number",
+              "label": "Open",
+              "parse_output": "float_conversion",
+              "optional": true,
+              "type": "number",
+              "name": "open"
+             },
+             {
+              "control_type": "number",
+              "label": "Processed",
+              "parse_output": "float_conversion",
+              "optional": true,
+              "type": "number",
+              "name": "processed"
+             },
+             {
+              "control_type": "number",
+              "label": "Sent",
+              "parse_output": "float_conversion",
+              "optional": true,
+              "type": "number",
+              "name": "sent"
+             }
+            ],
+            "type": "object"
+           },
+           {
+            "control_type": "number",
+            "label": "ID",
+            "name": "id",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "name": "name",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "number",
+            "label": "Num included",
+            "name": "numIncluded",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion"
+           },
+           {
+            "control_type": "number",
+            "label": "Num queued",
+            "name": "numQueued",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion"
+           },
+           {
+            "control_type": "text",
+            "label": "Sub type",
+            "name": "subType",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Subject",
+            "name": "subject",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Type",
+            "name": "type",
+            "optional": true,
+            "type": "string"
+           }
+          ],
+          "extended_input_schema": [
+           {
+            "control_type": "text",
+            "hint": "Base URI is <b>https://api.hubapi.com/contacts/v1/</b> - path will be appended to this URI. Use absolute URI to override this base URI.",
+            "label": "Path",
+            "name": "path",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "select",
+            "default": "json",
+            "extends_schema": true,
+            "label": "Response type",
+            "name": "response_type",
+            "optional": true,
+            "pick_list": [
+             [
+              "JSON response",
+              "json"
+             ],
+             [
+              "Raw response",
+              "raw"
+             ]
+            ],
+            "sticky": false,
+            "type": "string"
+           },
+           {
+            "add_field_label": "Add URL parameter",
+            "control_type": "form-schema-builder",
+            "label": "Request URL parameters",
+            "name": "input",
+            "optional": true,
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Schema",
+              "extends_schema": true,
+              "sticky": true,
+              "optional": true,
+              "type": "string",
+              "name": "schema"
+             }
+            ],
+            "sticky": true,
+            "type": "object"
+           },
+           {
+            "control_type": "key_value",
+            "empty_list_text": "Refer to the API documentation and add required headers to this HTTP request",
+            "empty_list_title": "Does this HTTP request require headers?",
+            "item_label": "Header",
+            "label": "Request headers",
+            "name": "request_headers",
+            "of": "object",
+            "optional": true,
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Name",
+              "optional": true,
+              "type": "string",
+              "name": "name"
+             },
+             {
+              "control_type": "text",
+              "label": "Value",
+              "optional": true,
+              "type": "string",
+              "name": "value"
+             }
+            ],
+            "type": "array"
+           },
+           {
+            "control_type": "schema-designer",
+            "extends_schema": true,
+            "label": "Response body",
+            "name": "output",
+            "optional": true,
+            "sample_data_type": "json_http",
+            "sticky": true,
+            "type": "string",
+            "schema_neutral": true
+           },
+           {
+            "control_type": "schema-designer",
+            "extends_schema": true,
+            "label": "Response headers",
+            "name": "response_headers",
+            "optional": true,
+            "sample_data_type": "json_http",
+            "sticky": false,
+            "type": "string",
+            "schema_neutral": true
+           }
+          ],
+          "uuid": "89166ca4-5050-484b-8e31-747ccc9816c0"
+         },
+         {
+          "number": 7,
+          "provider": "salesforce",
+          "name": "create_custom_object",
+          "as": "9d1aaa72",
+          "title": "Create Campaign",
+          "description": "Create <span class=\"provider\">Campaign</span> in <span class=\"provider\">Salesforce</span>",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "sobject_name": "Campaign"
+          },
+          "toggleCfg": {
+           "Type": false
+          },
+          "input": {
+           "sobject_name": "Campaign",
+           "Name": "#{_('data.hubspot.33d04a1c.name')}",
+           "Type": "#{_('data.hubspot.33d04a1c.subType')}"
+          },
+          "extended_input_schema": [
+           {
+            "control_type": "text",
+            "custom": false,
+            "label": "Name",
+            "name": "Name",
+            "type": "string",
+            "event_title": true,
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "checkbox",
+            "custom": false,
+            "label": "Active",
+            "name": "IsActive",
+            "optional": true,
+            "sticky": true,
+            "toggle_field": {
+             "label": "Active",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "optional": true,
+             "custom": false,
+             "sfdc_createable": true,
+             "sfdc_updateable": true,
+             "type": "boolean",
+             "name": "IsActive"
+            },
+            "toggle_hint": "Select from option list",
+            "type": "boolean",
+            "parse_output": {},
+            "render_input": {},
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "number",
+            "custom": false,
+            "label": "Actual Cost in Campaign",
+            "name": "ActualCost",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "number",
+            "custom": false,
+            "label": "Budgeted Cost in Campaign",
+            "name": "BudgetedCost",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "text",
+            "custom": false,
+            "label": "ContentDocument ID",
+            "name": "CampaignImageId",
+            "optional": true,
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "text-area",
+            "custom": false,
+            "label": "Description",
+            "name": "Description",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "date",
+            "custom": false,
+            "label": "End Date",
+            "name": "EndDate",
+            "optional": true,
+            "sticky": true,
+            "type": "date_time",
+            "parse_output": "parse_iso8601_date",
+            "render_input": "render_iso8601_date",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "text",
+            "custom": false,
+            "label": "Expected Response (%)",
+            "name": "ExpectedResponse",
+            "optional": true,
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "number",
+            "custom": false,
+            "label": "Expected Revenue in Campaign",
+            "name": "ExpectedRevenue",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "number",
+            "custom": false,
+            "label": "Num Sent in Campaign",
+            "name": "NumberSent",
+            "optional": true,
+            "type": "number",
+            "parse_output": "float_conversion",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "text",
+            "custom": false,
+            "label": "Owner ID",
+            "name": "OwnerId",
+            "optional": true,
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "text",
+            "custom": false,
+            "label": "Parent Campaign ID",
+            "name": "ParentId",
+            "optional": true,
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "text",
+            "custom": false,
+            "label": "Record Type ID",
+            "name": "CampaignMemberRecordTypeId",
+            "optional": true,
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "date",
+            "custom": false,
+            "label": "Start Date",
+            "name": "StartDate",
+            "optional": true,
+            "sticky": true,
+            "type": "date_time",
+            "parse_output": "parse_iso8601_date",
+            "render_input": "render_iso8601_date",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "select",
+            "custom": false,
+            "label": "Status",
+            "name": "Status",
+            "optional": true,
+            "pick_list": "sobject_field_values_list",
+            "pick_list_params": {
+             "sobject_name": "\"Campaign\"",
+             "field_name": "\"Status\""
+            },
+            "sticky": true,
+            "toggle_field": {
+             "control_type": "text",
+             "label": "Status",
+             "toggle_hint": "Enter custom value",
+             "optional": true,
+             "custom": false,
+             "sfdc_createable": true,
+             "sfdc_updateable": true,
+             "type": "string",
+             "name": "Status"
+            },
+            "toggle_hint": "Select from list",
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           },
+           {
+            "control_type": "select",
+            "custom": false,
+            "label": "Type",
+            "name": "Type",
+            "optional": true,
+            "pick_list": "sobject_field_values_list",
+            "pick_list_params": {
+             "sobject_name": "\"Campaign\"",
+             "field_name": "\"Type\""
+            },
+            "sticky": true,
+            "toggle_field": {
+             "control_type": "text",
+             "label": "Type",
+             "toggle_hint": "Enter custom value",
+             "optional": true,
+             "custom": false,
+             "sfdc_createable": true,
+             "sfdc_updateable": true,
+             "type": "string",
+             "name": "Type"
+            },
+            "toggle_hint": "Select from list",
+            "type": "string",
+            "sfdc_createable": true,
+            "sfdc_updateable": true
+           }
+          ],
+          "uuid": "ea5bdca8-1976-42e9-828d-a8acdddbbd78"
+         },
+         {
+          "number": 8,
+          "provider": "lookup_table",
+          "name": "add_entry",
+          "as": "86a63f0e",
+          "title": null,
+          "description": "Add <span class=\"provider\">an entry</span> to <span class=\"provider\">SixDegrees | Campaign ID Lookup Table</span> lookup table",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "lookup_table_id": "SixDegrees | Campaign ID Lookup Table"
+          },
+          "toggleCfg": {},
+          "input": {
+           "lookup_table_id": "330931",
+           "parameters": {
+            "col1": "#{_('data.hubspot.33d04a1c.id')}",
+            "col2": "#{_('data.hubspot.33d04a1c.name')}"
+           }
+          },
+          "extended_output_schema": [
+           {
+            "control_type": "number",
+            "label": "Entry ID",
+            "name": "id",
+            "type": "integer",
+            "parse_output": "integer_conversion"
+           },
+           {
+            "label": "Entry",
+            "name": "entry",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "CampaignID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "CampaignName",
+              "name": "col2",
+              "type": "string",
+              "sticky": true
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "extended_input_schema": [
+           {
+            "hint": "Fill the fields for the new entry",
+            "label": "Entry fields",
+            "name": "parameters",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "CampaignID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true,
+              "optional": true
+             },
+             {
+              "control_type": "text",
+              "label": "CampaignName",
+              "name": "col2",
+              "type": "string",
+              "sticky": true,
+              "optional": true
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "uuid": "f125e0a1-6582-4676-80f1-3cf4728550eb"
+         },
+         {
+          "number": 9,
+          "keyword": "else",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {},
+          "block": [
+           {
+            "number": 10,
+            "provider": "logger",
+            "name": "log_message",
+            "as": "5efc6262",
+            "title": null,
+            "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {
+             "user_logs_enabled": "false",
+             "message": "Nothing to do"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "switch",
+              "default": false,
+              "disable_formula": true,
+              "extends_schema": true,
+              "hint": "                Send a copy of the message to Workato logs.\n                <a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n                  Learn more\n                </a>\n",
+              "label": "Send to Workato log service",
+              "name": "user_logs_enabled",
+              "optional": true,
+              "type": "string"
+             }
+            ],
+            "uuid": "4c095e8d-4e12-4924-9c4c-d27c51e62ca9"
+           }
+          ],
+          "uuid": "32786530-522a-43ef-a854-c026cf98692b"
+         }
+        ],
+        "uuid": "c60be5c2-d08b-4b59-87da-e0cb68e7e58a"
+       }
+      ],
+      "source": "#{_('data.hubspot.d1ef5edb.campaigns')}",
+      "uuid": "d7292818-e4a1-4f64-8253-41864150212e"
+     },
+     {
+      "number": 11,
+      "as": "40cea0b9",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 12,
+        "provider": "teams_bot",
+        "name": "post_blocks_message",
+        "as": "27d09d90",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "channel": {
+          "ids": [
+           "484faca6-4130-428b-ac1a-bd4c1b466b48",
+           "19:user@example.com2"
+          ],
+          "titles": [
+           "Level - 1 Support",
+           "General"
+          ]
+         }
+        },
+        "toggleCfg": {
+         "blocks.0.text_block.separator": true,
+         "channel": false
+        },
+        "input": {
+         "channel": "19:user@example.com2",
+         "blocks": [
+          {
+           "block_type": "text_block",
+           "text_block": {
+            "text": "FAILURENOTICE:#{_('data.workato.job_context.recipe_name')}",
+            "text_type": "header",
+            "separator": "false"
+           }
+          },
+          {
+           "block_type": "text_block",
+           "text_block": {
+            "text": "Error:#{_('data.catch.40cea0b9.type')}\nMEssage:#{_('data.catch.40cea0b9.message')}\nJob URL:#{_('data.workato.job_context.job_url')}",
+            "text_type": "body_text"
+           }
+          }
+         ]
+        },
+        "uuid": "e87bd4d4-41b3-48f9-a91f-50db69285e1d",
+        "title": null,
+        "description": "Post <span class=\"provider\">message</span> to user as <span class=\"provider\">Workbot</span>"
+       }
+      ],
+      "uuid": "18efd5fa-e65a-4053-8687-3473ce931fe8"
+     }
+    ],
+    "uuid": "22e5097d-7ac2-4ee4-85d1-595072926d9d"
+   }
+  ],
+  "uuid": "43f90a56-cded-4fe1-961b-702ebe9e8883",
+  "param": {}
+ }
+}

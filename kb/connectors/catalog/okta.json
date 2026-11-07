@@ -1,0 +1,7345 @@
+{
+ "name": "okta",
+ "title": "Okta",
+ "requires_connection": true,
+ "categories": [
+  "Identity Management"
+ ],
+ "aliases": [
+  "Okta"
+ ],
+ "triggers": [
+  {
+   "name": "new_events",
+   "title": "New events",
+   "description": "Triggers when a new event is created in Okta",
+   "help": "Retrieves all the Okta system log events of a specific category, type and outcome that have occured from a given starting date and time.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Specifies from which date and time to begin searching for Okta system logs of the chosen event type and result. Date range should not be more than 180 days. Leave empty to get events since an hour ago…"
+    },
+    {
+     "name": "eventcategory",
+     "type": "string",
+     "label": "Event category",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "events",
+     "extends_schema": true,
+     "hint": "Specify the category of events that you wish to receive from Okta. If Other events is selected, please provide the event types in the Other event types field."
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event types",
+     "control_type": "multiselect",
+     "visible_if": "input.eventcategory != \"Others\"",
+     "pick_list": "event_select",
+     "hint": "Specify the events that you wish to receive from Okta. Either Event types or Other event types need to be provided."
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event type name (Deprecated)",
+     "control_type": "text",
+     "visible_if": "input.eventcategory == \"Others\" && input.event_type",
+     "extends_schema": true,
+     "hint": "Full event type name. See API docs for full list of event types."
+    },
+    {
+     "name": "result_type",
+     "type": "string",
+     "label": "Event result",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "result_types",
+     "hint": "Specifies whether you need a positive or negative outcome for the chosen event"
+    }
+   ],
+   "output": [
+    {
+     "name": "version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "actor",
+     "type": "object",
+     "label": "Actor",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "alternateId",
+       "type": "string",
+       "label": "Alternate ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "detailEntry",
+       "type": "string",
+       "label": "Detail entry",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "client",
+     "type": "object",
+     "label": "Client",
+     "required": true,
+     "properties": [
+      {
+       "name": "userAgent",
+       "type": "object",
+       "label": "User agent",
+       "required": true,
+       "properties": [
+        {
+         "name": "rawUserAgent",
+         "type": "string",
+         "label": "Raw user agent",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "os",
+         "type": "string",
+         "label": "OS",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "browser",
+         "type": "string",
+         "label": "Browser",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "zone",
+       "type": "string",
+       "label": "Zone",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "device",
+       "type": "string",
+       "label": "Device",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "ipAddress",
+       "type": "string",
+       "label": "IP address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "geographicalContext",
+       "type": "object",
+       "label": "Geographical context",
+       "required": true,
+       "properties": [
+        {
+         "name": "city",
+         "type": "string",
+         "label": "City",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "state",
+         "type": "string",
+         "label": "State",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "country",
+         "type": "string",
+         "label": "Country",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "postalCode",
+         "type": "string",
+         "label": "Postal code",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "geographicalContext",
+         "type": "object",
+         "label": "Geographical context (deprecated)",
+         "required": true,
+         "properties": [
+          {
+           "name": "lan",
+           "type": "number",
+           "label": "Latitude",
+           "control_type": "number",
+           "required": true
+          },
+          {
+           "name": "lon",
+           "type": "number",
+           "label": "Longitude",
+           "control_type": "number",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "geolocation",
+         "type": "object",
+         "label": "Geolocation",
+         "required": true,
+         "properties": [
+          {
+           "name": "lan",
+           "type": "number",
+           "label": "Latitude",
+           "control_type": "number",
+           "required": true
+          },
+          {
+           "name": "lon",
+           "type": "number",
+           "label": "Longitude",
+           "control_type": "number",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "authenticationContext",
+     "type": "object",
+     "label": "Authentication context",
+     "required": true,
+     "properties": [
+      {
+       "name": "authenticationProvider",
+       "type": "string",
+       "label": "Authentication provider",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "credentialProvider",
+       "type": "string",
+       "label": "Credential provider",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "credentialType",
+       "type": "string",
+       "label": "Credential type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "interface",
+       "type": "string",
+       "label": "Interface",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "authenticationStep",
+       "type": "integer",
+       "label": "Authentication step",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "externalSessionId",
+       "type": "string",
+       "label": "External session ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "issuer",
+       "type": "object",
+       "label": "Issuer",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "displayMessage",
+     "type": "string",
+     "label": "Display message",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventType",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "outcome",
+     "type": "object",
+     "label": "Outcome",
+     "required": true,
+     "properties": [
+      {
+       "name": "result",
+       "type": "string",
+       "label": "Result",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "reason",
+       "type": "string",
+       "label": "Reason",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "published",
+     "type": "date_time",
+     "label": "Published",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "securityContext",
+     "type": "object",
+     "label": "Security context",
+     "required": true,
+     "properties": [
+      {
+       "name": "asNumber",
+       "type": "integer",
+       "label": "As number",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "asOrg",
+       "type": "string",
+       "label": "As organisation",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isp",
+       "type": "string",
+       "label": "ISP",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "domain",
+       "type": "string",
+       "label": "Domain",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isProxy",
+       "type": "boolean",
+       "label": "Is proxy",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isProxy",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "severity",
+     "type": "string",
+     "label": "Severity",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "debugContext",
+     "type": "object",
+     "label": "Debug context",
+     "required": true,
+     "properties": [
+      {
+       "name": "debugData",
+       "type": "object",
+       "label": "Debug data",
+       "required": true,
+       "properties": [
+        {
+         "name": "requestUri",
+         "type": "string",
+         "label": "Request URI",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "requestId",
+         "type": "string",
+         "label": "Request ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "url",
+         "type": "string",
+         "label": "URL",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "changedAttributes",
+         "type": "string",
+         "label": "Changed attributes",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "targetEventHookIds",
+         "type": "string",
+         "label": "Target event hook ids",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "legacyEventType",
+     "type": "string",
+     "label": "Legacy event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "transaction",
+     "type": "object",
+     "label": "Transaction",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "uuid",
+     "type": "string",
+     "label": "UUID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "request",
+     "type": "object",
+     "label": "Request",
+     "required": true,
+     "properties": [
+      {
+       "name": "ipChain",
+       "type": "array",
+       "label": "IP chain",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "geographicalContext",
+         "type": "object",
+         "label": "Geographical context",
+         "required": true,
+         "properties": [
+          {
+           "name": "city",
+           "type": "string",
+           "label": "City",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "state",
+           "type": "string",
+           "label": "State",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "country",
+           "type": "string",
+           "label": "Country",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "postalCode",
+           "type": "string",
+           "label": "Postal code",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context (deprecated)",
+           "required": true,
+           "properties": [
+            {
+             "name": "lan",
+             "type": "integer",
+             "label": "Latitude",
+             "control_type": "number",
+             "required": true
+            },
+            {
+             "name": "lon",
+             "type": "integer",
+             "label": "Longitude",
+             "control_type": "number",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "geolocation",
+           "type": "object",
+           "label": "Geolocation",
+           "required": true,
+           "properties": [
+            {
+             "name": "lan",
+             "type": "integer",
+             "label": "Latitude",
+             "control_type": "number",
+             "required": true
+            },
+            {
+             "name": "lon",
+             "type": "integer",
+             "label": "Longitude",
+             "control_type": "number",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "ip",
+         "type": "string",
+         "label": "IP",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "version",
+         "type": "string",
+         "label": "Version",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "source",
+         "type": "string",
+         "label": "Source",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "target",
+     "type": "array",
+     "label": "Target",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "alternateId",
+       "type": "string",
+       "label": "Alternate ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "detailEntry",
+       "type": "string",
+       "label": "Detail entry",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "new_events_hook",
+   "title": "New events",
+   "description": "Triggers immediately when a new event is created in Okta",
+   "help": "Retrieves all the Okta system log events of a specific category, type and outcome that have occured from a given starting date and time and in realtime.",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Specifies from which date and time to begin searching for Okta system logs of the chosen event type and result. Date range should not be more than 180 days. Leave empty to get events since an hour ago…"
+    },
+    {
+     "name": "eventcategory",
+     "type": "string",
+     "label": "Event category",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "events_hook",
+     "extends_schema": true,
+     "hint": "Specify the category of events that you wish to receive from Okta. If Other events is selected, please provide the event types in the Other event types field."
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event types",
+     "control_type": "multiselect",
+     "visible_if": "input.eventcategory != \"Others\"",
+     "pick_list": "event_hook_select",
+     "hint": "Specify the events that you wish to receive from Okta. Either Event types or Other event types need to be provided."
+    },
+    {
+     "name": "event_type",
+     "type": "string",
+     "label": "Event type name",
+     "control_type": "text",
+     "visible_if": "input.eventcategory == \"Others\" && input.event_type",
+     "extends_schema": true,
+     "hint": "Full event type name. See API docs for full list of event types."
+    },
+    {
+     "name": "result_type",
+     "type": "string",
+     "label": "Event result",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "result_types",
+     "hint": "Specifies whether you need a positive or negative outcome for the chosen event."
+    }
+   ],
+   "output": [
+    {
+     "name": "version",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "actor",
+     "type": "object",
+     "label": "Actor",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "alternateId",
+       "type": "string",
+       "label": "Alternate ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "detailEntry",
+       "type": "string",
+       "label": "Detail entry",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "client",
+     "type": "object",
+     "label": "Client",
+     "required": true,
+     "properties": [
+      {
+       "name": "userAgent",
+       "type": "object",
+       "label": "User agent",
+       "required": true,
+       "properties": [
+        {
+         "name": "rawUserAgent",
+         "type": "string",
+         "label": "Raw user agent",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "os",
+         "type": "string",
+         "label": "OS",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "browser",
+         "type": "string",
+         "label": "Browser",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "zone",
+       "type": "string",
+       "label": "Zone",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "device",
+       "type": "string",
+       "label": "Device",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "ipAddress",
+       "type": "string",
+       "label": "IP address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "geographicalContext",
+       "type": "object",
+       "label": "Geographical context",
+       "required": true,
+       "properties": [
+        {
+         "name": "city",
+         "type": "string",
+         "label": "City",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "state",
+         "type": "string",
+         "label": "State",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "country",
+         "type": "string",
+         "label": "Country",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "postalCode",
+         "type": "string",
+         "label": "Postal code",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "geographicalContext",
+         "type": "object",
+         "label": "Geographical context (deprecated)",
+         "required": true,
+         "properties": [
+          {
+           "name": "lan",
+           "type": "number",
+           "label": "Latitude",
+           "control_type": "number",
+           "required": true
+          },
+          {
+           "name": "lon",
+           "type": "number",
+           "label": "Longitude",
+           "control_type": "number",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "geolocation",
+         "type": "object",
+         "label": "Geolocation",
+         "required": true,
+         "properties": [
+          {
+           "name": "lan",
+           "type": "number",
+           "label": "Latitude",
+           "control_type": "number",
+           "required": true
+          },
+          {
+           "name": "lon",
+           "type": "number",
+           "label": "Longitude",
+           "control_type": "number",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "authenticationContext",
+     "type": "object",
+     "label": "Authentication context",
+     "required": true,
+     "properties": [
+      {
+       "name": "authenticationProvider",
+       "type": "string",
+       "label": "Authentication provider",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "credentialProvider",
+       "type": "string",
+       "label": "Credential provider",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "credentialType",
+       "type": "string",
+       "label": "Credential type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "interface",
+       "type": "string",
+       "label": "Interface",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "authenticationStep",
+       "type": "integer",
+       "label": "Authentication step",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "externalSessionId",
+       "type": "string",
+       "label": "External session ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "issuer",
+       "type": "object",
+       "label": "Issuer",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "displayMessage",
+     "type": "string",
+     "label": "Display message",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventType",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "outcome",
+     "type": "object",
+     "label": "Outcome",
+     "required": true,
+     "properties": [
+      {
+       "name": "result",
+       "type": "string",
+       "label": "Result",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "reason",
+       "type": "string",
+       "label": "Reason",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "published",
+     "type": "date_time",
+     "label": "Published",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "securityContext",
+     "type": "object",
+     "label": "Security context",
+     "required": true,
+     "properties": [
+      {
+       "name": "asNumber",
+       "type": "integer",
+       "label": "As number",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "asOrg",
+       "type": "string",
+       "label": "As organisation",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isp",
+       "type": "string",
+       "label": "ISP",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "domain",
+       "type": "string",
+       "label": "Domain",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isProxy",
+       "type": "boolean",
+       "label": "Is proxy",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isProxy",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "severity",
+     "type": "string",
+     "label": "Severity",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "debugContext",
+     "type": "object",
+     "label": "Debug context",
+     "required": true,
+     "properties": [
+      {
+       "name": "debugData",
+       "type": "object",
+       "label": "Debug data",
+       "required": true,
+       "properties": [
+        {
+         "name": "requestUri",
+         "type": "string",
+         "label": "Request URI",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "requestId",
+         "type": "string",
+         "label": "Request ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "url",
+         "type": "string",
+         "label": "URL",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "changedAttributes",
+         "type": "string",
+         "label": "Changed attributes",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "targetEventHookIds",
+         "type": "string",
+         "label": "Target event hook ids",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "legacyEventType",
+     "type": "string",
+     "label": "Legacy event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "transaction",
+     "type": "object",
+     "label": "Transaction",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "uuid",
+     "type": "string",
+     "label": "UUID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "request",
+     "type": "object",
+     "label": "Request",
+     "required": true,
+     "properties": [
+      {
+       "name": "ipChain",
+       "type": "array",
+       "label": "IP chain",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "geographicalContext",
+         "type": "object",
+         "label": "Geographical context",
+         "required": true,
+         "properties": [
+          {
+           "name": "city",
+           "type": "string",
+           "label": "City",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "state",
+           "type": "string",
+           "label": "State",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "country",
+           "type": "string",
+           "label": "Country",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "postalCode",
+           "type": "string",
+           "label": "Postal code",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context (deprecated)",
+           "required": true,
+           "properties": [
+            {
+             "name": "lan",
+             "type": "integer",
+             "label": "Latitude",
+             "control_type": "number",
+             "required": true
+            },
+            {
+             "name": "lon",
+             "type": "integer",
+             "label": "Longitude",
+             "control_type": "number",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "geolocation",
+           "type": "object",
+           "label": "Geolocation",
+           "required": true,
+           "properties": [
+            {
+             "name": "lan",
+             "type": "integer",
+             "label": "Latitude",
+             "control_type": "number",
+             "required": true
+            },
+            {
+             "name": "lon",
+             "type": "integer",
+             "label": "Longitude",
+             "control_type": "number",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "ip",
+         "type": "string",
+         "label": "IP",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "version",
+         "type": "string",
+         "label": "Version",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "source",
+         "type": "string",
+         "label": "Source",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "target",
+     "type": "array",
+     "label": "Target",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "alternateId",
+       "type": "string",
+       "label": "Alternate ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "detailEntry",
+       "type": "string",
+       "label": "Detail entry",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "scheduled_new_events",
+   "title": "Scheduled event search using filter",
+   "description": "Scheduled event search using filter in Okta",
+   "help": "Executes search for Okta system log events on a specified schedule. Events can be filtered and will be returned in batches. Each batch is processed as individual jobs. Batch size is between 1 and 1000. Default batch size is 100.",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Okta system log events that occur after this date and time will be returned for each scheduled search. At the time of each scheduled search, only events that occur less than 180 days ago will be picke…"
+    },
+    {
+     "name": "schedule",
+     "type": "string",
+     "label": "Schedule",
+     "control_type": "select",
+     "required": true,
+     "default": "monthly",
+     "options": [
+      "hourly",
+      "daily",
+      "monthly"
+     ]
+    },
+    {
+     "name": "time_zone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timezone_name_global_pick_list"
+    },
+    {
+     "name": "hour",
+     "type": "integer",
+     "label": "Hour",
+     "control_type": "number",
+     "visible_if": "input.schedule != \"hourly\" || input.schedule_settings?.schedule != \"hourly\"",
+     "default": 0,
+     "hint": "Hours in 24-hour format, i.e. 11 for 11am, 23 for 11pm. Defaults to 00 (12am) if left empty."
+    },
+    {
+     "name": "minute",
+     "type": "integer",
+     "label": "Minute",
+     "control_type": "number",
+     "required": true,
+     "default": 0,
+     "hint": "Minutes past the hour, i.e 00 for 0 minutes."
+    },
+    {
+     "name": "day_of_month",
+     "type": "integer",
+     "label": "Day of month",
+     "control_type": "number",
+     "visible_if": "input.schedule == \"monthly\" || input.schedule_settings?.schedule == \"monthly\"",
+     "default": 1,
+     "hint": "1 - 31 , will be rounded down to last day of month for shorter months. Defaults to first day of the month if left empty."
+    },
+    {
+     "name": "Sunday",
+     "type": "boolean",
+     "label": "Sunday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Sunday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Monday",
+     "type": "boolean",
+     "label": "Monday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Monday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Tuesday",
+     "type": "boolean",
+     "label": "Tuesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Tuesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Wednesday",
+     "type": "boolean",
+     "label": "Wednesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Wednesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Thursday",
+     "type": "boolean",
+     "label": "Thursday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Thursday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Friday",
+     "type": "boolean",
+     "label": "Friday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Friday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Saturday",
+     "type": "boolean",
+     "label": "Saturday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Saturday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Filter",
+     "control_type": "text",
+     "hint": "Learn more about filters here ."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Minimum is 1, maximum is 1000. Default is 100."
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_record_id",
+     "type": "string",
+     "label": "First record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_record_id",
+     "type": "string",
+     "label": "Last record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "records",
+     "type": "array",
+     "label": "Events",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "version",
+       "type": "string",
+       "label": "Version",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "actor",
+       "type": "object",
+       "label": "Actor",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "alternateId",
+         "type": "string",
+         "label": "Alternate ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "detailEntry",
+         "type": "string",
+         "label": "Detail entry",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "client",
+       "type": "object",
+       "label": "Client",
+       "required": true,
+       "properties": [
+        {
+         "name": "userAgent",
+         "type": "object",
+         "label": "User agent",
+         "required": true,
+         "properties": [
+          {
+           "name": "rawUserAgent",
+           "type": "string",
+           "label": "Raw user agent",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "os",
+           "type": "string",
+           "label": "OS",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "browser",
+           "type": "string",
+           "label": "Browser",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "zone",
+         "type": "string",
+         "label": "Zone",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "device",
+         "type": "string",
+         "label": "Device",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "ipAddress",
+         "type": "string",
+         "label": "IP address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "geographicalContext",
+         "type": "object",
+         "label": "Geographical context",
+         "required": true,
+         "properties": [
+          {
+           "name": "city",
+           "type": "string",
+           "label": "City",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "state",
+           "type": "string",
+           "label": "State",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "country",
+           "type": "string",
+           "label": "Country",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "postalCode",
+           "type": "string",
+           "label": "Postal code",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context (deprecated)",
+           "required": true,
+           "properties": [
+            {
+             "name": "lan",
+             "type": "number",
+             "label": "Latitude",
+             "control_type": "number",
+             "required": true
+            },
+            {
+             "name": "lon",
+             "type": "number",
+             "label": "Longitude",
+             "control_type": "number",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "geolocation",
+           "type": "object",
+           "label": "Geolocation",
+           "required": true,
+           "properties": [
+            {
+             "name": "lan",
+             "type": "number",
+             "label": "Latitude",
+             "control_type": "number",
+             "required": true
+            },
+            {
+             "name": "lon",
+             "type": "number",
+             "label": "Longitude",
+             "control_type": "number",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "authenticationContext",
+       "type": "object",
+       "label": "Authentication context",
+       "required": true,
+       "properties": [
+        {
+         "name": "authenticationProvider",
+         "type": "string",
+         "label": "Authentication provider",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "credentialProvider",
+         "type": "string",
+         "label": "Credential provider",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "credentialType",
+         "type": "string",
+         "label": "Credential type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "interface",
+         "type": "string",
+         "label": "Interface",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "authenticationStep",
+         "type": "integer",
+         "label": "Authentication step",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "externalSessionId",
+         "type": "string",
+         "label": "External session ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "issuer",
+         "type": "object",
+         "label": "Issuer",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "displayMessage",
+       "type": "string",
+       "label": "Display message",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "eventType",
+       "type": "string",
+       "label": "Event type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "outcome",
+       "type": "object",
+       "label": "Outcome",
+       "required": true,
+       "properties": [
+        {
+         "name": "result",
+         "type": "string",
+         "label": "Result",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "reason",
+         "type": "string",
+         "label": "Reason",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "published",
+       "type": "date_time",
+       "label": "Published",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "securityContext",
+       "type": "object",
+       "label": "Security context",
+       "required": true,
+       "properties": [
+        {
+         "name": "asNumber",
+         "type": "integer",
+         "label": "As number",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "asOrg",
+         "type": "string",
+         "label": "As organisation",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isp",
+         "type": "string",
+         "label": "ISP",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "domain",
+         "type": "string",
+         "label": "Domain",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isProxy",
+         "type": "boolean",
+         "label": "Is proxy",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "isProxy",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "severity",
+       "type": "string",
+       "label": "Severity",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "debugContext",
+       "type": "object",
+       "label": "Debug context",
+       "required": true,
+       "properties": [
+        {
+         "name": "debugData",
+         "type": "object",
+         "label": "Debug data",
+         "required": true,
+         "properties": [
+          {
+           "name": "requestUri",
+           "type": "string",
+           "label": "Request URI",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "requestId",
+           "type": "string",
+           "label": "Request ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "url",
+           "type": "string",
+           "label": "URL",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "changedAttributes",
+           "type": "string",
+           "label": "Changed attributes",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "targetEventHookIds",
+           "type": "string",
+           "label": "Target event hook ids",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "legacyEventType",
+       "type": "string",
+       "label": "Legacy event type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "transaction",
+       "type": "object",
+       "label": "Transaction",
+       "required": true,
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "uuid",
+       "type": "string",
+       "label": "UUID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "request",
+       "type": "object",
+       "label": "Request",
+       "required": true,
+       "properties": [
+        {
+         "name": "ipChain",
+         "type": "array",
+         "label": "IP chain",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context",
+           "required": true,
+           "properties": [
+            {
+             "name": "city",
+             "type": "string",
+             "label": "City",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "state",
+             "type": "string",
+             "label": "State",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "country",
+             "type": "string",
+             "label": "Country",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "postalCode",
+             "type": "string",
+             "label": "Postal code",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "geographicalContext",
+             "type": "object",
+             "label": "Geographical context (deprecated)",
+             "required": true,
+             "properties": [
+              {
+               "name": "lan",
+               "type": "integer",
+               "label": "Latitude",
+               "control_type": "number",
+               "required": true
+              },
+              {
+               "name": "lon",
+               "type": "integer",
+               "label": "Longitude",
+               "control_type": "number",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "geolocation",
+             "type": "object",
+             "label": "Geolocation",
+             "required": true,
+             "properties": [
+              {
+               "name": "lan",
+               "type": "integer",
+               "label": "Latitude",
+               "control_type": "number",
+               "required": true
+              },
+              {
+               "name": "lon",
+               "type": "integer",
+               "label": "Longitude",
+               "control_type": "number",
+               "required": true
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "ip",
+           "type": "string",
+           "label": "IP",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "version",
+           "type": "string",
+           "label": "Version",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "source",
+           "type": "string",
+           "label": "Source",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "target",
+       "type": "array",
+       "label": "Target",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "alternateId",
+         "type": "string",
+         "label": "Alternate ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "detailEntry",
+         "type": "string",
+         "label": "Detail entry",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "scheduled_time",
+     "type": "date_time",
+     "label": "Scheduled time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "total_number_of_records",
+     "type": "integer",
+     "label": "Total number of records",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_batch",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "starting_offset",
+     "type": "integer",
+     "label": "Starting offset",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "ending_offset",
+     "type": "integer",
+     "label": "Ending offset",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Okta (Custom)",
+   "help": "Build your own Okta action with a HTTP request. The request will be authorized with your Okta connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "activate_people",
+   "title": "Activate user",
+   "description": "Activate user in Okta",
+   "help": "Activates an exiting user, and optionally sends them an account activation link via email. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action.Response is presen…",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of URL…"
+    },
+    {
+     "name": "sendEmail",
+     "type": "number",
+     "label": "Send Activation Email to User",
+     "control_type": "number",
+     "hint": "Default is true"
+    }
+   ],
+   "output": [
+    {
+     "name": "activationUrl",
+     "type": "string",
+     "label": "Activation URL",
+     "control_type": "url"
+    },
+    {
+     "name": "activationToken",
+     "type": "string",
+     "label": "Activation token",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "add_user_to_group",
+   "title": "Add user to group",
+   "description": "Adds an existing user to a group in Okta",
+   "help": "Requires Organization Administrator or Super Administrator roles to use this action.",
+   "input": [
+    {
+     "name": "groupId",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The internal Okta ID of the group to add the user to."
+    },
+    {
+     "name": "userId",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The internal Okta ID of the user to add to the group."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "assign_application",
+   "title": "Assign application to user",
+   "description": "Assign application to user in Okta",
+   "help": "Assigns an existing Okta user to an application. Credentials and profile are sent only when they have values. Requires the okta.apps.manage scope.",
+   "input": [
+    {
+     "name": "application_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Okta application ID. Use List applications to look up the ID."
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Okta user ID of the user to assign. Use Search users to look up the ID."
+    },
+    {
+     "name": "scope",
+     "type": "string",
+     "label": "Scope",
+     "control_type": "select",
+     "options": [
+      "USER"
+     ],
+     "toggle_field": {
+      "name": "scope",
+      "type": "string"
+     },
+     "hint": "Assignment scope for a direct user assignment. Use USER, or leave blank for Okta to determine it."
+    },
+    {
+     "name": "credentials",
+     "type": "object",
+     "label": "Credentials",
+     "properties": [
+      {
+       "name": "userName",
+       "type": "string",
+       "label": "Username",
+       "control_type": "text"
+      },
+      {
+       "name": "password",
+       "type": "object",
+       "label": "Password",
+       "properties": [
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "password",
+         "hint": "App password when the application requires one."
+        }
+       ]
+      }
+     ],
+     "hint": "App username and password when the application requires them. Omitted when empty."
+    },
+    {
+     "name": "profile",
+     "type": "string",
+     "label": "Profile",
+     "control_type": "code",
+     "hint": "App-specific assignment attributes as a JSON object. Okta does not define a shared profile schema. Omitted when empty."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "externalId",
+     "type": "string",
+     "label": "External ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastUpdated",
+     "type": "date_time",
+     "label": "Last updated",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "scope",
+     "type": "string",
+     "label": "Scope",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "statusChanged",
+     "type": "date_time",
+     "label": "Status changed",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "passwordChanged",
+     "type": "date_time",
+     "label": "Password changed",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "syncState",
+     "type": "string",
+     "label": "Sync state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastSync",
+     "type": "date_time",
+     "label": "Last sync",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "credentials",
+     "type": "object",
+     "label": "Credentials",
+     "required": true,
+     "properties": [
+      {
+       "name": "userName",
+       "type": "string",
+       "label": "User name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "profile",
+     "type": "object",
+     "label": "Profile",
+     "required": true
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "app",
+       "type": "object",
+       "label": "App",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "self",
+       "type": "object",
+       "label": "Self",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "_embedded",
+     "type": "object",
+     "label": "Embedded",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_people",
+   "title": "Create user",
+   "description": "Create user in Okta",
+   "help": "Creates a new user within Okta. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action.",
+   "input": [
+    {
+     "name": "profile",
+     "type": "object",
+     "label": "Profile",
+     "required": true,
+     "properties": [
+      {
+       "name": "firstName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastName",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Primary email ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "secondEmail",
+       "type": "string",
+       "label": "Secondary email ID",
+       "control_type": "text"
+      },
+      {
+       "name": "login",
+       "type": "string",
+       "label": "Username",
+       "control_type": "text",
+       "required": true,
+       "hint": "Must be an email"
+      },
+      {
+       "name": "middleName",
+       "type": "string",
+       "label": "Middle name",
+       "control_type": "text"
+      },
+      {
+       "name": "honorificPrefix",
+       "type": "string",
+       "label": "Honorific prefix",
+       "control_type": "text"
+      },
+      {
+       "name": "honorificSuffix",
+       "type": "string",
+       "label": "Honorific suffix",
+       "control_type": "text"
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "hint": "User's title, such as 'Vice President'"
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "nickName",
+       "type": "string",
+       "label": "Nick name",
+       "control_type": "text"
+      },
+      {
+       "name": "profileUrl",
+       "type": "string",
+       "label": "Profile URL",
+       "control_type": "text",
+       "hint": "URL of user's online profile"
+      },
+      {
+       "name": "primaryPhone",
+       "type": "string",
+       "label": "Primary phone",
+       "control_type": "text"
+      },
+      {
+       "name": "mobilePhone",
+       "type": "string",
+       "label": "Mobile phone",
+       "control_type": "text"
+      },
+      {
+       "name": "streetAddress",
+       "type": "string",
+       "label": "Street address",
+       "control_type": "text"
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text"
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text"
+      },
+      {
+       "name": "zipCode",
+       "type": "string",
+       "label": "Zip code",
+       "control_type": "text"
+      },
+      {
+       "name": "countryCode",
+       "type": "string",
+       "label": "Country code",
+       "control_type": "text",
+       "hint": "ISO 3166 format. Example: 'US' for 'United states'"
+      },
+      {
+       "name": "postalAddress",
+       "type": "string",
+       "label": "Postal address",
+       "control_type": "text"
+      },
+      {
+       "name": "preferredLanguage",
+       "type": "string",
+       "label": "Preferred language",
+       "control_type": "text"
+      },
+      {
+       "name": "locale",
+       "type": "string",
+       "label": "Locale",
+       "control_type": "text",
+       "hint": "A locale value is a concatenation of the ISO 639-1 two letter language code, an underscore, and the ISO 3166-1 2 letter country code. Example: ‘en_US’"
+      },
+      {
+       "name": "timezone",
+       "type": "string",
+       "label": "Timezone",
+       "control_type": "text"
+      },
+      {
+       "name": "userType",
+       "type": "string",
+       "label": "User type",
+       "control_type": "text",
+       "hint": "Example: 'Employee', 'Contractor'"
+      },
+      {
+       "name": "employeeNumber",
+       "type": "string",
+       "label": "Employee number",
+       "control_type": "text",
+       "hint": "Organization assigned unique identifier for the user"
+      },
+      {
+       "name": "costCenter",
+       "type": "string",
+       "label": "Cost center",
+       "control_type": "text",
+       "hint": "Name of a cost center assigned to user"
+      },
+      {
+       "name": "organization",
+       "type": "string",
+       "label": "Organization",
+       "control_type": "text",
+       "hint": "Name of user's organization"
+      },
+      {
+       "name": "division",
+       "type": "string",
+       "label": "Division",
+       "control_type": "text",
+       "hint": "Name of user's division"
+      },
+      {
+       "name": "department",
+       "type": "string",
+       "label": "Department",
+       "control_type": "text",
+       "hint": "Name of user's department"
+      },
+      {
+       "name": "managerId",
+       "type": "string",
+       "label": "Manager ID",
+       "control_type": "text",
+       "hint": "ID of user's manager"
+      },
+      {
+       "name": "manager",
+       "type": "string",
+       "label": "Manager",
+       "control_type": "text",
+       "hint": "Display name of user's manager"
+      }
+     ]
+    },
+    {
+     "name": "credentials",
+     "type": "object",
+     "label": "Credentials",
+     "properties": [
+      {
+       "name": "password",
+       "type": "object",
+       "label": "Password",
+       "required": true,
+       "properties": [
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "hint": "Must comply with the password policy defined within Okta. e.g. atleast 8 characters long, contain a uppercase, lowercase and a digit and must not contain user's login"
+        }
+       ]
+      },
+      {
+       "name": "recovery_question",
+       "type": "object",
+       "label": "Recovery question",
+       "properties": [
+        {
+         "name": "question",
+         "type": "string",
+         "label": "Question",
+         "control_type": "text"
+        },
+        {
+         "name": "answer",
+         "type": "string",
+         "label": "Answer",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "provider",
+       "type": "object",
+       "label": "Provider",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "hint": "Valid values are OKTA, ACTIVE_DIRECTORY,LDAP, FEDERATION, SOCIAL"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "groupIds",
+     "type": "array",
+     "label": "Group ID",
+     "of": "object",
+     "properties": [
+      {
+       "name": "groupIds",
+       "type": "string",
+       "label": "Group ID",
+       "control_type": "text",
+       "hint": "Hover over Directory -> Groups and select the required group. ID is at the end of URL"
+      }
+     ]
+    },
+    {
+     "name": "activate",
+     "type": "string",
+     "label": "Activate user",
+     "control_type": "text",
+     "hint": "Specify 'true' to activate user. Default is 'false'"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "activated",
+     "type": "date_time",
+     "label": "Activated time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "statusChanged",
+     "type": "date_time",
+     "label": "Status changed time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "lastLogin",
+     "type": "date_time",
+     "label": "Last login time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "lastUpdated",
+     "type": "date_time",
+     "label": "Last updated time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "passwordChanged",
+     "type": "date_time",
+     "label": "Password changed time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "credentials",
+     "type": "object",
+     "label": "Credentials",
+     "properties": [
+      {
+       "name": "recovery_question",
+       "type": "object",
+       "label": "Recovery question",
+       "properties": [
+        {
+         "name": "question",
+         "type": "string",
+         "label": "Question",
+         "control_type": "text"
+        },
+        {
+         "name": "answer",
+         "type": "string",
+         "label": "Answer",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "provider",
+       "type": "object",
+       "label": "Provider",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "hint": "Valid values are OKTA, ACTIVE_DIRECTORY,LDAP, FEDERATION, SOCIAL"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "suspend",
+       "type": "object",
+       "label": "Suspend",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "resetPassword",
+       "type": "object",
+       "label": "Reset password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "expirePassword",
+       "type": "object",
+       "label": "Expire password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "forgotPassword",
+       "type": "object",
+       "label": "Forgot password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "self",
+       "type": "object",
+       "label": "Self",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "changeRecoveryQuestion",
+       "type": "object",
+       "label": "Change recovery question",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "deactivate",
+       "type": "object",
+       "label": "Deactivate",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "changePassword",
+       "type": "object",
+       "label": "Change password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "reactivate",
+       "type": "object",
+       "label": "Reactivate",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "deactivate_people",
+   "title": "Deactivate user",
+   "description": "Deactivate user in Okta",
+   "help": "Deactivates an existing user. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of URL…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_people",
+   "title": "Delete user",
+   "description": "Delete user in Okta",
+   "help": "Deletes an existing, deactivated Okta user. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of URL…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "expire_user_password",
+   "title": "Expire an existing user password",
+   "description": "Expire an existing user’s password in Okta",
+   "help": "Expire an existing user’s password in Okta and optionally returns a temporary password. Requires Organization Administrator or Super Administrator roles to use this action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of the…"
+    },
+    {
+     "name": "tempPassword",
+     "type": "string",
+     "label": "Return temporary password",
+     "control_type": "text",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "tempPassword",
+      "type": "boolean"
+     },
+     "hint": "If set to true , sets the user's password to a temporary password and returns the temporary password. Allowed values are: true or false . Default is false ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_application_user",
+   "title": "Get assigned user for application",
+   "description": "Get assigned user for application in Okta",
+   "help": "Fetches a specific user assignment for an application. Returns the App User when assigned; application_assigned is false on 404. Requires the okta.apps.read scope.",
+   "input": [
+    {
+     "name": "application_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Okta application ID. Use List applications to look up the ID."
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Okta user ID of the assigned user. Use Search users to look up the ID."
+    }
+   ],
+   "output": [
+    {
+     "name": "application_assigned",
+     "type": "boolean",
+     "label": "Application assigned",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "application_assigned",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "externalId",
+     "type": "string",
+     "label": "External ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "lastUpdated",
+     "type": "date_time",
+     "label": "Last updated",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "scope",
+     "type": "string",
+     "label": "Scope",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "statusChanged",
+     "type": "date_time",
+     "label": "Status changed",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "passwordChanged",
+     "type": "date_time",
+     "label": "Password changed",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "syncState",
+     "type": "string",
+     "label": "Sync state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastSync",
+     "type": "date_time",
+     "label": "Last sync",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "credentials",
+     "type": "object",
+     "label": "Credentials",
+     "required": true,
+     "properties": [
+      {
+       "name": "userName",
+       "type": "string",
+       "label": "User name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "profile",
+     "type": "object",
+     "label": "Profile",
+     "required": true
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "app",
+       "type": "object",
+       "label": "App",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "user",
+       "type": "object",
+       "label": "User",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "self",
+       "type": "object",
+       "label": "Self",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "_embedded",
+     "type": "object",
+     "label": "Embedded",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_group_members",
+   "title": "Get group members",
+   "description": "Retrieves the list of members of a group in Okta",
+   "help": "Retrieves the list of users that are a member of an Okta group",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the group."
+    },
+    {
+     "name": "after",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "The token for continuing a previous list request on the next page. This should be set to the value of next page token from the previous response."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "hint": "The maximum group member number to return. Partial or empty results are possible if group member number is less than the input value. Acceptable values are 1 to 1000, inclusive. Default is 1000."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_groups_by_name",
+   "title": "Get groups by name",
+   "description": "Retrieves groups by name in Okta",
+   "help": "Matches groups starting with the given name.",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name of an Okta group"
+    }
+   ],
+   "output": [
+    {
+     "name": "groups",
+     "type": "array",
+     "label": "Groups",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Creation time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "lastUpdated",
+       "type": "date_time",
+       "label": "Last modification time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "lastMembershipUpdated",
+       "type": "date_time",
+       "label": "Last membership update time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "objectClass",
+       "type": "array",
+       "label": "Object class",
+       "of": "object",
+       "properties": [
+        {
+         "name": "objectClass",
+         "type": "string",
+         "label": "Object class",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      },
+      {
+       "name": "profile",
+       "type": "object",
+       "label": "Profile",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "description",
+         "type": "string",
+         "label": "Description",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "properties": [
+        {
+         "name": "logo",
+         "type": "array",
+         "label": "Logo",
+         "of": "object",
+         "properties": [
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "users",
+         "type": "object",
+         "label": "Users",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        },
+        {
+         "name": "apps",
+         "type": "object",
+         "label": "Apps",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_people_by_id",
+   "title": "Get user by ID",
+   "description": "Get user by ID in Okta",
+   "help": "Retrieves the account details of a specific user. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required user. The internal okta ID is at the end of URL…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_people_groups",
+   "title": "Get user groups",
+   "description": "Get user groups in Okta",
+   "help": "Retrieves the group memberships currently held by a specific user. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action.",
+   "input": [
+    {
+     "name": "user_id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of URL…"
+    },
+    {
+     "name": "after",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "The token for continuing a previous list request on the next page. This should be set to the value of next page token from the previous response."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "default": 10000,
+     "hint": "The maximum group number to return. Partial or empty results are possible if group number is less than the input value. Acceptable values are 1 to 10000, inclusive. Default is 10000."
+    }
+   ],
+   "output": [
+    {
+     "name": "token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text"
+    },
+    {
+     "name": "groups",
+     "type": "array",
+     "label": "Groups",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Creation time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "lastUpdated",
+       "type": "date_time",
+       "label": "Last modification time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "lastMembershipUpdated",
+       "type": "date_time",
+       "label": "Last membership update time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "objectClass",
+       "type": "array",
+       "label": "Object class",
+       "of": "object",
+       "properties": [
+        {
+         "name": "objectClass",
+         "type": "string",
+         "label": "Object class",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      },
+      {
+       "name": "profile",
+       "type": "object",
+       "label": "Profile",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "description",
+         "type": "string",
+         "label": "Description",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "properties": [
+        {
+         "name": "logo",
+         "type": "array",
+         "label": "Logo",
+         "of": "object",
+         "properties": [
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "users",
+         "type": "object",
+         "label": "Users",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        },
+        {
+         "name": "apps",
+         "type": "object",
+         "label": "Apps",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_recent_logon_events_by_ip_address",
+   "title": "Get recent log on events by IP address",
+   "description": "Get recent log on events by IP address in Okta",
+   "help": "Retrieves the most recent log on events for a specific source IP address. Limited to a maximum of 100 events from the last 12 hours.",
+   "input": [
+    {
+     "name": "ipaddress",
+     "type": "string",
+     "label": "IP Address",
+     "control_type": "text",
+     "required": true,
+     "hint": "The source IP address of the requested user log on events"
+    }
+   ],
+   "output": [
+    {
+     "name": "logon_events",
+     "type": "array",
+     "label": "Log on Events",
+     "of": "object",
+     "properties": [
+      {
+       "name": "version",
+       "type": "string",
+       "label": "Version",
+       "control_type": "text"
+      },
+      {
+       "name": "actor",
+       "type": "object",
+       "label": "Actor",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "alternateId",
+         "type": "string",
+         "label": "Alternate ID",
+         "control_type": "text"
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "detailEntry",
+         "type": "string",
+         "label": "Detail entry",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "client",
+       "type": "object",
+       "label": "Client",
+       "properties": [
+        {
+         "name": "userAgent",
+         "type": "object",
+         "label": "User agent",
+         "properties": [
+          {
+           "name": "rawUserAgent",
+           "type": "string",
+           "label": "Raw user agent",
+           "control_type": "text"
+          },
+          {
+           "name": "os",
+           "type": "string",
+           "label": "OS",
+           "control_type": "text"
+          },
+          {
+           "name": "browser",
+           "type": "string",
+           "label": "Browser",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "zone",
+         "type": "string",
+         "label": "Zone",
+         "control_type": "text"
+        },
+        {
+         "name": "device",
+         "type": "string",
+         "label": "Device",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "ipAddress",
+         "type": "string",
+         "label": "IP address",
+         "control_type": "text"
+        },
+        {
+         "name": "geographicalContext",
+         "type": "object",
+         "label": "Geographical context",
+         "properties": [
+          {
+           "name": "city",
+           "type": "string",
+           "label": "City",
+           "control_type": "text"
+          },
+          {
+           "name": "state",
+           "type": "string",
+           "label": "State",
+           "control_type": "text"
+          },
+          {
+           "name": "country",
+           "type": "string",
+           "label": "Country",
+           "control_type": "text"
+          },
+          {
+           "name": "postalCode",
+           "type": "string",
+           "label": "Postal code",
+           "control_type": "text"
+          },
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context",
+           "properties": [
+            {
+             "name": "lat",
+             "type": "integer",
+             "label": "Latitude",
+             "control_type": "number"
+            },
+            {
+             "name": "lon",
+             "type": "integer",
+             "label": "Longitude",
+             "control_type": "number"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "authenticationContext",
+       "type": "object",
+       "label": "Authentication context",
+       "properties": [
+        {
+         "name": "authenticationProvider",
+         "type": "string",
+         "label": "Authentication provider",
+         "control_type": "text"
+        },
+        {
+         "name": "credentialProvider",
+         "type": "string",
+         "label": "Credential provider",
+         "control_type": "text"
+        },
+        {
+         "name": "credentialType",
+         "type": "string",
+         "label": "Credential type",
+         "control_type": "text"
+        },
+        {
+         "name": "interface",
+         "type": "string",
+         "label": "Interface",
+         "control_type": "text"
+        },
+        {
+         "name": "authenticationStep",
+         "type": "integer",
+         "label": "Authentication step",
+         "control_type": "number"
+        },
+        {
+         "name": "externalSessionId",
+         "type": "string",
+         "label": "External session ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "displayMessage",
+       "type": "string",
+       "label": "Display message",
+       "control_type": "text"
+      },
+      {
+       "name": "eventType",
+       "type": "string",
+       "label": "Event type",
+       "control_type": "text"
+      },
+      {
+       "name": "outcome",
+       "type": "object",
+       "label": "Outcome",
+       "properties": [
+        {
+         "name": "result",
+         "type": "string",
+         "label": "Result",
+         "control_type": "text"
+        },
+        {
+         "name": "reason",
+         "type": "string",
+         "label": "Reason",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "published",
+       "type": "date_time",
+       "label": "Published time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "securityContext",
+       "type": "object",
+       "label": "Security context",
+       "properties": [
+        {
+         "name": "asNumber",
+         "type": "string",
+         "label": "As number",
+         "control_type": "text"
+        },
+        {
+         "name": "asOrg",
+         "type": "string",
+         "label": "As organisation",
+         "control_type": "text"
+        },
+        {
+         "name": "isp",
+         "type": "string",
+         "label": "ISP",
+         "control_type": "text"
+        },
+        {
+         "name": "domain",
+         "type": "string",
+         "label": "Domain",
+         "control_type": "text"
+        },
+        {
+         "name": "isProxy",
+         "type": "number",
+         "label": "Is proxy",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "severity",
+       "type": "string",
+       "label": "Severity",
+       "control_type": "text"
+      },
+      {
+       "name": "debugContext",
+       "type": "object",
+       "label": "Debug context",
+       "properties": [
+        {
+         "name": "debugData",
+         "type": "object",
+         "label": "Debug data",
+         "properties": [
+          {
+           "name": "requestUri",
+           "type": "string",
+           "label": "Request URI",
+           "control_type": "url"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "legacyEventType",
+       "type": "string",
+       "label": "Legacy event type",
+       "control_type": "text"
+      },
+      {
+       "name": "transaction",
+       "type": "object",
+       "label": "Transaction",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "uuid",
+       "type": "string",
+       "label": "Uuid",
+       "control_type": "text"
+      },
+      {
+       "name": "request",
+       "type": "object",
+       "label": "Request",
+       "properties": [
+        {
+         "name": "ipChain",
+         "type": "array",
+         "label": "IP chain",
+         "of": "object",
+         "properties": [
+          {
+           "name": "ip",
+           "type": "string",
+           "label": "IP",
+           "control_type": "text"
+          },
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context",
+           "properties": [
+            {
+             "name": "city",
+             "type": "string",
+             "label": "City",
+             "control_type": "text"
+            },
+            {
+             "name": "state",
+             "type": "string",
+             "label": "State",
+             "control_type": "text"
+            },
+            {
+             "name": "country",
+             "type": "string",
+             "label": "Country",
+             "control_type": "text"
+            },
+            {
+             "name": "postalCode",
+             "type": "string",
+             "label": "Postal code",
+             "control_type": "text"
+            },
+            {
+             "name": "geographicalContext",
+             "type": "object",
+             "label": "Geographical context",
+             "properties": [
+              {
+               "name": "lat",
+               "type": "integer",
+               "label": "Latitude",
+               "control_type": "number"
+              },
+              {
+               "name": "lon",
+               "type": "integer",
+               "label": "Longitude",
+               "control_type": "number"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "version",
+           "type": "string",
+           "label": "Version",
+           "control_type": "text"
+          },
+          {
+           "name": "source",
+           "type": "string",
+           "label": "Source",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "target",
+       "type": "array",
+       "label": "Target",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "alternateId",
+         "type": "string",
+         "label": "Alternate ID",
+         "control_type": "text"
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "detailEntry",
+         "type": "string",
+         "label": "Detail entry",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_recent_logon_events_by_user",
+   "title": "Get recent log on events by user",
+   "description": "Get recent log on events by user in Okta",
+   "help": "Retrieves the most recent log on events for a specific user. Limited to a maximum of 100 events from the last 12 hours.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "user_id",
+      "type": "string"
+     },
+     "hint": "Primary email address or the login username of the user."
+    }
+   ],
+   "output": [
+    {
+     "name": "logon_events",
+     "type": "array",
+     "label": "Log on Events",
+     "of": "object",
+     "properties": [
+      {
+       "name": "version",
+       "type": "string",
+       "label": "Version",
+       "control_type": "text"
+      },
+      {
+       "name": "actor",
+       "type": "object",
+       "label": "Actor",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "alternateId",
+         "type": "string",
+         "label": "Alternate ID",
+         "control_type": "text"
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "detailEntry",
+         "type": "string",
+         "label": "Detail entry",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "client",
+       "type": "object",
+       "label": "Client",
+       "properties": [
+        {
+         "name": "userAgent",
+         "type": "object",
+         "label": "User agent",
+         "properties": [
+          {
+           "name": "rawUserAgent",
+           "type": "string",
+           "label": "Raw user agent",
+           "control_type": "text"
+          },
+          {
+           "name": "os",
+           "type": "string",
+           "label": "OS",
+           "control_type": "text"
+          },
+          {
+           "name": "browser",
+           "type": "string",
+           "label": "Browser",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "zone",
+         "type": "string",
+         "label": "Zone",
+         "control_type": "text"
+        },
+        {
+         "name": "device",
+         "type": "string",
+         "label": "Device",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "ipAddress",
+         "type": "string",
+         "label": "IP address",
+         "control_type": "text"
+        },
+        {
+         "name": "geographicalContext",
+         "type": "object",
+         "label": "Geographical context",
+         "properties": [
+          {
+           "name": "city",
+           "type": "string",
+           "label": "City",
+           "control_type": "text"
+          },
+          {
+           "name": "state",
+           "type": "string",
+           "label": "State",
+           "control_type": "text"
+          },
+          {
+           "name": "country",
+           "type": "string",
+           "label": "Country",
+           "control_type": "text"
+          },
+          {
+           "name": "postalCode",
+           "type": "string",
+           "label": "Postal code",
+           "control_type": "text"
+          },
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context",
+           "properties": [
+            {
+             "name": "lat",
+             "type": "integer",
+             "label": "Latitude",
+             "control_type": "number"
+            },
+            {
+             "name": "lon",
+             "type": "integer",
+             "label": "Longitude",
+             "control_type": "number"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "authenticationContext",
+       "type": "object",
+       "label": "Authentication context",
+       "properties": [
+        {
+         "name": "authenticationProvider",
+         "type": "string",
+         "label": "Authentication provider",
+         "control_type": "text"
+        },
+        {
+         "name": "credentialProvider",
+         "type": "string",
+         "label": "Credential provider",
+         "control_type": "text"
+        },
+        {
+         "name": "credentialType",
+         "type": "string",
+         "label": "Credential type",
+         "control_type": "text"
+        },
+        {
+         "name": "interface",
+         "type": "string",
+         "label": "Interface",
+         "control_type": "text"
+        },
+        {
+         "name": "authenticationStep",
+         "type": "integer",
+         "label": "Authentication step",
+         "control_type": "number"
+        },
+        {
+         "name": "externalSessionId",
+         "type": "string",
+         "label": "External session ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "displayMessage",
+       "type": "string",
+       "label": "Display message",
+       "control_type": "text"
+      },
+      {
+       "name": "eventType",
+       "type": "string",
+       "label": "Event type",
+       "control_type": "text"
+      },
+      {
+       "name": "outcome",
+       "type": "object",
+       "label": "Outcome",
+       "properties": [
+        {
+         "name": "result",
+         "type": "string",
+         "label": "Result",
+         "control_type": "text"
+        },
+        {
+         "name": "reason",
+         "type": "string",
+         "label": "Reason",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "published",
+       "type": "date_time",
+       "label": "Published time",
+       "control_type": "date_time"
+      },
+      {
+       "name": "securityContext",
+       "type": "object",
+       "label": "Security context",
+       "properties": [
+        {
+         "name": "asNumber",
+         "type": "string",
+         "label": "As number",
+         "control_type": "text"
+        },
+        {
+         "name": "asOrg",
+         "type": "string",
+         "label": "As organisation",
+         "control_type": "text"
+        },
+        {
+         "name": "isp",
+         "type": "string",
+         "label": "ISP",
+         "control_type": "text"
+        },
+        {
+         "name": "domain",
+         "type": "string",
+         "label": "Domain",
+         "control_type": "text"
+        },
+        {
+         "name": "isProxy",
+         "type": "number",
+         "label": "Is proxy",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "severity",
+       "type": "string",
+       "label": "Severity",
+       "control_type": "text"
+      },
+      {
+       "name": "debugContext",
+       "type": "object",
+       "label": "Debug context",
+       "properties": [
+        {
+         "name": "debugData",
+         "type": "object",
+         "label": "Debug data",
+         "properties": [
+          {
+           "name": "requestUri",
+           "type": "string",
+           "label": "Request URI",
+           "control_type": "url"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "legacyEventType",
+       "type": "string",
+       "label": "Legacy event type",
+       "control_type": "text"
+      },
+      {
+       "name": "transaction",
+       "type": "object",
+       "label": "Transaction",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "uuid",
+       "type": "string",
+       "label": "Uuid",
+       "control_type": "text"
+      },
+      {
+       "name": "request",
+       "type": "object",
+       "label": "Request",
+       "properties": [
+        {
+         "name": "ipChain",
+         "type": "array",
+         "label": "IP chain",
+         "of": "object",
+         "properties": [
+          {
+           "name": "ip",
+           "type": "string",
+           "label": "IP",
+           "control_type": "text"
+          },
+          {
+           "name": "geographicalContext",
+           "type": "object",
+           "label": "Geographical context",
+           "properties": [
+            {
+             "name": "city",
+             "type": "string",
+             "label": "City",
+             "control_type": "text"
+            },
+            {
+             "name": "state",
+             "type": "string",
+             "label": "State",
+             "control_type": "text"
+            },
+            {
+             "name": "country",
+             "type": "string",
+             "label": "Country",
+             "control_type": "text"
+            },
+            {
+             "name": "postalCode",
+             "type": "string",
+             "label": "Postal code",
+             "control_type": "text"
+            },
+            {
+             "name": "geographicalContext",
+             "type": "object",
+             "label": "Geographical context",
+             "properties": [
+              {
+               "name": "lat",
+               "type": "integer",
+               "label": "Latitude",
+               "control_type": "number"
+              },
+              {
+               "name": "lon",
+               "type": "integer",
+               "label": "Longitude",
+               "control_type": "number"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "version",
+           "type": "string",
+           "label": "Version",
+           "control_type": "text"
+          },
+          {
+           "name": "source",
+           "type": "string",
+           "label": "Source",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "target",
+       "type": "array",
+       "label": "Target",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text"
+        },
+        {
+         "name": "alternateId",
+         "type": "string",
+         "label": "Alternate ID",
+         "control_type": "text"
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "detailEntry",
+         "type": "string",
+         "label": "Detail entry",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_applications",
+   "title": "List applications",
+   "description": "List applications in Okta",
+   "help": "Retrieves applications in the Okta org. Use next page token to fetch additional pages. Requires the okta.apps.read scope.",
+   "input": [
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "hint": "Maximum applications to return. Acceptable values are 1 to 200. Default is 200."
+    },
+    {
+     "name": "after",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "The token for continuing a previous list request on the next page. This should be set to the value of next page token from the previous response."
+    },
+    {
+     "name": "q",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "hint": "Finds applications whose name or label starts with this value."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter",
+     "control_type": "text",
+     "hint": "Okta filter expression, for example status eq \"ACTIVE\"."
+    },
+    {
+     "name": "includeNonDeleted",
+     "type": "boolean",
+     "label": "Include non-deleted",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "includeNonDeleted",
+      "type": "boolean"
+     },
+     "hint": "When true, include non-active applications that have not been deleted."
+    },
+    {
+     "name": "useOptimization",
+     "type": "boolean",
+     "label": "Use optimization",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "useOptimization",
+      "type": "boolean"
+     },
+     "hint": "When true, Okta may return an optimized application list."
+    }
+   ],
+   "output": [
+    {
+     "name": "applications",
+     "type": "array",
+     "label": "Applications",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "orn",
+       "type": "string",
+       "label": "ORN",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastUpdated",
+       "type": "date_time",
+       "label": "Last updated",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "signOnMode",
+       "type": "string",
+       "label": "Sign on mode",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "features",
+       "type": "array",
+       "label": "Features",
+       "required": true,
+       "of": "string"
+      },
+      {
+       "name": "accessibility",
+       "type": "object",
+       "label": "Accessibility",
+       "required": true,
+       "properties": [
+        {
+         "name": "selfService",
+         "type": "boolean",
+         "label": "Self service",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "selfService",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "errorRedirectUrl",
+         "type": "string",
+         "label": "Error redirect URL",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "loginRedirectUrl",
+         "type": "string",
+         "label": "Login redirect URL",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "visibility",
+       "type": "object",
+       "label": "Visibility",
+       "required": true,
+       "properties": [
+        {
+         "name": "autoLaunch",
+         "type": "boolean",
+         "label": "Auto launch",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "autoLaunch",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "autoSubmitToolbar",
+         "type": "boolean",
+         "label": "Auto submit toolbar",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "autoSubmitToolbar",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "hide",
+         "type": "object",
+         "label": "Hide",
+         "required": true,
+         "properties": [
+          {
+           "name": "iOS",
+           "type": "boolean",
+           "label": "iOS",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "iOS",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "web",
+           "type": "boolean",
+           "label": "Web",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "web",
+            "type": "boolean"
+           }
+          }
+         ]
+        },
+        {
+         "name": "appLinks",
+         "type": "object",
+         "label": "App links",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "credentials",
+       "type": "object",
+       "label": "Credentials",
+       "required": true,
+       "properties": [
+        {
+         "name": "scheme",
+         "type": "string",
+         "label": "Scheme",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "revealPassword",
+         "type": "boolean",
+         "label": "Reveal password",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "revealPassword",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "userNameTemplate",
+         "type": "object",
+         "label": "User name template",
+         "required": true,
+         "properties": [
+          {
+           "name": "template",
+           "type": "string",
+           "label": "Template",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "pushStatus",
+           "type": "string",
+           "label": "Push status",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "signing",
+         "type": "object",
+         "label": "Signing",
+         "required": true,
+         "properties": [
+          {
+           "name": "kid",
+           "type": "string",
+           "label": "Kid",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "oauthClient",
+         "type": "object",
+         "label": "Oauth client",
+         "required": true,
+         "properties": [
+          {
+           "name": "autoKeyRotation",
+           "type": "boolean",
+           "label": "Auto key rotation",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "autoKeyRotation",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "client_id",
+           "type": "string",
+           "label": "Client ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "pkce_required",
+           "type": "boolean",
+           "label": "Pkce required",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "pkce_required",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "token_endpoint_auth_method",
+           "type": "string",
+           "label": "Token endpoint auth method",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "settings",
+       "type": "object",
+       "label": "Settings",
+       "required": true,
+       "properties": [
+        {
+         "name": "emOptInStatus",
+         "type": "string",
+         "label": "Em opt in status",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "implicitAssignment",
+         "type": "boolean",
+         "label": "Implicit assignment",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "implicitAssignment",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "manualProvisioning",
+         "type": "boolean",
+         "label": "Manual provisioning",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "manualProvisioning",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "app",
+         "type": "object",
+         "label": "App",
+         "required": true
+        },
+        {
+         "name": "notes",
+         "type": "object",
+         "label": "Notes",
+         "required": true,
+         "properties": [
+          {
+           "name": "admin",
+           "type": "string",
+           "label": "Admin",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "enduser",
+           "type": "string",
+           "label": "Enduser",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "notifications",
+         "type": "object",
+         "label": "Notifications",
+         "required": true,
+         "properties": [
+          {
+           "name": "vpn",
+           "type": "object",
+           "label": "Vpn",
+           "required": true,
+           "properties": [
+            {
+             "name": "network",
+             "type": "object",
+             "label": "Network",
+             "required": true,
+             "properties": [
+              {
+               "name": "connection",
+               "type": "string",
+               "label": "Connection",
+               "control_type": "text",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "helpUrl",
+             "type": "string",
+             "label": "Help URL",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "message",
+             "type": "string",
+             "label": "Message",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "signOn",
+         "type": "object",
+         "label": "Sign on",
+         "required": true,
+         "properties": [
+          {
+           "name": "loginUrl",
+           "type": "string",
+           "label": "Login URL",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "redirectUrl",
+           "type": "string",
+           "label": "Redirect URL",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "ssoAcsUrl",
+           "type": "string",
+           "label": "SSO ACS URL",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "audience",
+           "type": "string",
+           "label": "Audience",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "destination",
+           "type": "string",
+           "label": "Destination",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "recipient",
+           "type": "string",
+           "label": "Recipient",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "assertionSigned",
+           "type": "boolean",
+           "label": "Assertion signed",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "assertionSigned",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "responseSigned",
+           "type": "boolean",
+           "label": "Response signed",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "responseSigned",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "honorForceAuthn",
+           "type": "boolean",
+           "label": "Honor force authn",
+           "control_type": "checkbox",
+           "required": true,
+           "toggle_field": {
+            "name": "honorForceAuthn",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "signatureAlgorithm",
+           "type": "string",
+           "label": "Signature algorithm",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "digestAlgorithm",
+           "type": "string",
+           "label": "Digest algorithm",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "subjectNameIdFormat",
+           "type": "string",
+           "label": "Subject name ID format",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "subjectNameIdTemplate",
+           "type": "string",
+           "label": "Subject name ID template",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "defaultRelayState",
+           "type": "string",
+           "label": "Default relay state",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "oauthClient",
+         "type": "object",
+         "label": "Oauth client",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "licensing",
+       "type": "object",
+       "label": "Licensing",
+       "required": true,
+       "properties": [
+        {
+         "name": "seatCount",
+         "type": "integer",
+         "label": "Seat count",
+         "control_type": "integer",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "profile",
+       "type": "object",
+       "label": "Profile",
+       "required": true
+      },
+      {
+       "name": "universalLogout",
+       "type": "object",
+       "label": "Universal logout",
+       "required": true,
+       "properties": [
+        {
+         "name": "status",
+         "type": "string",
+         "label": "Status",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "protocol",
+         "type": "string",
+         "label": "Protocol",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "identityStack",
+         "type": "string",
+         "label": "Identity stack",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "supportType",
+         "type": "string",
+         "label": "Support type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "logo",
+         "type": "array",
+         "label": "Logo",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "appLinks",
+         "type": "array",
+         "label": "App links",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "users",
+         "type": "object",
+         "label": "Users",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "groups",
+         "type": "object",
+         "label": "Groups",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "self",
+         "type": "object",
+         "label": "Self",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "deactivate",
+         "type": "object",
+         "label": "Deactivate",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "accessPolicy",
+         "type": "object",
+         "label": "Access policy",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "help",
+         "type": "object",
+         "label": "Help",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "metadata",
+         "type": "object",
+         "label": "Metadata",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "policies",
+         "type": "object",
+         "label": "Policies",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "profileEnrollment",
+         "type": "object",
+         "label": "Profile enrollment",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "uploadLogo",
+         "type": "object",
+         "label": "Upload logo",
+         "required": true,
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "clientCredentials",
+         "type": "array",
+         "label": "Client credentials",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "next_page_token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "list_applications_assigned_to_people",
+   "title": "List applications assigned to user",
+   "description": "List applications assigned to user in Okta",
+   "help": "Retrieves the list of applications that a specific user has been granted",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of URL…"
+    },
+    {
+     "name": "after",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "The token for continuing a previous list request on the next page. This should be set to the value of next page token from the previous response."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "hint": "The maximum application number to return. Partial or empty results are possible if application number is less than the input value. Acceptable values are 1 to 500, inclusive. Default is 50."
+    }
+   ],
+   "output": [
+    {
+     "name": "token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text"
+    },
+    {
+     "name": "userapplications",
+     "type": "array",
+     "label": "User applications",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Label",
+       "control_type": "text"
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      },
+      {
+       "name": "lastUpdated",
+       "type": "date_time",
+       "label": "Last updated",
+       "control_type": "date_time"
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Created",
+       "control_type": "date_time"
+      },
+      {
+       "name": "accessibility",
+       "type": "object",
+       "label": "Accessibility",
+       "properties": [
+        {
+         "name": "selfService",
+         "type": "number",
+         "label": "Self service",
+         "control_type": "number"
+        },
+        {
+         "name": "errorRedirectUrl",
+         "type": "string",
+         "label": "Error redirect URL",
+         "control_type": "url"
+        },
+        {
+         "name": "loginRedirectUrl",
+         "type": "string",
+         "label": "Login redirect URL",
+         "control_type": "url"
+        }
+       ]
+      },
+      {
+       "name": "visibility",
+       "type": "object",
+       "label": "Visibility",
+       "properties": [
+        {
+         "name": "autoSubmitToolbar",
+         "type": "number",
+         "label": "Auto submit toolbar",
+         "control_type": "number"
+        },
+        {
+         "name": "hide",
+         "type": "object",
+         "label": "Hide",
+         "properties": [
+          {
+           "name": "iOS",
+           "type": "number",
+           "label": "IOS",
+           "control_type": "number"
+          },
+          {
+           "name": "web",
+           "type": "number",
+           "label": "Web",
+           "control_type": "number"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "properties": [
+        {
+         "name": "logo",
+         "type": "array",
+         "label": "Logo",
+         "of": "object",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text"
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "appLinks",
+         "type": "array",
+         "label": "App links",
+         "of": "object",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text"
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "users",
+         "type": "object",
+         "label": "Users",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        },
+        {
+         "name": "groups",
+         "type": "object",
+         "label": "Groups",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        },
+        {
+         "name": "self",
+         "type": "object",
+         "label": "Self",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        },
+        {
+         "name": "deactivate",
+         "type": "object",
+         "label": "Deactivate",
+         "properties": [
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "url"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "signOnMode",
+       "type": "string",
+       "label": "Sign on mode",
+       "control_type": "text"
+      },
+      {
+       "name": "credentials",
+       "type": "object",
+       "label": "Credentials",
+       "properties": [
+        {
+         "name": "schema",
+         "type": "string",
+         "label": "Schema",
+         "control_type": "text"
+        },
+        {
+         "name": "userNameTemplate",
+         "type": "object",
+         "label": "User name template",
+         "properties": [
+          {
+           "name": "template",
+           "type": "string",
+           "label": "Template",
+           "control_type": "text"
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "revealPassword",
+         "type": "number",
+         "label": "Reveal password",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "settings",
+       "type": "object",
+       "label": "Settings",
+       "properties": [
+        {
+         "name": "identityStoreId",
+         "type": "string",
+         "label": "Identity store ID",
+         "control_type": "text"
+        },
+        {
+         "name": "implicitAssignment",
+         "type": "number",
+         "label": "Implicit assignment",
+         "control_type": "number"
+        },
+        {
+         "name": "inlineHookId",
+         "type": "string",
+         "label": "Inline hook ID",
+         "control_type": "text"
+        },
+        {
+         "name": "notes",
+         "type": "object",
+         "label": "Notes",
+         "properties": [
+          {
+           "name": "admin",
+           "type": "string",
+           "label": "Admin",
+           "control_type": "text"
+          },
+          {
+           "name": "enduser",
+           "type": "string",
+           "label": "Enduser",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "notifications",
+         "type": "object",
+         "label": "Notifications",
+         "properties": [
+          {
+           "name": "vpn",
+           "type": "object",
+           "label": "Vpn",
+           "properties": [
+            {
+             "name": "network",
+             "type": "object",
+             "label": "Network",
+             "properties": [
+              {
+               "name": "connection",
+               "type": "string",
+               "label": "Connection",
+               "control_type": "text"
+              },
+              {
+               "name": "exclude",
+               "type": "array",
+               "label": "Exclude",
+               "of": "string"
+              },
+              {
+               "name": "include",
+               "type": "array",
+               "label": "Include",
+               "of": "string"
+              }
+             ]
+            },
+            {
+             "name": "helpUrl",
+             "type": "string",
+             "label": "Help URL",
+             "control_type": "url"
+            },
+            {
+             "name": "message",
+             "type": "string",
+             "label": "Message",
+             "control_type": "text"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "signOn",
+         "type": "object",
+         "label": "Sign on",
+         "properties": [
+          {
+           "name": "loginUrl",
+           "type": "string",
+           "label": "Login URL",
+           "control_type": "url"
+          },
+          {
+           "name": "redirectUrl",
+           "type": "string",
+           "label": "Redirect URL",
+           "control_type": "url"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "_embedded",
+       "type": "object",
+       "label": "Embedded",
+       "properties": [
+        {
+         "name": "user",
+         "type": "object",
+         "label": "User",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "externalId",
+           "type": "string",
+           "label": "External ID",
+           "control_type": "text"
+          },
+          {
+           "name": "created",
+           "type": "date_time",
+           "label": "Created",
+           "control_type": "date_time"
+          },
+          {
+           "name": "lastUpdated",
+           "type": "date_time",
+           "label": "Last updated",
+           "control_type": "date_time"
+          },
+          {
+           "name": "scope",
+           "type": "string",
+           "label": "Scope",
+           "control_type": "text"
+          },
+          {
+           "name": "status",
+           "type": "string",
+           "label": "Status",
+           "control_type": "text"
+          },
+          {
+           "name": "statusChanged",
+           "type": "date_time",
+           "label": "Status changed",
+           "control_type": "date_time"
+          },
+          {
+           "name": "passwordChanged",
+           "type": "date_time",
+           "label": "Password changed",
+           "control_type": "date_time"
+          },
+          {
+           "name": "syncState",
+           "type": "string",
+           "label": "Sync state",
+           "control_type": "text"
+          },
+          {
+           "name": "lastSync",
+           "type": "string",
+           "label": "Last sync",
+           "control_type": "text"
+          },
+          {
+           "name": "credentials",
+           "type": "object",
+           "label": "Credentials",
+           "properties": [
+            {
+             "name": "username",
+             "type": "string",
+             "label": "Username",
+             "control_type": "text"
+            }
+           ]
+          },
+          {
+           "name": "_links",
+           "type": "object",
+           "label": "Links",
+           "properties": [
+            {
+             "name": "app",
+             "type": "object",
+             "label": "App",
+             "properties": [
+              {
+               "name": "href",
+               "type": "string",
+               "label": "Href",
+               "control_type": "url"
+              }
+             ]
+            },
+            {
+             "name": "user",
+             "type": "object",
+             "label": "User",
+             "properties": [
+              {
+               "name": "href",
+               "type": "string",
+               "label": "Href",
+               "control_type": "url"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_assigned_applications",
+   "title": "List applications assigned to me",
+   "description": "List applications assigned to the authenticated user in Okta",
+   "help": "Retrieves application links assigned to the authenticated user ( me ). Does not work with OAuth 2.0 client credentials connections. Requires the okta.users.read scope.",
+   "input": [],
+   "output": [
+    {
+     "name": "total_results",
+     "type": "integer",
+     "label": "Total results",
+     "control_type": "integer"
+    },
+    {
+     "name": "applications",
+     "type": "array",
+     "label": "Applications",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "appInstanceId",
+       "type": "string",
+       "label": "App instance ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "appName",
+       "type": "string",
+       "label": "App name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "linkUrl",
+       "type": "string",
+       "label": "Link URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "logoUrl",
+       "type": "string",
+       "label": "Logo URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "hidden",
+       "type": "boolean",
+       "label": "Hidden",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "hidden",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "sortOrder",
+       "type": "integer",
+       "label": "Sort order",
+       "control_type": "integer"
+      },
+      {
+       "name": "credentialsSetup",
+       "type": "boolean",
+       "label": "Credentials setup",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "credentialsSetup",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "appAssignmentId",
+       "type": "string",
+       "label": "App assignment ID",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "remove_user_from_group",
+   "title": "Remove user from group",
+   "description": "Removes an existing user from a group in Okta",
+   "help": "Requires Organization Administrator or Super Administrator roles to use this action.",
+   "input": [
+    {
+     "name": "groupId",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The internal Okta ID of the group which contains the user to be removed."
+    },
+    {
+     "name": "userId",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The internal Okta ID of the user to remove from the group."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "reset_forgotten_user_password",
+   "title": "Reset forgotten user password",
+   "description": "Reset an existing user’s forgotten password in Okta",
+   "help": "Resets an existing user’s forgotten password and optionally sends them the one-time token (OTT) link via email. Please note that the user must be in ACTIVE state and will be required to validate their security question's answer when visiting the reset link. User’s state will still remain ACTIVE in t…",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of the…"
+    },
+    {
+     "name": "sendEmail",
+     "type": "string",
+     "label": "Send forgotten password email to user",
+     "control_type": "text",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "sendEmail",
+      "type": "boolean"
+     },
+     "hint": "Sends a forgotten password email to the user if set to true . User needs to validate by answering the security question before setting the new password. If set to false , returns a link for the user t…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "reset_user_mfa",
+   "title": "Reset MFA factors for user",
+   "description": "Reset all MFA factors for an existing user in Okta",
+   "help": "Resets all MFA factors for the specified user. All MFA factor enrollments will return to the unenrolled state. Note that this does not deactivate the user—their status remains ACTIVE . This action requires Organization Admin or Super Admin roles.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of the…"
+    }
+   ],
+   "output": [
+    {
+     "name": "factors_reset",
+     "type": "number",
+     "label": "Factors reset",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "reset_user_password",
+   "title": "Reset user password",
+   "description": "Reset user password in Okta",
+   "help": "Resets an existing user’s password and optionally sends them the one-time token (OTT) link via email. Please note that the user’s state will be changed to RECOVERY state and the user will not be able to login or initiate a forgotten password flow until they complete the reset flow. Requires Organiza…",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Go to Directory -> People and select the required user. The internal okta ID is at the end of URL."
+    },
+    {
+     "name": "sendEmail",
+     "type": "string",
+     "label": "Send reset password email to user",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "sendEmail",
+      "type": "boolean"
+     },
+     "hint": "Sends a reset password email to the user if set to true . If set to false , returns a link for the user to reset their password in the response. Allowed values are: true or false . Default is true ."
+    }
+   ],
+   "output": [
+    {
+     "name": "resetPasswordUrl",
+     "type": "string",
+     "label": "Password reset URL",
+     "control_type": "url"
+    }
+   ]
+  },
+  {
+   "name": "revoke_user_sessions",
+   "title": "Revoke user sessions",
+   "description": "Revoke sessions for a user in Okta",
+   "help": "Revokes all IdP sessions for the user and, by default, OAuth tokens issued through Okta. OAuth connections need the okta.sessions.manage scope. Requires Organization Administrator or Super Administrator roles to use this action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of the…"
+    },
+    {
+     "name": "oauthTokens",
+     "type": "number",
+     "label": "Revoke OAuth tokens",
+     "control_type": "checkbox",
+     "default": true,
+     "hint": "When yes, also revokes OAuth tokens issued through Okta. Defaults to yes."
+    }
+   ],
+   "output": [
+    {
+     "name": "revoked",
+     "type": "number",
+     "label": "Revoked",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "search_users",
+   "title": "Search Users",
+   "description": "Search users in Okta",
+   "help": "Fetches all relevant users based on the search parameters provided. Leave it empty to list all users. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action.",
+   "input": [
+    {
+     "name": "search_filter",
+     "type": "object",
+     "label": "Search condition",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_login",
+       "type": "string",
+       "label": "Login",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_firstName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_lastName",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_nickName",
+       "type": "string",
+       "label": "Nick name",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_secondEmail",
+       "type": "string",
+       "label": "Second email",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_profileUrl",
+       "type": "string",
+       "label": "Profile URL",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_preferredLanguage",
+       "type": "string",
+       "label": "Preferred language",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_userType",
+       "type": "string",
+       "label": "User type",
+       "control_type": "text"
+      },
+      {
+       "name": "type_id",
+       "type": "string",
+       "label": "Type ID",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_organization",
+       "type": "string",
+       "label": "Organization",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_division",
+       "type": "string",
+       "label": "Division",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_department",
+       "type": "string",
+       "label": "Department",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_costCenter",
+       "type": "string",
+       "label": "Cost center",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_employeeNumber",
+       "type": "string",
+       "label": "Employee number",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_mobilePhone",
+       "type": "string",
+       "label": "Mobile phone",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_primaryPhone",
+       "type": "string",
+       "label": "Primary phone",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_streetAddress",
+       "type": "string",
+       "label": "Street address",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_zipCode",
+       "type": "string",
+       "label": "Zip code",
+       "control_type": "text"
+      },
+      {
+       "name": "profile_countryCode",
+       "type": "string",
+       "label": "Country code",
+       "control_type": "text"
+      },
+      {
+       "name": "created",
+       "type": "object",
+       "label": "Created",
+       "properties": [
+        {
+         "name": "from",
+         "type": "date_time",
+         "label": "From",
+         "control_type": "date_time"
+        },
+        {
+         "name": "to",
+         "type": "date_time",
+         "label": "To",
+         "control_type": "date_time"
+        }
+       ]
+      },
+      {
+       "name": "activated",
+       "type": "object",
+       "label": "Activated",
+       "properties": [
+        {
+         "name": "from",
+         "type": "date_time",
+         "label": "From",
+         "control_type": "date_time"
+        },
+        {
+         "name": "to",
+         "type": "date_time",
+         "label": "To",
+         "control_type": "date_time"
+        }
+       ]
+      },
+      {
+       "name": "statusChanged",
+       "type": "object",
+       "label": "Status changed",
+       "properties": [
+        {
+         "name": "from",
+         "type": "date_time",
+         "label": "From",
+         "control_type": "date_time"
+        },
+        {
+         "name": "to",
+         "type": "date_time",
+         "label": "To",
+         "control_type": "date_time"
+        }
+       ]
+      },
+      {
+       "name": "lastUpdated",
+       "type": "object",
+       "label": "Last updated",
+       "properties": [
+        {
+         "name": "from",
+         "type": "date_time",
+         "label": "From",
+         "control_type": "date_time"
+        },
+        {
+         "name": "to",
+         "type": "date_time",
+         "label": "To",
+         "control_type": "date_time"
+        }
+       ]
+      }
+     ],
+     "hint": "Enter the search parameter values."
+    },
+    {
+     "name": "search_query",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Provide the search query using filtering expression to search user properties. For example, profile.occupation eq \"Leader\". Click here to know more about filtering expressions. Entering search query o…"
+    },
+    {
+     "name": "pagination_settings",
+     "type": "object",
+     "label": "Pagination",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "integer",
+       "hint": "Enter the maximum number of records to return in a single fetch. Minimum is 1 and maximum is 200"
+      },
+      {
+       "name": "sortBy",
+       "type": "string",
+       "label": "Sort by",
+       "control_type": "select",
+       "options": [
+        "id",
+        "status",
+        "created",
+        "activated",
+        "statusChanged",
+        "lastUpdated",
+        "profile.login",
+        "profile.firstName",
+        "profile.lastName",
+        "profile.nickName",
+        "profile.displayName",
+        "profile.email",
+        "profile.secondEmail",
+        "profile.profileUrl",
+        "profile.preferredLanguage",
+        "profile.userType",
+        "type.id",
+        "profile.organization",
+        "profile.title",
+        "profile.division",
+        "profile.department",
+        "profile.costCenter",
+        "profile.employeeNumber",
+        "profile.mobilePhone",
+        "profile.primaryPhone",
+        "profile.streetAddress",
+        "profile.city",
+        "profile.state",
+        "profile.zipCode",
+        "profile.countryCode"
+       ],
+       "toggle_field": {
+        "name": "sortBy",
+        "type": "string"
+       },
+       "hint": "Select the field to sort by. For example, Last name. Sorting works only when the search expression is provided."
+      },
+      {
+       "name": "sortOrder",
+       "type": "string",
+       "label": "Sort order",
+       "control_type": "select",
+       "options": [
+        "asc",
+        "desc"
+       ],
+       "toggle_field": {
+        "name": "sortOrder",
+        "type": "string"
+       },
+       "hint": "Specify the sort order, either ascending or descending. Sorting works only when the search expression is provided."
+      },
+      {
+       "name": "next_page_url",
+       "type": "string",
+       "label": "Next page URL",
+       "control_type": "url",
+       "hint": "Provide the next page URL here to paginate and fetch all records. If provided, this will override all other search parameters provided in this action and will directly fetch the next page of the previ…"
+      }
+     ]
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "suspend_user",
+   "title": "Suspend user",
+   "description": "Suspends an existing user in Okta",
+   "help": "Suspends an existing user in Okta. This operation can only be performed on users with an ACTIVE status. The user has a status of SUSPENDED when the process is complete. Requires Organization Administrator or Super Administrator roles to use this action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of the…"
+    }
+   ],
+   "output": [
+    {
+     "name": "suspended",
+     "type": "number",
+     "label": "Suspended",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "unsuspend_user",
+   "title": "Unsuspend user",
+   "description": "Unsuspend an existing user in Okta",
+   "help": "Unsuspend an existing user in Okta. This operation can only be performed on users with an SUSPENDED status. The user has a status of ACTIVE when the process is complete. Requires Organization Administrator or Super Administrator roles to use this action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal okta ID or their login username. Hover over Directory -> People and select the required User. The internal okta ID is at the end of the…"
+    }
+   ],
+   "output": [
+    {
+     "name": "unsuspended",
+     "type": "number",
+     "label": "Unsuspended",
+     "control_type": "checkbox"
+    }
+   ]
+  },
+  {
+   "name": "update_people",
+   "title": "Update user",
+   "description": "Update user in Okta",
+   "help": "Updates one or more account attributes of an existing user. The API key entered in the connection details must have been created by an administrator with either the 'Organization Administrator' or 'Super Administrator' entitlements to use this action. Deactivated user cannot be updated",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Unique ID of the target user, which can be either their internal Okta ID or their login username. Hover over Directory -> People and select the required User. The internal Okta ID is at the end of URL…"
+    },
+    {
+     "name": "profile",
+     "type": "object",
+     "label": "Profile",
+     "properties": [
+      {
+       "name": "firstName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "lastName",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Primary email ID",
+       "control_type": "text"
+      },
+      {
+       "name": "secondEmail",
+       "type": "string",
+       "label": "Secondary email ID",
+       "control_type": "text"
+      },
+      {
+       "name": "login",
+       "type": "string",
+       "label": "Username",
+       "control_type": "text",
+       "hint": "Must be an email"
+      },
+      {
+       "name": "middleName",
+       "type": "string",
+       "label": "Middle name",
+       "control_type": "text"
+      },
+      {
+       "name": "honorificPrefix",
+       "type": "string",
+       "label": "Honorific prefix",
+       "control_type": "text"
+      },
+      {
+       "name": "honorificSuffix",
+       "type": "string",
+       "label": "Honorific suffix",
+       "control_type": "text"
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "hint": "User's title, such as 'Vice President'"
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "nickName",
+       "type": "string",
+       "label": "Nick name",
+       "control_type": "text"
+      },
+      {
+       "name": "profileUrl",
+       "type": "string",
+       "label": "Profile URL",
+       "control_type": "text",
+       "hint": "URL of user's online profile"
+      },
+      {
+       "name": "primaryPhone",
+       "type": "string",
+       "label": "Primary phone",
+       "control_type": "text"
+      },
+      {
+       "name": "mobilePhone",
+       "type": "string",
+       "label": "Mobile phone",
+       "control_type": "text"
+      },
+      {
+       "name": "streetAddress",
+       "type": "string",
+       "label": "Street address",
+       "control_type": "text"
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text"
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text"
+      },
+      {
+       "name": "zipCode",
+       "type": "string",
+       "label": "Zip code",
+       "control_type": "text"
+      },
+      {
+       "name": "countryCode",
+       "type": "string",
+       "label": "Country code",
+       "control_type": "text",
+       "hint": "ISO 3166 format. Example: 'US' for 'United states'"
+      },
+      {
+       "name": "postalAddress",
+       "type": "string",
+       "label": "Postal address",
+       "control_type": "text"
+      },
+      {
+       "name": "preferredLanguage",
+       "type": "string",
+       "label": "Preferred language",
+       "control_type": "text"
+      },
+      {
+       "name": "locale",
+       "type": "string",
+       "label": "Locale",
+       "control_type": "text",
+       "hint": "A locale value is a concatenation of the ISO 639-1 two letter language code, an underscore, and the ISO 3166-1 2 letter country code. Example: ‘en_US’"
+      },
+      {
+       "name": "timezone",
+       "type": "string",
+       "label": "Timezone",
+       "control_type": "text"
+      },
+      {
+       "name": "userType",
+       "type": "string",
+       "label": "User type",
+       "control_type": "text",
+       "hint": "Example: 'Employee', 'Contractor'"
+      },
+      {
+       "name": "employeeNumber",
+       "type": "string",
+       "label": "Employee number",
+       "control_type": "text",
+       "hint": "Organization assigned unique identifier for the user"
+      },
+      {
+       "name": "costCenter",
+       "type": "string",
+       "label": "Cost center",
+       "control_type": "text",
+       "hint": "Name of a cost center assigned to user"
+      },
+      {
+       "name": "organization",
+       "type": "string",
+       "label": "Organization",
+       "control_type": "text",
+       "hint": "Name of user's organization"
+      },
+      {
+       "name": "division",
+       "type": "string",
+       "label": "Division",
+       "control_type": "text",
+       "hint": "Name of user's division"
+      },
+      {
+       "name": "department",
+       "type": "string",
+       "label": "Department",
+       "control_type": "text",
+       "hint": "Name of user's department"
+      },
+      {
+       "name": "managerId",
+       "type": "string",
+       "label": "Manager ID",
+       "control_type": "text",
+       "hint": "ID of user's manager"
+      },
+      {
+       "name": "manager",
+       "type": "string",
+       "label": "Manager",
+       "control_type": "text",
+       "hint": "Display name of user's manager"
+      }
+     ]
+    },
+    {
+     "name": "credentials",
+     "type": "object",
+     "label": "Credentials",
+     "properties": [
+      {
+       "name": "password",
+       "type": "object",
+       "label": "Password",
+       "properties": [
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "hint": "Must comply with the password policy defined within Okta. e.g. atleast 8 characters long, contain a uppercase, lowercase and a digit and must not contain user's login"
+        }
+       ]
+      },
+      {
+       "name": "recovery_question",
+       "type": "object",
+       "label": "Recovery question",
+       "properties": [
+        {
+         "name": "question",
+         "type": "string",
+         "label": "Question",
+         "control_type": "text"
+        },
+        {
+         "name": "answer",
+         "type": "string",
+         "label": "Answer",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "provider",
+       "type": "object",
+       "label": "Provider",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "hint": "Valid values are OKTA, ACTIVE_DIRECTORY,LDAP, FEDERATION, SOCIAL"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "activated",
+     "type": "date_time",
+     "label": "Activated time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "statusChanged",
+     "type": "date_time",
+     "label": "Status changed time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "lastLogin",
+     "type": "date_time",
+     "label": "Last login time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "lastUpdated",
+     "type": "date_time",
+     "label": "Last updated time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "passwordChanged",
+     "type": "date_time",
+     "label": "Password changed time",
+     "control_type": "date_time"
+    },
+    {
+     "name": "credentials",
+     "type": "object",
+     "label": "Credentials",
+     "properties": [
+      {
+       "name": "recovery_question",
+       "type": "object",
+       "label": "Recovery question",
+       "properties": [
+        {
+         "name": "question",
+         "type": "string",
+         "label": "Question",
+         "control_type": "text"
+        },
+        {
+         "name": "answer",
+         "type": "string",
+         "label": "Answer",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "provider",
+       "type": "object",
+       "label": "Provider",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "hint": "Valid values are OKTA, ACTIVE_DIRECTORY,LDAP, FEDERATION, SOCIAL"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "suspend",
+       "type": "object",
+       "label": "Suspend",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "resetPassword",
+       "type": "object",
+       "label": "Reset password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "expirePassword",
+       "type": "object",
+       "label": "Expire password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "forgotPassword",
+       "type": "object",
+       "label": "Forgot password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "self",
+       "type": "object",
+       "label": "Self",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "changeRecoveryQuestion",
+       "type": "object",
+       "label": "Change recovery question",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "deactivate",
+       "type": "object",
+       "label": "Deactivate",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "changePassword",
+       "type": "object",
+       "label": "Change password",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "activate",
+       "type": "object",
+       "label": "Activate",
+       "required": true,
+       "properties": [
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "method",
+         "type": "string",
+         "label": "Method",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,3706 @@
+{
+ "id": 2369884,
+ "name": "Export Callable Recipe",
+ "description": "The export recipe is callable recipe that export entities into a json file and stores it in your Reltio tenant's S3 bucket. The recipe also unwraps the zip file, extracts and parses the records.  This recipe gets call from a main recipe, so you will need to look for the 'Export Main Recipe' on the community and clone that as well into your instance along with this recipe. \n\nImportant Note: This recipe uses the export API from Reltio to extract the records in a zip file. Reltio Integration Hub supports only zip file, so it's recommended you change the physical configuration for your Reltio tenant to use the zip format for exporting records.\n\nHow to run the recipes: Use the start recipe button in both the recipes:\n1. Export Main Recipe\n2. Export Callable Recipe\n\nYou can enhance this recipe once you have cloned into your Reltio Integration Hub instance according to you needs.\n\n",
+ "applications": [
+  "workato_recipe_function",
+  "reltio_connector_329009_1633719926",
+  "js_eval",
+  "file_connector",
+  "json_parser"
+ ],
+ "action_applications": [
+  "reltio_connector_329009_1633719926",
+  "js_eval",
+  "file_connector",
+  "json_parser"
+ ],
+ "trigger_application": "workato_recipe_function",
+ "business_objects": [],
+ "categories": [
+  "Recipe Tools",
+  "Developer Tool",
+  "Marketing",
+  "Document/File",
+  "Utilities",
+  "Data Parser"
+ ],
+ "copy_count": 93,
+ "curated": true,
+ "recipe_type": "function",
+ "trigger_type": null,
+ "published_at": null,
+ "updated_at": "2022-06-08T23:19:27.456-07:00",
+ "source_url": "https://app.workato.com/recipes/2369884?community=us",
+ "steps": [
+  "workato_recipe_function.execute",
+  "reltio_connector_329009_1633719926.export_records",
+  "reltio_connector_329009_1633719926.get_task_status_by_id",
+  "js_eval.invoke_custom_js_code",
+  "reltio_connector_329009_1633719926.decrypt_export_url",
+  "file_connector.read_file",
+  "file_connector.uncompress_file",
+  "json_parser.parse_json"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "workato_recipe_function",
+  "name": "execute",
+  "as": "a3530469",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "parameters_schema_json": "[{\"name\":\"filter\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"}]"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Filter",
+      "name": "filter",
+      "type": "string",
+      "optional": false
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "reltio_connector_329009_1633719926",
+    "name": "export_records",
+    "as": "446f42bc",
+    "title": null,
+    "description": "Export <span class=\"provider\">Entities</span> in <span class=\"provider\">Reltio</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "object": "Entity",
+     "options": [
+      {
+       "label": "Search by OV",
+       "value": "searchByOV"
+      }
+     ]
+    },
+    "toggleCfg": {
+     "fileFormat": true,
+     "exploded": true,
+     "ovOnly": true,
+     "dateFormat": true,
+     "skipPostprocessing": true,
+     "options": true
+    },
+    "input": {
+     "object": "entity",
+     "filter": "#{_('data.workato_recipe_function.a3530469.parameters.filter')}",
+     "fileFormat": "json",
+     "partSize": "100mb",
+     "name": "export",
+     "exploded": "true",
+     "ovOnly": "true",
+     "dateFormat": "readable",
+     "skipPostprocessing": "false",
+     "options": "searchByOV",
+     "includeType": "=[\"configuration/entityTypes/Organization\"]"
+    },
+    "extended_output_schema": [
+     {
+      "type": "number",
+      "name": "completed",
+      "control_type": "number",
+      "label": "Is complete?",
+      "optional": true,
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "object",
+      "name": "result",
+      "label": "Export status",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "ID",
+        "optional": true,
+        "type": "string",
+        "name": "id"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created time",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "createdTime"
+       },
+       {
+        "control_type": "text",
+        "label": "Created by",
+        "optional": true,
+        "type": "string",
+        "name": "createdBy"
+       },
+       {
+        "control_type": "text",
+        "label": "Type",
+        "optional": true,
+        "type": "string",
+        "name": "type"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Header total",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "headerTotal"
+         },
+         {
+          "control_type": "number",
+          "label": "Last five min read throughput",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "lastFiveMinReadThroughput"
+         },
+         {
+          "control_type": "number",
+          "label": "Last five min throughput",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "lastFiveMinThroughput"
+         },
+         {
+          "control_type": "number",
+          "label": "Relations number",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "relationsNumber"
+         },
+         {
+          "control_type": "number",
+          "label": "Relations total",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "relationsTotal"
+         },
+         {
+          "control_type": "number",
+          "label": "Header number",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "headerNumber"
+         },
+         {
+          "control_type": "number",
+          "label": "Overall throughput",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "overallThroughput"
+         },
+         {
+          "control_type": "number",
+          "label": "Overall read throughput",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "overallReadThroughput"
+         }
+        ],
+        "label": "State",
+        "optional": true,
+        "type": "object",
+        "name": "state"
+       },
+       {
+        "name": "tasks",
+        "type": "array",
+        "of": "object",
+        "label": "Tasks",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "ID",
+          "optional": true,
+          "type": "string",
+          "name": "id"
+         },
+         {
+          "control_type": "text",
+          "label": "Status",
+          "optional": true,
+          "type": "string",
+          "name": "status"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Start time",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "optional": true,
+          "type": "date_time",
+          "name": "startTime"
+         },
+         {
+          "control_type": "date_time",
+          "label": "End time",
+          "render_input": "date_time_conversion",
+          "parse_output": "date_time_conversion",
+          "optional": true,
+          "type": "date_time",
+          "name": "endTime"
+         },
+         {
+          "control_type": "number",
+          "label": "Number of processed objects",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "numberOfProcessedObjects"
+         },
+         {
+          "control_type": "number",
+          "label": "Throughput",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "type": "number",
+          "name": "throughput"
+         },
+         {
+          "control_type": "text",
+          "label": "Duration",
+          "optional": true,
+          "type": "string",
+          "name": "duration"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "fileFormat",
+      "control_type": "select",
+      "label": "File format",
+      "hint": "Provide the output format of export file.",
+      "sticky": true,
+      "pick_list": [
+       [
+        "CSV",
+        "csv"
+       ],
+       [
+        "JSON",
+        "json"
+       ]
+      ],
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "fileFormat",
+       "label": "File format",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are csv, json."
+      }
+     },
+     {
+      "type": "string",
+      "name": "dateFormat",
+      "control_type": "select",
+      "label": "Date format",
+      "hint": "Only applicable for CSV export.",
+      "sticky": true,
+      "pick_list": [
+       [
+        "Readable",
+        "readable"
+       ],
+       [
+        "Timestamp",
+        "timestamp"
+       ]
+      ],
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "dateFormat",
+       "label": "Date format",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are Readable, timestamp."
+      }
+     },
+     {
+      "type": "number",
+      "name": "distributed",
+      "control_type": "checkbox",
+      "label": "Distributed",
+      "hint": "If set to true, then export task is divided based on parts.",
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "distributed",
+       "label": "Distributed",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are true, false"
+      },
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "integer",
+      "name": "taskPartsCount",
+      "control_type": "integer",
+      "label": "Task parts count",
+      "hint": "Denotes the number of distributed task parts. ",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "number",
+      "name": "skipPostprocessing",
+      "control_type": "checkbox",
+      "label": "Skip postprocessing",
+      "hint": "If set to true, then export task is divided based on parts.",
+      "sticky": true,
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "skipPostprocessing",
+       "label": "Skip postprocessing",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are true, false"
+      },
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "string",
+      "name": "partSize",
+      "control_type": "text",
+      "label": "Part size",
+      "hint": "E.g. 100mb. Click <a href=\"https://docs.reltio.com/exportapi/exportdataintomultiplefiles.html\" target=\"_blank\" >here</a> to learn more.",
+      "sticky": true,
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "name",
+      "control_type": "text",
+      "label": "Name",
+      "hint": "The name of the export task displayed in the task status.",
+      "sticky": true,
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "email",
+      "control_type": "text",
+      "label": "Email",
+      "hint": "The custom email address to send the notification of export completion",
+      "sticky": true,
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "options",
+      "control_type": "multiselect",
+      "label": "Options",
+      "sticky": true,
+      "pick_list": [
+       [
+        "Search by OV",
+        "searchByOV"
+       ]
+      ],
+      "pick_list_params": {},
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "options",
+       "label": "Options",
+       "optional": true,
+       "type": "string",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "hint": "Provide multiple values separated by comma e.g. searchByOV"
+      },
+      "delimiter": ","
+     },
+     {
+      "type": "string",
+      "name": "activeness",
+      "control_type": "select",
+      "label": "Activeness",
+      "sticky": true,
+      "pick_list": [
+       [
+        "All",
+        "ALL"
+       ],
+       [
+        "Active",
+        "ACTIVE"
+       ],
+       [
+        "Not active",
+        "NOT_ACTIVE"
+       ]
+      ],
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "activeness",
+       "label": "Activeness",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are ACTIVE, NOT_ACTIVE, ALL."
+      }
+     },
+     {
+      "type": "number",
+      "name": "exploded",
+      "control_type": "checkbox",
+      "label": "Exploded",
+      "hint": "If set to true, then all attribute values for the same attribute must be within one column (multiple rows will be used for one entity).",
+      "sticky": true,
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "exploded",
+       "label": "Exploded",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are true, false"
+      },
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "string",
+      "name": "headersStyle",
+      "control_type": "select",
+      "label": "Headers style",
+      "sticky": true,
+      "pick_list": [
+       [
+        "Name",
+        "name"
+       ],
+       [
+        "Label",
+        "label"
+       ]
+      ],
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "headersStyle",
+       "label": "Headers style",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are name, label."
+      }
+     },
+     {
+      "type": "string",
+      "name": "custom_destination_type",
+      "control_type": "select",
+      "label": "Custom destination type",
+      "sticky": true,
+      "pick_list": [
+       [
+        "S3",
+        "S3"
+       ],
+       [
+        "GCS",
+        "GCS"
+       ],
+       [
+        "Azure",
+        "Azure"
+       ]
+      ],
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "custom_destination_type",
+       "label": "Custom destination type",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are S3, GCS, Azure."
+      }
+     },
+     {
+      "type": "object",
+      "name": "custom_destination",
+      "label": "Custom destination",
+      "hint": "Required if custom destination is provided.",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "S3 bucket",
+        "ngIf": "input.custom_destination_type == \"S3\"",
+        "hint": "Provide the S3 bucket.",
+        "optional": true,
+        "type": "string",
+        "name": "s3Bucket"
+       },
+       {
+        "control_type": "text",
+        "label": "S3 path",
+        "ngIf": "input.custom_destination_type == \"S3\"",
+        "hint": "Required if the s3Bucket is specified.",
+        "optional": true,
+        "type": "string",
+        "name": "s3Path"
+       },
+       {
+        "control_type": "text",
+        "label": "S3 SSE",
+        "ngIf": "input.custom_destination_type == \"S3\"",
+        "hint": "Indicates the server–side encryption algorithm (AES256 or aws:kms).",
+        "optional": true,
+        "type": "string",
+        "name": "s3Sse"
+       },
+       {
+        "control_type": "text",
+        "label": "S3 SSE KMS key",
+        "ngIf": "input.custom_destination_type == \"S3\"",
+        "hint": "Indicates custom KMS key for server side encryption.",
+        "optional": true,
+        "type": "string",
+        "name": "s3SseKmsKey"
+       },
+       {
+        "control_type": "text",
+        "label": "Aws access key",
+        "ngIf": "input.custom_destination_type == \"S3\"",
+        "hint": "Required if the s3Bucket is specified and the roleArn is not specified.",
+        "optional": true,
+        "type": "string",
+        "name": "awsAccessKey"
+       },
+       {
+        "control_type": "text",
+        "label": "Aws secret key",
+        "ngIf": "input.custom_destination_type == \"S3\"",
+        "hint": "Required if the s3Bucket is specified and the roleArn is not specified.",
+        "optional": true,
+        "type": "string",
+        "name": "awsSecretKey"
+       },
+       {
+        "control_type": "text",
+        "label": "Role arn",
+        "ngIf": "input.custom_destination_type == \"S3\"",
+        "hint": "Required if the s3Bucket is specified and the awsAccessKey or awsSecretKey are not specified.",
+        "optional": true,
+        "type": "string",
+        "name": "roleArn"
+       },
+       {
+        "control_type": "text",
+        "label": "GCS bucket",
+        "ngIf": "input.custom_destination_type == \"GCS\"",
+        "hint": "Provide the GCS bucket.",
+        "optional": true,
+        "type": "string",
+        "name": "gcsBucket"
+       },
+       {
+        "control_type": "text",
+        "label": "GCS path",
+        "ngIf": "input.custom_destination_type == \"GCS\"",
+        "hint": "Required if the gcsBucket is specified.",
+        "optional": true,
+        "type": "string",
+        "name": "gcsPath"
+       },
+       {
+        "control_type": "text",
+        "label": "GCS credentials",
+        "ngIf": "input.custom_destination_type == \"GCS\"",
+        "hint": "Required if the gcsBucket is specified.",
+        "optional": true,
+        "type": "string",
+        "name": "gcpCredentials"
+       },
+       {
+        "control_type": "text",
+        "label": "Azure storage container",
+        "ngIf": "input.custom_destination_type == \"Azure\"",
+        "hint": "Provide the Azure container.",
+        "optional": true,
+        "type": "string",
+        "name": "azureStorageContainer"
+       },
+       {
+        "control_type": "text",
+        "label": "Azure storage path",
+        "ngIf": "input.custom_destination_type == \"Azure\"",
+        "hint": "Required if the azureStorageContainer is specified.",
+        "optional": true,
+        "type": "string",
+        "name": "azureStoragePath"
+       },
+       {
+        "control_type": "text",
+        "label": "Azure storage account name",
+        "ngIf": "input.custom_destination_type == \"Azure\"",
+        "hint": "Required if the azureStorageContainer is specified.",
+        "optional": true,
+        "type": "string",
+        "name": "azureStorageAccountName"
+       },
+       {
+        "control_type": "text",
+        "label": "Azure storage account key",
+        "ngIf": "input.custom_destination_type == \"Azure\"",
+        "hint": "Required if the azureStorageContainer is specified.",
+        "optional": true,
+        "type": "string",
+        "name": "azureStorageAccountKey"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "filenameTemplate",
+      "control_type": "text",
+      "label": "Filename template",
+      "hint": "Click <a href=\"https://docs.reltio.com/exportapi/namingoutputfiles.html\" target=\"_blank\">here</a> to learn more.",
+      "optional": true
+     },
+     {
+      "type": "number",
+      "name": "sendHidden",
+      "control_type": "checkbox",
+      "label": "Send hidden",
+      "hint": "If the value of the parameter is set to False, the export file will not include hidden attributes. Default: true.",
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "sendHidden",
+       "label": "SendHidden",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are true, false"
+      },
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "number",
+      "name": "returnVotes",
+      "control_type": "checkbox",
+      "label": "Return votes",
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "returnVotes",
+       "label": "Return votes",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are true, false"
+      },
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "string",
+      "name": "headerFormat",
+      "control_type": "select",
+      "label": "Header format",
+      "hint": "Only applicable for CSV export.",
+      "sticky": true,
+      "pick_list": [
+       [
+        "Default",
+        "DEFAULT"
+       ],
+       [
+        "Consistent",
+        "CONSISTENT"
+       ]
+      ],
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "headerFormat",
+       "label": "Header format",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are DEFAULT, CONSISTENT."
+      }
+     },
+     {
+      "type": "number",
+      "name": "ovOnly",
+      "control_type": "checkbox",
+      "label": "OV only",
+      "sticky": true,
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "ovOnly",
+       "label": "OV only",
+       "type": "string",
+       "control_type": "text",
+       "render_input": "boolean_conversion",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are true, false"
+      },
+      "render_input": "boolean_conversion",
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "array",
+      "name": "includeType",
+      "label": "Include type",
+      "hint": "E.g. [\"configuration/entityTypes/Location\"]",
+      "sticky": true,
+      "optional": true,
+      "of": "string"
+     },
+     {
+      "type": "object",
+      "name": "updateTimeFilter",
+      "label": "Update time filter",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "date_time",
+        "label": "Since",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "since"
+       },
+       {
+        "control_type": "date_time",
+        "label": "To",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "to"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "headerFormat",
+      "control_type": "select",
+      "label": "Header format",
+      "hint": "Only applicable for CSV export.",
+      "sticky": true,
+      "pick_list": [
+       [
+        "Default",
+        "DEFAULT"
+       ],
+       [
+        "Consistent",
+        "CONSISTENT"
+       ]
+      ],
+      "optional": true,
+      "toggle_hint": "Select from list",
+      "toggle_field": {
+       "name": "headerFormat",
+       "label": "Header format",
+       "type": "string",
+       "control_type": "text",
+       "optional": true,
+       "toggle_hint": "Use custom value",
+       "hint": "Allowed values are DEFAULT, CONSISTENT."
+      }
+     },
+     {
+      "type": "string",
+      "name": "filter",
+      "control_type": "text",
+      "label": "Filter",
+      "hint": "E.g. <i>(equals(startObject,'entities/1') or equals(endObject,'entities/1'))</i>",
+      "sticky": true,
+      "optional": true
+     },
+     {
+      "type": "string",
+      "name": "select",
+      "control_type": "text",
+      "label": "Select",
+      "hint": "Provide comma-separated list of properties. E.g. uri,startObject,endObject",
+      "sticky": true,
+      "optional": true
+     },
+     {
+      "type": "array",
+      "name": "groupBy",
+      "label": "Group by",
+      "sticky": true,
+      "optional": true,
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Attribute",
+        "hint": "E.g. configuration/entityTypes/HCP/attributes/Address",
+        "optional": true,
+        "type": "string",
+        "name": "attribute"
+       },
+       {
+        "name": "anchorAttributes",
+        "type": "array",
+        "of": "string",
+        "label": "Anchor attributes",
+        "optional": true
+       },
+       {
+        "control_type": "number",
+        "label": "Max number of unique values",
+        "parse_output": "integer_conversion",
+        "render_input": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "maxNumberOfUniqueValues"
+       }
+      ]
+     },
+     {
+      "type": "integer",
+      "name": "time_limit",
+      "control_type": "number",
+      "label": "Time limit",
+      "hint": "The time limit to how long the query can run in minutes. E.g. 30. Default: 30 minutes.",
+      "sticky": true,
+      "optional": true,
+      "render_input": "integer_conversion",
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "integer",
+      "name": "time_interval",
+      "control_type": "number",
+      "label": "Time interval",
+      "hint": "The time interval in minutes between each check. The time interval should be lesser than time limit. E.g. 1. Default: 1 minute.",
+      "sticky": true,
+      "optional": true,
+      "render_input": "integer_conversion",
+      "parse_output": "integer_conversion"
+     }
+    ],
+    "uuid": "ac787a0e-e3ef-49a3-b956-a4b4e4b96a26"
+   },
+   {
+    "number": 2,
+    "as": "6724c00e",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "repeat_mode": "simple",
+    "clear_scope": "false",
+    "input": {},
+    "block": [
+     {
+      "number": 3,
+      "provider": "reltio_connector_329009_1633719926",
+      "name": "get_task_status_by_id",
+      "as": "9c7820fe",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "id": "#{_('data.foreach.6724c00e.id')}"
+      },
+      "extended_output_schema": [
+       {
+        "type": "string",
+        "name": "id",
+        "control_type": "text",
+        "label": "ID",
+        "optional": true
+       },
+       {
+        "type": "date_time",
+        "name": "createdTime",
+        "control_type": "date_time",
+        "label": "Created time",
+        "optional": true,
+        "render_input": "date_time_conversion",
+        "parse_output": "parse_date_time_epoch_millis"
+       },
+       {
+        "type": "string",
+        "name": "createdBy",
+        "control_type": "text",
+        "label": "Created by",
+        "optional": true
+       },
+       {
+        "type": "date_time",
+        "name": "updatedTime",
+        "control_type": "date_time",
+        "label": "Updated time",
+        "optional": true,
+        "render_input": "date_time_conversion",
+        "parse_output": "parse_date_time_epoch_millis"
+       },
+       {
+        "type": "string",
+        "name": "updatedBy",
+        "control_type": "text",
+        "label": "Updated by",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "type",
+        "control_type": "text",
+        "label": "Type",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "status",
+        "control_type": "text",
+        "label": "Status",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "name",
+        "control_type": "text",
+        "label": "Name",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "createdOnHost",
+        "control_type": "text",
+        "label": "Created on host",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "executedOnHost",
+        "control_type": "text",
+        "label": "Executed on host",
+        "optional": true
+       },
+       {
+        "type": "number",
+        "name": "parallelExecution",
+        "control_type": "number",
+        "label": "Parallel execution",
+        "optional": true,
+        "parse_output": "float_conversion"
+       },
+       {
+        "type": "date_time",
+        "name": "startTime",
+        "control_type": "date_time",
+        "label": "Start time",
+        "optional": true,
+        "render_input": "date_time_conversion",
+        "parse_output": "parse_date_time_epoch_millis"
+       },
+       {
+        "type": "date_time",
+        "name": "endTime",
+        "control_type": "date_time",
+        "label": "End time",
+        "optional": true,
+        "render_input": "date_time_conversion",
+        "parse_output": "parse_date_time_epoch_millis"
+       },
+       {
+        "type": "object",
+        "name": "parameters",
+        "label": "Parameters",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Ov only",
+          "optional": true,
+          "type": "string",
+          "name": "ovOnly"
+         },
+         {
+          "control_type": "text",
+          "label": "Export path",
+          "optional": true,
+          "type": "string",
+          "name": "exportPath"
+         },
+         {
+          "control_type": "text",
+          "label": "Username",
+          "optional": true,
+          "type": "string",
+          "name": "username"
+         },
+         {
+          "control_type": "text",
+          "label": "Export name",
+          "optional": true,
+          "type": "string",
+          "name": "exportName"
+         },
+         {
+          "control_type": "text",
+          "label": "Date format",
+          "optional": true,
+          "type": "string",
+          "name": "dateFormat"
+         },
+         {
+          "control_type": "text",
+          "label": "Exploded",
+          "optional": true,
+          "type": "string",
+          "name": "exploded"
+         },
+         {
+          "control_type": "text",
+          "label": "Mail address",
+          "optional": true,
+          "type": "string",
+          "name": "mailAddress"
+         },
+         {
+          "control_type": "text",
+          "label": "Tenant ID",
+          "optional": true,
+          "type": "string",
+          "name": "tenantId"
+         },
+         {
+          "control_type": "text",
+          "label": "Task ID",
+          "optional": true,
+          "type": "string",
+          "name": "taskId"
+         },
+         {
+          "control_type": "text",
+          "label": "File format",
+          "optional": true,
+          "type": "string",
+          "name": "fileFormat"
+         },
+         {
+          "control_type": "text",
+          "label": "Query params",
+          "optional": true,
+          "type": "string",
+          "name": "queryParams"
+         },
+         {
+          "control_type": "text",
+          "label": "Encrypt URL",
+          "optional": true,
+          "type": "string",
+          "name": "encryptUrl"
+         }
+        ]
+       },
+       {
+        "type": "object",
+        "name": "currentState",
+        "label": "Current state",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Status ID",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "statusId"
+         },
+         {
+          "control_type": "text",
+          "label": "Status",
+          "optional": true,
+          "type": "string",
+          "name": "status"
+         },
+         {
+          "control_type": "number",
+          "label": "Number of processed objects",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "numberOfProcessedObjects"
+         },
+         {
+          "control_type": "text",
+          "label": "Export URL",
+          "optional": true,
+          "type": "string",
+          "name": "exportUrl"
+         },
+         {
+          "name": "exportUrls",
+          "type": "array",
+          "of": "string",
+          "label": "Export urls",
+          "optional": true
+         }
+        ]
+       },
+       {
+        "type": "number",
+        "name": "throughput",
+        "control_type": "number",
+        "label": "Throughput",
+        "optional": true,
+        "parse_output": "float_conversion"
+       },
+       {
+        "type": "string",
+        "name": "duration",
+        "control_type": "text",
+        "label": "Duration",
+        "optional": true
+       }
+      ],
+      "uuid": "56688ab0-c051-4505-b422-9e56a65d9cca"
+     },
+     {
+      "number": 4,
+      "as": "712ff6c5",
+      "keyword": "foreach",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "repeat_mode": "simple",
+      "clear_scope": "false",
+      "input": {},
+      "block": [
+       {
+        "number": 5,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "is_true",
+           "lhs": "#{_('data.reltio_connector_329009_1633719926.9c7820fe.parameters.encryptUrl')}",
+           "rhs": "",
+           "uuid": "condition-9b320408-e461-43d8-818f-7acaa8c13a85"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 6,
+          "keyword": "if",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "type": "compound",
+           "operand": "and",
+           "conditions": [
+            {
+             "operand": "contains",
+             "lhs": "#{_('data.foreach.712ff6c5.value')}",
+             "rhs": "downloadExportUrl",
+             "uuid": "condition-4f6d5122-1752-408e-bbb1-99a947c03b26"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 7,
+            "provider": "js_eval",
+            "name": "invoke_custom_js_code",
+            "as": "8b082546",
+            "title": null,
+            "description": "Execute <span class=\"provider\">JavaScript</span> code: <span class=\"provider\">DecodeUrl</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {
+             "code": "// @param input fields supplied in the recipe step, as an object\n// @return object matching the output schema\n// Eg: Code for returning time zone for an IP address\n/*\nconst fetch = require(\"node-fetch\")\n\nexports.main = async ({ ip_address }) => {\n  const response = await fetch(\"http://worldtimeapi.org/api/ip/\" + ip_address)\n  if (response.status !== 200) { throw response.statusText }\n  const { timezone } = await response.json()\n  return { timezone };\n}\n*/\nexports.main = async ({ encoded_url }) => {\n  return { decoded_url: decodeURIComponent(encoded_url) };\n}\n",
+             "name": "DecodeUrl",
+             "code_input": {
+              "schema": "[{\"name\":\"encoded_url\",\"type\":\"string\",\"optional\":true,\"label\":\"encodedUrl\",\"control_type\":\"text\"}]",
+              "data": {
+               "encoded_url": "=_('data.foreach.712ff6c5.value').split(\"downloadExportUrl=\").last()"
+              }
+             },
+             "code_output_schema_json": "[{\"name\":\"decoded_url\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"}]"
+            },
+            "extended_output_schema": [
+             {
+              "type": "object",
+              "name": "output",
+              "label": "Output",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Decoded URL",
+                "name": "decoded_url",
+                "type": "string",
+                "optional": false
+               }
+              ]
+             }
+            ],
+            "extended_input_schema": [
+             {
+              "type": "object",
+              "name": "code_input",
+              "control_type": "form-schema-builder",
+              "label": "Input fields",
+              "hint": "Define the input fields that will be passed to your JavaScript code",
+              "sticky": true,
+              "optional": true,
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Schema",
+                "extends_schema": true,
+                "type": "string",
+                "name": "schema"
+               },
+               {
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "encodedUrl",
+                  "name": "encoded_url",
+                  "type": "string",
+                  "optional": true
+                 }
+                ],
+                "label": "Data",
+                "type": "object",
+                "name": "data"
+               }
+              ],
+              "override": true
+             }
+            ],
+            "visible_config_fields": [
+             "name",
+             "code_input",
+             "code_output_schema_json",
+             "code",
+             "code_input.data.encoded_url"
+            ],
+            "uuid": "fd8ad2f4-03cf-4135-82fe-edf0e8c64167"
+           },
+           {
+            "number": 8,
+            "keyword": "else",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {},
+            "block": [
+             {
+              "number": 9,
+              "provider": "reltio_connector_329009_1633719926",
+              "name": "decrypt_export_url",
+              "as": "bc30aa75",
+              "keyword": "action",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "export_url": "#{_('data.foreach.712ff6c5.value')}"
+              },
+              "visible_config_fields": [
+               "export_url",
+               "file_parameter_name"
+              ],
+              "uuid": "4b0e23e4-8e36-4372-8703-5bbbec0ad733"
+             }
+            ],
+            "uuid": "eb450e71-95a4-4d6f-bd9c-2ea382ad2b30"
+           }
+          ],
+          "uuid": "ac391a8e-376d-4368-8261-9f6c0a8eaf82"
+         },
+         {
+          "number": 10,
+          "provider": "file_connector",
+          "name": "read_file",
+          "as": "f2980385",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {
+           "base64_encode": true,
+           "is_large": true
+          },
+          "input": {
+           "base64_encode": "false",
+           "is_large": "false",
+           "url": "=_('data.reltio_connector_329009_1633719926.bc30aa75.export_url').present? ? _('data.reltio_connector_329009_1633719926.bc30aa75.export_url') : _('data.js_eval.8b082546.output.decoded_url')"
+          },
+          "uuid": "1aac787e-18f9-4b37-bac6-51217392e980",
+          "title": null,
+          "description": null
+         },
+         {
+          "number": 11,
+          "provider": "file_connector",
+          "name": "uncompress_file",
+          "as": "da82de4f",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "file_contents": "#{_('data.file_connector.f2980385.body')}"
+          },
+          "uuid": "bd7c7ae5-4629-48ba-a214-7ef5abb42414",
+          "title": null,
+          "description": null
+         },
+         {
+          "number": 12,
+          "as": "977fb915",
+          "keyword": "foreach",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "repeat_mode": "simple",
+          "clear_scope": "false",
+          "input": {},
+          "block": [
+           {
+            "number": 13,
+            "provider": "json_parser",
+            "name": "parse_json",
+            "as": "81c2969c",
+            "title": null,
+            "description": null,
+            "keyword": "action",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {
+             "sample_document": "[{\"uri\":\"entities/2WFMx7K1\",\"type\":\"configuration/entityTypes/Organization\",\"createdBy\":\"tatyana.pogorelova\",\"createdTime\":\"2021-11-15 12:52:51\",\"updatedBy\":\"tatyana.pogorelova\",\"updatedTime\":\"2021-11-15 13:01:59\",\"attributes\":{\"Name\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Name\",\"ov\":true,\"value\":\"SALIX PHARMACEUTICALS INC\",\"uri\":\"entities/2WFMx7K1/attributes/Name/3kELPfFfV\"}],\"BvDIdHierarchy\":[{\"label\":\"\",\"value\":{\"GlobalUltimateBvDId\":[{\"type\":\"configuration/entityTypes/Organization/attributes/BvDIdHierarchy/attributes/GlobalUltimateBvDId\",\"ov\":true,\"value\":\"CA30100NC\",\"uri\":\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/GlobalUltimateBvDId/3kELPfBPF\"}],\"GlobalUltimateOrganization\":[{\"type\":\"configuration/entityTypes/Organization/attributes/BvDIdHierarchy/attributes/GlobalUltimateOrganization\",\"ov\":true,\"value\":\"BAUSCH HEALTH COMPANIES INC.\",\"uri\":\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/GlobalUltimateOrganization/3kELPeycT\"}],\"DomesticUltimateBvDId\":[{\"type\":\"configuration/entityTypes/Organization/attributes/BvDIdHierarchy/attributes/DomesticUltimateBvDId\",\"ov\":true,\"value\":\"US943267443\",\"uri\":\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/DomesticUltimateBvDId/3kELPf78z\"}],\"DomesticUltimateOrganization\":[{\"type\":\"configuration/entityTypes/Organization/attributes/BvDIdHierarchy/attributes/DomesticUltimateOrganization\",\"ov\":true,\"value\":\"SALIX PHARMACEUTICALS, LTD.\",\"uri\":\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/DomesticUltimateOrganization/3kELPf2sj\"}]},\"ov\":true,\"uri\":\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD\"}],\"Addresses\":[{\"label\":\"Organization : 4101 Lake Boone Trl Ste 418, Raleigh, NC\",\"value\":{\"AddressType\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/AddressType\",\"ov\":true,\"value\":\"Organization\",\"lookupCode\":\"Shipping\",\"lookupRawValue\":\"Shipping\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/AddressType/5mWAVhrxd\"}],\"AddressLine1\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/AddressLine1\",\"ov\":true,\"value\":\"4101 Lake Boone Trl Ste 418\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/AddressLine1/5mWAVhaub\"}],\"City\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/City\",\"ov\":true,\"value\":\"Raleigh\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/City/5mWAVhnhN\"}],\"StateProvince\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/StateProvince\",\"ov\":true,\"value\":\"NC\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/StateProvince/5mWAVniFZ\"}],\"Country\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Country\",\"ov\":true,\"value\":\"United States\",\"lookupCode\":\"US\",\"lookupRawValue\":\"United States\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Country/5mWAVoXOf\"}],\"Zip5\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Zip5\",\"ov\":true,\"value\":\"27607\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Zip5/5mWAVhWeL\"}],\"Primary\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Primary\",\"ov\":true,\"value\":\"true\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Primary/5mWAVhjR7\"}],\"ISO3166-2\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/ISO3166-2\",\"ov\":true,\"value\":\"US\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/ISO3166-2/5mWAVhwDt\"}],\"VerificationStatus\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/VerificationStatus\",\"ov\":true,\"value\":\"Verified\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/VerificationStatus/5mWAVnZj3\"}],\"VerificationStatusDetails\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/VerificationStatusDetails\",\"ov\":true,\"value\":\"Address Verification Status is verified - a complete match was made between the input data and a single record from the available reference data.\\nPost-Processed Verification Match Level is 4 - premise (premise or building).\\nPre-Processed Verification Match Level is 4 - premise (premise or building).\\nParsing Status isidentified and parsed - All input data has been able to be identified and placed into components.\\nLexicon Identification Match Level is 5 - delivery point (postbox or subbuilding).\\nContext Identification Match Level is 5 - delivery point (postbox or subbuilding).\\nPostcode Status is PostalCodePrimary verified - postalcodeprimary verified.\\nThe accuracy matchscore, which gives the similarity between the input data and closest reference data match is 86%.\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/VerificationStatusDetails/5mWAVofvB\"}],\"AVC\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/AVC\",\"ov\":true,\"value\":\"V44-I55-P6-086\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/AVC/5mWAVoGLd\"}],\"ISO3166-3\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/ISO3166-3\",\"ov\":true,\"value\":\"USA\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/ISO3166-3/5mWAVoC5N\"}],\"ISO3166-N\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/ISO3166-N\",\"ov\":true,\"value\":\"840\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/ISO3166-N/5mWAVnVSn\"}],\"Street\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Street\",\"ov\":true,\"value\":\"Lake Boone Trl\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Street/5mWAVobev\"}],\"Latitude\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Latitude\",\"ov\":true,\"value\":\"35.814660\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Latitude/5mWAVnqm5\"}],\"Longitude\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Longitude\",\"ov\":true,\"value\":\"-78.699140\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Longitude/5mWAVo7p7\"}],\"GeoAccuracy\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/GeoAccuracy\",\"ov\":true,\"value\":\"P4\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/GeoAccuracy/5mWAVoT8P\"}],\"Premise\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Premise\",\"ov\":true,\"value\":\"4101\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Premise/5mWAVo3Yr\"}],\"PremiseNumber\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/PremiseNumber\",\"ov\":true,\"value\":\"4101\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/PremiseNumber/5mWAVndzJ\"}],\"DeliveryAddress\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/DeliveryAddress\",\"ov\":true,\"value\":\"4101 Lake Boone Trl Ste 418\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/DeliveryAddress/5mWAVnmVp\"}],\"DeliveryAddress1\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/DeliveryAddress1\",\"ov\":true,\"value\":\"4101 Lake Boone Trl Ste 418\",\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/DeliveryAddress1/5mWAVoKbt\"}]},\"ov\":true,\"uri\":\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5\"}],\"BvDId\":[{\"type\":\"configuration/entityTypes/Organization/attributes/BvDId\",\"ov\":true,\"value\":\"US127235878L\",\"uri\":\"entities/2WFMx7K1/attributes/BvDId/5mWAVi4kP\"}],\"Address\":[{\"label\":\"8540 Colonnade Center Dr Raleigh NC 27615 United States\",\"relationshipLabel\":\"\",\"value\":{\"AddressLine1\":[{\"type\":\"configuration/entityTypes/Location/attributes/AddressLine1\",\"ov\":true,\"value\":\"8540 Colonnade Center Dr\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/AddressLine1/3kELPdsQL\"}],\"Zip\":[{\"label\":\"27615-3052\",\"value\":{\"Zip5\":[{\"type\":\"configuration/entityTypes/Location/attributes/Zip/attributes/Zip5\",\"ov\":true,\"value\":\"27615\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Zip/3kELPd3HF/Zip5/3kELPdBnl\"}],\"Zip4\":[{\"type\":\"configuration/entityTypes/Location/attributes/Zip/attributes/Zip4\",\"ov\":true,\"value\":\"3052\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Zip/3kELPd3HF/Zip4/3kELPd7XV\"}]},\"ov\":true,\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Zip/3kELPd3HF\"}],\"Country\":[{\"type\":\"configuration/entityTypes/Location/attributes/Country\",\"ov\":true,\"value\":\"United States\",\"lookupCode\":\"US\",\"lookupRawValue\":\"US\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Country/3kELPdwgb\"}],\"StateProvince\":[{\"type\":\"configuration/entityTypes/Location/attributes/StateProvince\",\"ov\":true,\"value\":\"NC\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/StateProvince/3kELPWacz\"}],\"CountyCode\":[{\"type\":\"configuration/entityTypes/Location/attributes/CountyCode\",\"ov\":true,\"value\":\"US\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/CountyCode/3kELPWetF\"}],\"City\":[{\"type\":\"configuration/entityTypes/Location/attributes/City\",\"ov\":true,\"value\":\"Raleigh\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/City/3kELPdX73\"}],\"ISO3166-2\":[{\"type\":\"configuration/entityTypes/Location/attributes/ISO3166-2\",\"ov\":true,\"value\":\"US\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/ISO3166-2/3kELPdbNJ\"}],\"ISO3166-3\":[{\"type\":\"configuration/entityTypes/Location/attributes/ISO3166-3\",\"ov\":true,\"value\":\"USA\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/ISO3166-3/3kELPdfdZ\"}],\"GeoLocation\":[{\"label\":\"35.897560, -78.647900\",\"value\":{\"Latitude\":[{\"type\":\"configuration/entityTypes/Location/attributes/GeoLocation/attributes/Latitude\",\"ov\":true,\"value\":\"35.897560\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr/Latitude/3kELPe9TN\"}],\"Longitude\":[{\"type\":\"configuration/entityTypes/Location/attributes/GeoLocation/attributes/Longitude\",\"ov\":true,\"value\":\"-78.647900\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr/Longitude/3kELPeDjd\"}],\"GeoAccuracy\":[{\"type\":\"configuration/entityTypes/Location/attributes/GeoLocation/attributes/GeoAccuracy\",\"ov\":true,\"value\":\"P4\",\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr/GeoAccuracy/3kELPe5D7\"}]},\"ov\":true,\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr\"}]},\"ov\":true,\"uri\":\"entities/2WFMx7K1/attributes/Address/nhxCK3t\",\"refEntity\":{\"type\":\"configuration/entityTypes/Location\",\"crosswalks\":[{\"uri\":\"entities/2WFMx7K1/crosswalks/1Mjj3Lrl.3kELPYRhx\",\"type\":\"configuration/sources/Reltio\",\"value\":\"1Mjj3Lrl\",\"createDate\":\"2021-11-15T13:01:59.130+00:00\",\"updateDate\":\"2021-11-15T13:01:59.130+00:00\",\"attributeURIs\":[\"entities/2WFMx7K1/attributes/Address/nhxCK3t\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/StateProvince/3kELPWacz\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/CountyCode/3kELPWetF\"]},{\"uri\":\"entities/2WFMx7K1/crosswalks/1Mjj3Lrl.3kELPYrHV\",\"type\":\"configuration/sources/ReltioCleanser\",\"value\":\"1Mjj3Lrl\",\"createDate\":\"2021-11-15T13:01:59.512+00:00\",\"updateDate\":\"2021-11-15T13:01:59.512+00:00\",\"attributeURIs\":[\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr/GeoAccuracy/3kELPe5D7\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Country/3kELPdwgb\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr/Latitude/3kELPe9TN\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Zip/3kELPd3HF\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/AddressLine1/3kELPdsQL\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Zip/3kELPd3HF/Zip4/3kELPd7XV\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/City/3kELPdX73\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/StateProvince/3kELPWacz\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/ISO3166-3/3kELPdfdZ\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/Zip/3kELPd3HF/Zip5/3kELPdBnl\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/GeoLocation/3kELPe0wr/Longitude/3kELPeDjd\",\"entities/2WFMx7K1/attributes/Address/nhxCK3t/ISO3166-2/3kELPdbNJ\"]}],\"objectURI\":\"entities/1Mjj3Lrl\"},\"refRelation\":{\"type\":\"configuration/relationTypes/HasAddress\",\"crosswalks\":[{\"uri\":\"entities/2WFMx7K1/crosswalks/nhxCK3t.3kELPYVyD\",\"type\":\"configuration/sources/Reltio\",\"value\":\"nhxCK3t\",\"createDate\":\"2021-11-15T13:01:59.130+00:00\",\"updateDate\":\"2021-11-15T13:01:59.130+00:00\"}],\"startRefPinned\":false,\"endRefPinned\":false,\"startRefIgnored\":false,\"endRefIgnored\":false,\"objectURI\":\"relations/nhxCK3t\"},\"startObjectCrosswalks\":[{\"type\":\"configuration/sources/BvD\",\"value\":\"US127235878L\"}]}]},\"crosswalks\":[{\"uri\":\"entities/2WFMx7K1/crosswalks/3kELPXHFZ\",\"type\":\"configuration/sources/BvD\",\"value\":\"US127235878L\",\"reltioLoadDate\":\"2021-11-15T13:01:59.130+00:00\",\"createDate\":\"2021-11-15T13:01:59.130+00:00\",\"updateDate\":\"2021-11-15T13:01:59.130+00:00\",\"attributes\":[\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/DomesticUltimateBvDId/3kELPf78z\",\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/DomesticUltimateOrganization/3kELPf2sj\",\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/GlobalUltimateOrganization/3kELPeycT\",\"entities/2WFMx7K1/attributes/BvDId/5mWAVi4kP\",\"entities/2WFMx7K1/attributes/Name/3kELPfFfV\",\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD/GlobalUltimateBvDId/3kELPfBPF\",\"entities/2WFMx7K1/attributes/BvDIdHierarchy/3kELPeuMD\"],\"singleAttributeUpdateDates\":{}},{\"uri\":\"entities/2WFMx7K1/crosswalks/5mWAVittV\",\"type\":\"configuration/sources/Reltio\",\"value\":\"2WFMx7K1\",\"reltioLoadDate\":\"2021-11-15T12:52:51.565+00:00\",\"createDate\":\"2021-11-15T12:52:51.565+00:00\",\"updateDate\":\"2021-11-15T12:52:51.565+00:00\",\"attributes\":[\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/City/5mWAVhnhN\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/ISO3166-2/5mWAVhwDt\",\"entities/2WFMx7K1/attributes/BvDId/5mWAVi4kP\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/AddressLine1/5mWAVhaub\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Zip5/5mWAVhWeL\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/AddressType/5mWAVhrxd\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Primary/5mWAVhjR7\"],\"singleAttributeUpdateDates\":{}},{\"uri\":\"entities/2WFMx7K1/crosswalks/5mWAVlzh7\",\"type\":\"configuration/sources/ReltioCleanser\",\"value\":\"2WFMx7K1\",\"reltioLoadDate\":\"2021-11-15T12:52:51.565+00:00\",\"createDate\":\"2021-11-15T12:52:51.947+00:00\",\"updateDate\":\"2021-11-15T12:52:51.947+00:00\",\"attributes\":[\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/StateProvince/5mWAVniFZ\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Longitude/5mWAVo7p7\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/City/5mWAVhnhN\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/DeliveryAddress1/5mWAVoKbt\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/ISO3166-3/5mWAVoC5N\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/AVC/5mWAVoGLd\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Zip5/5mWAVhWeL\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/VerificationStatus/5mWAVnZj3\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/DeliveryAddress/5mWAVnmVp\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/ISO3166-2/5mWAVhwDt\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/GeoAccuracy/5mWAVoT8P\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Premise/5mWAVo3Yr\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/VerificationStatusDetails/5mWAVofvB\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/ISO3166-N/5mWAVnVSn\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Country/5mWAVoXOf\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/PremiseNumber/5mWAVndzJ\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/AddressLine1/5mWAVhaub\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Street/5mWAVobev\",\"entities/2WFMx7K1/attributes/Addresses/5mWAVhSO5/Latitude/5mWAVnqm5\"],\"singleAttributeUpdateDates\":{}}],\"analyticsAttributes\":{},\"label\":\"SALIX PHARMACEUTICALS INC\",\"secondaryLabel\":\"Raleigh NC\"},{\"uri\":\"entities/2WFMxBaH\",\"type\":\"configuration/entityTypes/Organization\",\"createdBy\":\"tatyana.pogorelova\",\"createdTime\":\"2021-11-15 12:52:51\",\"updatedBy\":\"tatyana.pogorelova\",\"updatedTime\":\"2021-11-15 13:01:40\",\"attributes\":{\"Name\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Name\",\"ov\":true,\"value\":\"GOOGLE.ORG\",\"uri\":\"entities/2WFMxBaH/attributes/Name/3aYO2fhcx\"}],\"Addresses\":[{\"label\":\"Organization : 1600 Amphitheatre Pkwy, Mountain View, CA\",\"value\":{\"AddressType\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/AddressType\",\"ov\":true,\"value\":\"Organization\",\"lookupCode\":\"Shipping\",\"lookupRawValue\":\"Shipping\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/AddressType/5mWAViYaD\"}],\"AddressLine1\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/AddressLine1\",\"ov\":true,\"value\":\"1600 Amphitheatre Pkwy\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/AddressLine1/5mWAVrHsz\"}],\"City\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/City\",\"ov\":true,\"value\":\"Mountain View\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/City/5mWAViUJx\"}],\"StateProvince\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/StateProvince\",\"ov\":true,\"value\":\"CA\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/StateProvince/5mWAVqbGP\"}],\"Country\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Country\",\"ov\":true,\"value\":\"United States\",\"lookupCode\":\"US\",\"lookupRawValue\":\"United States\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Country/5mWAVrQPV\"}],\"Zip5\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Zip5\",\"ov\":true,\"value\":\"94043\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Zip5/5mWAViDGv\"}],\"Zip4\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Zip4\",\"ov\":true,\"value\":\"1351\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Zip4/5mWAVrUfl\"}],\"Primary\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Primary\",\"ov\":true,\"value\":\"true\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Primary/5mWAViQ3h\"}],\"ISO3166-2\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/ISO3166-2\",\"ov\":true,\"value\":\"US\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/ISO3166-2/5mWAVicqT\"}],\"VerificationStatus\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/VerificationStatus\",\"ov\":true,\"value\":\"Verified\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/VerificationStatus/5mWAVqSjt\"}],\"VerificationStatusDetails\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/VerificationStatusDetails\",\"ov\":true,\"value\":\"Address Verification Status is verified - a complete match was made between the input data and a single record from the available reference data.\\nPost-Processed Verification Match Level is 4 - premise (premise or building).\\nPre-Processed Verification Match Level is 4 - premise (premise or building).\\nParsing Status isidentified and parsed - All input data has been able to be identified and placed into components.\\nLexicon Identification Match Level is 4 - premise (premise or building).\\nContext Identification Match Level is 4 - premise (premise or building).\\nPostcode Status is PostalCodePrimary verified, PostalCodeSecondary added or changed - postalcodeprimary verified, postalcodesecondary added or changed.\\nThe accuracy matchscore, which gives the similarity between the input data and closest reference data match is 100%.\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/VerificationStatusDetails/5mWAVrdCH\"}],\"AVC\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/AVC\",\"ov\":true,\"value\":\"V44-I44-P7-100\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/AVC/5mWAVr9MT\"}],\"ISO3166-3\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/ISO3166-3\",\"ov\":true,\"value\":\"USA\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/ISO3166-3/5mWAVr56D\"}],\"ISO3166-N\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/ISO3166-N\",\"ov\":true,\"value\":\"840\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/ISO3166-N/5mWAVqOTd\"}],\"Street\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Street\",\"ov\":true,\"value\":\"Amphitheatre Pkwy\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Street/5mWAVrYw1\"}],\"Latitude\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Latitude\",\"ov\":true,\"value\":\"37.422400\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Latitude/5mWAVqjmv\"}],\"Longitude\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Longitude\",\"ov\":true,\"value\":\"-122.084210\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Longitude/5mWAVr0px\"}],\"GeoAccuracy\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/GeoAccuracy\",\"ov\":true,\"value\":\"P4\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/GeoAccuracy/5mWAVrM9F\"}],\"Premise\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/Premise\",\"ov\":true,\"value\":\"1600\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Premise/5mWAVqwZh\"}],\"PremiseNumber\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/PremiseNumber\",\"ov\":true,\"value\":\"1600\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/PremiseNumber/5mWAVqX09\"}],\"DeliveryAddress\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/DeliveryAddress\",\"ov\":true,\"value\":\"1600 Amphitheatre Pkwy\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/DeliveryAddress/5mWAVqfWf\"}],\"DeliveryAddress1\":[{\"type\":\"configuration/entityTypes/Organization/attributes/Addresses/attributes/DeliveryAddress1\",\"ov\":true,\"value\":\"1600 Amphitheatre Pkwy\",\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/DeliveryAddress1/5mWAVrDcj\"}]},\"ov\":true,\"uri\":\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f\"}],\"BvDId\":[{\"type\":\"configuration/entityTypes/Organization/attributes/BvDId\",\"ov\":true,\"value\":\"US*914092205\",\"uri\":\"entities/2WFMxBaH/attributes/BvDId/5mWAVilMz\"}],\"Address\":[{\"label\":\"1600 Amphitheatre Pkwy Mountain View CA 94043 United States\",\"relationshipLabel\":\"\",\"value\":{\"AddressLine1\":[{\"type\":\"configuration/entityTypes/Location/attributes/AddressLine1\",\"ov\":true,\"value\":\"1600 Amphitheatre Pkwy\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/AddressLine1/3aYO2f10N\"}],\"Zip\":[{\"label\":\"94043-1351\",\"value\":{\"Zip5\":[{\"type\":\"configuration/entityTypes/Location/attributes/Zip/attributes/Zip5\",\"ov\":true,\"value\":\"94043\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Zip/3aYO2e7b1/Zip5/3aYO2eG7X\"}],\"Zip4\":[{\"type\":\"configuration/entityTypes/Location/attributes/Zip/attributes/Zip4\",\"ov\":true,\"value\":\"1351\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Zip/3aYO2e7b1/Zip4/3aYO2eBrH\"}]},\"ov\":true,\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Zip/3aYO2e7b1\"}],\"Country\":[{\"type\":\"configuration/entityTypes/Location/attributes/Country\",\"ov\":true,\"value\":\"United States\",\"lookupCode\":\"US\",\"lookupRawValue\":\"US\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Country/3aYO2f5Gd\"}],\"StateProvince\":[{\"type\":\"configuration/entityTypes/Location/attributes/StateProvince\",\"ov\":true,\"value\":\"CA\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/StateProvince/3aYO2eXAZ\"}],\"CountyCode\":[{\"type\":\"configuration/entityTypes/Location/attributes/CountyCode\",\"ov\":true,\"value\":\"US\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/CountyCode/3aYO2XJdT\"}],\"City\":[{\"type\":\"configuration/entityTypes/Location/attributes/City\",\"ov\":true,\"value\":\"Mountain View\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/City/3aYO2efh5\"}],\"ISO3166-2\":[{\"type\":\"configuration/entityTypes/Location/attributes/ISO3166-2\",\"ov\":true,\"value\":\"US\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/ISO3166-2/3aYO2ejxL\"}],\"ISO3166-3\":[{\"type\":\"configuration/entityTypes/Location/attributes/ISO3166-3\",\"ov\":true,\"value\":\"USA\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/ISO3166-3/3aYO2eoDb\"}],\"GeoLocation\":[{\"label\":\"37.422400, -122.084210\",\"value\":{\"Latitude\":[{\"type\":\"configuration/entityTypes/Location/attributes/GeoLocation/attributes/Latitude\",\"ov\":true,\"value\":\"37.422400\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt/Latitude/3aYO2fI3P\"}],\"Longitude\":[{\"type\":\"configuration/entityTypes/Location/attributes/GeoLocation/attributes/Longitude\",\"ov\":true,\"value\":\"-122.084210\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt/Longitude/3aYO2fMJf\"}],\"GeoAccuracy\":[{\"type\":\"configuration/entityTypes/Location/attributes/GeoLocation/attributes/GeoAccuracy\",\"ov\":true,\"value\":\"P4\",\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt/GeoAccuracy/3aYO2fDn9\"}]},\"ov\":true,\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt\"}]},\"ov\":true,\"uri\":\"entities/2WFMxBaH/attributes/Address/spSRxIZ\",\"refEntity\":{\"type\":\"configuration/entityTypes/Location\",\"crosswalks\":[{\"uri\":\"entities/2WFMxBaH/crosswalks/1S5GWNoR.3aYO2Xewl\",\"type\":\"configuration/sources/Reltio\",\"value\":\"1S5GWNoR\",\"createDate\":\"2021-11-15T13:01:40.279+00:00\",\"updateDate\":\"2021-11-15T13:01:40.279+00:00\",\"attributeURIs\":[\"entities/2WFMxBaH/attributes/Address/spSRxIZ/CountyCode/3aYO2XJdT\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ\"]},{\"uri\":\"entities/2WFMxBaH/crosswalks/1S5GWNoR.3aYO2ZvbH\",\"type\":\"configuration/sources/ReltioCleanser\",\"value\":\"1S5GWNoR\",\"createDate\":\"2021-11-15T13:01:44.664+00:00\",\"updateDate\":\"2021-11-15T13:01:44.664+00:00\",\"attributeURIs\":[\"entities/2WFMxBaH/attributes/Address/spSRxIZ/City/3aYO2efh5\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Country/3aYO2f5Gd\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/StateProvince/3aYO2eXAZ\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/AddressLine1/3aYO2f10N\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt/GeoAccuracy/3aYO2fDn9\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/ISO3166-3/3aYO2eoDb\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Zip/3aYO2e7b1/Zip5/3aYO2eG7X\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt/Longitude/3aYO2fMJf\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Zip/3aYO2e7b1\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/GeoLocation/3aYO2f9Wt/Latitude/3aYO2fI3P\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/ISO3166-2/3aYO2ejxL\",\"entities/2WFMxBaH/attributes/Address/spSRxIZ/Zip/3aYO2e7b1/Zip4/3aYO2eBrH\"]}],\"objectURI\":\"entities/1S5GWNoR\"},\"refRelation\":{\"type\":\"configuration/relationTypes/HasAddress\",\"crosswalks\":[{\"uri\":\"entities/2WFMxBaH/crosswalks/spSRxIZ.3aYO2XjD1\",\"type\":\"configuration/sources/Reltio\",\"value\":\"spSRxIZ\",\"createDate\":\"2021-11-15T13:01:40.279+00:00\",\"updateDate\":\"2021-11-15T13:01:40.279+00:00\"}],\"startRefPinned\":false,\"endRefPinned\":false,\"startRefIgnored\":false,\"endRefIgnored\":false,\"objectURI\":\"relations/spSRxIZ\"},\"startObjectCrosswalks\":[{\"type\":\"configuration/sources/BvD\",\"value\":\"US*914092205\"}]}]},\"crosswalks\":[{\"uri\":\"entities/2WFMxBaH/crosswalks/3aYO2XagV\",\"type\":\"configuration/sources/BvD\",\"value\":\"US*914092205\",\"reltioLoadDate\":\"2021-11-15T13:01:40.279+00:00\",\"createDate\":\"2021-11-15T13:01:40.279+00:00\",\"updateDate\":\"2021-11-15T13:01:40.279+00:00\",\"attributes\":[\"entities/2WFMxBaH/attributes/BvDId/5mWAVilMz\",\"entities/2WFMxBaH/attributes/Name/3aYO2fhcx\"],\"singleAttributeUpdateDates\":{}},{\"uri\":\"entities/2WFMxBaH/crosswalks/5mWAViy9l\",\"type\":\"configuration/sources/Reltio\",\"value\":\"2WFMxBaH\",\"reltioLoadDate\":\"2021-11-15T12:52:51.565+00:00\",\"createDate\":\"2021-11-15T12:52:51.565+00:00\",\"updateDate\":\"2021-11-15T12:52:51.565+00:00\",\"attributes\":[\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Primary/5mWAViQ3h\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/ISO3166-2/5mWAVicqT\",\"entities/2WFMxBaH/attributes/BvDId/5mWAVilMz\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/AddressType/5mWAViYaD\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Zip5/5mWAViDGv\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/City/5mWAViUJx\"],\"singleAttributeUpdateDates\":{}},{\"uri\":\"entities/2WFMxBaH/crosswalks/5mWAVooRh\",\"type\":\"configuration/sources/ReltioCleanser\",\"value\":\"2WFMxBaH\",\"reltioLoadDate\":\"2021-11-15T12:52:51.565+00:00\",\"createDate\":\"2021-11-15T12:52:51.961+00:00\",\"updateDate\":\"2021-11-15T12:52:51.961+00:00\",\"attributes\":[\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/PremiseNumber/5mWAVqX09\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/ISO3166-3/5mWAVr56D\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/VerificationStatus/5mWAVqSjt\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/AVC/5mWAVr9MT\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/ISO3166-N/5mWAVqOTd\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/DeliveryAddress1/5mWAVrDcj\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/StateProvince/5mWAVqbGP\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Premise/5mWAVqwZh\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/VerificationStatusDetails/5mWAVrdCH\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/City/5mWAViUJx\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/ISO3166-2/5mWAVicqT\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Street/5mWAVrYw1\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Latitude/5mWAVqjmv\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/AddressLine1/5mWAVrHsz\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Zip4/5mWAVrUfl\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/GeoAccuracy/5mWAVrM9F\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Country/5mWAVrQPV\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/DeliveryAddress/5mWAVqfWf\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Zip5/5mWAViDGv\",\"entities/2WFMxBaH/attributes/Addresses/5mWAVi90f/Longitude/5mWAVr0px\"],\"singleAttributeUpdateDates\":{}}],\"analyticsAttributes\":{},\"label\":\"GOOGLE.ORG\",\"secondaryLabel\":\"Mountain View CA\"}]",
+             "document": "#{_('data.foreach.977fb915.file_contents')}"
+            },
+            "extended_output_schema": [
+             {
+              "type": "object",
+              "name": "document",
+              "label": "Document",
+              "properties": [
+               {
+                "name": "array",
+                "type": "array",
+                "of": "object",
+                "label": "Array",
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "URI",
+                  "type": "string",
+                  "name": "uri"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Type",
+                  "type": "string",
+                  "name": "type"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Created by",
+                  "type": "string",
+                  "name": "createdBy"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Created time",
+                  "type": "string",
+                  "name": "createdTime"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Updated by",
+                  "type": "string",
+                  "name": "updatedBy"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Updated time",
+                  "type": "string",
+                  "name": "updatedTime"
+                 },
+                 {
+                  "properties": [
+                   {
+                    "name": "Name",
+                    "type": "array",
+                    "of": "object",
+                    "label": "Name",
+                    "properties": [
+                     {
+                      "control_type": "text",
+                      "label": "Type",
+                      "type": "string",
+                      "name": "type"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Ov",
+                      "render_input": {},
+                      "parse_output": {},
+                      "toggle_hint": "Select from option list",
+                      "toggle_field": {
+                       "label": "Ov",
+                       "control_type": "text",
+                       "toggle_hint": "Use custom value",
+                       "type": "boolean",
+                       "name": "ov"
+                      },
+                      "type": "boolean",
+                      "name": "ov"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Value",
+                      "type": "string",
+                      "name": "value"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "URI",
+                      "type": "string",
+                      "name": "uri"
+                     }
+                    ]
+                   },
+                   {
+                    "name": "BvDIdHierarchy",
+                    "type": "array",
+                    "of": "object",
+                    "label": "Bv D ID hierarchy",
+                    "properties": [
+                     {
+                      "control_type": "text",
+                      "label": "Label",
+                      "type": "string",
+                      "name": "label"
+                     },
+                     {
+                      "properties": [
+                       {
+                        "name": "GlobalUltimateBvDId",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Global ultimate bv D ID",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "GlobalUltimateOrganization",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Global ultimate organization",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "DomesticUltimateBvDId",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Domestic ultimate bv D ID",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "DomesticUltimateOrganization",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Domestic ultimate organization",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       }
+                      ],
+                      "label": "Value",
+                      "type": "object",
+                      "name": "value"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Ov",
+                      "render_input": {},
+                      "parse_output": {},
+                      "toggle_hint": "Select from option list",
+                      "toggle_field": {
+                       "label": "Ov",
+                       "control_type": "text",
+                       "toggle_hint": "Use custom value",
+                       "type": "boolean",
+                       "name": "ov"
+                      },
+                      "type": "boolean",
+                      "name": "ov"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "URI",
+                      "type": "string",
+                      "name": "uri"
+                     }
+                    ]
+                   },
+                   {
+                    "name": "Addresses",
+                    "type": "array",
+                    "of": "object",
+                    "label": "Addresses",
+                    "properties": [
+                     {
+                      "control_type": "text",
+                      "label": "Label",
+                      "type": "string",
+                      "name": "label"
+                     },
+                     {
+                      "properties": [
+                       {
+                        "name": "AddressType",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Address type",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Lookup code",
+                          "type": "string",
+                          "name": "lookupCode"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Lookup raw value",
+                          "type": "string",
+                          "name": "lookupRawValue"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "AddressLine1",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Address line 1",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "City",
+                        "type": "array",
+                        "of": "object",
+                        "label": "City",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "StateProvince",
+                        "type": "array",
+                        "of": "object",
+                        "label": "State province",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Country",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Country",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Lookup code",
+                          "type": "string",
+                          "name": "lookupCode"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Lookup raw value",
+                          "type": "string",
+                          "name": "lookupRawValue"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Zip5",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Zip 5",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Primary",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Primary",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "ISO3166-2",
+                        "type": "array",
+                        "of": "object",
+                        "label": "ISO 3166 - 2",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "VerificationStatus",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Verification status",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "VerificationStatusDetails",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Verification status details",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "AVC",
+                        "type": "array",
+                        "of": "object",
+                        "label": "AVC",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "ISO3166-3",
+                        "type": "array",
+                        "of": "object",
+                        "label": "ISO 3166 - 3",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "ISO3166-N",
+                        "type": "array",
+                        "of": "object",
+                        "label": "ISO 3166 - N",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Street",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Street",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Latitude",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Latitude",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Longitude",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Longitude",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "GeoAccuracy",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Geo accuracy",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Premise",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Premise",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "PremiseNumber",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Premise number",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "DeliveryAddress",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Delivery address",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "DeliveryAddress1",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Delivery address 1",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       }
+                      ],
+                      "label": "Value",
+                      "type": "object",
+                      "name": "value"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Ov",
+                      "render_input": {},
+                      "parse_output": {},
+                      "toggle_hint": "Select from option list",
+                      "toggle_field": {
+                       "label": "Ov",
+                       "control_type": "text",
+                       "toggle_hint": "Use custom value",
+                       "type": "boolean",
+                       "name": "ov"
+                      },
+                      "type": "boolean",
+                      "name": "ov"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "URI",
+                      "type": "string",
+                      "name": "uri"
+                     }
+                    ]
+                   },
+                   {
+                    "name": "BvDId",
+                    "type": "array",
+                    "of": "object",
+                    "label": "Bv D ID",
+                    "properties": [
+                     {
+                      "control_type": "text",
+                      "label": "Type",
+                      "type": "string",
+                      "name": "type"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Ov",
+                      "render_input": {},
+                      "parse_output": {},
+                      "toggle_hint": "Select from option list",
+                      "toggle_field": {
+                       "label": "Ov",
+                       "control_type": "text",
+                       "toggle_hint": "Use custom value",
+                       "type": "boolean",
+                       "name": "ov"
+                      },
+                      "type": "boolean",
+                      "name": "ov"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Value",
+                      "type": "string",
+                      "name": "value"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "URI",
+                      "type": "string",
+                      "name": "uri"
+                     }
+                    ]
+                   },
+                   {
+                    "name": "Address",
+                    "type": "array",
+                    "of": "object",
+                    "label": "Address",
+                    "properties": [
+                     {
+                      "control_type": "text",
+                      "label": "Label",
+                      "type": "string",
+                      "name": "label"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Relationship label",
+                      "type": "string",
+                      "name": "relationshipLabel"
+                     },
+                     {
+                      "properties": [
+                       {
+                        "name": "AddressLine1",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Address line 1",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Zip",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Zip",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Label",
+                          "type": "string",
+                          "name": "label"
+                         },
+                         {
+                          "properties": [
+                           {
+                            "name": "Zip5",
+                            "type": "array",
+                            "of": "object",
+                            "label": "Zip 5",
+                            "properties": [
+                             {
+                              "control_type": "text",
+                              "label": "Type",
+                              "type": "string",
+                              "name": "type"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Ov",
+                              "render_input": {},
+                              "parse_output": {},
+                              "toggle_hint": "Select from option list",
+                              "toggle_field": {
+                               "label": "Ov",
+                               "control_type": "text",
+                               "toggle_hint": "Use custom value",
+                               "type": "boolean",
+                               "name": "ov"
+                              },
+                              "type": "boolean",
+                              "name": "ov"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Value",
+                              "type": "string",
+                              "name": "value"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "URI",
+                              "type": "string",
+                              "name": "uri"
+                             }
+                            ]
+                           },
+                           {
+                            "name": "Zip4",
+                            "type": "array",
+                            "of": "object",
+                            "label": "Zip 4",
+                            "properties": [
+                             {
+                              "control_type": "text",
+                              "label": "Type",
+                              "type": "string",
+                              "name": "type"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Ov",
+                              "render_input": {},
+                              "parse_output": {},
+                              "toggle_hint": "Select from option list",
+                              "toggle_field": {
+                               "label": "Ov",
+                               "control_type": "text",
+                               "toggle_hint": "Use custom value",
+                               "type": "boolean",
+                               "name": "ov"
+                              },
+                              "type": "boolean",
+                              "name": "ov"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Value",
+                              "type": "string",
+                              "name": "value"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "URI",
+                              "type": "string",
+                              "name": "uri"
+                             }
+                            ]
+                           }
+                          ],
+                          "label": "Value",
+                          "type": "object",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "Country",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Country",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Lookup code",
+                          "type": "string",
+                          "name": "lookupCode"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Lookup raw value",
+                          "type": "string",
+                          "name": "lookupRawValue"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "StateProvince",
+                        "type": "array",
+                        "of": "object",
+                        "label": "State province",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "CountyCode",
+                        "type": "array",
+                        "of": "object",
+                        "label": "County code",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "City",
+                        "type": "array",
+                        "of": "object",
+                        "label": "City",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "ISO3166-2",
+                        "type": "array",
+                        "of": "object",
+                        "label": "ISO 3166 - 2",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "ISO3166-3",
+                        "type": "array",
+                        "of": "object",
+                        "label": "ISO 3166 - 3",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       },
+                       {
+                        "name": "GeoLocation",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Geo location",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "Label",
+                          "type": "string",
+                          "name": "label"
+                         },
+                         {
+                          "properties": [
+                           {
+                            "name": "Latitude",
+                            "type": "array",
+                            "of": "object",
+                            "label": "Latitude",
+                            "properties": [
+                             {
+                              "control_type": "text",
+                              "label": "Type",
+                              "type": "string",
+                              "name": "type"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Ov",
+                              "render_input": {},
+                              "parse_output": {},
+                              "toggle_hint": "Select from option list",
+                              "toggle_field": {
+                               "label": "Ov",
+                               "control_type": "text",
+                               "toggle_hint": "Use custom value",
+                               "type": "boolean",
+                               "name": "ov"
+                              },
+                              "type": "boolean",
+                              "name": "ov"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Value",
+                              "type": "string",
+                              "name": "value"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "URI",
+                              "type": "string",
+                              "name": "uri"
+                             }
+                            ]
+                           },
+                           {
+                            "name": "Longitude",
+                            "type": "array",
+                            "of": "object",
+                            "label": "Longitude",
+                            "properties": [
+                             {
+                              "control_type": "text",
+                              "label": "Type",
+                              "type": "string",
+                              "name": "type"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Ov",
+                              "render_input": {},
+                              "parse_output": {},
+                              "toggle_hint": "Select from option list",
+                              "toggle_field": {
+                               "label": "Ov",
+                               "control_type": "text",
+                               "toggle_hint": "Use custom value",
+                               "type": "boolean",
+                               "name": "ov"
+                              },
+                              "type": "boolean",
+                              "name": "ov"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Value",
+                              "type": "string",
+                              "name": "value"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "URI",
+                              "type": "string",
+                              "name": "uri"
+                             }
+                            ]
+                           },
+                           {
+                            "name": "GeoAccuracy",
+                            "type": "array",
+                            "of": "object",
+                            "label": "Geo accuracy",
+                            "properties": [
+                             {
+                              "control_type": "text",
+                              "label": "Type",
+                              "type": "string",
+                              "name": "type"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Ov",
+                              "render_input": {},
+                              "parse_output": {},
+                              "toggle_hint": "Select from option list",
+                              "toggle_field": {
+                               "label": "Ov",
+                               "control_type": "text",
+                               "toggle_hint": "Use custom value",
+                               "type": "boolean",
+                               "name": "ov"
+                              },
+                              "type": "boolean",
+                              "name": "ov"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "Value",
+                              "type": "string",
+                              "name": "value"
+                             },
+                             {
+                              "control_type": "text",
+                              "label": "URI",
+                              "type": "string",
+                              "name": "uri"
+                             }
+                            ]
+                           }
+                          ],
+                          "label": "Value",
+                          "type": "object",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Ov",
+                          "render_input": {},
+                          "parse_output": {},
+                          "toggle_hint": "Select from option list",
+                          "toggle_field": {
+                           "label": "Ov",
+                           "control_type": "text",
+                           "toggle_hint": "Use custom value",
+                           "type": "boolean",
+                           "name": "ov"
+                          },
+                          "type": "boolean",
+                          "name": "ov"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         }
+                        ]
+                       }
+                      ],
+                      "label": "Value",
+                      "type": "object",
+                      "name": "value"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "Ov",
+                      "render_input": {},
+                      "parse_output": {},
+                      "toggle_hint": "Select from option list",
+                      "toggle_field": {
+                       "label": "Ov",
+                       "control_type": "text",
+                       "toggle_hint": "Use custom value",
+                       "type": "boolean",
+                       "name": "ov"
+                      },
+                      "type": "boolean",
+                      "name": "ov"
+                     },
+                     {
+                      "control_type": "text",
+                      "label": "URI",
+                      "type": "string",
+                      "name": "uri"
+                     },
+                     {
+                      "properties": [
+                       {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                       },
+                       {
+                        "name": "crosswalks",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Crosswalks",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Create date",
+                          "render_input": "date_time_conversion",
+                          "parse_output": "date_time_conversion",
+                          "type": "date_time",
+                          "name": "createDate"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Update date",
+                          "render_input": "date_time_conversion",
+                          "parse_output": "date_time_conversion",
+                          "type": "date_time",
+                          "name": "updateDate"
+                         },
+                         {
+                          "name": "attributeURIs",
+                          "type": "array",
+                          "of": "string",
+                          "control_type": "text",
+                          "label": "Attribute UR is"
+                         }
+                        ]
+                       },
+                       {
+                        "control_type": "text",
+                        "label": "Object URI",
+                        "type": "string",
+                        "name": "objectURI"
+                       }
+                      ],
+                      "label": "Ref entity",
+                      "type": "object",
+                      "name": "refEntity"
+                     },
+                     {
+                      "properties": [
+                       {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                       },
+                       {
+                        "name": "crosswalks",
+                        "type": "array",
+                        "of": "object",
+                        "label": "Crosswalks",
+                        "properties": [
+                         {
+                          "control_type": "text",
+                          "label": "URI",
+                          "type": "string",
+                          "name": "uri"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Type",
+                          "type": "string",
+                          "name": "type"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Value",
+                          "type": "string",
+                          "name": "value"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Create date",
+                          "render_input": "date_time_conversion",
+                          "parse_output": "date_time_conversion",
+                          "type": "date_time",
+                          "name": "createDate"
+                         },
+                         {
+                          "control_type": "text",
+                          "label": "Update date",
+                          "render_input": "date_time_conversion",
+                          "parse_output": "date_time_conversion",
+                          "type": "date_time",
+                          "name": "updateDate"
+                         }
+                        ]
+                       },
+                       {
+                        "control_type": "text",
+                        "label": "Start ref pinned",
+                        "render_input": {},
+                        "parse_output": {},
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                         "label": "Start ref pinned",
+                         "control_type": "text",
+                         "toggle_hint": "Use custom value",
+                         "type": "boolean",
+                         "name": "startRefPinned"
+                        },
+                        "type": "boolean",
+                        "name": "startRefPinned"
+                       },
+                       {
+                        "control_type": "text",
+                        "label": "End ref pinned",
+                        "render_input": {},
+                        "parse_output": {},
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                         "label": "End ref pinned",
+                         "control_type": "text",
+                         "toggle_hint": "Use custom value",
+                         "type": "boolean",
+                         "name": "endRefPinned"
+                        },
+                        "type": "boolean",
+                        "name": "endRefPinned"
+                       },
+                       {
+                        "control_type": "text",
+                        "label": "Start ref ignored",
+                        "render_input": {},
+                        "parse_output": {},
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                         "label": "Start ref ignored",
+                         "control_type": "text",
+                         "toggle_hint": "Use custom value",
+                         "type": "boolean",
+                         "name": "startRefIgnored"
+                        },
+                        "type": "boolean",
+                        "name": "startRefIgnored"
+                       },
+                       {
+                        "control_type": "text",
+                        "label": "End ref ignored",
+                        "render_input": {},
+                        "parse_output": {},
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                         "label": "End ref ignored",
+                         "control_type": "text",
+                         "toggle_hint": "Use custom value",
+                         "type": "boolean",
+                         "name": "endRefIgnored"
+                        },
+                        "type": "boolean",
+                        "name": "endRefIgnored"
+                       },
+                       {
+                        "control_type": "text",
+                        "label": "Object URI",
+                        "type": "string",
+                        "name": "objectURI"
+                       }
+                      ],
+                      "label": "Ref relation",
+                      "type": "object",
+                      "name": "refRelation"
+                     },
+                     {
+                      "name": "startObjectCrosswalks",
+                      "type": "array",
+                      "of": "object",
+                      "label": "Start object crosswalks",
+                      "properties": [
+                       {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                       },
+                       {
+                        "control_type": "text",
+                        "label": "Value",
+                        "type": "string",
+                        "name": "value"
+                       }
+                      ]
+                     }
+                    ]
+                   }
+                  ],
+                  "label": "Attributes",
+                  "type": "object",
+                  "name": "attributes"
+                 },
+                 {
+                  "name": "crosswalks",
+                  "type": "array",
+                  "of": "object",
+                  "label": "Crosswalks",
+                  "properties": [
+                   {
+                    "control_type": "text",
+                    "label": "URI",
+                    "type": "string",
+                    "name": "uri"
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Type",
+                    "type": "string",
+                    "name": "type"
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Value",
+                    "type": "string",
+                    "name": "value"
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Reltio load date",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "reltioLoadDate"
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Create date",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "createDate"
+                   },
+                   {
+                    "control_type": "text",
+                    "label": "Update date",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "updateDate"
+                   },
+                   {
+                    "name": "attributes",
+                    "type": "array",
+                    "of": "string",
+                    "control_type": "text",
+                    "label": "Attributes"
+                   },
+                   {
+                    "properties": [],
+                    "label": "Single attribute update dates",
+                    "type": "object",
+                    "name": "singleAttributeUpdateDates"
+                   }
+                  ]
+                 },
+                 {
+                  "properties": [],
+                  "label": "Analytics attributes",
+                  "type": "object",
+                  "name": "analyticsAttributes"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Label",
+                  "type": "string",
+                  "name": "label"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Secondary label",
+                  "type": "string",
+                  "name": "secondaryLabel"
+                 }
+                ]
+               }
+              ]
+             }
+            ],
+            "uuid": "eaed475e-96e9-417f-b707-365b18e89d05"
+           }
+          ],
+          "source": "#{_('data.file_connector.da82de4f.file_list')}",
+          "uuid": "e0bb4be0-4433-4753-b72c-7ed144295c91"
+         }
+        ],
+        "uuid": "b46025cd-f4a8-4704-9a35-cb830fb49171"
+       }
+      ],
+      "source": "#{_('data.reltio_connector_329009_1633719926.9c7820fe.currentState.exportUrls')}",
+      "uuid": "a8488dbb-4ada-444d-a9ff-0aee6394a019"
+     }
+    ],
+    "source": "#{_('data.reltio_connector_329009_1633719926.446f42bc.result.tasks')}",
+    "uuid": "c5a96925-3a57-4e67-84cd-ecefd65342c3"
+   }
+  ],
+  "uuid": "d534245b-8263-49f8-8cae-e08d9d11af15",
+  "param": {}
+ }
+}

@@ -1,0 +1,788 @@
+{
+ "name": "anaplan",
+ "title": "Anaplan",
+ "requires_connection": true,
+ "categories": [
+  "File Transfer",
+  "Marketing"
+ ],
+ "aliases": [
+  "Anaplan",
+  "files"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Anaplan (Custom)",
+   "help": "Build your own Anaplan action with a HTTP request. The request will be authorized under your Anaplan account.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "download_dump_file",
+   "title": "Download dump file",
+   "description": "Download dump file from Anaplan",
+   "help": "This action downloads a dump file from Anaplan. Dump files are only available for the latest task for a process.",
+   "input": [
+    {
+     "name": "workspace_id",
+     "type": "string",
+     "label": "Workspace ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace_id",
+      "type": "string"
+     },
+     "hint": "Workspace ID can be found in the URL of a workspace page in Anaplan."
+    },
+    {
+     "name": "model_id",
+     "type": "string",
+     "label": "Model ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "model_id",
+      "type": "string"
+     },
+     "hint": "Workspace ID can be found in the URL of a workspace page in Anaplan."
+    },
+    {
+     "name": "process_id",
+     "type": "string",
+     "label": "Process ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "process_id",
+      "type": "string"
+     },
+     "hint": "Enter the exact ID of the process."
+    },
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter task ID. This can be found in the output of a Run process action."
+    },
+    {
+     "name": "object_id",
+     "type": "string",
+     "label": "Object ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter dump file object ID. This can be found in the output of a Run process action."
+    }
+   ],
+   "output": [
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "download_file",
+   "title": "Download file",
+   "description": "Download file from Anaplan",
+   "help": "This action downloads a file from Anaplan.",
+   "input": [
+    {
+     "name": "workspace_id",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace_id_scalar",
+      "type": "string"
+     },
+     "hint": "Select an Anaplan workspace."
+    }
+   ],
+   "output": [
+    {
+     "name": "file_id",
+     "type": "string",
+     "label": "File ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "run_deletion",
+   "title": "Run deletion",
+   "description": "Run deletion in Anaplan",
+   "help": "This action starts a deletion task in Anaplan. It will constantly monitor the status of the task. The action returns the results of the task when it is completed or canceled.",
+   "input": [
+    {
+     "name": "workspace_id",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace_id_scalar",
+      "type": "string"
+     },
+     "hint": "Select an Anaplan workspace."
+    }
+   ],
+   "output": [
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "taskState",
+     "type": "string",
+     "label": "Task state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "successful",
+     "type": "boolean",
+     "label": "Deletion succeeded?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "successful",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "currentStep",
+     "type": "string",
+     "label": "Current step",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "progress",
+     "type": "number",
+     "label": "Progress",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "result",
+     "type": "object",
+     "label": "Result",
+     "required": true,
+     "properties": [
+      {
+       "name": "details",
+       "type": "array",
+       "label": "Details",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "localMessageText",
+         "type": "string",
+         "label": "Local message text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "occurrences",
+         "type": "number",
+         "label": "Occurrences",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "failureDumpAvailable",
+       "type": "boolean",
+       "label": "Failure dump available",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "failureDumpAvailable",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "objectId",
+       "type": "string",
+       "label": "Object ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "successful",
+       "type": "boolean",
+       "label": "Successful",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "successful",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "run_export",
+   "title": "Run data export",
+   "description": "Run data export in Anaplan",
+   "help": "This action runs a process to export data from a model in Anaplan.",
+   "input": [
+    {
+     "name": "workspace_id",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace_id_scalar",
+      "type": "string"
+     },
+     "hint": "Select an Anaplan workspace."
+    }
+   ],
+   "output": [
+    {
+     "name": "task_id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Task state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "succeeded",
+     "type": "boolean",
+     "label": "Export succeeded?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "succeeded",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "currentStep",
+     "type": "string",
+     "label": "Current step",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "progress",
+     "type": "number",
+     "label": "Progress",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "result",
+     "type": "object",
+     "label": "Result",
+     "required": true,
+     "properties": [
+      {
+       "name": "details",
+       "type": "array",
+       "label": "Details",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "localMessageText",
+         "type": "string",
+         "label": "Local message text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "occurrences",
+         "type": "number",
+         "label": "Occurrences",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "failureDumpAvailable",
+       "type": "boolean",
+       "label": "Failure dump available",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "failureDumpAvailable",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "objectId",
+       "type": "string",
+       "label": "Object ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "successful",
+       "type": "boolean",
+       "label": "Successful",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "successful",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "run_import",
+   "title": "Run data import",
+   "description": "Run data import in Anaplan",
+   "help": "This action runs a process to import data into a model in Anaplan.",
+   "input": [
+    {
+     "name": "workspace_id",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace_id_scalar",
+      "type": "string"
+     },
+     "hint": "Select an Anaplan workspace."
+    }
+   ],
+   "output": [
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "taskState",
+     "type": "string",
+     "label": "Task state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "successful",
+     "type": "boolean",
+     "label": "Import succeeded?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "successful",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "currentStep",
+     "type": "string",
+     "label": "Current step",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "progress",
+     "type": "number",
+     "label": "Progress",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "result",
+     "type": "object",
+     "label": "Result",
+     "required": true,
+     "properties": [
+      {
+       "name": "details",
+       "type": "array",
+       "label": "Details",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "localMessageText",
+         "type": "string",
+         "label": "Local message text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "occurrences",
+         "type": "number",
+         "label": "Occurrences",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "failureDumpAvailable",
+       "type": "boolean",
+       "label": "Failure dump available",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "failureDumpAvailable",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "objectId",
+       "type": "string",
+       "label": "Object ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "successful",
+       "type": "boolean",
+       "label": "Successful",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "successful",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "run_process",
+   "title": "Run process",
+   "description": "Run process in Anaplan",
+   "help": "This action starts a process in Anaplan. It will constantly monitor the status of each task in the process. The action returns the results of the tasks involved in this process when the last task is completed or canceled.",
+   "input": [
+    {
+     "name": "workspace_id",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace_id_scalar",
+      "type": "string"
+     },
+     "hint": "Select an Anaplan workspace."
+    }
+   ],
+   "output": [
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "taskState",
+     "type": "string",
+     "label": "Task state",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "successful",
+     "type": "boolean",
+     "label": "Process succeeded?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "successful",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "currentStep",
+     "type": "string",
+     "label": "Current step",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "progress",
+     "type": "number",
+     "label": "Progress",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "result",
+     "type": "object",
+     "label": "Result",
+     "required": true,
+     "properties": [
+      {
+       "name": "nestedResults",
+       "type": "array",
+       "label": "Nested results",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "failureDumpAvailable",
+         "type": "boolean",
+         "label": "Failure dump available",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "failureDumpAvailable",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "objectId",
+         "type": "string",
+         "label": "Object ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "objectName",
+         "type": "string",
+         "label": "Object name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "successful",
+         "type": "boolean",
+         "label": "Successful",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "successful",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "details",
+         "type": "array",
+         "label": "Details",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "localMessageText",
+           "type": "string",
+           "label": "Local message text",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "occurrences",
+           "type": "number",
+           "label": "Occurrences",
+           "control_type": "number",
+           "required": true
+          },
+          {
+           "name": "type",
+           "type": "string",
+           "label": "Type",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "values",
+           "type": "array",
+           "label": "Values",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "value",
+             "type": "string",
+             "label": "Value",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "failureDumpAvailable",
+       "type": "boolean",
+       "label": "Failure dump available",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "failureDumpAvailable",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "objectId",
+       "type": "string",
+       "label": "Object ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "successful",
+       "type": "boolean",
+       "label": "Successful",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "successful",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "upload_file",
+   "title": "Upload file",
+   "description": "Upload file to Anaplan",
+   "help": "This action uploads a file to Anaplan.",
+   "input": [
+    {
+     "name": "workspace_id",
+     "type": "string",
+     "label": "Workspace",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workspaces_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "workspace_id_scalar",
+      "type": "string"
+     },
+     "hint": "Select an Anaplan workspace."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "File ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "chunkCount",
+     "type": "string",
+     "label": "Chunk count",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

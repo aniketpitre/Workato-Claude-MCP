@@ -1,0 +1,288 @@
+{
+ "id": 933488,
+ "name": "ELT SFDC Opportunities to Snowflake",
+ "description": "",
+ "applications": [
+  "clock",
+  "salesforce",
+  "amazon_s3",
+  "snowflake"
+ ],
+ "action_applications": [
+  "salesforce",
+  "amazon_s3",
+  "snowflake"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "opportunity"
+ ],
+ "categories": [
+  "Recipe Tools",
+  "CRM",
+  "Marketing",
+  "Developer Tool",
+  "Database"
+ ],
+ "copy_count": 61,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2019-05-01T21:18:01.418-07:00",
+ "source_url": "https://app.workato.com/recipes/933488?community=us",
+ "steps": [
+  "clock.timer",
+  "salesforce.search_sobjects_soql_bulk_csv",
+  "amazon_s3.upload_file",
+  "snowflake.run_custom_sql",
+  "snowflake.bulk_load_s3",
+  "snowflake.run_custom_sql",
+  "snowflake.run_custom_sql"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "timer",
+  "as": "2041b7ba",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "interval": "5"
+  },
+  "parameters_schema": "[{\"name\": \"temp_table_name\",\"label\": \"Temporary table name\", \"type\": \"string\", \"control_type\": \"text\", \"optional\": false}]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "salesforce",
+    "name": "search_sobjects_soql_bulk_csv",
+    "as": "f8b59cd1",
+    "title": "Search Opportunities in bulk using SOQL query (API 1.0)",
+    "description": "Search <span class=\"provider\">Opportunities</span> in bulk using SOQL query (API 1.0) in <span class=\"provider\">Salesforce</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "sobject_name": "Opportunity"
+    },
+    "toggleCfg": {},
+    "input": {
+     "include_header": "false",
+     "sobject_name": "Opportunity",
+     "custom_select_clause": "true",
+     "fields": "Id,Name,Stage,Amount"
+    },
+    "visible_config_fields": [
+     "sobject_name",
+     "include_header"
+    ],
+    "hidden_config_fields": [
+     "query"
+    ],
+    "uuid": "0b3e3810-d875-42c0-a96d-71a0dff6cc8b"
+   },
+   {
+    "number": 2,
+    "provider": "amazon_s3",
+    "name": "upload_file",
+    "as": "7efd7acb",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "region": "us-east-1",
+     "bucket": "workato-test-1",
+     "object_name": "=\"salesforce_opportunities_#{now.to_i}.csv\"",
+     "file": "#{_('data.salesforce.f8b59cd1.results')}",
+     "accelerate": "false"
+    },
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "region",
+      "control_type": "text",
+      "label": "Region",
+      "hint": "Go to <b>Bucket</b>><b>Properties</b>><b>Static website hosting</b> to find your region in the 'Endpoint' URL, e.g. <b>us-west-2</b>",
+      "optional": false
+     },
+     {
+      "type": "string",
+      "name": "bucket",
+      "control_type": "text",
+      "label": "Bucket name",
+      "hint": "Exact, case sensitive bucket name",
+      "optional": false
+     },
+     {
+      "type": "string",
+      "name": "object_name",
+      "control_type": "text",
+      "label": "Object name",
+      "hint": "Exact, case sensitive name of the object/file",
+      "optional": false
+     },
+     {
+      "type": "string",
+      "name": "file",
+      "control_type": "text",
+      "label": "Contents",
+      "hint": "The file contents to upload",
+      "sticky": true,
+      "optional": true
+     },
+     {
+      "type": "number",
+      "name": "accelerate",
+      "control_type": "number",
+      "label": "Use accelerated endpoint",
+      "hint": "                Default is <b>false</b>. Enter <b>true</b> to use accelerated endpoint.\n                Go to <b>Bucket</b>><b>Properties</b>><b>Transfer acceleration</b> to check if accelerated endpoint is enabled\n",
+      "default": "false",
+      "sticky": true,
+      "optional": true,
+      "parse_output": "float_conversion"
+     }
+    ],
+    "visible_config_fields": [
+     "file"
+    ],
+    "hidden_config_fields": [
+     "accelerate"
+    ],
+    "comment": "upload with unique name to be loaded",
+    "uuid": "54b71e9f-d987-4269-8278-faee2d242659"
+   },
+   {
+    "number": 3,
+    "provider": "snowflake",
+    "name": "run_custom_sql",
+    "as": "c58674ea",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "sql": "create or replace table #{_('data.workato.job_context.parameters.temp_table_name')}(\n  id,\n  name,\n  stage\n);"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": []
+     },
+     {
+      "type": "integer",
+      "name": "rows_affected",
+      "control_type": "number",
+      "label": "Rows affected",
+      "parse_output": "integer_conversion"
+     }
+    ],
+    "hidden_config_fields": [
+     "output_schema"
+    ],
+    "comment": "Create a temp table for opportunities",
+    "uuid": "74e5bfd9-5b67-4857-9074-808f145ff255"
+   },
+   {
+    "number": 4,
+    "provider": "snowflake",
+    "name": "bulk_load_s3",
+    "as": "1ef9d133",
+    "title": null,
+    "description": "Bulk load data to <span class=\"provider\">#{_('data.workato.job_context.parameters.temp_table_name')}</span> from <span class=\"provider\">PUBLIC.WORKATODEMO</span> in <span class=\"provider\">Snowflake</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "stage": "WORKATODEMO (s3://workato-demo/chandra/source/others/Sampledoc4.gz)"
+    },
+    "toggleCfg": {
+     "table": false,
+     "stage": true
+    },
+    "input": {
+     "table": "#{_('data.workato.job_context.parameters.temp_table_name')}",
+     "stage": "PUBLIC.WORKATODEMO"
+    },
+    "uuid": "f014f22d-9935-4281-8a1f-e467bbb0920e"
+   },
+   {
+    "number": 5,
+    "provider": "snowflake",
+    "name": "run_custom_sql",
+    "as": "268d836b",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "sql": "merge into prod_sfdc_opportunities as t\n  using #{_('data.workato.job_context.parameters.temp_table_name')} as s\n  on t.id = s.id\n  when matched then update set (\n    t.name = s.name,\n    (case\n      when s.stage = 'closedWon' then t.stage = 'closed'\n      else 'others'\n    end),\n    t.amount = s.amount\n  )\n  when not matched then insert (\n    id, name, stage, amount\n  ) values (\n    s.id,\n    s.name,\n    (case\n      when s.stage = 'closedWon' then = 'closed'\n      else 'others'\n    end),\n    s.amount\n  );"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": []
+     },
+     {
+      "type": "integer",
+      "name": "rows_affected",
+      "control_type": "number",
+      "label": "Rows affected",
+      "parse_output": "integer_conversion"
+     }
+    ],
+    "hidden_config_fields": [
+     "output_schema"
+    ],
+    "comment": "Load into prod table",
+    "uuid": "da39d870-4efe-4f98-8311-ec878ab77194"
+   },
+   {
+    "number": 6,
+    "provider": "snowflake",
+    "name": "run_custom_sql",
+    "as": "92f307c1",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "sql": "drop table #{_('data.workato.job_context.parameters.temp_table_name')};"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": []
+     },
+     {
+      "type": "integer",
+      "name": "rows_affected",
+      "control_type": "number",
+      "label": "Rows affected",
+      "parse_output": "integer_conversion"
+     }
+    ],
+    "hidden_config_fields": [
+     "output_schema"
+    ],
+    "comment": "Drop temp table",
+    "uuid": "f10323d6-481e-46e6-b40d-22fa9573270f"
+   }
+  ],
+  "uuid": "7860962a-ee91-45b9-a78d-9220b771b562",
+  "title": null,
+  "description": null
+ }
+}

@@ -1,0 +1,678 @@
+{
+ "name": "adp7",
+ "title": "ADP Workforce Now",
+ "requires_connection": true,
+ "categories": [
+  "Staff Management",
+  "Marketing"
+ ],
+ "aliases": [
+  "ADP Workforce Now"
+ ],
+ "triggers": [
+  {
+   "name": "scheduled_worker_v2",
+   "title": "Scheduled worker search",
+   "description": "Scheduled worker search in ADP Workforce Now",
+   "help": "Execute worker search every {{authUser.membership.poll_interval}} minutes. Returns batches of workers as result.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "start_at",
+     "type": "date_time",
+     "label": "Start at",
+     "control_type": "date_time",
+     "hint": "Date and time to start getting ADP workers. Leave blank to start when recipe is run."
+    },
+    {
+     "name": "schedule_execution",
+     "type": "boolean",
+     "label": "Schedule execution",
+     "control_type": "switch",
+     "default": "false",
+     "extends_schema": true,
+     "hint": "Set this to true to switch to scheduled execution of the trigger. When enabled, polling interval will be replaced with the scheduled settings below."
+    },
+    {
+     "name": "roleCode",
+     "type": "string",
+     "label": "Role code",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "employee",
+      "manager",
+      "practitioner",
+      "administrator",
+      "supervisor"
+     ]
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter",
+     "control_type": "text",
+     "hint": "Provide the value for the filter parameter. For example, workers/workAssignments/assignmentStatus/statusCode/codeValue eq 'A'"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to define the fields returned in your output. The name of fields defined should match the API response exactly."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in ADP Workforce Now (Custom)",
+   "help": "Build your own ADP Workforce Now action with a HTTP request. The request will be authorized with your ADP Workforce Now connection OAuth scopes: Scopes API",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "applicant_onboard",
+   "title": "Onboard applicant",
+   "description": "Onboard applicant in ADP Workforce Now",
+   "input": [
+    {
+     "name": "jobOffer_offerTerms_expectedStartDate",
+     "type": "date_time",
+     "label": "Hire Date",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "applicant_person_legalName_familyName1",
+     "type": "string",
+     "label": "Last Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "applicant_person_legalName_middleName",
+     "type": "string",
+     "label": "Middle Name",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalName_givenName",
+     "type": "string",
+     "label": "First Name",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_genderCode_codeValue",
+     "type": "string",
+     "label": "Gender",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_genderCode_shortName",
+     "type": "string",
+     "label": "Gender code short name",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_birthDate",
+     "type": "date_time",
+     "label": "Birth Date",
+     "control_type": "date"
+    },
+    {
+     "name": "applicant_person__governmentIDs_nameCode_codeValue",
+     "type": "string",
+     "label": "Tax ID Type",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person__governmentIDs_idValue",
+     "type": "string",
+     "label": "Tax ID",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person__governmentIDs_statusCode_codeValue",
+     "type": "string",
+     "label": "Tax ID Status",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person__governmentIDs_countryCode",
+     "type": "string",
+     "label": "National Identifier",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_lineOne",
+     "type": "string",
+     "label": "Address 1",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_lineTwo",
+     "type": "string",
+     "label": "Address 2",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_lineThree",
+     "type": "string",
+     "label": "Address 3",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_cityName",
+     "type": "string",
+     "label": "City",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_countrySubdivisionLevel1_codeValue",
+     "type": "string",
+     "label": "State / Province / Territory",
+     "control_type": "text",
+     "hint": "Two letter state code"
+    },
+    {
+     "name": "applicant_person_legalAddress_countrySubdivisionLevel2_codeValue",
+     "type": "string",
+     "label": "County",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_countryCode",
+     "type": "string",
+     "label": "Country",
+     "control_type": "text",
+     "hint": "Two letter ISO country code"
+    },
+    {
+     "name": "applicant_person_preferredName_formattedName",
+     "type": "string",
+     "label": "Preferred name",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_formerName_formattedName",
+     "type": "string",
+     "label": "Alternate name",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_governmentIDs_itemID",
+     "type": "string",
+     "label": "Social security no",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person__governmentIDs_nameCode_codeValue",
+     "type": "string",
+     "label": "Social security no code value",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person__governmentIDs_nameCode_shortName",
+     "type": "string",
+     "label": "Social security no short name",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_postalCode",
+     "type": "string",
+     "label": "Zip code",
+     "control_type": "text"
+    },
+    {
+     "name": "applicant_person_legalAddress_countrySubdivisionLevel1_shortName",
+     "type": "string",
+     "label": "State/Province name",
+     "control_type": "text",
+     "hint": "Short name for State/province"
+    },
+    {
+     "name": "applicant_person_communication__emails",
+     "type": "array",
+     "label": "Personal/work email",
+     "of": "object",
+     "properties": [
+      {
+       "name": "nameCode_codeValue",
+       "type": "string",
+       "label": "Name code",
+       "control_type": "text",
+       "hint": "Specifies whether the email is in the personal or work category code"
+      },
+      {
+       "name": "nameCode_shortName",
+       "type": "string",
+       "label": "Short name code",
+       "control_type": "text",
+       "hint": "Specifies whether the email is in the personal or work category short name"
+      },
+      {
+       "name": "nameCode_longName",
+       "type": "string",
+       "label": "Long name",
+       "control_type": "text",
+       "hint": "Specifies whether the email is in the personal or work category long name"
+      },
+      {
+       "name": "emailUri",
+       "type": "string",
+       "label": "Email ID",
+       "control_type": "text",
+       "hint": "Provide communication email ID"
+      }
+     ]
+    },
+    {
+     "name": "applicant_person_communication__landlines",
+     "type": "array",
+     "label": "Personal/work landline",
+     "of": "object",
+     "properties": [
+      {
+       "name": "formattedNumber",
+       "type": "string",
+       "label": "Landline number",
+       "control_type": "text",
+       "hint": "Enter the landline number in the specified format"
+      },
+      {
+       "name": "nameCode_shortName",
+       "type": "string",
+       "label": "Short name code",
+       "control_type": "text",
+       "hint": "Provide landline short name code"
+      },
+      {
+       "name": "nameCode_longName",
+       "type": "string",
+       "label": "Long name code",
+       "control_type": "text",
+       "hint": "Provide landline long name code"
+      },
+      {
+       "name": "extension",
+       "type": "string",
+       "label": "Extension",
+       "control_type": "text",
+       "hint": "Enter the extension number for the landline"
+      }
+     ]
+    },
+    {
+     "name": "applicant_person_communication__mobiles",
+     "type": "array",
+     "label": "Personal/work mobile",
+     "of": "object",
+     "properties": [
+      {
+       "name": "nameCode_codeValue",
+       "type": "string",
+       "label": "Landline number",
+       "control_type": "text",
+       "hint": "Enter the code associated with the mobile device"
+      },
+      {
+       "name": "nameCode_shortName",
+       "type": "string",
+       "label": "Short name code",
+       "control_type": "text",
+       "hint": "Enter the short name associated with the mobile code"
+      },
+      {
+       "name": "nameCode_longName",
+       "type": "string",
+       "label": "Long name code",
+       "control_type": "text",
+       "hint": "Enter the long name associated with the mobile code"
+      },
+      {
+       "name": "countryDialing",
+       "type": "string",
+       "label": "Country dialing",
+       "control_type": "text",
+       "hint": "Enter the country dialing code for the mobile number"
+      },
+      {
+       "name": "areaDialing",
+       "type": "string",
+       "label": "Area dialing",
+       "control_type": "text",
+       "hint": "Enter the area dialing code for the mobile number"
+      },
+      {
+       "name": "dialNumber",
+       "type": "string",
+       "label": "Dial number",
+       "control_type": "text",
+       "hint": "Enter the dial number for the mobile device"
+      },
+      {
+       "name": "itemID",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "hint": "Enter the item ID associated with the mobile device"
+      },
+      {
+       "name": "formattedNumber",
+       "type": "string",
+       "label": "Mobile number",
+       "control_type": "text",
+       "hint": "Enter the formatted number for the mobile device"
+      }
+     ]
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_remunerationBasisCode_codeValue",
+     "type": "string",
+     "label": "Pay type code",
+     "control_type": "text",
+     "hint": "Enter the code representing the pay type."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_remunerationBasisCode_shortName",
+     "type": "string",
+     "label": "Pay type short name",
+     "control_type": "text",
+     "hint": "Enter the short name associated with the pay type."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_hourlyRateAmount_amountValue",
+     "type": "number",
+     "label": "Pay rate amount",
+     "control_type": "number",
+     "hint": "Enter the amount for the pay rate."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_hourlyRateAmount_currencyCode",
+     "type": "string",
+     "label": "Pay rate currency code",
+     "control_type": "text",
+     "hint": "Enter the currency code for the pay rate."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_hourlyRateAmount_nameCode_codeValue",
+     "type": "string",
+     "label": "Pay rate name code",
+     "control_type": "text",
+     "hint": "Enter the name code associated with the pay rate."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_hourlyRateAmount_nameCode_shortName",
+     "type": "string",
+     "label": "Pay rate short name code",
+     "control_type": "text",
+     "hint": "Enter the short name associated with the pay rate name code."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_hourlyRateAmount_nameCode_longName",
+     "type": "string",
+     "label": "Pay rate long name code",
+     "control_type": "text",
+     "hint": "Enter the long name associated with the pay rate name code."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_payPeriodRateAmount_amountValue",
+     "type": "number",
+     "label": "Weekly salary amount",
+     "control_type": "number",
+     "hint": "Enter the amount for the weekly salary."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_payPeriodRateAmount_currencyCode",
+     "type": "string",
+     "label": "Weekly salary currency code",
+     "control_type": "text",
+     "hint": "Enter the currency code for the weekly salary."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_payPeriodRateAmount_nameCode_codeValue",
+     "type": "string",
+     "label": "Weekly salary name code",
+     "control_type": "text",
+     "hint": "Enter the name code associated with the weekly salary."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_payPeriodRateAmount_nameCode_shortName",
+     "type": "string",
+     "label": "Weekly salary short name code",
+     "control_type": "text",
+     "hint": "Enter the short name associated with the weekly salary name code."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_baseRemuneration_payPeriodRateAmount_nameCode_longName",
+     "type": "string",
+     "label": "Weekly salary long name code",
+     "control_type": "text",
+     "hint": "Enter the long name associated with the weekly salary name code."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_additionalRemunerations__rate",
+     "type": "array",
+     "label": "Additional payrate",
+     "of": "object",
+     "properties": [
+      {
+       "name": "nameCode_codeValue",
+       "type": "string",
+       "label": "Payrate name code",
+       "control_type": "text",
+       "hint": "Enter the name code associated with the additional payrate"
+      },
+      {
+       "name": "nameCode_shortName",
+       "type": "string",
+       "label": "Payrate short name code",
+       "control_type": "text",
+       "hint": "Enter the short name associated with the additional payrate name code"
+      },
+      {
+       "name": "nameCode_longName",
+       "type": "string",
+       "label": "Payrate long name code",
+       "control_type": "text",
+       "hint": "Enter the long name associated with the additional payrate name code"
+      },
+      {
+       "name": "currencyCode",
+       "type": "string",
+       "label": "Payrate currency code",
+       "control_type": "text",
+       "hint": "Enter the currency code for the additional payrate"
+      },
+      {
+       "name": "amountValue",
+       "type": "number",
+       "label": "Payrate amount",
+       "control_type": "number",
+       "hint": "Enter the amount for the additional payrate"
+      }
+     ]
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_payCycleCode_codeValue",
+     "type": "string",
+     "label": "Pay frequency code",
+     "control_type": "text",
+     "hint": "Enter the code representing the pay frequency."
+    },
+    {
+     "name": "jobOffer_offerTerms_compensation_payCycleCode_shortName",
+     "type": "string",
+     "label": "Pay frequency short name",
+     "control_type": "text",
+     "hint": "Enter the short name associated with the pay frequency."
+    },
+    {
+     "name": "jobOffer_offerAssignment_workerTypeCode_codeValue",
+     "type": "string",
+     "label": "Worker type code",
+     "control_type": "text",
+     "hint": "Enter the code representing the worker type."
+    },
+    {
+     "name": "jobOffer_offerAssignment_workerTypeCode_shortName",
+     "type": "string",
+     "label": "Worker type short name",
+     "control_type": "text",
+     "hint": "Enter the short name associated with the worker type."
+    },
+    {
+     "name": "jobOffer_offerAssignment_workLevelCode_codeValue",
+     "type": "string",
+     "label": "Employment type code",
+     "control_type": "text",
+     "hint": "Enter the code representing the employment type."
+    },
+    {
+     "name": "jobOffer_offerAssignment_workLevelCode_shortName",
+     "type": "string",
+     "label": "Employment type short name",
+     "control_type": "text",
+     "hint": "Enter the short name associated with the employment type."
+    },
+    {
+     "name": "jobOffer_offerAssignment_standardHours_hoursQuantity",
+     "type": "number",
+     "label": "Standard hours per pay period",
+     "control_type": "number",
+     "hint": "Enter the number of standard hours per pay period."
+    },
+    {
+     "name": "jobOffer_offerAssignment_standardHours_unitCode_codeValue",
+     "type": "string",
+     "label": "Standard hours per pay period code",
+     "control_type": "text",
+     "hint": "Enter the code representing the unit of measurement for standard hours per pay period."
+    },
+    {
+     "name": "jobOffer_offerAssignment_standardHours_unitCode_shortName",
+     "type": "string",
+     "label": "Standard hours per pay period short name",
+     "control_type": "text",
+     "hint": "Enter the short name associated with the unit code for standard hours per pay period."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_lineOne",
+     "type": "string",
+     "label": "Work location address line one",
+     "control_type": "text",
+     "hint": "Enter the first line of the work location address."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_lineTwo",
+     "type": "string",
+     "label": "Work location address line two",
+     "control_type": "text",
+     "hint": "Enter the second line of the work location address."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_cityName",
+     "type": "string",
+     "label": "Work location city name",
+     "control_type": "text",
+     "hint": "Enter the city name of the work location."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_countryCode",
+     "type": "string",
+     "label": "Work location country code",
+     "control_type": "text",
+     "hint": "Enter the country code of the work location."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_postalCode",
+     "type": "string",
+     "label": "Work location postal code",
+     "control_type": "text",
+     "hint": "Enter the postal code of the work location."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_countrySubdivisionLevel1_codeValue",
+     "type": "string",
+     "label": "Work location country subdivision code value",
+     "control_type": "text",
+     "hint": "Enter the code value for the country subdivision of the work location."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_countrySubdivisionLevel1_subdivisionType",
+     "type": "string",
+     "label": "Work location country subdivision type",
+     "control_type": "text",
+     "hint": "Enter the type of country subdivision for the work location."
+    },
+    {
+     "name": "jobOffer_offerAssignment_homeWorkLocation_address_countrySubdivisionLevel1_shortName",
+     "type": "string",
+     "label": "Work location country subdivision short name",
+     "control_type": "text",
+     "hint": "Enter the short name of the country subdivision for the work location."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

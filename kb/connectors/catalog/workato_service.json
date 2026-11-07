@@ -1,0 +1,231 @@
+{
+ "name": "workato_service",
+ "title": "Callable recipes by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Workato"
+ ],
+ "aliases": [
+  "Callable recipes by Workato",
+  "utility",
+  "utilities",
+  "api",
+  "endpoint"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "call_service",
+   "title": "Call recipe (synchronous)",
+   "description": "Call recipe",
+   "help": "Trigger a callable recipe to run. You can use outputs from that callable recipe in your subsequent steps.",
+   "input": [
+    {
+     "name": "flow_id",
+     "type": "string",
+     "label": "Recipe to call",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_recipe_list",
+     "extends_schema": true,
+     "hint": "Only callable recipes can be called from another recipe. {{#if input.flow_id && recipeInfo.ownersView}} View selected recipe.{{/if}}"
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "string",
+     "label": "Job ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "job_url",
+     "type": "string",
+     "label": "Job URL",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "call_service_async",
+   "title": "Call recipe (asynchronous)",
+   "description": "Call recipe (do not wait for response)",
+   "help": "Trigger a callable recipe to run independently. This action will not wait for the response data and proceed with the next step. You will not be able to use the outputs from that callable recipe.",
+   "input": [
+    {
+     "name": "flow_id",
+     "type": "string",
+     "label": "Recipe to call",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_recipe_list",
+     "extends_schema": true,
+     "hint": "Only callable recipes can be called from another recipe. {{#if input.flow_id && recipeInfo.ownersView}} View selected recipe.{{/if}}"
+    }
+   ],
+   "output": [
+    {
+     "name": "event_id",
+     "type": "string",
+     "label": "Job ID Ref",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "job_url",
+     "type": "string",
+     "label": "Job URL",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "send_reply",
+   "title": "Return response from recipe",
+   "description": "Return response from callable recipe",
+   "help": "Return data to the parent recipe. The schema for this response is described in the call recipe request trigger.",
+   "input": [
+    {
+     "name": "reply_type",
+     "type": "string",
+     "label": "Response type",
+     "control_type": "select",
+     "required": true,
+     "default": "success",
+     "options": [
+      "success",
+      "error"
+     ],
+     "extends_schema": true,
+     "hint": "Select success or error"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "wait_for_async_jobs",
+   "title": "Wait for async calls",
+   "description": "Wait for async calls to complete",
+   "input": [
+    {
+     "name": "async_call_line_refs",
+     "type": "string",
+     "label": "Async calls to wait for",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "$$_line_list",
+     "extends_schema": true
+    },
+    {
+     "name": "timeout",
+     "type": "integer",
+     "label": "Timeout limit (minutes)",
+     "control_type": "number",
+     "required": true,
+     "default": "120",
+     "hint": "Set an upper limit for this wait action. If one or more of the async jobs take longer than this, proceed to the next step without waiting. Maximum is 1440 minutes (24 hours). Passing zero here will be…"
+    }
+   ],
+   "output": [
+    {
+     "name": "results",
+     "type": "array",
+     "label": "Results",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "called_from_line",
+       "type": "integer",
+       "label": "Called from line",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "recipe_id",
+       "type": "string",
+       "label": "Recipe ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "job_id",
+       "type": "string",
+       "label": "Job ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "job_started_at",
+       "type": "date_time",
+       "label": "Job started at",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "job_completed_at",
+       "type": "date_time",
+       "label": "Job completed at",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "job_completed",
+       "type": "boolean",
+       "label": "Job completed",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "job_completed",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "job_error",
+       "type": "string",
+       "label": "Job error",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "all_jobs_succeeded",
+     "type": "boolean",
+     "label": "All jobs succeeded",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "all_jobs_succeeded",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "job_succeeded_count",
+     "type": "integer",
+     "label": "Job succeeded count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "job_failed_count",
+     "type": "integer",
+     "label": "Job failed count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "job_timed_out_count",
+     "type": "integer",
+     "label": "Job timed out count",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

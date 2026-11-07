@@ -1,0 +1,359 @@
+{
+ "name": "goto_webinar",
+ "title": "GotoWebinar",
+ "requires_connection": true,
+ "categories": [
+  "Communication"
+ ],
+ "aliases": [
+  "GotoWebinar",
+  "webinars"
+ ],
+ "triggers": [
+  {
+   "name": "new_webinar_session",
+   "title": "New webinar session",
+   "description": "New webinar session in GotoWebinar",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get session created since the given date/time. Leave empty to get session created 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "sessionKey",
+     "type": "integer",
+     "label": "Session key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webinarID",
+     "type": "string",
+     "label": "Webinar ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webinarKey",
+     "type": "integer",
+     "label": "Webinar key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "registrantsAttended",
+     "type": "integer",
+     "label": "Registrants attended",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "startTime",
+     "type": "date_time",
+     "label": "Start time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "endTime",
+     "type": "date_time",
+     "label": "End time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in GotoWebinar (Custom)",
+   "help": "Build your own GotoWebinar action with a HTTP request. The request will be authorized with your GotoWebinar connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_attendees_from_session",
+   "title": "Get attendees from session",
+   "description": "Get attendees from session in GotoWebinar",
+   "help": "Get attendees from a session using session ID",
+   "input": [
+    {
+     "name": "webinar_key",
+     "type": "integer",
+     "label": "Webinar key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Click on the required webinar. Webinar key can be found at the end of URL."
+    },
+    {
+     "name": "session_key",
+     "type": "integer",
+     "label": "Session key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Go to Webinar History and click on Insights icon of the required session. Session key can be found at the end of URL."
+    }
+   ],
+   "output": [
+    {
+     "name": "attendees",
+     "type": "array",
+     "label": "Attendees",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "firstName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastName",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "registrantKey",
+       "type": "integer",
+       "label": "Registrant key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sessionKey",
+       "type": "integer",
+       "label": "Session key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "attendanceTimeInSeconds",
+       "type": "integer",
+       "label": "Attendance time in seconds",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "attendance",
+       "type": "array",
+       "label": "Attendance",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "joinTime",
+         "type": "date_time",
+         "label": "Join time",
+         "control_type": "date_time",
+         "required": true
+        },
+        {
+         "name": "leaveTime",
+         "type": "date_time",
+         "label": "Leave time",
+         "control_type": "date_time",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_webinar_details",
+   "title": "Get webinar details",
+   "description": "Get webinar details in GotoWebinar",
+   "input": [
+    {
+     "name": "webinar_key",
+     "type": "integer",
+     "label": "Webinar key",
+     "control_type": "text",
+     "required": true,
+     "hint": "Click on the required webinar. Webinar key can be found at the end of URL."
+    }
+   ],
+   "output": [
+    {
+     "name": "numberOfRegistrants",
+     "type": "integer",
+     "label": "Number of registrants",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "times",
+     "type": "array",
+     "label": "Times",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "startTime",
+       "type": "date_time",
+       "label": "Start time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "endTime",
+       "type": "date_time",
+       "label": "End time",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "inSession",
+     "type": "boolean",
+     "label": "In session",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "inSession",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "organizerKey",
+     "type": "integer",
+     "label": "Organizer key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webinarID",
+     "type": "string",
+     "label": "Webinar ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "webinarKey",
+     "type": "integer",
+     "label": "Webinar key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "timeZone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberOfOpenedInvitations",
+     "type": "integer",
+     "label": "Number of opened invitations",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "registrationUrl",
+     "type": "string",
+     "label": "Registration URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberOfRegistrationLinkClicks",
+     "type": "integer",
+     "label": "Number of registration link clicks",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

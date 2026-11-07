@@ -1,0 +1,463 @@
+{
+ "id": 486437,
+ "name": "Log New Calls in Hubspot contact",
+ "description": "Recipe Title : **Log New Calls in Hubspot Contact**\n\n---------------------------------------\n**Important Notes : **  \n\n\n### Please Read through this Description before starting the recipe. \n\n\n---------------------------------------\n### What this recipe Does :\n\n- Whenever there is a new call\n- Create a contact with the caller information in Hubspot if the search result of the contact yields no result from the contact\n- Searching by phone number\n- Adds in an engagement call log activity for the associated contact\n\n\t\n----------------------------------\n### Parameters:\n\n\n- Hubspot Portal ID - also known as hub ID, displayed on the top right of your hubspot account\n- Hubspot Account Type (sales/marketing/crm) - displayed on the top left of your hubspot account\n\n\n\n---------------------------------------\n### Support\n\nFor all enquiries, troubleshooting, and recipe behaviour related questions, please post them here : https://support.workato.com/support/discussions\n\nLearn more about Workato \nhttps://support.workato.com/support/solutions\n\nQuestions? Contact us at\n [user@example.com](mailto:user@example.com)\n",
+ "applications": [
+  "ringcentral",
+  "email",
+  "hubspot",
+  "utility"
+ ],
+ "action_applications": [
+  "email",
+  "hubspot",
+  "utility"
+ ],
+ "trigger_application": "ringcentral",
+ "business_objects": [
+  "email",
+  "contact",
+  "engagement"
+ ],
+ "categories": [
+  "Developer",
+  "Utilities",
+  "Marketing",
+  "Marketing Automation"
+ ],
+ "copy_count": 188,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-04-19T15:14:52.072-07:00",
+ "source_url": "https://app.workato.com/recipes/486437?community=us",
+ "steps": [
+  "ringcentral.new_call",
+  "email.send_mail",
+  "hubspot.search_contacts",
+  "utility.log_message",
+  "email.send_mail",
+  "hubspot.create_contact",
+  "hubspot.create_engagement"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "ringcentral",
+  "name": "new_call",
+  "as": "new_call",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "=now - 1.days"
+  },
+  "parameters_schema": "  [\n    {\n    \"label\": \"Hubspot Portal ID\",\n    \"name\":\"portal_id\",\n    \"hint\":\"Your Hubspot Portal ID (also known as Hub ID) - top right of Hubspot dashboard\",\n    \"type\": \"string\",\n    \"control_type\":\"text\",\n    \"optional\":\"false\"\n    },\n        {\n    \"label\": \"Hubspot Account Type\",\n    \"name\":\"account_type\",\n    \"hint\":\"Your Hubspot Account Type (marketing/sales/crm) - top left of Hubspot dashboard\",\n    \"type\": \"string\",\n    \"control_type\":\"text\",\n    \"optional\":\"false\"\n    }\n   ]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "or",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.ringcentral.new_call.from.name')}",
+       "rhs": "1"
+      },
+      {
+       "operand": "equals_to",
+       "lhs": "=_('data.ringcentral.new_call.from.name').downcase",
+       "rhs": "unassigned"
+      },
+      {
+       "operand": "equals_to",
+       "lhs": "=_('data.ringcentral.new_call.from.name').downcase",
+       "rhs": "unknown"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "send_mail5",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "to": "#{_('data.workato.job_context.user_email')}",
+       "subject": "Lead with number: #{_('data.ringcentral.new_call.from.phoneNumber')} has no name",
+       "body": "Unable to add lead into Salesforce because there is no name\n\n---------------------------------------------------------\nThis is an automated notification email sent by Workato Integration App recipe. To stop receiving emails like this, please log in to your Workato account and turn Email notifications off on your recipe.\n\nJob ID : #{_('data.workato.job_context.job_id')}\nJob URL : #{_('data.workato.job_context.job_url')}\nRecipe URL : #{_('data.workato.job_context.recipe_url')}\nJob Created At : #{_('data.workato.job_context.job_created_at')}"
+      },
+      "comment": "lead has no name",
+      "uuid": "95eba1af-496a-478c-a06c-6df8e2cff332"
+     },
+     {
+      "number": 3,
+      "keyword": "stop",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "stop_with_error": "false",
+       "stop_reason": "Duplicate lead is found, do not know which lead to log the call to\n"
+      },
+      "uuid": "9a97fc10-5bb1-4aa6-98ea-5633c507f026"
+     }
+    ],
+    "comment": "if duplicate lead is found",
+    "uuid": "9d63c1a2-d3ce-413e-866b-b5c833025ace"
+   },
+   {
+    "number": 4,
+    "provider": "hubspot",
+    "name": "search_contacts",
+    "as": "search_contacts",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "search_term": "=_('data.ringcentral.new_call.from.extensionNumber').present? ? _('data.ringcentral.new_call.from.phoneNumber') + \"-\" + _('data.ringcentral.new_call.from.extensionNumber') : _('data.ringcentral.new_call.from.phoneNumber')"
+    },
+    "comment": "search by phone",
+    "uuid": "70b80d87-3274-46c1-8375-659892a6b4ba",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 5,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "greater_than",
+       "lhs": "#{_('data.hubspot.search_contacts.contacts.first.____Size', 'list_meta', '____Size', 'data.hubspot.search_contacts.contacts')}",
+       "rhs": "1"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 6,
+      "provider": "utility",
+      "name": "log_message",
+      "as": "log_message",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "message": "=_('data.hubspot.search_contacts.contacts').pluck('canonical-vid')"
+      },
+      "comment": "pluck all Lead Ids",
+      "uuid": "5fed1f2c-be56-4256-96c7-4465496c80c1"
+     },
+     {
+      "number": 7,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "send_mail3",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "to": "#{_('data.workato.job_context.user_email')}",
+       "subject": "Lead - #{_('data.ringcentral.new_call.from.name')} is duplicated in Hubspot",
+       "body": "Customer with name: #{_('data.ringcentral.new_call.from.name')} and number: #{_('data.ringcentral.new_call.from.phoneNumber')}-#{_('data.ringcentral.new_call.from.extensionNumber')} has #{_('data.hubspot.search_contacts.contacts.first.____Size', 'list_meta', '____Size', 'data.hubspot.search_contacts.contacts')} duplicate leads with Ids - #{_('data.utility.log_message.message')}\n\nIf needed, please reconcile the duplicate lead and rerun the job. \n\n---------------------------------------------------------\nThis is an automated notification email sent by Workato Integration App recipe. To stop receiving emails like this, please log in to your Workato account and turn Email notifications off on your recipe.\n\nJob ID : #{_('data.workato.job_context.job_id')}\nJob URL : #{_('data.workato.job_context.job_url')}\nRecipe URL : #{_('data.workato.job_context.recipe_url')}\nJob Created At : #{_('data.workato.job_context.job_created_at')}"
+      },
+      "comment": "inform admin that duplicate lead is found",
+      "uuid": "7fe78d8c-57d3-491d-bca6-55d756a9ea1c"
+     },
+     {
+      "number": 8,
+      "keyword": "stop",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "stop_with_error": "true",
+       "stop_reason": "Duplicate contact is found, do not know which lead to log the call to\n"
+      },
+      "uuid": "8993df4f-31bb-4a6c-a223-421d5fce8f4f"
+     }
+    ],
+    "comment": "if duplicate lead is found",
+    "uuid": "5ee81864-82e0-4a51-8e6e-45c86cfeea70"
+   },
+   {
+    "number": 9,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.hubspot.search_contacts.contacts.first.vid')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 10,
+      "provider": "hubspot",
+      "name": "create_contact",
+      "as": "create_contact",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "firstname": "=(_('data.ringcentral.new_call.from.name').split.last == _('data.ringcentral.new_call.from.name').split.first) ? nil : _('data.ringcentral.new_call.from.name').split.first",
+       "lastname": "=(_('data.ringcentral.new_call.from.name').split.last == _('data.ringcentral.new_call.from.name').split.first) ? _('data.ringcentral.new_call.from.name') : _('data.ringcentral.new_call.from.name').split.last",
+       "phone": "=_('data.ringcentral.new_call.from.extensionNumber').present? ? _('data.ringcentral.new_call.from.phoneNumber') + \"-\" + _('data.ringcentral.new_call.from.extensionNumber') : _('data.ringcentral.new_call.from.phoneNumber')"
+      },
+      "visible_config_fields": [
+       "email",
+       "firstname",
+       "lastname",
+       "company",
+       "website",
+       "phone",
+       "jobtitle",
+       "lifecyclestage",
+       "address",
+       "city",
+       "state",
+       "zip"
+      ],
+      "comment": "add contact with name/phone no",
+      "uuid": "bd81136c-1a97-48f6-a5db-642e58dffefe"
+     }
+    ],
+    "uuid": "b58edcda-6f12-4500-b924-462b25818b24"
+   },
+   {
+    "number": 11,
+    "provider": "hubspot",
+    "name": "create_engagement",
+    "as": "create_engagement",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "engagement.active": true
+    },
+    "input": {
+     "engagement": {
+      "active": "true",
+      "type": "CALL",
+      "timestamp": "#{_('data.ringcentral.new_call.startTime')}"
+     },
+     "associations": {
+      "contactIds": {
+       "id": "=_('data.hubspot.search_contacts.contacts.first.vid') or _('data.hubspot.create_contact.vid')"
+      }
+     },
+     "attachments": {
+      "id": "=_('data.hubspot.search_contacts.contacts.first.vid') or _('data.hubspot.create_contact.vid')"
+     },
+     "metadata": {
+      "toNumber": "=_('data.ringcentral.new_call.to.extensionNumber').present? ? _('data.ringcentral.new_call.to.phoneNumber') + \"-\" + _('data.ringcentral.new_call.to.extensionNumber') : _('data.ringcentral.new_call.to.phoneNumber')",
+      "fromNumber": "=_('data.ringcentral.new_call.from.extensionNumber').present? ? _('data.ringcentral.new_call.from.phoneNumber') + \"-\" + _('data.ringcentral.new_call.from.extensionNumber') : _('data.ringcentral.new_call.from.phoneNumber')",
+      "status": "={\n\"ResultInProgress\"=>\"IN_PROGRESS\",\n\"Missed\"=>\"NO_ANSWER\",\n\"No Answer\"=>\"NO_ANSWER\",\n\"Call accepted\"=>\"COMPLETED\",\n\"Received\"=>\"COMPLETED\",\n\"Call connected\"=>\"COMPLETED\",\n\"Rejected\"=>\"CANCELED\",\n\"Stopped\"=>\"CANCELED\",\n\"Voicemail\"=>\"BUSY\",\n\"Busy\"=>\"BUSY\",\n\"Blocked\"=>\"BUSY\",\n\"Declined\"=>\"BUSY\",\n\"Hang up\"=>\"BUSY\",\n\"Receive Error\"=>\"FAILED\",\n\"Call Failed\"=>\"FAILED\",\n\"Call Failure\"=>\"FAILED\",\n\"Abandoned\"=>\"FAILED\",\n\"ResultEmpty\"=>\"FAILED\",\n\"Internal Error\"=>\"FAILED\",\n\"Poor Line Quality\"=>\"FAILED\"\n}[_('data.ringcentral.new_call.result')]",
+      "durationMilliseconds": "#{_('data.ringcentral.new_call.duration')}",
+      "body": "Type: #{_('data.ringcentral.new_call.type')}\nDirection: #{_('data.ringcentral.new_call.direction')}\nAction: #{_('data.ringcentral.new_call.action')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "type": "object",
+      "name": "metadata",
+      "label": "Call",
+      "optional": true,
+      "properties": [
+       {
+        "type": "string",
+        "name": "toNumber",
+        "control_type": "text",
+        "label": "To number",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "fromNumber",
+        "control_type": "text",
+        "label": "From number",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "status",
+        "control_type": "text",
+        "label": "Status",
+        "hint": "Should be one of following values: QUEUED, RINGING, IN_PROGRESS, CANCELED, COMPLETED, BUSY, FAILED, NO_ANSWER, CONNECTING, CALLING_CRM_USER",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "externalId",
+        "control_type": "text",
+        "label": "External ID",
+        "optional": true
+       },
+       {
+        "type": "number",
+        "name": "durationMilliseconds",
+        "control_type": "number",
+        "label": "Duration milliseconds",
+        "optional": true,
+        "render_input": "convert_to_integer",
+        "parse_output": "float_conversion"
+       },
+       {
+        "type": "string",
+        "name": "externalAccountId",
+        "control_type": "text",
+        "label": "External account ID",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "recordingUrl",
+        "control_type": "url",
+        "label": "Recording URL",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "body",
+        "control_type": "text",
+        "label": "Body",
+        "optional": true
+       }
+      ]
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "object",
+      "name": "metadata",
+      "label": "Call",
+      "optional": true,
+      "properties": [
+       {
+        "type": "string",
+        "name": "toNumber",
+        "control_type": "text",
+        "label": "To number",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "fromNumber",
+        "control_type": "text",
+        "label": "From number",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "status",
+        "control_type": "text",
+        "label": "Status",
+        "hint": "Should be one of following values: QUEUED, RINGING, IN_PROGRESS, CANCELED, COMPLETED, BUSY, FAILED, NO_ANSWER, CONNECTING, CALLING_CRM_USER",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "externalId",
+        "control_type": "text",
+        "label": "External ID",
+        "optional": true
+       },
+       {
+        "type": "number",
+        "name": "durationMilliseconds",
+        "control_type": "number",
+        "label": "Duration milliseconds",
+        "optional": true,
+        "render_input": "convert_to_integer",
+        "parse_output": "float_conversion"
+       },
+       {
+        "type": "string",
+        "name": "externalAccountId",
+        "control_type": "text",
+        "label": "External account ID",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "recordingUrl",
+        "control_type": "url",
+        "label": "Recording URL",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "body",
+        "control_type": "text",
+        "label": "Body",
+        "optional": true
+       }
+      ]
+     }
+    ],
+    "comment": "log the call as an engagement activity",
+    "uuid": "ad2bb505-07f0-4de4-8173-6af557d8a203"
+   }
+  ],
+  "comment": "log all calls from RingCentral",
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "time called"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "from"
+   },
+   {
+    "name": "custom_column_5",
+    "label": "no"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "type"
+   },
+   {
+    "name": "custom_column_4",
+    "label": "call logged?"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "=_('data.ringcentral.new_call.startTime').strftime(\"%A %d. %B %Y\")",
+   "custom_column_2": "=_('data.ringcentral.new_call.from.name')",
+   "custom_column_5": "#{_('data.ringcentral.new_call.from.phoneNumber')}",
+   "custom_column_3": "#{_('data.ringcentral.new_call.direction')} #{_('data.ringcentral.new_call.type')} #{_('data.ringcentral.new_call.action')}",
+   "custom_column_4": "=_('data.hubspot.search_contacts.contacts.first.vid').present? ? \"already logged\" : _('data.hubspot.create_contact.vid').present? ? \"logged\" : \"no\""
+  },
+  "uuid": "1efdbc0a-19a5-4575-ba09-b3920d0da93e"
+ }
+}

@@ -1,0 +1,674 @@
+{
+ "id": 382641,
+ "name": "Part 2.3 Close Salesforce Case by Case ID with Slack Workbot",
+ "description": "1. Type or paste a **Salesforce Case URL** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will automatically reply with a message showing more information about that particular Case. \n3. Workbot will prompt you with 3 buttons to update, delete or close the case. This recipe allows you to close the Case after clicking on the close button.\n\n**Notes**\n- This recipe works together with the [Slack Workbot shows Salesforce Case details when you post a URL in Slack](https://www.workato.com/recipes/382647-slack-workbot-shows-salesforce-case-details-when-you-post-a-url-in-slack) recipe. To use this recipe, copy and run both recipes.\n- Workbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "salesforce",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "salesforce",
+  "slack_bot"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "case",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "CRM",
+  "Marketing"
+ ],
+ "copy_count": 3937,
+ "curated": false,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2020-08-03T09:23:32.743-07:00",
+ "source_url": "https://app.workato.com/recipes/382641?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "salesforce.update_sobject",
+  "slack_bot.post_bot_reply_v2",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">salesforce close_by_case case</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Salesforce"
+  },
+  "toggleCfg": {
+   "domain": true,
+   "name": false,
+   "scope": false
+  },
+  "input": {
+   "domain": "salesforce",
+   "name": "close_by_case",
+   "scope": "case",
+   "parameters": "[{\"name\":\"case_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"}]",
+   "description": "internal",
+   "hide_from_help": "true"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Case ID",
+      "name": "case_id",
+      "type": "string",
+      "optional": false
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "salesforce",
+      "name": "update_sobject",
+      "as": "update_sobject",
+      "title": "Update Case",
+      "description": "Update <span class=\"provider\">Case</span> in <span class=\"provider\">Salesforce</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "sobject_name": "Case"
+      },
+      "toggleCfg": {
+       "Status": true
+      },
+      "input": {
+       "sobject_name": "Case",
+       "id": "#{_('data.slack_bot.bot_command_v2.parameters.case_id')}",
+       "Status": "Closed"
+      },
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "id",
+        "control_type": "text",
+        "label": "Case ID",
+        "hint": "Salesforce internal ID of Case to update",
+        "key_scope": "case"
+       },
+       {
+        "type": "string",
+        "name": "assignment_rule_id",
+        "control_type": "text",
+        "label": "Assignment rule ID",
+        "hint": "Leave empty to not apply assignment rules; the special value <b>true</b> to apply the default assignment rules; or pass specific rule ID.",
+        "optional": true
+       },
+       {
+        "type": "string",
+        "name": "AccountId",
+        "control_type": "text",
+        "label": "Account ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "AssetId",
+        "control_type": "text",
+        "label": "Asset ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Origin",
+        "control_type": "select",
+        "label": "Case Origin",
+        "pick_list": [
+         [
+          "Phone",
+          "Phone"
+         ],
+         [
+          "Email",
+          "Email"
+         ],
+         [
+          "Web",
+          "Web"
+         ]
+        ],
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Case Origin",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Origin"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Reason",
+        "control_type": "select",
+        "label": "Case Reason",
+        "pick_list": [
+         [
+          "Installation",
+          "Installation"
+         ],
+         [
+          "Equipment Complexity",
+          "Equipment Complexity"
+         ],
+         [
+          "Performance",
+          "Performance"
+         ],
+         [
+          "Breakdown",
+          "Breakdown"
+         ],
+         [
+          "Equipment Design",
+          "Equipment Design"
+         ],
+         [
+          "Feedback",
+          "Feedback"
+         ],
+         [
+          "Other",
+          "Other"
+         ]
+        ],
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Case Reason",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Reason"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Type",
+        "control_type": "select",
+        "label": "Case Type",
+        "pick_list": [
+         [
+          "Mechanical",
+          "Mechanical"
+         ],
+         [
+          "Electrical",
+          "Electrical"
+         ],
+         [
+          "Electronic",
+          "Electronic"
+         ],
+         [
+          "Structural",
+          "Structural"
+         ],
+         [
+          "Other",
+          "Other"
+         ]
+        ],
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Case Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Type"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "SuppliedCompany",
+        "control_type": "text",
+        "label": "Company",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "ContactId",
+        "control_type": "text",
+        "label": "Contact ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Description",
+        "control_type": "text-area",
+        "label": "Description",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "SuppliedEmail",
+        "control_type": "text",
+        "label": "Email Address",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "boolean",
+        "name": "IsEscalated",
+        "control_type": "checkbox",
+        "label": "Escalated",
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Escalated",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "boolean",
+         "name": "IsEscalated"
+        },
+        "render_input": {},
+        "parse_output": {},
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "SuppliedName",
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "OwnerId",
+        "control_type": "text",
+        "label": "Owner ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "ParentId",
+        "control_type": "text",
+        "label": "Parent Case ID",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "SuppliedPhone",
+        "control_type": "text",
+        "label": "Phone",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Priority",
+        "control_type": "select",
+        "label": "Priority",
+        "pick_list": [
+         [
+          "High",
+          "High"
+         ],
+         [
+          "Medium",
+          "Medium"
+         ],
+         [
+          "Low",
+          "Low"
+         ]
+        ],
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Priority",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Priority"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Status",
+        "control_type": "select",
+        "label": "Status",
+        "pick_list": [
+         [
+          "New",
+          "New"
+         ],
+         [
+          "Working",
+          "Working"
+         ],
+         [
+          "Escalated",
+          "Escalated"
+         ],
+         [
+          "Closed",
+          "Closed"
+         ]
+        ],
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Status",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Status"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Subject",
+        "control_type": "text",
+        "label": "Subject",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "EngineeringReqNumber__c",
+        "control_type": "text",
+        "label": "Engineering Req Number",
+        "optional": true,
+        "custom": true,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "PotentialLiability__c",
+        "control_type": "select",
+        "label": "Potential Liability",
+        "pick_list": [
+         [
+          "No",
+          "No"
+         ],
+         [
+          "Yes",
+          "Yes"
+         ]
+        ],
+        "optional": true,
+        "custom": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Potential Liability",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": true,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "PotentialLiability__c"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Product__c",
+        "control_type": "select",
+        "label": "Product",
+        "pick_list": [
+         [
+          "GC1040",
+          "GC1040"
+         ],
+         [
+          "GC1060",
+          "GC1060"
+         ],
+         [
+          "GC3020",
+          "GC3020"
+         ],
+         [
+          "GC3040",
+          "GC3040"
+         ],
+         [
+          "GC3060",
+          "GC3060"
+         ],
+         [
+          "GC5020",
+          "GC5020"
+         ],
+         [
+          "GC5040",
+          "GC5040"
+         ],
+         [
+          "GC5060",
+          "GC5060"
+         ],
+         [
+          "GC1020",
+          "GC1020"
+         ]
+        ],
+        "optional": true,
+        "custom": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Product",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": true,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Product__c"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "SLAViolation__c",
+        "control_type": "select",
+        "label": "SLA Violation",
+        "pick_list": [
+         [
+          "No",
+          "No"
+         ],
+         [
+          "Yes",
+          "Yes"
+         ]
+        ],
+        "optional": true,
+        "custom": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "SLA Violation",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": true,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "SLAViolation__c"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       }
+      ],
+      "visible_config_fields": [
+       "sobject_name",
+       "id",
+       "Status"
+      ],
+      "uuid": "fb0f8c38-4641-4cad-b111-ab4a2be04f2c"
+     },
+     {
+      "number": 3,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "text": ":+1: Case was Closed"
+      },
+      "uuid": "84e8c486-8864-489c-9db5-3200125fad2a",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     },
+     {
+      "number": 4,
+      "as": "catch",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {},
+      "block": [
+       {
+        "number": 5,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply_v2__1",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {
+         "message.color": true
+        },
+        "input": {
+         "text": "Recipe Error",
+         "message": {
+          "attachment_text": "#{_('data.catch.catch.type')}\n#{_('data.catch.catch.message')}",
+          "color": "danger",
+          "title": ":x: Workbot ran into an error",
+          "title_link": "#{_('data.workato.job_context.recipe_url')}"
+         }
+        },
+        "uuid": "2388917f-d0e9-4efa-a626-ee39675316bb",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       }
+      ],
+      "uuid": "74be8f70-dfd6-4c92-8c7a-a739ed7494e5"
+     }
+    ],
+    "uuid": "da3120e3-0b95-4d8e-8784-6fdde74e2421"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Case ID"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.slack_bot.bot_command_v2.parameters.case_id')}"
+  },
+  "uuid": "247e135d-29c0-490a-b252-85709f25f429",
+  "param": {}
+ }
+}

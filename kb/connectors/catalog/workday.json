@@ -1,0 +1,949 @@
+{
+ "name": "workday",
+ "title": "Workday",
+ "requires_connection": true,
+ "categories": [
+  "HR management",
+  "ERP",
+  "Financial Management",
+  "Sales Enablement"
+ ],
+ "aliases": [
+  "Workday"
+ ],
+ "triggers": [
+  {
+   "name": "new_updated_object",
+   "title": "New/updated business object",
+   "description": "New/updated business object in Workday",
+   "help": "Order of jobs is unsorted.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When left blank, trigger will start picking up updates created or updated 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "trigger_objects",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_object_batch",
+   "title": "New/updated business object",
+   "description": "New/updated business object in Workday",
+   "help": "Trigger will retrieve records created/updated since the last time recipe triggered.Maximum batch size is 100 records. Order of jobs is unsorted.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When left blank, trigger will start picking up updates created or updated 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "trigger_objects",
+     "extends_schema": true
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "hint": "Number of records in a single trigger event, default is 50 and maximum batch size is 100."
+    }
+   ],
+   "output": [
+    {
+     "name": "first_id",
+     "type": "string",
+     "label": "First ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_id",
+     "type": "string",
+     "label": "Last ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_batch",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "total_records",
+     "type": "integer",
+     "label": "Total records",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "scheduled_report_batch",
+   "title": "Scheduled report fetch",
+   "description": "Scheduled report in Workday",
+   "help": "Runs a report on the specified schedule, returning results in batches. First provide the report URL, then provide any additional filters to narrow your results. Maximum size of each batch is 10000. Default size is 200",
+   "input": [
+    {
+     "name": "report_url",
+     "type": "string",
+     "label": "Report URL",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter the report URL found on the \"View URLs Web Service\" page in Workday. Note that URL params will have to provided separately in their own input fields below."
+    },
+    {
+     "name": "schedule",
+     "type": "string",
+     "label": "Schedule",
+     "control_type": "select",
+     "required": true,
+     "default": "monthly",
+     "options": [
+      "hourly",
+      "daily",
+      "monthly"
+     ]
+    },
+    {
+     "name": "time_zone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timezone_name_global_pick_list"
+    },
+    {
+     "name": "hour",
+     "type": "integer",
+     "label": "Hour",
+     "control_type": "number",
+     "visible_if": "input.schedule != \"hourly\" || input.schedule_settings?.schedule != \"hourly\"",
+     "default": 0,
+     "hint": "Hours in 24-hour format, i.e. 11 for 11am, 23 for 11pm. Defaults to 00 (12am) if left empty."
+    },
+    {
+     "name": "minute",
+     "type": "integer",
+     "label": "Minute",
+     "control_type": "number",
+     "required": true,
+     "default": 0,
+     "hint": "Minutes past the hour, i.e 00 for 0 minutes."
+    },
+    {
+     "name": "day_of_month",
+     "type": "integer",
+     "label": "Day of month",
+     "control_type": "number",
+     "visible_if": "input.schedule == \"monthly\" || input.schedule_settings?.schedule == \"monthly\"",
+     "default": 1,
+     "hint": "1 - 31 , will be rounded down to last day of month for shorter months. Defaults to first day of the month if left empty."
+    },
+    {
+     "name": "Sunday",
+     "type": "boolean",
+     "label": "Sunday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Sunday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Monday",
+     "type": "boolean",
+     "label": "Monday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Monday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Tuesday",
+     "type": "boolean",
+     "label": "Tuesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Tuesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Wednesday",
+     "type": "boolean",
+     "label": "Wednesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Wednesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Thursday",
+     "type": "boolean",
+     "label": "Thursday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Thursday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Friday",
+     "type": "boolean",
+     "label": "Friday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Friday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Saturday",
+     "type": "boolean",
+     "label": "Saturday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Saturday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "format",
+     "type": "string",
+     "label": "Format",
+     "control_type": "select",
+     "options": [
+      "csv",
+      "json"
+     ],
+     "extends_schema": true,
+     "hint": "Select the output format of the report. Default is CSV ."
+    },
+    {
+     "name": "use_automatic_schema",
+     "type": "boolean",
+     "label": "Detect report schema automatically",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "use_automatic_schema",
+      "type": "boolean"
+     },
+     "hint": "Set this to Yes or leave it empty to detect the report’s input and output schema automatically. Note that this does not work when the report URL contains a datapill."
+    },
+    {
+     "name": "custom_input",
+     "type": "array",
+     "label": "Report parameters",
+     "control_type": "key_value",
+     "visible_if": "input.use_automatic_schema === \"false\"",
+     "of": "object",
+     "properties": [
+      {
+       "name": "param",
+       "type": "string",
+       "label": "Parameter alias",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "custom_output",
+     "type": "string",
+     "label": "Report columns",
+     "control_type": "schema-designer",
+     "visible_if": "input.use_automatic_schema === \"false\"",
+     "extends_schema": true
+    },
+    {
+     "name": "remove_empty",
+     "type": "boolean",
+     "label": "Remove empty fields",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "remove_empty",
+      "type": "boolean"
+     },
+     "hint": "Defaults to Yes . Select No to retain the fields with Null value."
+    },
+    {
+     "name": "additional_fields",
+     "type": "string",
+     "label": "Additional fields",
+     "control_type": "schema-designer",
+     "visible_if": "input.use_automatic_schema != \"false\"",
+     "extends_schema": true,
+     "hint": "Add any additional report fields that are not automatically generated in the output datatree."
+    },
+    {
+     "name": "replace_with_additional",
+     "type": "boolean",
+     "label": "Replace report fields",
+     "control_type": "checkbox",
+     "visible_if": "input.use_automatic_schema != \"false\"",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "replace_with_additional",
+      "type": "boolean"
+     },
+     "hint": "If Yes, Additional fields will replace the original report fields with the same name."
+    },
+    {
+     "name": "report_batch_size",
+     "type": "number",
+     "label": "Report batch size",
+     "control_type": "number",
+     "default": 200,
+     "hint": "Minimum size is 200 items, maximum is 10000."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "scheduled_wql_report_batch",
+   "title": "Scheduled report fetch using WQL",
+   "description": "Scheduled report in Workday using WQL",
+   "help": "Runs a report on the specified schedule, returning results in batches. First provide the WQL query of the report, then provide any additional filters to narrow your results. Maximum size of each batch is 1000 . Default batch size is 200 . Note: This trigger requires a Workday OAuth connection to wor…",
+   "input": [
+    {
+     "name": "report_wql",
+     "type": "string",
+     "label": "Report WQL",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide WQL of the report from the Convert Report to WQL action in Workday."
+    },
+    {
+     "name": "report_batch_size",
+     "type": "integer",
+     "label": "Report batch size",
+     "control_type": "integer",
+     "default": 200,
+     "hint": "Minimum size is 200 items, maximum is 1000 ."
+    },
+    {
+     "name": "custom_schema",
+     "type": "string",
+     "label": "Report columns",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Override the default report schema with your own custom report schema."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "Get_business_object_details",
+   "title": "Get business object details",
+   "description": "Get business object in Workday",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Staffing/Get_Applicants/Get_Applicants_Request/Get_Applicants_Response",
+      "Staffing/Get_Citizenship_Statuses/Get_Citizenship_Statuses_Request/Get_Citizenship_Statuses_Response",
+      "Integrations/Get_References/Get_References_Request/Get_References_Response",
+      "Staffing/Get_Job_Classification_Groups/Get_Job_Classification_Groups_Request/Get_Job_Classification_Groups_Response",
+      "Staffing/Get_Job_Families/Get_Job_Families_Request/Get_Job_Families_Response",
+      "Staffing/Get_Job_Family_Groups/Get_Job_Family_Groups_Request/Get_Job_Family_Groups_Response",
+      "Human_Resources/Get_Locations/Get_Locations_Request/Get_Locations_Response",
+      "Staffing/Get_Organizations/Get_Organizations_Request/Get_Organizations_Response",
+      "Staffing/Get_Positions/Get_Positions_Request/Get_Positions_Response",
+      "Staffing/Get_Student_Employment_Eligibility_Data/Get_Student_Employment_Eligibility_Data_Request/Get_Student_Employment_Eligibility_Data_Response",
+      "Staffing/Get_Worker_Documents/Get_Worker_Documents_Request/Get_Worker_Documents_Response",
+      "Staffing/Get_Workers/Get_Workers_Request/Get_Workers_Response"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "Search_business_object",
+   "title": "Search business object",
+   "description": "Search business object in Workday",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Staffing/Get_Applicants/Get_Applicants_Request/Get_Applicants_Response",
+      "Staffing/Get_Citizenship_Statuses/Get_Citizenship_Statuses_Request/Get_Citizenship_Statuses_Response",
+      "Integrations/Get_References/Get_References_Request/Get_References_Response",
+      "Staffing/Get_Job_Classification_Groups/Get_Job_Classification_Groups_Request/Get_Job_Classification_Groups_Response",
+      "Staffing/Get_Job_Families/Get_Job_Families_Request/Get_Job_Families_Response",
+      "Staffing/Get_Job_Family_Groups/Get_Job_Family_Groups_Request/Get_Job_Family_Groups_Response",
+      "Human_Resources/Get_Locations/Get_Locations_Request/Get_Locations_Response",
+      "Staffing/Get_Organizations/Get_Organizations_Request/Get_Organizations_Response",
+      "Staffing/Get_Positions/Get_Positions_Request/Get_Positions_Response",
+      "Staffing/Get_Student_Employment_Eligibility_Data/Get_Student_Employment_Eligibility_Data_Request/Get_Student_Employment_Eligibility_Data_Response",
+      "Staffing/Get_Worker_Documents/Get_Worker_Documents_Request/Get_Worker_Documents_Response",
+      "Staffing/Get_Workers/Get_Workers_Request/Get_Workers_Response"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "Update_business_object",
+   "title": "Update business object",
+   "description": "Update business object in Workday",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Staffing/Edit_Hiring_Restrictions/Edit_Hiring_Restrictions_Request/Edit_Hiring_Restrictions_Response",
+      "Staffing/Edit_Position/Edit_Position_Request/Edit_Position_Event_Response",
+      "Staffing/Edit_Position_Restrictions/Edit_Position_Restrictions_Request/Edit_Positon_Restriction_Response",
+      "Staffing/Edit_Position_Restrictions_Additional_Data/Edit_Position_Restrictions_Additional_Data_Request/Edit_Position_Restrictions_Additional_Data_Response",
+      "Staffing/Edit_Service_Dates/Edit_Service_Dates_Request/Edit_Service_Dates_Response",
+      "Staffing/Edit_Worker_Additional_Data/Edit_Worker_Additional_Data_Request/Edit_Worker_Additional_Data_Response"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Workday (Custom)",
+   "help": "Build your own Workday action with a HTTP request. The request will be authorized exclusively through your Workday OAuth 2.0 connection. Use this action to access any Workday REST APIs. Please note that Basic authentication is not supported for this action.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "call_operation",
+   "title": "Call operation",
+   "description": "Call operation in Workday",
+   "help": "Call any Workday Web Services operation. First select the operation, then select any necessary attributes for each field. Finally, provide data for the operation. Reference fields with string input values are delimited with commas by default. If a value contains comma in it, use <!--no_split--> synt…",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Operation",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "web_services_pl",
+     "extends_schema": true,
+     "hint": "Upon changing operation, ensure to Reset the step to clear any input that was configured for a different operation."
+    },
+    {
+     "name": "use_user_payload",
+     "type": "boolean",
+     "label": "Switch to user-defined XML payload",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "use_user_payload",
+      "type": "boolean"
+     },
+     "hint": "Enabling this feature allows you to manually enter the XML payload. To understand how input fields are synchronised between the guided setup and user-defined XML payload setup, please read our documen…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_custom_object",
+   "title": "Get custom objects",
+   "description": "Get custom object in Workday",
+   "help": "This action retrieves custom objects attached to a parent object in Workday. The custom objects to be retrieved can be both single-instance and multi-instance. You may further specify the list of fields to be retrieved. Note: This action requires a Workday OAuth connection to work. If the custom obj…",
+   "input": [
+    {
+     "name": "sample",
+     "type": "string",
+     "label": "Custom object fields",
+     "control_type": "text",
+     "visible_if": "input.sample && !input.sample_schema",
+     "extends_schema": true,
+     "hint": "Fields to read. Each line for a separate field. Use / for nested objects. This field is deprecated. Use the schema designer instead."
+    },
+    {
+     "name": "multiInstance",
+     "type": "boolean",
+     "label": "Is multi-instanced?",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "multiInstance",
+      "type": "boolean"
+     },
+     "hint": "Set this to Yes if custom object being fetched is multi-instanced. Defaults to No . To learn more about custom objects, see our documentation ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_report",
+   "title": "Get report",
+   "description": "Get report from Workday",
+   "help": "Run a report and fetch the results from Workday. First provide the report URL, then provide any additional filters to narrow your results.",
+   "input": [
+    {
+     "name": "report_url",
+     "type": "string",
+     "label": "Report URL",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter the report URL found on the \"View URLs Web Service\" page in Workday. Note that URL parameters will have to be provided separately in their own input fields below."
+    },
+    {
+     "name": "format",
+     "type": "string",
+     "label": "Format",
+     "control_type": "select",
+     "options": [
+      "csv",
+      "json"
+     ],
+     "extends_schema": true,
+     "hint": "Select the output format of the report. Default is CSV ."
+    },
+    {
+     "name": "use_automatic_schema",
+     "type": "boolean",
+     "label": "Detect report schema automatically",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "use_automatic_schema",
+      "type": "boolean"
+     },
+     "hint": "Set this to Yes or leave it empty to detect the report’s input and output schema automatically. Note that this does not work when the report URL contains a datapill."
+    },
+    {
+     "name": "custom_input",
+     "type": "array",
+     "label": "Report parameters",
+     "control_type": "key_value",
+     "visible_if": "input.use_automatic_schema === \"false\"",
+     "of": "object",
+     "properties": [
+      {
+       "name": "param",
+       "type": "string",
+       "label": "Parameter alias",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "custom_output",
+     "type": "string",
+     "label": "Report columns",
+     "control_type": "schema-designer",
+     "visible_if": "input.use_automatic_schema === \"false\"",
+     "extends_schema": true
+    },
+    {
+     "name": "remove_empty",
+     "type": "boolean",
+     "label": "Remove empty fields",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "remove_empty",
+      "type": "boolean"
+     },
+     "hint": "Defaults to Yes . Select No to retain the fields with Null value."
+    },
+    {
+     "name": "additional_fields",
+     "type": "string",
+     "label": "Additional fields",
+     "control_type": "schema-designer",
+     "visible_if": "input.use_automatic_schema != \"false\"",
+     "extends_schema": true,
+     "hint": "Add any additional report fields that are not automatically generated in the output datatree."
+    },
+    {
+     "name": "replace_with_additional",
+     "type": "boolean",
+     "label": "Replace report fields",
+     "control_type": "checkbox",
+     "visible_if": "input.use_automatic_schema != \"false\"",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "replace_with_additional",
+      "type": "boolean"
+     },
+     "hint": "If Yes, Additional fields will replace the original report fields with the same name."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_wql_report",
+   "title": "Get report using WQL",
+   "description": "Get report from Workday using WQL",
+   "help": "Run a report and fetch the results in batches from Workday using a specified WQL query. Maximum supported batch size is 1000 . Default batch size is 200 . Note: This action requires a Workday OAuth connection to work.",
+   "input": [
+    {
+     "name": "report_wql",
+     "type": "string",
+     "label": "Report WQL",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide WQL of the report from the Convert Report to WQL action in Workday. If data-pill is used here, ensure to provide the expected report schema in the Report columns input."
+    },
+    {
+     "name": "count",
+     "type": "integer",
+     "label": "Count",
+     "control_type": "integer",
+     "default": 200,
+     "hint": "Set the count of the objects to be retrieved in a single batch/page, up to 1000 . Minimum is 200 . If left blank, defaults to 200 ."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "default": 1,
+     "hint": "Set the page of the response. Defaults to 1 , denoting the first page."
+    },
+    {
+     "name": "custom_schema",
+     "type": "string",
+     "label": "Report columns",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Override the default report schema with your own custom report schema."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_custom_objects",
+   "title": "List custom object definitions",
+   "description": "List custom object definitions in Workday",
+   "help": "This action lists all available custom object definitions in Workday. The list retrieved will be subject to the security profile assigned to the credentials used when setting up the connection. Note: This action requires a Workday OAuth connection to work.",
+   "input": [
+    {
+     "name": "count",
+     "type": "integer",
+     "label": "Count",
+     "control_type": "integer",
+     "default": 20,
+     "hint": "Sets the count of the objects to be retrieved in a single response, up to 100. If left blank, defaults to 20."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "default": 1,
+     "hint": "Sets the page offset of the response. If left blank, defaults to 1"
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total Records",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Data",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "businessObject",
+       "type": "object",
+       "label": "Business object",
+       "required": true,
+       "properties": [
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "multiInstance",
+       "type": "boolean",
+       "label": "Multi instance",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "multiInstance",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "customObjectAlias",
+       "type": "string",
+       "label": "Custom object alias",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "customObjectName",
+       "type": "string",
+       "label": "Custom object name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "post_custom_object",
+   "title": "Create/update custom object",
+   "description": "Create/update custom object in Workday",
+   "help": "This action creates or updates custom object attached to a parent object in Workday. The custom object can be both single-instance and multi-instance. It is recommended to be explicit with values such as zeroes and empty strings when using this action. Note: This action requires a Workday OAuth conn…",
+   "input": [
+    {
+     "name": "sample",
+     "type": "string",
+     "label": "Custom object fields",
+     "control_type": "text",
+     "visible_if": "input.sample && !input.sample_schema",
+     "extends_schema": true,
+     "hint": "Fields to read. Each line for a separate field. Use / for nested objects. This field is deprecated. Use the schema designer instead."
+    },
+    {
+     "name": "multiInstance",
+     "type": "boolean",
+     "label": "Is multi-instanced?",
+     "control_type": "checkbox",
+     "required_when_visible": true,
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "multiInstance",
+      "type": "boolean"
+     },
+     "hint": "Set this to true if custom object being fetched is multi-instanced. Defaults to No . To learn more about custom objects, see our documentation ."
+    },
+    {
+     "name": "parent_alias",
+     "type": "string",
+     "label": "Parent object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "business_objects",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "parent_alias",
+      "type": "string"
+     },
+     "hint": "Select an object or enter the corresponding request URL resource name. For the list of acceptable values, see our documentation ."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

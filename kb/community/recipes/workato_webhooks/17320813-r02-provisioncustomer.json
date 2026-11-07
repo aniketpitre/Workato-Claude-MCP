@@ -1,0 +1,2266 @@
+{
+ "id": 17320813,
+ "name": "[R02] ProvisionCustomer",
+ "description": "When there is a new event via HTTP webhook, do action",
+ "applications": [
+  "workato_webhooks",
+  "workato_variable",
+  "lookup_table",
+  "rest",
+  "rest_secondary"
+ ],
+ "action_applications": [
+  "workato_variable",
+  "lookup_table",
+  "rest",
+  "rest_secondary"
+ ],
+ "trigger_application": "workato_webhooks",
+ "business_objects": [],
+ "categories": [
+  "Developer Tool",
+  "API Integration",
+  "Marketing",
+  "Recipe Tools"
+ ],
+ "copy_count": 10,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "webhook",
+ "published_at": null,
+ "updated_at": "2023-12-15T06:18:49.613-08:00",
+ "source_url": "https://app.workato.com/recipes/17320813?community=us",
+ "steps": [
+  "workato_webhooks.new_event",
+  "workato_variable.declare_variable",
+  "lookup_table.search_entries",
+  "workato_variable.update_variables",
+  "rest.make_request_v2",
+  "workato_variable.update_variables",
+  "lookup_table.add_entry",
+  "lookup_table.get_entry",
+  "rest.make_request_v2",
+  "rest_secondary.make_request_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "workato_webhooks",
+  "name": "new_event",
+  "as": "71066f21",
+  "title": null,
+  "description": "<span class=\"provider\">Provisioncustomer</span> via <span class=\"provider\">HTTP webhook</span>",
+  "keyword": "trigger",
+  "input": {
+   "request": {
+    "webhook_type": "json",
+    "payload_schema": "[{\"control_type\":\"text\",\"label\":\"Customer name\",\"name\":\"customerName\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Integration name\",\"name\":\"integrationName\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Api key\",\"name\":\"ApiKey\",\"type\":\"string\",\"optional\":false}]"
+   },
+   "webhook_suffix": "provisioncustomer"
+  },
+  "extended_output_schema": [
+   {
+    "label": "Headers",
+    "name": "headers",
+    "properties": [],
+    "type": "object"
+   },
+   {
+    "label": "Payload",
+    "name": "payload",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Customer name",
+      "name": "customerName",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Integration name",
+      "name": "integrationName",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Api key",
+      "name": "ApiKey",
+      "type": "string",
+      "optional": false
+     }
+    ],
+    "type": "object"
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "label": "Payload configuration",
+    "name": "request",
+    "override": true,
+    "properties": [
+     {
+      "control_type": "select",
+      "label": "Webhook type",
+      "pick_list": [
+       [
+        "GET request",
+        "get"
+       ],
+       [
+        "PUT/POST with JSON payload",
+        "json"
+       ],
+       [
+        "PUT/POST with XML payload",
+        "xml"
+       ],
+       [
+        "PUT/POST with FORM encoded payload",
+        "form"
+       ],
+       [
+        "PUT/POST with raw binary data",
+        "rawdata"
+       ],
+       [
+        "PUT/POST with unicode text data",
+        "rawdatatxt"
+       ]
+      ],
+      "hint": "Select the HTTP method and payload data type used by webhook. <a href=\"https://support.workato.com/support/solutions/articles/1000241356-http-real-time-webhook-type\" target=\"_blank\">Learn more</a>",
+      "default": "json",
+      "extends_schema": true,
+      "type": "string",
+      "name": "webhook_type"
+     },
+     {
+      "control_type": "schema-designer",
+      "label": "Payload schema",
+      "sample_data_type": "json_http",
+      "extends_schema": true,
+      "empty_schema_title": "Describe all fields in your response.",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "name": "payload_schema"
+     },
+     {
+      "control_type": "schema-designer",
+      "label": "Headers",
+      "extends_schema": true,
+      "empty_schema_title": "Describe all the webhook headers",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "name": "headers_schema"
+     }
+    ],
+    "type": "object"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "31660ac5",
+    "title": "  Create variable customerId",
+    "description": "Create variable <span class=\"provider\">customerId</span>",
+    "keyword": "action",
+    "input": {
+     "variables": {
+      "schema": "[{\"control_type\":\"text\",\"label\":\"customerId\",\"name\":\"customerId\",\"type\":\"string\",\"optional\":true}]"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "label": "customerId",
+      "name": "customerId",
+      "optional": true,
+      "type": "string"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "form-schema-builder",
+      "exclude_fields": [
+       "hint"
+      ],
+      "label": "Variables",
+      "name": "variables",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "customerId",
+          "name": "customerId",
+          "type": "string",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.asd",
+     "variables",
+     "variables.schema",
+     "variables.data.already_exists",
+     "variables.data.customerId"
+    ],
+    "uuid": "b0a0bc17-c09b-4cf6-bc33-99d18f4e4951"
+   },
+   {
+    "number": 2,
+    "provider": "lookup_table",
+    "name": "search_entries",
+    "as": "ae6acc8d",
+    "title": null,
+    "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\"></span> lookup table",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "lookup_table_id": "CustomerReferences"
+    },
+    "input": {
+     "lookup_table_id": "1769616",
+     "parameters": {
+      "col1": "#{_('data.workato_webhooks.71066f21.payload.customerName')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Entries",
+      "name": "entries",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Entry ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "CustomerName",
+          "name": "col1",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "CustomerId",
+          "name": "col2",
+          "type": "string",
+          "sticky": true
+         }
+        ],
+        "label": "Entry",
+        "type": "object",
+        "name": "entry"
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Provide one or more entry fields to search the entry",
+      "label": "Search by",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "CustomerName",
+        "name": "col1",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "CustomerId",
+        "name": "col2",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "8231cbec-5b6a-40dc-9a03-224f7134d4fb"
+   },
+   {
+    "number": 3,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.lookup_table.ae6acc8d.entries.first.id')}",
+       "rhs": "",
+       "uuid": "condition-8395b406-efbb-46fb-b612-adb0aeb123ec"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 4,
+      "provider": "workato_variable",
+      "name": "update_variables",
+      "as": "2a64428d",
+      "title": null,
+      "description": "Update variables <span class=\"provider\">customerId</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "name": [
+        {
+         "label": "customerId (step 2)",
+         "value": "b0a0bc17-c09b-4cf6-bc33-99d18f4e4951:31660ac5:customerId"
+        }
+       ]
+      },
+      "input": {
+       "name": "b0a0bc17-c09b-4cf6-bc33-99d18f4e4951:31660ac5:customerId",
+       "customerId": "#{_('data.lookup_table.ae6acc8d.entries.first.entry.col2')}"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "text",
+        "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+        "label": "customerId",
+        "name": "customerId",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "strip_interpolation": true
+       }
+      ],
+      "uuid": "220a6e46-f6f9-4db3-a278-71a42049f3ea"
+     },
+     {
+      "number": 5,
+      "keyword": "else",
+      "input": {},
+      "block": [
+       {
+        "number": 6,
+        "provider": "rest",
+        "name": "make_request_v2",
+        "as": "ab099967",
+        "title": "Create Customer",
+        "description": "<span class=\"provider\">Create Customer</span> via <span class=\"provider\">HTTP</span>",
+        "keyword": "action",
+        "toggleCfg": {
+         "response.ignore_http_errors": true
+        },
+        "input": {
+         "request_name": "Create Customer"
+        },
+        "extended_output_schema": [
+         {
+          "label": "Headers",
+          "name": "headers",
+          "properties": [],
+          "type": "object"
+         },
+         {
+          "label": "Response",
+          "name": "response",
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "ID",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "External ID",
+            "type": "string",
+            "name": "external_id"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "Notification email",
+            "type": "string",
+            "name": "notification_email"
+           },
+           {
+            "control_type": "text",
+            "label": "Plan ID",
+            "type": "string",
+            "name": "plan_id"
+           },
+           {
+            "control_type": "text",
+            "label": "Origin URL",
+            "type": "string",
+            "name": "origin_url"
+           },
+           {
+            "control_type": "text",
+            "label": "Trial",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Trial",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "type": "boolean",
+             "name": "trial"
+            },
+            "type": "boolean",
+            "name": "trial"
+           },
+           {
+            "control_type": "text",
+            "label": "In trial",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "In trial",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "type": "boolean",
+             "name": "in_trial"
+            },
+            "type": "boolean",
+            "name": "in_trial"
+           },
+           {
+            "name": "whitelisted_apps",
+            "type": "array",
+            "of": "string",
+            "label": "Whitelisted apps"
+           },
+           {
+            "control_type": "text",
+            "label": "Created at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "created_at"
+           },
+           {
+            "control_type": "text",
+            "label": "Updated at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "updated_at"
+           },
+           {
+            "control_type": "text",
+            "label": "Time zone",
+            "type": "string",
+            "name": "time_zone"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Type",
+              "type": "string",
+              "name": "type"
+             }
+            ],
+            "label": "Auth settings",
+            "type": "object",
+            "name": "auth_settings"
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "label": "Response",
+          "name": "response",
+          "override": true,
+          "properties": [
+           {
+            "control_type": "select",
+            "label": "Response content type",
+            "pick_list": [
+             [
+              "Text",
+              "rawdatatxt"
+             ],
+             [
+              "Binary",
+              "rawdata"
+             ],
+             [
+              "JSON",
+              "json"
+             ],
+             [
+              "XML",
+              "xml2"
+             ]
+            ],
+            "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+            "default": "json",
+            "extends_schema": true,
+            "type": "string",
+            "name": "output_type"
+           },
+           {
+            "control_type": "select",
+            "label": "Encoding",
+            "pick_list": [
+             [
+              "UTF-8",
+              "UTF-8"
+             ],
+             [
+              "US-ASCII",
+              "US-ASCII"
+             ],
+             [
+              "UTF-16BE",
+              "UTF-16BE"
+             ],
+             [
+              "UTF-16LE",
+              "UTF-16LE"
+             ],
+             [
+              "UTF-32BE",
+              "UTF-32BE"
+             ],
+             [
+              "UTF-32LE",
+              "UTF-32LE"
+             ],
+             [
+              "UTF-16",
+              "UTF-16"
+             ],
+             [
+              "UTF-32",
+              "UTF-32"
+             ],
+             [
+              "UTF8-MAC",
+              "UTF8-MAC"
+             ],
+             [
+              "EUC-JP",
+              "EUC-JP"
+             ],
+             [
+              "Windows-31J",
+              "Windows-31J"
+             ],
+             [
+              "Big5",
+              "Big5"
+             ],
+             [
+              "Big5-HKSCS",
+              "Big5-HKSCS"
+             ],
+             [
+              "Big5-UAO",
+              "Big5-UAO"
+             ],
+             [
+              "CP949",
+              "CP949"
+             ],
+             [
+              "Emacs-Mule",
+              "Emacs-Mule"
+             ],
+             [
+              "EUC-KR",
+              "EUC-KR"
+             ],
+             [
+              "EUC-TW",
+              "EUC-TW"
+             ],
+             [
+              "GB2312",
+              "GB2312"
+             ],
+             [
+              "GB18030",
+              "GB18030"
+             ],
+             [
+              "GBK",
+              "GBK"
+             ],
+             [
+              "ISO-8859-1",
+              "ISO-8859-1"
+             ],
+             [
+              "ISO-8859-2",
+              "ISO-8859-2"
+             ],
+             [
+              "ISO-8859-3",
+              "ISO-8859-3"
+             ],
+             [
+              "ISO-8859-4",
+              "ISO-8859-4"
+             ],
+             [
+              "ISO-8859-5",
+              "ISO-8859-5"
+             ],
+             [
+              "ISO-8859-6",
+              "ISO-8859-6"
+             ],
+             [
+              "ISO-8859-7",
+              "ISO-8859-7"
+             ],
+             [
+              "ISO-8859-8",
+              "ISO-8859-8"
+             ],
+             [
+              "ISO-8859-9",
+              "ISO-8859-9"
+             ],
+             [
+              "ISO-8859-10",
+              "ISO-8859-10"
+             ],
+             [
+              "ISO-8859-11",
+              "ISO-8859-11"
+             ],
+             [
+              "ISO-8859-13",
+              "ISO-8859-13"
+             ],
+             [
+              "ISO-8859-14",
+              "ISO-8859-14"
+             ],
+             [
+              "ISO-8859-15",
+              "ISO-8859-15"
+             ],
+             [
+              "ISO-8859-16",
+              "ISO-8859-16"
+             ],
+             [
+              "KOI8-R",
+              "KOI8-R"
+             ],
+             [
+              "KOI8-U",
+              "KOI8-U"
+             ],
+             [
+              "Shift_JIS",
+              "Shift_JIS"
+             ],
+             [
+              "Windows-1250",
+              "Windows-1250"
+             ],
+             [
+              "Windows-1251",
+              "Windows-1251"
+             ],
+             [
+              "Windows-1252",
+              "Windows-1252"
+             ],
+             [
+              "Windows-1253",
+              "Windows-1253"
+             ],
+             [
+              "Windows-1254",
+              "Windows-1254"
+             ],
+             [
+              "Windows-1257",
+              "Windows-1257"
+             ],
+             [
+              "IBM437",
+              "IBM437"
+             ],
+             [
+              "IBM737",
+              "IBM737"
+             ],
+             [
+              "IBM775",
+              "IBM775"
+             ],
+             [
+              "CP850",
+              "CP850"
+             ],
+             [
+              "IBM852",
+              "IBM852"
+             ],
+             [
+              "CP852",
+              "CP852"
+             ],
+             [
+              "IBM855",
+              "IBM855"
+             ],
+             [
+              "CP855",
+              "CP855"
+             ],
+             [
+              "IBM857",
+              "IBM857"
+             ],
+             [
+              "IBM860",
+              "IBM860"
+             ],
+             [
+              "IBM861",
+              "IBM861"
+             ],
+             [
+              "IBM862",
+              "IBM862"
+             ],
+             [
+              "IBM863",
+              "IBM863"
+             ],
+             [
+              "IBM864",
+              "IBM864"
+             ],
+             [
+              "IBM865",
+              "IBM865"
+             ],
+             [
+              "IBM866",
+              "IBM866"
+             ],
+             [
+              "IBM869",
+              "IBM869"
+             ],
+             [
+              "Windows-1258",
+              "Windows-1258"
+             ],
+             [
+              "GB1988",
+              "GB1988"
+             ],
+             [
+              "macCentEuro",
+              "macCentEuro"
+             ],
+             [
+              "macCroatian",
+              "macCroatian"
+             ],
+             [
+              "macCyrillic",
+              "macCyrillic"
+             ],
+             [
+              "macGreek",
+              "macGreek"
+             ],
+             [
+              "macIceland",
+              "macIceland"
+             ],
+             [
+              "macRoman",
+              "macRoman"
+             ],
+             [
+              "macRomania",
+              "macRomania"
+             ],
+             [
+              "macThai",
+              "macThai"
+             ],
+             [
+              "macTurkish",
+              "macTurkish"
+             ],
+             [
+              "macUkraine",
+              "macUkraine"
+             ],
+             [
+              "CP950",
+              "CP950"
+             ],
+             [
+              "CP951",
+              "CP951"
+             ],
+             [
+              "IBM037",
+              "IBM037"
+             ],
+             [
+              "stateless-ISO-2022-JP",
+              "stateless-ISO-2022-JP"
+             ],
+             [
+              "eucJP-ms",
+              "eucJP-ms"
+             ],
+             [
+              "CP51932",
+              "CP51932"
+             ],
+             [
+              "EUC-JIS-2004",
+              "EUC-JIS-2004"
+             ],
+             [
+              "GB12345",
+              "GB12345"
+             ],
+             [
+              "ISO-2022-JP",
+              "ISO-2022-JP"
+             ],
+             [
+              "ISO-2022-JP-2",
+              "ISO-2022-JP-2"
+             ],
+             [
+              "CP50220",
+              "CP50220"
+             ],
+             [
+              "CP50221",
+              "CP50221"
+             ],
+             [
+              "Windows-1256",
+              "Windows-1256"
+             ],
+             [
+              "Windows-1255",
+              "Windows-1255"
+             ],
+             [
+              "TIS-620",
+              "TIS-620"
+             ],
+             [
+              "Windows-874",
+              "Windows-874"
+             ],
+             [
+              "MacJapanese",
+              "MacJapanese"
+             ],
+             [
+              "UTF-7",
+              "UTF-7"
+             ],
+             [
+              "UTF8-DoCoMo",
+              "UTF8-DoCoMo"
+             ],
+             [
+              "SJIS-DoCoMo",
+              "SJIS-DoCoMo"
+             ],
+             [
+              "UTF8-KDDI",
+              "UTF8-KDDI"
+             ],
+             [
+              "SJIS-KDDI",
+              "SJIS-KDDI"
+             ],
+             [
+              "ISO-2022-JP-KDDI",
+              "ISO-2022-JP-KDDI"
+             ],
+             [
+              "stateless-ISO-2022-JP-KDDI",
+              "stateless-ISO-2022-JP-KDDI"
+             ],
+             [
+              "UTF8-SoftBank",
+              "UTF8-SoftBank"
+             ],
+             [
+              "SJIS-SoftBank",
+              "SJIS-SoftBank"
+             ]
+            ],
+            "optional": true,
+            "default": "UTF-8",
+            "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#expected-encoding\" target=\"_blank\">Learn more</a>",
+            "type": "string",
+            "name": "expected_encoding"
+           },
+           {
+            "control_type": "schema-designer",
+            "label": "Response schema",
+            "sample_data_type": "json_http",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all fields in your response.",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "response_schema"
+           },
+           {
+            "control_type": "schema-designer",
+            "label": "HTTP response headers",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all the response headers",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "headers_schema"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Mark non-2xx response codes as success?",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Mark non-2xx response codes as success?",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "default": false,
+             "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+             "optional": true,
+             "type": "boolean",
+             "name": "ignore_http_errors"
+            },
+            "default": "false",
+            "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+            "optional": true,
+            "type": "boolean",
+            "name": "ignore_http_errors"
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "1cd6429d-7cc7-4db7-8024-5667e5abf64c",
+        "wizardFinished": true
+       },
+       {
+        "number": 7,
+        "provider": "workato_variable",
+        "name": "update_variables",
+        "as": "ab91d5b1",
+        "title": null,
+        "description": "Update variables <span class=\"provider\">customerId</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "name": [
+          {
+           "label": "customerId (step 2)",
+           "value": "b0a0bc17-c09b-4cf6-bc33-99d18f4e4951:31660ac5:customerId"
+          }
+         ]
+        },
+        "input": {
+         "name": "b0a0bc17-c09b-4cf6-bc33-99d18f4e4951:31660ac5:customerId",
+         "customerId": "#{_('data.rest.ab099967.response.id')}"
+        },
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+          "label": "customerId",
+          "name": "customerId",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "strip_interpolation": true
+         }
+        ],
+        "uuid": "ec668428-6e86-454d-8fb0-49915d7e6bd8"
+       },
+       {
+        "number": 8,
+        "provider": "lookup_table",
+        "name": "add_entry",
+        "as": "602d91ca",
+        "title": null,
+        "description": "Add <span class=\"provider\">an entry</span> to <span class=\"provider\"></span> lookup table",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "lookup_table_id": "CustomerReferences"
+        },
+        "input": {
+         "lookup_table_id": "1769616",
+         "parameters": {
+          "col1": "#{_('data.workato_webhooks.71066f21.payload.customerName')}",
+          "col2": "#{_('data.rest.ab099967.response.id')}"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "control_type": "number",
+          "label": "Entry ID",
+          "name": "id",
+          "parse_output": "integer_conversion",
+          "type": "integer"
+         },
+         {
+          "label": "Entry",
+          "name": "entry",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "CustomerName",
+            "name": "col1",
+            "type": "string",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "CustomerId",
+            "name": "col2",
+            "type": "string",
+            "sticky": true
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "hint": "Fill the fields for the new entry",
+          "label": "Entry fields",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "CustomerName",
+            "name": "col1",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "CustomerId",
+            "name": "col2",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "95558747-615a-4615-9655-b6e3bd45486a"
+       }
+      ],
+      "uuid": "257201f9-0c4e-47c4-9628-51856c891f66"
+     }
+    ],
+    "uuid": "686dc1dd-f163-4d8c-ba49-b2a695a19910"
+   },
+   {
+    "number": 9,
+    "provider": "lookup_table",
+    "name": "get_entry",
+    "as": "a7409b00",
+    "title": null,
+    "description": "Lookup <span class=\"provider\">a single entry</span> in <span class=\"provider\"></span> lookup table",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "lookup_table_id": "ManifestReferences"
+    },
+    "input": {
+     "lookup_table_id": "1769617",
+     "parameters": {
+      "col1": "#{_('data.workato_webhooks.71066f21.payload.integrationName')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "number",
+      "label": "Entry ID",
+      "name": "id",
+      "parse_output": "integer_conversion",
+      "type": "integer"
+     },
+     {
+      "label": "Entry",
+      "name": "entry",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "IntegrationName",
+        "name": "col1",
+        "type": "string",
+        "sticky": true
+       },
+       {
+        "control_type": "text",
+        "label": "ManifestId",
+        "name": "col2",
+        "type": "string",
+        "sticky": true
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Provide one or more entry fields to search the entry",
+      "label": "Lookup by",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "IntegrationName",
+        "name": "col1",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "ManifestId",
+        "name": "col2",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "47ecef9a-c428-44d6-bbdc-ca467d549b59"
+   },
+   {
+    "number": 10,
+    "provider": "rest",
+    "name": "make_request_v2",
+    "as": "ef2c72d7",
+    "title": "Create folder in customer account",
+    "description": "<span class=\"provider\">Create folder in customer account</span> via <span class=\"provider\">HTTP</span>",
+    "keyword": "action",
+    "toggleCfg": {
+     "response.ignore_http_errors": true
+    },
+    "input": {
+     "request_name": "Create folder in customer account"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Headers",
+      "name": "headers",
+      "properties": [],
+      "type": "object"
+     },
+     {
+      "label": "Response",
+      "name": "response",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "ID",
+        "parse_output": "float_conversion",
+        "type": "number",
+        "name": "id"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "label": "Response",
+      "name": "response",
+      "override": true,
+      "properties": [
+       {
+        "control_type": "select",
+        "label": "Response content type",
+        "pick_list": [
+         [
+          "Text",
+          "rawdatatxt"
+         ],
+         [
+          "Binary",
+          "rawdata"
+         ],
+         [
+          "JSON",
+          "json"
+         ],
+         [
+          "XML",
+          "xml2"
+         ]
+        ],
+        "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+        "default": "json",
+        "extends_schema": true,
+        "type": "string",
+        "name": "output_type"
+       },
+       {
+        "control_type": "select",
+        "label": "Encoding",
+        "pick_list": [
+         [
+          "UTF-8",
+          "UTF-8"
+         ],
+         [
+          "US-ASCII",
+          "US-ASCII"
+         ],
+         [
+          "UTF-16BE",
+          "UTF-16BE"
+         ],
+         [
+          "UTF-16LE",
+          "UTF-16LE"
+         ],
+         [
+          "UTF-32BE",
+          "UTF-32BE"
+         ],
+         [
+          "UTF-32LE",
+          "UTF-32LE"
+         ],
+         [
+          "UTF-16",
+          "UTF-16"
+         ],
+         [
+          "UTF-32",
+          "UTF-32"
+         ],
+         [
+          "UTF8-MAC",
+          "UTF8-MAC"
+         ],
+         [
+          "EUC-JP",
+          "EUC-JP"
+         ],
+         [
+          "Windows-31J",
+          "Windows-31J"
+         ],
+         [
+          "Big5",
+          "Big5"
+         ],
+         [
+          "Big5-HKSCS",
+          "Big5-HKSCS"
+         ],
+         [
+          "Big5-UAO",
+          "Big5-UAO"
+         ],
+         [
+          "CP949",
+          "CP949"
+         ],
+         [
+          "Emacs-Mule",
+          "Emacs-Mule"
+         ],
+         [
+          "EUC-KR",
+          "EUC-KR"
+         ],
+         [
+          "EUC-TW",
+          "EUC-TW"
+         ],
+         [
+          "GB2312",
+          "GB2312"
+         ],
+         [
+          "GB18030",
+          "GB18030"
+         ],
+         [
+          "GBK",
+          "GBK"
+         ],
+         [
+          "ISO-8859-1",
+          "ISO-8859-1"
+         ],
+         [
+          "ISO-8859-2",
+          "ISO-8859-2"
+         ],
+         [
+          "ISO-8859-3",
+          "ISO-8859-3"
+         ],
+         [
+          "ISO-8859-4",
+          "ISO-8859-4"
+         ],
+         [
+          "ISO-8859-5",
+          "ISO-8859-5"
+         ],
+         [
+          "ISO-8859-6",
+          "ISO-8859-6"
+         ],
+         [
+          "ISO-8859-7",
+          "ISO-8859-7"
+         ],
+         [
+          "ISO-8859-8",
+          "ISO-8859-8"
+         ],
+         [
+          "ISO-8859-9",
+          "ISO-8859-9"
+         ],
+         [
+          "ISO-8859-10",
+          "ISO-8859-10"
+         ],
+         [
+          "ISO-8859-11",
+          "ISO-8859-11"
+         ],
+         [
+          "ISO-8859-13",
+          "ISO-8859-13"
+         ],
+         [
+          "ISO-8859-14",
+          "ISO-8859-14"
+         ],
+         [
+          "ISO-8859-15",
+          "ISO-8859-15"
+         ],
+         [
+          "ISO-8859-16",
+          "ISO-8859-16"
+         ],
+         [
+          "KOI8-R",
+          "KOI8-R"
+         ],
+         [
+          "KOI8-U",
+          "KOI8-U"
+         ],
+         [
+          "Shift_JIS",
+          "Shift_JIS"
+         ],
+         [
+          "Windows-1250",
+          "Windows-1250"
+         ],
+         [
+          "Windows-1251",
+          "Windows-1251"
+         ],
+         [
+          "Windows-1252",
+          "Windows-1252"
+         ],
+         [
+          "Windows-1253",
+          "Windows-1253"
+         ],
+         [
+          "Windows-1254",
+          "Windows-1254"
+         ],
+         [
+          "Windows-1257",
+          "Windows-1257"
+         ],
+         [
+          "IBM437",
+          "IBM437"
+         ],
+         [
+          "IBM737",
+          "IBM737"
+         ],
+         [
+          "IBM775",
+          "IBM775"
+         ],
+         [
+          "CP850",
+          "CP850"
+         ],
+         [
+          "IBM852",
+          "IBM852"
+         ],
+         [
+          "CP852",
+          "CP852"
+         ],
+         [
+          "IBM855",
+          "IBM855"
+         ],
+         [
+          "CP855",
+          "CP855"
+         ],
+         [
+          "IBM857",
+          "IBM857"
+         ],
+         [
+          "IBM860",
+          "IBM860"
+         ],
+         [
+          "IBM861",
+          "IBM861"
+         ],
+         [
+          "IBM862",
+          "IBM862"
+         ],
+         [
+          "IBM863",
+          "IBM863"
+         ],
+         [
+          "IBM864",
+          "IBM864"
+         ],
+         [
+          "IBM865",
+          "IBM865"
+         ],
+         [
+          "IBM866",
+          "IBM866"
+         ],
+         [
+          "IBM869",
+          "IBM869"
+         ],
+         [
+          "Windows-1258",
+          "Windows-1258"
+         ],
+         [
+          "GB1988",
+          "GB1988"
+         ],
+         [
+          "macCentEuro",
+          "macCentEuro"
+         ],
+         [
+          "macCroatian",
+          "macCroatian"
+         ],
+         [
+          "macCyrillic",
+          "macCyrillic"
+         ],
+         [
+          "macGreek",
+          "macGreek"
+         ],
+         [
+          "macIceland",
+          "macIceland"
+         ],
+         [
+          "macRoman",
+          "macRoman"
+         ],
+         [
+          "macRomania",
+          "macRomania"
+         ],
+         [
+          "macThai",
+          "macThai"
+         ],
+         [
+          "macTurkish",
+          "macTurkish"
+         ],
+         [
+          "macUkraine",
+          "macUkraine"
+         ],
+         [
+          "CP950",
+          "CP950"
+         ],
+         [
+          "CP951",
+          "CP951"
+         ],
+         [
+          "IBM037",
+          "IBM037"
+         ],
+         [
+          "stateless-ISO-2022-JP",
+          "stateless-ISO-2022-JP"
+         ],
+         [
+          "eucJP-ms",
+          "eucJP-ms"
+         ],
+         [
+          "CP51932",
+          "CP51932"
+         ],
+         [
+          "EUC-JIS-2004",
+          "EUC-JIS-2004"
+         ],
+         [
+          "GB12345",
+          "GB12345"
+         ],
+         [
+          "ISO-2022-JP",
+          "ISO-2022-JP"
+         ],
+         [
+          "ISO-2022-JP-2",
+          "ISO-2022-JP-2"
+         ],
+         [
+          "CP50220",
+          "CP50220"
+         ],
+         [
+          "CP50221",
+          "CP50221"
+         ],
+         [
+          "Windows-1256",
+          "Windows-1256"
+         ],
+         [
+          "Windows-1255",
+          "Windows-1255"
+         ],
+         [
+          "TIS-620",
+          "TIS-620"
+         ],
+         [
+          "Windows-874",
+          "Windows-874"
+         ],
+         [
+          "MacJapanese",
+          "MacJapanese"
+         ],
+         [
+          "UTF-7",
+          "UTF-7"
+         ],
+         [
+          "UTF8-DoCoMo",
+          "UTF8-DoCoMo"
+         ],
+         [
+          "SJIS-DoCoMo",
+          "SJIS-DoCoMo"
+         ],
+         [
+          "UTF8-KDDI",
+          "UTF8-KDDI"
+         ],
+         [
+          "SJIS-KDDI",
+          "SJIS-KDDI"
+         ],
+         [
+          "ISO-2022-JP-KDDI",
+          "ISO-2022-JP-KDDI"
+         ],
+         [
+          "stateless-ISO-2022-JP-KDDI",
+          "stateless-ISO-2022-JP-KDDI"
+         ],
+         [
+          "UTF8-SoftBank",
+          "UTF8-SoftBank"
+         ],
+         [
+          "SJIS-SoftBank",
+          "SJIS-SoftBank"
+         ]
+        ],
+        "optional": true,
+        "default": "UTF-8",
+        "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#expected-encoding\" target=\"_blank\">Learn more</a>",
+        "type": "string",
+        "name": "expected_encoding"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "Response schema",
+        "sample_data_type": "json_http",
+        "extends_schema": true,
+        "empty_schema_title": "Describe all fields in your response.",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "response_schema"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "HTTP response headers",
+        "extends_schema": true,
+        "empty_schema_title": "Describe all the response headers",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "headers_schema"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Mark non-2xx response codes as success?",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Mark non-2xx response codes as success?",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "default": false,
+         "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+         "optional": true,
+         "type": "boolean",
+         "name": "ignore_http_errors"
+        },
+        "default": "false",
+        "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+        "optional": true,
+        "type": "boolean",
+        "name": "ignore_http_errors"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "b16be8fb-50f8-4e5e-a401-80e0972ac42f",
+    "wizardFinished": true
+   },
+   {
+    "number": 11,
+    "provider": "rest_secondary",
+    "name": "make_request_v2",
+    "as": "8a898b9f",
+    "title": "Call recipe to export manifest",
+    "description": "<span class=\"provider\">Call recipe to export manifest</span> via <span class=\"provider\">HTTP</span>",
+    "keyword": "action",
+    "toggleCfg": {
+     "response.ignore_http_errors": true
+    },
+    "input": {
+     "request_name": "Call recipe to export manifest"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Headers",
+      "name": "headers",
+      "properties": [],
+      "type": "object"
+     },
+     {
+      "label": "Response",
+      "name": "response",
+      "properties": [],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "label": "Response",
+      "name": "response",
+      "override": true,
+      "properties": [
+       {
+        "control_type": "select",
+        "label": "Response content type",
+        "pick_list": [
+         [
+          "Text",
+          "rawdatatxt"
+         ],
+         [
+          "Binary",
+          "rawdata"
+         ],
+         [
+          "JSON",
+          "json"
+         ],
+         [
+          "XML",
+          "xml2"
+         ]
+        ],
+        "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+        "default": "json",
+        "extends_schema": true,
+        "type": "string",
+        "name": "output_type"
+       },
+       {
+        "control_type": "select",
+        "label": "Encoding",
+        "pick_list": [
+         [
+          "UTF-8",
+          "UTF-8"
+         ],
+         [
+          "US-ASCII",
+          "US-ASCII"
+         ],
+         [
+          "UTF-16BE",
+          "UTF-16BE"
+         ],
+         [
+          "UTF-16LE",
+          "UTF-16LE"
+         ],
+         [
+          "UTF-32BE",
+          "UTF-32BE"
+         ],
+         [
+          "UTF-32LE",
+          "UTF-32LE"
+         ],
+         [
+          "UTF-16",
+          "UTF-16"
+         ],
+         [
+          "UTF-32",
+          "UTF-32"
+         ],
+         [
+          "UTF8-MAC",
+          "UTF8-MAC"
+         ],
+         [
+          "EUC-JP",
+          "EUC-JP"
+         ],
+         [
+          "Windows-31J",
+          "Windows-31J"
+         ],
+         [
+          "Big5",
+          "Big5"
+         ],
+         [
+          "Big5-HKSCS",
+          "Big5-HKSCS"
+         ],
+         [
+          "Big5-UAO",
+          "Big5-UAO"
+         ],
+         [
+          "CP949",
+          "CP949"
+         ],
+         [
+          "Emacs-Mule",
+          "Emacs-Mule"
+         ],
+         [
+          "EUC-KR",
+          "EUC-KR"
+         ],
+         [
+          "EUC-TW",
+          "EUC-TW"
+         ],
+         [
+          "GB2312",
+          "GB2312"
+         ],
+         [
+          "GB18030",
+          "GB18030"
+         ],
+         [
+          "GBK",
+          "GBK"
+         ],
+         [
+          "ISO-8859-1",
+          "ISO-8859-1"
+         ],
+         [
+          "ISO-8859-2",
+          "ISO-8859-2"
+         ],
+         [
+          "ISO-8859-3",
+          "ISO-8859-3"
+         ],
+         [
+          "ISO-8859-4",
+          "ISO-8859-4"
+         ],
+         [
+          "ISO-8859-5",
+          "ISO-8859-5"
+         ],
+         [
+          "ISO-8859-6",
+          "ISO-8859-6"
+         ],
+         [
+          "ISO-8859-7",
+          "ISO-8859-7"
+         ],
+         [
+          "ISO-8859-8",
+          "ISO-8859-8"
+         ],
+         [
+          "ISO-8859-9",
+          "ISO-8859-9"
+         ],
+         [
+          "ISO-8859-10",
+          "ISO-8859-10"
+         ],
+         [
+          "ISO-8859-11",
+          "ISO-8859-11"
+         ],
+         [
+          "ISO-8859-13",
+          "ISO-8859-13"
+         ],
+         [
+          "ISO-8859-14",
+          "ISO-8859-14"
+         ],
+         [
+          "ISO-8859-15",
+          "ISO-8859-15"
+         ],
+         [
+          "ISO-8859-16",
+          "ISO-8859-16"
+         ],
+         [
+          "KOI8-R",
+          "KOI8-R"
+         ],
+         [
+          "KOI8-U",
+          "KOI8-U"
+         ],
+         [
+          "Shift_JIS",
+          "Shift_JIS"
+         ],
+         [
+          "Windows-1250",
+          "Windows-1250"
+         ],
+         [
+          "Windows-1251",
+          "Windows-1251"
+         ],
+         [
+          "Windows-1252",
+          "Windows-1252"
+         ],
+         [
+          "Windows-1253",
+          "Windows-1253"
+         ],
+         [
+          "Windows-1254",
+          "Windows-1254"
+         ],
+         [
+          "Windows-1257",
+          "Windows-1257"
+         ],
+         [
+          "IBM437",
+          "IBM437"
+         ],
+         [
+          "IBM737",
+          "IBM737"
+         ],
+         [
+          "IBM775",
+          "IBM775"
+         ],
+         [
+          "CP850",
+          "CP850"
+         ],
+         [
+          "IBM852",
+          "IBM852"
+         ],
+         [
+          "CP852",
+          "CP852"
+         ],
+         [
+          "IBM855",
+          "IBM855"
+         ],
+         [
+          "CP855",
+          "CP855"
+         ],
+         [
+          "IBM857",
+          "IBM857"
+         ],
+         [
+          "IBM860",
+          "IBM860"
+         ],
+         [
+          "IBM861",
+          "IBM861"
+         ],
+         [
+          "IBM862",
+          "IBM862"
+         ],
+         [
+          "IBM863",
+          "IBM863"
+         ],
+         [
+          "IBM864",
+          "IBM864"
+         ],
+         [
+          "IBM865",
+          "IBM865"
+         ],
+         [
+          "IBM866",
+          "IBM866"
+         ],
+         [
+          "IBM869",
+          "IBM869"
+         ],
+         [
+          "Windows-1258",
+          "Windows-1258"
+         ],
+         [
+          "GB1988",
+          "GB1988"
+         ],
+         [
+          "macCentEuro",
+          "macCentEuro"
+         ],
+         [
+          "macCroatian",
+          "macCroatian"
+         ],
+         [
+          "macCyrillic",
+          "macCyrillic"
+         ],
+         [
+          "macGreek",
+          "macGreek"
+         ],
+         [
+          "macIceland",
+          "macIceland"
+         ],
+         [
+          "macRoman",
+          "macRoman"
+         ],
+         [
+          "macRomania",
+          "macRomania"
+         ],
+         [
+          "macThai",
+          "macThai"
+         ],
+         [
+          "macTurkish",
+          "macTurkish"
+         ],
+         [
+          "macUkraine",
+          "macUkraine"
+         ],
+         [
+          "CP950",
+          "CP950"
+         ],
+         [
+          "CP951",
+          "CP951"
+         ],
+         [
+          "IBM037",
+          "IBM037"
+         ],
+         [
+          "stateless-ISO-2022-JP",
+          "stateless-ISO-2022-JP"
+         ],
+         [
+          "eucJP-ms",
+          "eucJP-ms"
+         ],
+         [
+          "CP51932",
+          "CP51932"
+         ],
+         [
+          "EUC-JIS-2004",
+          "EUC-JIS-2004"
+         ],
+         [
+          "GB12345",
+          "GB12345"
+         ],
+         [
+          "ISO-2022-JP",
+          "ISO-2022-JP"
+         ],
+         [
+          "ISO-2022-JP-2",
+          "ISO-2022-JP-2"
+         ],
+         [
+          "CP50220",
+          "CP50220"
+         ],
+         [
+          "CP50221",
+          "CP50221"
+         ],
+         [
+          "Windows-1256",
+          "Windows-1256"
+         ],
+         [
+          "Windows-1255",
+          "Windows-1255"
+         ],
+         [
+          "TIS-620",
+          "TIS-620"
+         ],
+         [
+          "Windows-874",
+          "Windows-874"
+         ],
+         [
+          "MacJapanese",
+          "MacJapanese"
+         ],
+         [
+          "UTF-7",
+          "UTF-7"
+         ],
+         [
+          "UTF8-DoCoMo",
+          "UTF8-DoCoMo"
+         ],
+         [
+          "SJIS-DoCoMo",
+          "SJIS-DoCoMo"
+         ],
+         [
+          "UTF8-KDDI",
+          "UTF8-KDDI"
+         ],
+         [
+          "SJIS-KDDI",
+          "SJIS-KDDI"
+         ],
+         [
+          "ISO-2022-JP-KDDI",
+          "ISO-2022-JP-KDDI"
+         ],
+         [
+          "stateless-ISO-2022-JP-KDDI",
+          "stateless-ISO-2022-JP-KDDI"
+         ],
+         [
+          "UTF8-SoftBank",
+          "UTF8-SoftBank"
+         ],
+         [
+          "SJIS-SoftBank",
+          "SJIS-SoftBank"
+         ]
+        ],
+        "optional": true,
+        "default": "UTF-8",
+        "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#expected-encoding\" target=\"_blank\">Learn more</a>",
+        "type": "string",
+        "name": "expected_encoding"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "Response schema",
+        "sample_data_type": "json_http",
+        "extends_schema": true,
+        "empty_schema_title": "Describe all fields in your response.",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "response_schema"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "HTTP response headers",
+        "extends_schema": true,
+        "empty_schema_title": "Describe all the response headers",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "headers_schema"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Mark non-2xx response codes as success?",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Mark non-2xx response codes as success?",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "default": false,
+         "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+         "optional": true,
+         "type": "boolean",
+         "name": "ignore_http_errors"
+        },
+        "default": "false",
+        "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+        "optional": true,
+        "type": "boolean",
+        "name": "ignore_http_errors"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "eefc26ca-ecc4-4a9f-a7e1-2d4055679e9f",
+    "wizardFinished": true
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "CustomerName"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "IntegrationName"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.workato_webhooks.71066f21.payload.customerName')}",
+   "custom_column_2": "#{_('data.workato_webhooks.71066f21.payload.integrationName')}"
+  },
+  "uuid": "3c84e5e8-f3cf-452e-aed8-7bb07dbc50bc",
+  "wizardFinished": true,
+  "param": {}
+ }
+}

@@ -1,0 +1,1602 @@
+{
+ "id": 27233385,
+ "name": "Gather Reltio Completeness Metrics",
+ "description": "This recipe (Gather Reltio Completeness Metrics) will execute at a set frequency to gather data quality completeness metrics for any number of specified entities.  Completeness is a measure of whether the attributes that need to be populated within an entity for your particular needs are in fact populated.\n\nA lookup table (called Completeness_Metadata) contains a list of entity names in Reltio and an associated filter condition used to determine the completeness percentage of each particular entity.  This lookup table would need to be modified to fit your needs.\n\nEach iteration of the recipe in turn leverages two callable recipes namely GetCompletenessPercentage and SaveCompletenessPercentage.  The GetCompletenessPercentage recipe accepts an entity type and a filter condition as inputs and returns the completeness score for that entity.  The SaveCompletenessPercentage accept an entity type and a completeness score and writes the score out to an external target such as google sheets (for time series reporting) or snowflake or it can just send an email with the latest statistics.  Modify this callable recipe as needed to write to any target you wish.\n",
+ "applications": [
+  "clock",
+  "workato_variable",
+  "csv_parser",
+  "workato_recipe_function",
+  "logger",
+  "email"
+ ],
+ "action_applications": [
+  "workato_variable",
+  "csv_parser",
+  "workato_recipe_function",
+  "logger",
+  "email"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "email"
+ ],
+ "categories": [
+  "Recipe Tools",
+  "Marketing",
+  "Data Parser",
+  "Utilities"
+ ],
+ "copy_count": 15,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2023-08-11T06:31:27.448-07:00",
+ "source_url": "https://app.workato.com/recipes/27233385?community=us",
+ "steps": [
+  "clock.scheduled_event",
+  "workato_variable.declare_variable",
+  "csv_parser.parse_csv",
+  "workato_variable.update_variables",
+  "workato_recipe_function.call_recipe",
+  "workato_variable.update_variables",
+  "logger.log_message",
+  "email.send_mail",
+  "workato_recipe_function.call_recipe",
+  "workato_variable.update_variables",
+  "logger.log_message",
+  "email.send_mail",
+  "workato_recipe_function.call_recipe",
+  "workato_variable.update_variables",
+  "logger.log_message",
+  "email.send_mail",
+  "workato_recipe_function.call_recipe",
+  "workato_variable.update_variables",
+  "logger.log_message",
+  "email.send_mail",
+  "email.send_mail",
+  "logger.log_message",
+  "email.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "scheduled_event",
+  "as": "341f9b9e",
+  "title": null,
+  "description": "<span class=\"provider\">Trigger</span> every 1 weeks at <span class=\"provider\">01:00:00 AM</span> on Sunday",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "time_unit": "Weeks",
+   "days_of_week": [
+    {
+     "label": "Sunday",
+     "value": "0"
+    }
+   ]
+  },
+  "toggleCfg": {},
+  "input": {
+   "time_unit": "weeks",
+   "trigger_every": "1",
+   "days_of_week": "0",
+   "trigger_at": "01:00:00"
+  },
+  "extended_input_schema": [
+   {
+    "control_type": "integer",
+    "default": "5",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Define repeating schedule. Enter whole numbers only.\n                        This field can be set to a minimum of 5 minutes.",
+    "label": "Trigger every",
+    "name": "trigger_every",
+    "optional": false,
+    "suffix": {
+     "text": "weeks"
+    },
+    "type": "string"
+   },
+   {
+    "control_type": "multiselect",
+    "delimiter": ",",
+    "extends_schema": true,
+    "hint": "Select the days on which your schedule should repeat.",
+    "label": "Days of the week",
+    "name": "days_of_week",
+    "optional": false,
+    "pick_list": "days_of_week",
+    "type": "string"
+   },
+   {
+    "control_type": "time",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Set a time to schedule the job.",
+    "label": "Trigger at",
+    "name": "trigger_at",
+    "optional": false,
+    "type": "string"
+   },
+   {
+    "control_type": "date_time",
+    "enforce_template_mode": true,
+    "extends_schema": true,
+    "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+    "label": "Start after",
+    "name": "start_after",
+    "optional": true,
+    "parse_output": "date_time_conversion",
+    "since_field": true,
+    "type": "date_time",
+    "render_input": "date_time_conversion"
+   },
+   {
+    "control_type": "select",
+    "hint": "Select the timezone to use. Leave it blank to use <b>(GMT-08:00) Pacific Time (US & Canada)</b>",
+    "label": "Timezone",
+    "name": "timezone",
+    "optional": true,
+    "pick_list": "timezone_id_global_pick_list",
+    "pick_list_connection_less": true,
+    "type": "string"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "558554bf",
+      "title": "  Create variables EmailOnSuccess, EmailOnFail, Filter, HasError, ErrorMessage",
+      "description": "Create variables <span class=\"provider\">EmailOnSuccess</span>, <span class=\"provider\">EmailOnFail</span>, <span class=\"provider\">Filter</span>, <span class=\"provider\">HasError</span>, <span class=\"provider\">ErrorMessage</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "variables.data.HasError": true
+      },
+      "input": {
+       "variables": {
+        "schema": "[{\"control_type\":\"text\",\"label\":\"EmailOnSuccess\",\"name\":\"EmailOnSuccess\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"EmailOnFail\",\"name\":\"EmailOnFail\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"Filter\",\"name\":\"Filter\",\"type\":\"string\",\"optional\":true},{\"name\":\"HasError\",\"type\":\"boolean\",\"optional\":true,\"label\":\"HasError\",\"control_type\":\"checkbox\"},{\"name\":\"ErrorMessage\",\"type\":\"string\",\"optional\":true,\"label\":\"ErrorMessage\",\"control_type\":\"text\"}]",
+        "data": {
+         "HasError": "false"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "text",
+        "label": "EmailOnSuccess",
+        "name": "EmailOnSuccess",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "EmailOnFail",
+        "name": "EmailOnFail",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Filter",
+        "name": "Filter",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "HasError",
+        "name": "HasError",
+        "optional": true,
+        "parse_output": {},
+        "toggle_field": {
+         "label": "HasError",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "name": "HasError",
+         "type": "boolean",
+         "optional": true
+        },
+        "toggle_hint": "Select from option list",
+        "type": "boolean",
+        "render_input": {}
+       },
+       {
+        "control_type": "text",
+        "label": "ErrorMessage",
+        "name": "ErrorMessage",
+        "optional": true,
+        "type": "string"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_field_label": "Add a variable",
+        "control_type": "form-schema-builder",
+        "empty_schema_title": "Add variables by giving them a name, type and default value",
+        "exclude_fields": [
+         "hint"
+        ],
+        "item_label": "variable",
+        "label": "Variables",
+        "mark_as_required": true,
+        "name": "variables",
+        "ngIf": "!input.name",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "EmailOnSuccess",
+            "name": "EmailOnSuccess",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "EmailOnFail",
+            "name": "EmailOnFail",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "Filter",
+            "name": "Filter",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           },
+           {
+            "control_type": "checkbox",
+            "label": "HasError",
+            "render_input": {},
+            "parse_output": {},
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "HasError",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "name": "HasError",
+             "type": "boolean",
+             "optional": true
+            },
+            "name": "HasError",
+            "type": "boolean",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "ErrorMessage",
+            "name": "ErrorMessage",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.EntityType",
+       "variables",
+       "variables.schema",
+       "variables.data.EmailOnSuccess",
+       "variables.data.EmailOnFail",
+       "variables.data.TargetOutput",
+       "variables.data.Filter",
+       "variables.data",
+       "variables.data.TotalRecords",
+       "variables.data.CompleteRecords",
+       "variables.data.CompletenessPercent",
+       "variables.data.Test",
+       "variables.data.HasError",
+       "variables.data.ErrorMessage"
+      ],
+      "comment": "populate EmailOnSuccess and EmailOnFail if you want the recipe to send an email on successful completion or if there is an error or both",
+      "uuid": "b26e89e8-fd57-44c7-b8e7-2226c000d0de"
+     },
+     {
+      "number": 3,
+      "provider": "csv_parser",
+      "name": "parse_csv",
+      "as": "b17cb3ff",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "col_sep": ",",
+       "skip_first_line": "true",
+       "column_value_by": "index",
+       "quote_char": "\u0000",
+       "csv_content": "EntityType,FilterCondition\nLocation,exists(attributes.AddressLine1) and exists(attributes.City) and exists(attributes.StateProvince) and exists(attributes.Zip.Zip5)\nHCP,exists(attributes.Identifiers) and exists(attributes.FirstName) and exists(attributes.LastName) and exists(attributes.Address.City)",
+       "header_schema": "[{\"name\":\"EntityType\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Entity type\"},{\"name\":\"FilterCondition\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Completeness query\"}]"
+      },
+      "extended_output_schema": [
+       {
+        "label": "Lines",
+        "name": "lines",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "EntityType",
+          "type": "string",
+          "name": "column_0"
+         },
+         {
+          "control_type": "text",
+          "label": "FilterCondition",
+          "type": "string",
+          "name": "column_1"
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "comment": "CSV contains the metadata (EntityType and FilterCondition) used to drive the recipe.  Edit this as needed per your entity types and specific filter to calculate completeness",
+      "uuid": "87c68f91-a89d-4e24-bbee-c1b574780ab9"
+     },
+     {
+      "number": 4,
+      "as": "a2c9b51f",
+      "keyword": "foreach",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "repeat_mode": "simple",
+      "clear_scope": "false",
+      "input": {},
+      "block": [
+       {
+        "number": 5,
+        "provider": "workato_variable",
+        "name": "update_variables",
+        "as": "b45a7ec2",
+        "title": null,
+        "description": "Update variables <span class=\"provider\">Filter</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "name": [
+          {
+           "label": "Filter (step 3)",
+           "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:Filter"
+          }
+         ]
+        },
+        "toggleCfg": {},
+        "input": {
+         "name": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:Filter",
+         "Filter": "=\"(equals(type,'configuration/entityTypes/\" + _('data.foreach.a2c9b51f.column_0') + \"') and \" + _('data.foreach.a2c9b51f.column_1')"
+        },
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+          "label": "Filter",
+          "name": "Filter",
+          "optional": true,
+          "sticky": true,
+          "type": "string",
+          "strip_interpolation": true
+         }
+        ],
+        "comment": "create the filter condition query to send into the get completeness function",
+        "uuid": "cefb96da-84cb-4ca9-97fa-7c90de09f4d3"
+       },
+       {
+        "number": 6,
+        "provider": "workato_recipe_function",
+        "name": "call_recipe",
+        "as": "f11c13f1",
+        "title": null,
+        "description": "Call <span class=\"provider\">GetCompletenessPercentage</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "flow_id": "GetCompletenessPercentage"
+        },
+        "toggleCfg": {},
+        "input": {
+         "flow_id": "27233386",
+         "parameters": {
+          "EntityType": "#{_('data.csv_parser.b17cb3ff.lines.first.column_0')}",
+          "FilterCondition": "#{_('data.workato_variable.558554bf.Filter')}"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "label": "Result",
+          "name": "result",
+          "properties": [
+           {
+            "control_type": "integer",
+            "label": "Completeness score",
+            "parse_output": "integer_conversion",
+            "name": "CompletenessScore",
+            "type": "integer",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Error message",
+            "name": "ErrorMessage",
+            "type": "string",
+            "optional": true
+           },
+           {
+            "control_type": "integer",
+            "label": "Total records",
+            "parse_output": "integer_conversion",
+            "name": "TotalRecords",
+            "type": "integer",
+            "optional": true
+           },
+           {
+            "control_type": "integer",
+            "label": "Complete records",
+            "parse_output": "integer_conversion",
+            "name": "CompleteRecords",
+            "type": "integer",
+            "optional": true
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "label": "Parameters",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Entity type",
+            "name": "EntityType",
+            "type": "string",
+            "optional": false,
+            "hint": "Individual"
+           },
+           {
+            "control_type": "text",
+            "label": "Filter condition",
+            "name": "FilterCondition",
+            "type": "string",
+            "optional": false,
+            "hint": "equals(type,'configuration/entityTypes/Individual') and exists(attributes.WorkPhone) and exists(attributes.FirstName) and exists(attributes.LastName)"
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "comment": "callable recipe that returns the completeness percentage, total record count and complete record count for a specified entity",
+        "uuid": "341ffb3a-5031-4fcb-9117-bd55caf98ca3"
+       },
+       {
+        "number": 7,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "present",
+           "lhs": "#{_('data.workato_recipe_function.f11c13f1.result.ErrorMessage')}",
+           "rhs": "",
+           "uuid": "condition-7b3d8901-a49f-4cbd-9c19-cab43deab22e"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 8,
+          "provider": "workato_variable",
+          "name": "update_variables",
+          "as": "1c9016b8",
+          "title": null,
+          "description": "Update variables <span class=\"provider\">HasError, ErrorMessage</span>",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "name": [
+            {
+             "label": "HasError (step 3)",
+             "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError"
+            },
+            {
+             "label": "ErrorMessage (step 3)",
+             "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage"
+            }
+           ]
+          },
+          "toggleCfg": {
+           "HasError": true
+          },
+          "input": {
+           "name": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError\nb26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage",
+           "HasError": "true",
+           "ErrorMessage": "=_('data.workato_recipe_function.f11c13f1.result.ErrorMessage')"
+          },
+          "extended_input_schema": [
+           {
+            "control_type": "checkbox",
+            "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+            "label": "HasError",
+            "name": "HasError",
+            "optional": true,
+            "parse_output": {},
+            "sticky": true,
+            "toggle_field": {
+             "label": "HasError",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+             "strip_interpolation": true,
+             "sticky": true,
+             "optional": true,
+             "type": "boolean",
+             "name": "HasError"
+            },
+            "toggle_hint": "Select from option list",
+            "type": "boolean",
+            "render_input": {},
+            "strip_interpolation": true
+           },
+           {
+            "control_type": "text",
+            "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+            "label": "ErrorMessage",
+            "name": "ErrorMessage",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "strip_interpolation": true
+           }
+          ],
+          "uuid": "7e9e7cdc-526e-42c2-90ea-8e447a07b90a"
+         },
+         {
+          "number": 9,
+          "provider": "logger",
+          "name": "log_message",
+          "as": "94cc9c00",
+          "title": null,
+          "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "message": "=_('data.workato_recipe_function.f11c13f1.result.ErrorMessage') + \" on entity \" + _('data.foreach.a2c9b51f.column_0')"
+          },
+          "uuid": "82703c9f-4971-4db2-aa23-18d817452169"
+         },
+         {
+          "number": 10,
+          "keyword": "if",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "type": "compound",
+           "operand": "and",
+           "conditions": [
+            {
+             "operand": "present",
+             "lhs": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+             "rhs": "",
+             "uuid": "condition-a5baa068-26f7-4fb7-9a21-0e223fefd280"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 11,
+            "provider": "email",
+            "name": "send_mail",
+            "as": "d3e255ad",
+            "title": null,
+            "description": null,
+            "keyword": "action",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {
+             "email_type": "-- REDACTED --",
+             "to": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+             "subject": "=\"Completeness Report Error - \" + _('data.foreach.a2c9b51f.column_0')",
+             "body": "=\"There was an error while building completeness metrics for \" + _('data.foreach.a2c9b51f.column_0') + \"<br><br><b>\" + _('data.workato_recipe_function.f11c13f1.result.ErrorMessage')\n"
+            },
+            "uuid": "2c743a8d-fb2d-428b-88ab-c60068fda13a",
+            "skip": false
+           }
+          ],
+          "uuid": "5c5898f2-8da5-4bd7-90c6-fbc993431970"
+         },
+         {
+          "number": 12,
+          "keyword": "stop",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "stop_with_error": "true",
+           "stop_reason": "=_('data.workato_recipe_function.f11c13f1.result.ErrorMessage')"
+          },
+          "uuid": "0ebacfb3-0ba9-4b60-80dc-8868f536e477"
+         },
+         {
+          "number": 13,
+          "keyword": "else",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {},
+          "block": [
+           {
+            "number": 14,
+            "provider": "workato_recipe_function",
+            "name": "call_recipe",
+            "as": "bb58d146",
+            "title": null,
+            "description": "Call <span class=\"provider\">SaveCompletenessPercentage</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "flow_id": "SaveLatestCompletenessScore"
+            },
+            "toggleCfg": {},
+            "input": {
+             "flow_id": "27233387",
+             "parameters": {
+              "EntityType": "#{_('data.foreach.a2c9b51f.column_0')}",
+              "CompletenessScore": "#{_('data.workato_recipe_function.f11c13f1.result.CompletenessScore')}",
+              "Target": "GOOGLE SHEET"
+             }
+            },
+            "extended_output_schema": [
+             {
+              "label": "Result",
+              "name": "result",
+              "properties": [
+               {
+                "control_type": "checkbox",
+                "label": "Success",
+                "render_input": {},
+                "parse_output": {},
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                 "label": "Success",
+                 "control_type": "text",
+                 "toggle_hint": "Use custom value",
+                 "name": "Success",
+                 "type": "boolean",
+                 "optional": false
+                },
+                "name": "Success",
+                "type": "boolean",
+                "optional": false
+               },
+               {
+                "control_type": "text",
+                "label": "Error message",
+                "name": "ErrorMessage",
+                "type": "string",
+                "optional": true
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "extended_input_schema": [
+             {
+              "label": "Parameters",
+              "name": "parameters",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Entity type",
+                "name": "EntityType",
+                "type": "string",
+                "optional": false
+               },
+               {
+                "control_type": "number",
+                "label": "Completeness score",
+                "parse_output": "float_conversion",
+                "name": "CompletenessScore",
+                "type": "number",
+                "optional": false
+               },
+               {
+                "control_type": "text",
+                "label": "Target",
+                "name": "Target",
+                "type": "string",
+                "optional": false,
+                "hint": "what are we writing to - google sheet, snowflake etc"
+               },
+               {
+                "control_type": "text",
+                "label": "Additional information",
+                "name": "AdditionalInformation",
+                "type": "string",
+                "optional": true,
+                "hint": "in case something additional should be passed in for a particular target type"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "comment": "write the completeness metrics to a GOOGLE SHEET",
+            "uuid": "9a209b4d-d103-4479-8416-1d1f073c0ce2",
+            "skip": false
+           },
+           {
+            "number": 15,
+            "keyword": "if",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {
+             "type": "compound",
+             "operand": "and",
+             "conditions": [
+              {
+               "operand": "is_not_true",
+               "lhs": "#{_('data.workato_recipe_function.bb58d146.result.Success')}",
+               "rhs": "",
+               "uuid": "condition-e9402f28-ea9e-4cac-9091-6e158c7a3009"
+              },
+              {
+               "operand": "present",
+               "lhs": "#{_('data.workato_recipe_function.bb58d146.result.ErrorMessage')}",
+               "rhs": "",
+               "uuid": "condition-f6518d43-d29d-462d-989e-b793ea66c6e7"
+              }
+             ]
+            },
+            "block": [
+             {
+              "number": 16,
+              "provider": "workato_variable",
+              "name": "update_variables",
+              "as": "9b98a2b7",
+              "title": null,
+              "description": "Update variables <span class=\"provider\">HasError, ErrorMessage</span>",
+              "keyword": "action",
+              "dynamicPickListSelection": {
+               "name": [
+                {
+                 "label": "HasError (step 3)",
+                 "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError"
+                },
+                {
+                 "label": "ErrorMessage (step 3)",
+                 "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage"
+                }
+               ]
+              },
+              "toggleCfg": {
+               "HasError": true
+              },
+              "input": {
+               "name": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError\nb26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage",
+               "HasError": "true",
+               "ErrorMessage": "=_('data.workato_recipe_function.bb58d146.result.ErrorMessage')"
+              },
+              "extended_input_schema": [
+               {
+                "control_type": "checkbox",
+                "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                "label": "HasError",
+                "name": "HasError",
+                "optional": true,
+                "parse_output": {},
+                "sticky": true,
+                "toggle_field": {
+                 "label": "HasError",
+                 "control_type": "text",
+                 "toggle_hint": "Use custom value",
+                 "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                 "strip_interpolation": true,
+                 "sticky": true,
+                 "optional": true,
+                 "type": "boolean",
+                 "name": "HasError"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean",
+                "render_input": {},
+                "strip_interpolation": true
+               },
+               {
+                "control_type": "text",
+                "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                "label": "ErrorMessage",
+                "name": "ErrorMessage",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "strip_interpolation": true
+               }
+              ],
+              "uuid": "17e7c88f-9382-4518-b382-cad2d16af9a1",
+              "skip": false
+             },
+             {
+              "number": 17,
+              "provider": "logger",
+              "name": "log_message",
+              "as": "181451cb",
+              "title": null,
+              "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+              "keyword": "action",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "message": "An error occurred trying to write to google sheets.  #{_('data.workato_recipe_function.bb58d146.result.ErrorMessage')}"
+              },
+              "uuid": "30dc84bf-0084-46d3-aea1-68d6e8e6ddeb",
+              "skip": false
+             },
+             {
+              "number": 18,
+              "keyword": "if",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "type": "compound",
+               "operand": "and",
+               "conditions": [
+                {
+                 "operand": "present",
+                 "lhs": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+                 "rhs": "",
+                 "uuid": "condition-a5baa068-26f7-4fb7-9a21-0e223fefd280"
+                }
+               ]
+              },
+              "block": [
+               {
+                "number": 19,
+                "provider": "email",
+                "name": "send_mail",
+                "as": "6df754ec",
+                "title": null,
+                "description": null,
+                "keyword": "action",
+                "dynamicPickListSelection": {},
+                "toggleCfg": {},
+                "input": {
+                 "email_type": "-- REDACTED --",
+                 "to": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+                 "subject": "=\"Completeness Report Error - \" + _('data.foreach.a2c9b51f.column_0')",
+                 "body": "=\"There was an error while writing completeness metrics for \" + _('data.foreach.a2c9b51f.column_0') + \"to Google Sheets<br><br><b>\" + _('data.workato_recipe_function.bb58d146.result.ErrorMessage')\n"
+                },
+                "uuid": "11b64246-c1ae-48f5-861a-319cad91f2a1",
+                "skip": false
+               }
+              ],
+              "uuid": "34384732-beba-4a59-9afb-ca97a12759e9",
+              "skip": false
+             },
+             {
+              "number": 20,
+              "keyword": "stop",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "stop_with_error": "true",
+               "stop_reason": "=_('data.workato_recipe_function.bb58d146.result.ErrorMessage').present? ? _('data.workato_recipe_function.bb58d146.result.ErrorMessage') : \"Unknown error, please check logs\""
+              },
+              "uuid": "1113e454-8a1b-409d-b2a8-1ec66d8efcd4",
+              "skip": false
+             }
+            ],
+            "uuid": "f0fbadec-2e4a-42da-ac47-884edd205db3",
+            "skip": false
+           },
+           {
+            "number": 21,
+            "provider": "workato_recipe_function",
+            "name": "call_recipe",
+            "as": "c30d075b",
+            "title": null,
+            "description": "Call <span class=\"provider\">SaveCompletenessPercentage</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "flow_id": "SaveLatestCompletenessScore"
+            },
+            "toggleCfg": {},
+            "input": {
+             "flow_id": "27233387",
+             "parameters": {
+              "EntityType": "#{_('data.foreach.a2c9b51f.column_0')}",
+              "CompletenessScore": "#{_('data.workato_recipe_function.f11c13f1.result.CompletenessScore')}",
+              "Target": "SNOWFLAKE"
+             }
+            },
+            "extended_output_schema": [
+             {
+              "label": "Result",
+              "name": "result",
+              "properties": [
+               {
+                "control_type": "checkbox",
+                "label": "Success",
+                "render_input": {},
+                "parse_output": {},
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                 "label": "Success",
+                 "control_type": "text",
+                 "toggle_hint": "Use custom value",
+                 "name": "Success",
+                 "type": "boolean",
+                 "optional": false
+                },
+                "name": "Success",
+                "type": "boolean",
+                "optional": false
+               },
+               {
+                "control_type": "text",
+                "label": "Error message",
+                "name": "ErrorMessage",
+                "type": "string",
+                "optional": true
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "extended_input_schema": [
+             {
+              "label": "Parameters",
+              "name": "parameters",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Entity type",
+                "name": "EntityType",
+                "type": "string",
+                "optional": false
+               },
+               {
+                "control_type": "number",
+                "label": "Completeness score",
+                "parse_output": "float_conversion",
+                "name": "CompletenessScore",
+                "type": "number",
+                "optional": false
+               },
+               {
+                "control_type": "text",
+                "label": "Target",
+                "name": "Target",
+                "type": "string",
+                "optional": false,
+                "hint": "what are we writing to - google sheet, snowflake etc"
+               },
+               {
+                "control_type": "text",
+                "label": "Additional information",
+                "name": "AdditionalInformation",
+                "type": "string",
+                "optional": true,
+                "hint": "in case something additional should be passed in for a particular target type"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "comment": "write the completeness metrics to SNOWFLAKE",
+            "uuid": "53287011-aa2e-4df8-b79b-47e489e11488"
+           },
+           {
+            "number": 22,
+            "keyword": "if",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {
+             "type": "compound",
+             "operand": "and",
+             "conditions": [
+              {
+               "operand": "is_not_true",
+               "lhs": "#{_('data.workato_recipe_function.c30d075b.result.Success')}",
+               "rhs": "",
+               "uuid": "condition-e9402f28-ea9e-4cac-9091-6e158c7a3009"
+              },
+              {
+               "operand": "present",
+               "lhs": "#{_('data.workato_recipe_function.c30d075b.result.ErrorMessage')}",
+               "rhs": "",
+               "uuid": "condition-f6518d43-d29d-462d-989e-b793ea66c6e7"
+              }
+             ]
+            },
+            "block": [
+             {
+              "number": 23,
+              "provider": "workato_variable",
+              "name": "update_variables",
+              "as": "c1ec8c3d",
+              "title": null,
+              "description": "Update variables <span class=\"provider\">HasError, ErrorMessage</span>",
+              "keyword": "action",
+              "dynamicPickListSelection": {
+               "name": [
+                {
+                 "label": "HasError (step 3)",
+                 "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError"
+                },
+                {
+                 "label": "ErrorMessage (step 3)",
+                 "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage"
+                }
+               ]
+              },
+              "toggleCfg": {
+               "HasError": true
+              },
+              "input": {
+               "name": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError\nb26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage",
+               "HasError": "true",
+               "ErrorMessage": "=_('data.workato_recipe_function.c30d075b.result.ErrorMessage')"
+              },
+              "extended_input_schema": [
+               {
+                "control_type": "checkbox",
+                "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                "label": "HasError",
+                "name": "HasError",
+                "optional": true,
+                "parse_output": {},
+                "sticky": true,
+                "toggle_field": {
+                 "label": "HasError",
+                 "control_type": "text",
+                 "toggle_hint": "Use custom value",
+                 "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                 "strip_interpolation": true,
+                 "sticky": true,
+                 "optional": true,
+                 "type": "boolean",
+                 "name": "HasError"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean",
+                "render_input": {},
+                "strip_interpolation": true
+               },
+               {
+                "control_type": "text",
+                "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                "label": "ErrorMessage",
+                "name": "ErrorMessage",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "strip_interpolation": true
+               }
+              ],
+              "uuid": "4106b3dd-38f9-4025-9a9f-59d5b4a6968d"
+             },
+             {
+              "number": 24,
+              "provider": "logger",
+              "name": "log_message",
+              "as": "cd535249",
+              "title": null,
+              "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+              "keyword": "action",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "message": "An error occurred trying to write to Snowflake. \n#{_('data.workato_recipe_function.c30d075b.result.ErrorMessage')}"
+              },
+              "uuid": "d8c97114-a1a9-429d-ace8-05d16b072cbe"
+             },
+             {
+              "number": 25,
+              "keyword": "if",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "type": "compound",
+               "operand": "and",
+               "conditions": [
+                {
+                 "operand": "present",
+                 "lhs": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+                 "rhs": "",
+                 "uuid": "condition-a5baa068-26f7-4fb7-9a21-0e223fefd280"
+                }
+               ]
+              },
+              "block": [
+               {
+                "number": 26,
+                "provider": "email",
+                "name": "send_mail",
+                "as": "12c7a311",
+                "title": null,
+                "description": null,
+                "keyword": "action",
+                "dynamicPickListSelection": {},
+                "toggleCfg": {},
+                "input": {
+                 "email_type": "-- REDACTED --",
+                 "to": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+                 "subject": "=\"Completeness Report Error - \" + _('data.foreach.a2c9b51f.column_0')",
+                 "body": "=\"There was an error while writing completeness metrics for \" + _('data.foreach.a2c9b51f.column_0') + \"to Snowflake<br><br><b>\" + _('data.workato_recipe_function.c30d075b.result.ErrorMessage')\n"
+                },
+                "uuid": "0e3e6a95-7884-43c5-b2ec-368444cf2fc8",
+                "skip": false
+               }
+              ],
+              "uuid": "0f9fa7a6-202d-4b42-a7eb-32b5c003c033"
+             },
+             {
+              "number": 27,
+              "keyword": "stop",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "stop_with_error": "true",
+               "stop_reason": "=_('data.workato_recipe_function.c30d075b.result.ErrorMessage').present? ? _('data.workato_recipe_function.c30d075b.result.ErrorMessage') : \"Unknown error, please check logs\""
+              },
+              "uuid": "fe02d577-f217-481c-8f61-50083b227d43"
+             }
+            ],
+            "uuid": "ef7f27c2-9da1-45d4-a5a5-74a0c6cbb6d4"
+           },
+           {
+            "number": 28,
+            "provider": "workato_recipe_function",
+            "name": "call_recipe",
+            "as": "a44f78f9",
+            "title": null,
+            "description": "Call <span class=\"provider\">SaveCompletenessPercentage</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "flow_id": "SaveLatestCompletenessScore"
+            },
+            "toggleCfg": {},
+            "input": {
+             "flow_id": "27233387",
+             "parameters": {
+              "EntityType": "#{_('data.foreach.a2c9b51f.column_0')}",
+              "CompletenessScore": "#{_('data.workato_recipe_function.f11c13f1.result.CompletenessScore')}",
+              "Target": "EMAIL",
+              "AdditionalInformation": "#{_('data.workato_variable.558554bf.EmailOnSuccess')}"
+             }
+            },
+            "extended_output_schema": [
+             {
+              "label": "Result",
+              "name": "result",
+              "properties": [
+               {
+                "control_type": "checkbox",
+                "label": "Success",
+                "render_input": {},
+                "parse_output": {},
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                 "label": "Success",
+                 "control_type": "text",
+                 "toggle_hint": "Use custom value",
+                 "name": "Success",
+                 "type": "boolean",
+                 "optional": false
+                },
+                "name": "Success",
+                "type": "boolean",
+                "optional": false
+               },
+               {
+                "control_type": "text",
+                "label": "Error message",
+                "name": "ErrorMessage",
+                "type": "string",
+                "optional": true
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "extended_input_schema": [
+             {
+              "label": "Parameters",
+              "name": "parameters",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Entity type",
+                "name": "EntityType",
+                "type": "string",
+                "optional": false
+               },
+               {
+                "control_type": "number",
+                "label": "Completeness score",
+                "parse_output": "float_conversion",
+                "name": "CompletenessScore",
+                "type": "number",
+                "optional": false
+               },
+               {
+                "control_type": "text",
+                "label": "Target",
+                "name": "Target",
+                "type": "string",
+                "optional": false,
+                "hint": "what are we writing to - google sheet, snowflake etc"
+               },
+               {
+                "control_type": "text",
+                "label": "Additional information",
+                "name": "AdditionalInformation",
+                "type": "string",
+                "optional": true,
+                "hint": "in case something additional should be passed in for a particular target type"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "comment": "send the completeness metrics via EMAIL",
+            "uuid": "051f9912-d7f8-420c-b533-e52d985655aa",
+            "skip": false
+           },
+           {
+            "number": 29,
+            "keyword": "if",
+            "dynamicPickListSelection": {},
+            "toggleCfg": {},
+            "input": {
+             "type": "compound",
+             "operand": "and",
+             "conditions": [
+              {
+               "operand": "is_not_true",
+               "lhs": "#{_('data.workato_recipe_function.a44f78f9.result.Success')}",
+               "rhs": "",
+               "uuid": "condition-e9402f28-ea9e-4cac-9091-6e158c7a3009"
+              },
+              {
+               "operand": "present",
+               "lhs": "#{_('data.workato_recipe_function.a44f78f9.result.ErrorMessage')}",
+               "rhs": "",
+               "uuid": "condition-f6518d43-d29d-462d-989e-b793ea66c6e7"
+              }
+             ]
+            },
+            "block": [
+             {
+              "number": 30,
+              "provider": "workato_variable",
+              "name": "update_variables",
+              "as": "b6b001b6",
+              "title": null,
+              "description": "Update variables <span class=\"provider\">HasError, ErrorMessage</span>",
+              "keyword": "action",
+              "dynamicPickListSelection": {
+               "name": [
+                {
+                 "label": "HasError (step 3)",
+                 "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError"
+                },
+                {
+                 "label": "ErrorMessage (step 3)",
+                 "value": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage"
+                }
+               ]
+              },
+              "toggleCfg": {
+               "HasError": true
+              },
+              "input": {
+               "name": "b26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:HasError\nb26e89e8-fd57-44c7-b8e7-2226c000d0de:558554bf:ErrorMessage",
+               "HasError": "true",
+               "ErrorMessage": "=_('data.workato_recipe_function.a44f78f9.result.ErrorMessage')"
+              },
+              "extended_input_schema": [
+               {
+                "control_type": "checkbox",
+                "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                "label": "HasError",
+                "name": "HasError",
+                "optional": true,
+                "parse_output": {},
+                "sticky": true,
+                "toggle_field": {
+                 "label": "HasError",
+                 "control_type": "text",
+                 "toggle_hint": "Use custom value",
+                 "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                 "strip_interpolation": true,
+                 "sticky": true,
+                 "optional": true,
+                 "type": "boolean",
+                 "name": "HasError"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean",
+                "render_input": {},
+                "strip_interpolation": true
+               },
+               {
+                "control_type": "text",
+                "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                "label": "ErrorMessage",
+                "name": "ErrorMessage",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "strip_interpolation": true
+               }
+              ],
+              "uuid": "44c14a36-d3eb-4cc0-a175-3185b0f9a868"
+             },
+             {
+              "number": 31,
+              "provider": "logger",
+              "name": "log_message",
+              "as": "a7b1b93a",
+              "title": null,
+              "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+              "keyword": "action",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "message": "An error occurred trying to write to Email. \n#{_('data.workato_recipe_function.a44f78f9.result.ErrorMessage')}"
+              },
+              "uuid": "f26e4884-ba72-4931-b90e-6d189bef2b06"
+             },
+             {
+              "number": 32,
+              "keyword": "if",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "type": "compound",
+               "operand": "and",
+               "conditions": [
+                {
+                 "operand": "present",
+                 "lhs": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+                 "rhs": "",
+                 "uuid": "condition-a5baa068-26f7-4fb7-9a21-0e223fefd280"
+                }
+               ]
+              },
+              "block": [
+               {
+                "number": 33,
+                "provider": "email",
+                "name": "send_mail",
+                "as": "1e6333f0",
+                "title": null,
+                "description": null,
+                "keyword": "action",
+                "dynamicPickListSelection": {},
+                "toggleCfg": {},
+                "input": {
+                 "email_type": "-- REDACTED --",
+                 "to": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+                 "subject": "=\"Completeness Report Error - \" + _('data.foreach.a2c9b51f.column_0')",
+                 "body": "=\"There was an error while writing completeness metrics for \" + _('data.foreach.a2c9b51f.column_0') + \"to Email<br><br><b>\" + _('data.workato_recipe_function.a44f78f9.result.ErrorMessage')\n"
+                },
+                "uuid": "5e2f2c6e-cd76-4716-8abe-ea0cc8fda7fa",
+                "skip": false
+               }
+              ],
+              "uuid": "5a98d106-d4de-4874-ae31-e103eb46d5cc"
+             },
+             {
+              "number": 34,
+              "keyword": "stop",
+              "dynamicPickListSelection": {},
+              "toggleCfg": {},
+              "input": {
+               "stop_with_error": "true",
+               "stop_reason": "=_('data.workato_recipe_function.a44f78f9.result.ErrorMessage').present? ? _('data.workato_recipe_function.a44f78f9.result.ErrorMessage') : \"Unknown error, please check logs\""
+              },
+              "uuid": "524e15c3-9546-444d-a308-293fe8da4ea8"
+             }
+            ],
+            "uuid": "de731527-ff42-4b99-9a21-c13bed812002"
+           }
+          ],
+          "comment": "write out to various endpoints to store the completeness scores. modify as needed.  examples below send to google sheet, snowflake and generic email.",
+          "uuid": "291a01de-bfac-498a-be5d-619217482b09"
+         }
+        ],
+        "uuid": "d766fee9-bd03-41bb-9e46-20e1a7e725f2"
+       }
+      ],
+      "source": "#{_('data.csv_parser.b17cb3ff.lines')}",
+      "comment": "iterate through each entity for which the completeness metrics should be calculated",
+      "uuid": "48bd63e2-25fc-47bf-9e58-a919896dc0b9"
+     },
+     {
+      "number": 35,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "present",
+         "lhs": "#{_('data.workato_variable.558554bf.EmailOnSuccess')}",
+         "rhs": "",
+         "uuid": "condition-a5baa068-26f7-4fb7-9a21-0e223fefd280"
+        },
+        {
+         "operand": "is_not_true",
+         "lhs": "#{_('data.workato_variable.558554bf.HasError')}",
+         "rhs": "",
+         "uuid": "condition-83523359-5959-4e2c-b03d-b43213209ad9"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 36,
+        "provider": "email",
+        "name": "send_mail",
+        "as": "e78b81db",
+        "title": null,
+        "description": null,
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "email_type": "-- REDACTED --",
+         "to": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+         "subject": "Completeness Metrics Calculated",
+         "body": "=\"Completeness metrics calculation completed successfully\"\n"
+        },
+        "uuid": "bc7fc66f-ecbc-4bed-9052-eca12097199a",
+        "skip": false
+       }
+      ],
+      "uuid": "777a7b97-70c1-469f-94ca-3e6e2dc855af"
+     },
+     {
+      "number": 37,
+      "as": "96e05570",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 38,
+        "provider": "logger",
+        "name": "log_message",
+        "as": "ecf72377",
+        "title": null,
+        "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "message": "=\"Error in completeness calculation: \" + _('data.catch.96e05570.message')"
+        },
+        "uuid": "3eb246f1-076e-4716-8e01-231fc4b917c7"
+       },
+       {
+        "number": 39,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "present",
+           "lhs": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+           "rhs": "",
+           "uuid": "condition-a5baa068-26f7-4fb7-9a21-0e223fefd280"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 40,
+          "provider": "email",
+          "name": "send_mail",
+          "as": "0762cec2",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "email_type": "-- REDACTED --",
+           "to": "#{_('data.workato_variable.558554bf.EmailOnFail')}",
+           "subject": "Completeness Metrics Calculation Error",
+           "body": "=\"<b>The following error occurred during the completeness metrics calculation:</b><br><br>\" + _('data.catch.96e05570.message')\n"
+          },
+          "uuid": "d26c5419-7386-40e7-a0ad-b908f2b24cf0",
+          "skip": false
+         }
+        ],
+        "uuid": "7c33b986-a255-4114-900b-7bcfd4f48a5f"
+       }
+      ],
+      "comment": "something went wrong",
+      "uuid": "c6992bb5-331f-4a8c-9ac3-e050747547b9"
+     }
+    ],
+    "uuid": "c8993afa-67a4-4400-a7f1-db1f6132212e"
+   }
+  ],
+  "comment": "Set the trigger to execute to the specific frequency you want to collect the completeness metrics at.  For this recipe to work, ensure that the callable recipes (GetCompletenessPercentage and SaveCompletenessPercentage) are both running.",
+  "job_report_schema": [
+   {
+    "name": "custom_column_0",
+    "label": "Time"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "Has Error"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Error Message"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Filter Condition"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_0": "#{_('data.workato.job_context.job_created_at')}",
+   "custom_column_1": "#{_('data.workato_variable.558554bf.HasError')}",
+   "custom_column_2": "#{_('data.workato_variable.558554bf.ErrorMessage')}",
+   "custom_column_3": "#{_('data.workato_variable.558554bf.Filter')}"
+  },
+  "uuid": "fb749ac4-40b8-4806-9b26-0a20459daad4",
+  "unfinished": false,
+  "param": {}
+ }
+}

@@ -1,0 +1,798 @@
+{
+ "id": 797749,
+ "name": "Record Salesforce campaign members to Google Sheets",
+ "description": "1. A campaign member is created in Salesforce.\n2. Workato records the campaign member in Google Sheets as a new row.\n\n**Requirements**\nTo test this recipe, copy [the sample Google Sheet here](https://docs.google.com/spreadsheets/d/1gN2uLAHJCrRHjS4PrSAUVdlhSdeMQ3hcO-s06V0g2Hw/edit#gid=0) to your Google Drive account.",
+ "applications": [
+  "salesforce",
+  "google_sheets"
+ ],
+ "action_applications": [
+  "google_sheets"
+ ],
+ "trigger_application": "salesforce",
+ "business_objects": [
+  "campaign member",
+  "spreadsheet row"
+ ],
+ "categories": [
+  "CRM",
+  "Marketing",
+  "Document/File"
+ ],
+ "copy_count": 686,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-07-18T03:42:36.732-07:00",
+ "source_url": "https://app.workato.com/recipes/797749?community=us",
+ "steps": [
+  "salesforce.new_custom_object",
+  "google_sheets.add_spreadsheet_row_v4"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "salesforce",
+  "name": "new_custom_object",
+  "as": "new_custom_object",
+  "title": "New Campaign member",
+  "description": "New <span class=\"provider\">Campaign member</span> in <span class=\"provider\">Salesforce</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "sobject_name": "Campaign member"
+  },
+  "toggleCfg": {},
+  "input": {
+   "sobject_name": "CampaignMember",
+   "since": "=1.days.ago",
+   "since_offset": "-3600"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "CampaignId",
+    "control_type": "text",
+    "label": "Campaign ID",
+    "custom": false,
+    "foreign_key": "Campaign",
+    "fetch_with": "get_custom_object(id, sobject_name: Campaign)",
+    "join_point_label": "Campaign",
+    "sfdc_createable": true,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+CampaignId",
+    "label": "Campaign",
+    "properties": [],
+    "fetch_with": "get_custom_object(CampaignId>id, sobject_name: Campaign)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "Id",
+    "control_type": "text",
+    "label": "Campaign Member ID",
+    "optional": true,
+    "custom": false,
+    "key_scope": "CampaignMember",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "City",
+    "control_type": "text",
+    "label": "City",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "CompanyOrAccount",
+    "control_type": "text",
+    "label": "Company (Account)",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "ContactId",
+    "control_type": "text",
+    "label": "Contact ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Contact",
+    "fetch_with": "get_custom_object(id, sobject_name: Contact)",
+    "join_point_label": "Contact",
+    "sfdc_createable": true,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+ContactId",
+    "label": "Contact",
+    "properties": [],
+    "fetch_with": "get_custom_object(ContactId>id, sobject_name: Contact)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "Country",
+    "control_type": "text",
+    "label": "Country",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "CreatedById",
+    "control_type": "text",
+    "label": "Created By ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "User",
+    "fetch_with": "get_custom_object(id, sobject_name: User)",
+    "join_point_label": "Created  by",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+CreatedById",
+    "label": "Created  by",
+    "properties": [],
+    "fetch_with": "get_custom_object(CreatedById>id, sobject_name: User)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "CreatedDate",
+    "control_type": "date_time",
+    "label": "Created Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "IsDeleted",
+    "control_type": "checkbox",
+    "label": "Deleted",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Deleted",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "IsDeleted"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Description",
+    "control_type": "text-area",
+    "label": "Description",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "DoNotCall",
+    "control_type": "checkbox",
+    "label": "Do Not Call",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Do Not Call",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "DoNotCall"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Email",
+    "control_type": "text",
+    "label": "Email",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "HasOptedOutOfEmail",
+    "control_type": "checkbox",
+    "label": "Email Opt Out",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Email Opt Out",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "HasOptedOutOfEmail"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Fax",
+    "control_type": "phone",
+    "label": "Fax",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "HasOptedOutOfFax",
+    "control_type": "checkbox",
+    "label": "Fax Opt Out",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Fax Opt Out",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "HasOptedOutOfFax"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "FirstName",
+    "control_type": "text",
+    "label": "First Name",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "date_time",
+    "name": "FirstRespondedDate",
+    "control_type": "date",
+    "label": "First Responded Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LastModifiedById",
+    "control_type": "text",
+    "label": "Last Modified By ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "User",
+    "fetch_with": "get_custom_object(id, sobject_name: User)",
+    "join_point_label": "Last  modified  by",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+LastModifiedById",
+    "label": "Last  modified  by",
+    "properties": [],
+    "fetch_with": "get_custom_object(LastModifiedById>id, sobject_name: User)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "LastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last Modified Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LastName",
+    "control_type": "text",
+    "label": "Last Name",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LeadId",
+    "control_type": "text",
+    "label": "Lead ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Lead",
+    "fetch_with": "get_custom_object(id, sobject_name: Lead)",
+    "join_point_label": "Lead",
+    "sfdc_createable": true,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+LeadId",
+    "label": "Lead",
+    "properties": [],
+    "fetch_with": "get_custom_object(LeadId>id, sobject_name: Lead)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "LeadSource",
+    "control_type": "select",
+    "label": "Lead Source",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"CampaignMember\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Lead Source",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "string",
+     "name": "LeadSource"
+    },
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LeadOrContactId",
+    "control_type": "text",
+    "label": "Lead/Contact ID",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LeadOrContactOwnerId",
+    "control_type": "text",
+    "label": "Lead/Contact Owner ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Group",
+    "fetch_with": "get_custom_object(id, sobject_name: Group)",
+    "join_point_label": "Lead/ contact  owner",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+LeadOrContactOwnerId",
+    "label": "Lead/ contact  owner",
+    "properties": [],
+    "fetch_with": "get_custom_object(LeadOrContactOwnerId>id, sobject_name: Group)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "MobilePhone",
+    "control_type": "phone",
+    "label": "Mobile",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Name",
+    "control_type": "text",
+    "label": "Name",
+    "optional": true,
+    "custom": false,
+    "event_title": true,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Phone",
+    "control_type": "phone",
+    "label": "Phone",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "boolean",
+    "name": "HasResponded",
+    "control_type": "checkbox",
+    "label": "Responded",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Responded",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "HasResponded"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Salutation",
+    "control_type": "select",
+    "label": "Salutation",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"CampaignMember\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Salutation",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "string",
+     "name": "Salutation"
+    },
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "State",
+    "control_type": "text",
+    "label": "State/Province",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Status",
+    "control_type": "select",
+    "label": "Status",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"CampaignMember\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Status",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Status"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Street",
+    "control_type": "text",
+    "label": "Street",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "date_time",
+    "name": "SystemModstamp",
+    "control_type": "date_time",
+    "label": "System Modstamp",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Title",
+    "control_type": "text",
+    "label": "Title",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Type",
+    "control_type": "text",
+    "label": "Type",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "PostalCode",
+    "control_type": "text",
+    "label": "Zip/Postal Code",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "since_offset",
+    "control_type": "select",
+    "label": "From",
+    "hint": "Fetch trigger events from specified time",
+    "default": -3600,
+    "pick_list": [
+     [
+      "Recipe start",
+      0
+     ],
+     [
+      "An hour ago",
+      -3600
+     ],
+     [
+      "Yesterday",
+      -86400
+     ],
+     [
+      "Last week",
+      -604800
+     ],
+     [
+      "Last month",
+      -2592000
+     ],
+     [
+      "Beginning of time",
+      "no_limit"
+     ]
+    ],
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "date_time",
+     "label": "Since",
+     "render_input": "convert_date_time",
+     "parse_output": "convert_date_time",
+     "toggle_hint": "Enter custom value",
+     "since_field": true,
+     "hint": "Fetch trigger events from specified time",
+     "type": "date_time",
+     "name": "since"
+    },
+    "since_field": true
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "google_sheets",
+    "name": "add_spreadsheet_row_v4",
+    "as": "add_spreadsheet_row_v4",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "spreadsheet": "Workato sample - Salesforce campaign member"
+    },
+    "toggleCfg": {},
+    "input": {
+     "spreadsheet": "1gN2uLAHJCrRHjS4PrSAUVdlhSdeMQ3hcO-s06V0g2Hw",
+     "sheet": "Sheet1",
+     "data": {
+      "col_1": "#{_('data.salesforce.new_custom_object.FirstName')}",
+      "col_2": "#{_('data.salesforce.new_custom_object.LastName')}",
+      "col_3": "#{_('data.salesforce.new_custom_object.Type')}",
+      "col_4": "#{_('data.salesforce.new_custom_object.Email')}",
+      "col_5": "#{_('data.salesforce.new_custom_object.Phone')}"
+     }
+    },
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "sheet",
+      "control_type": "select",
+      "label": "Sheet",
+      "hint": "Select the sheet to create row in",
+      "pick_list": [
+       [
+        "Sheet1",
+        "Sheet1"
+       ]
+      ],
+      "optional": false,
+      "extends_schema": true
+     },
+     {
+      "type": "object",
+      "name": "data",
+      "label": "Columns",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "First name",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_1",
+        "sticky": true,
+        "parent": "data"
+       },
+       {
+        "control_type": "text",
+        "label": "Last name",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_2",
+        "sticky": true,
+        "parent": "data"
+       },
+       {
+        "control_type": "text",
+        "label": "Type",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_3",
+        "sticky": true,
+        "parent": "data"
+       },
+       {
+        "control_type": "text",
+        "label": "Email",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_4",
+        "sticky": true,
+        "parent": "data"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "optional": true,
+        "custom": true,
+        "type": "string",
+        "name": "col_5",
+        "sticky": true,
+        "parent": "data"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "spreadsheet",
+     "sheet",
+     "data",
+     "data.col_1",
+     "data.col_2",
+     "data.col_3",
+     "data.col_4"
+    ],
+    "uuid": "98d0eefd-5f5b-4c59-b6c9-7a140272ab87"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "First name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Last name"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Type"
+   },
+   {
+    "name": "custom_column_4",
+    "label": "Email"
+   },
+   {
+    "name": "custom_column_5",
+    "label": "Phone"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.salesforce.new_custom_object.FirstName')}",
+   "custom_column_2": "#{_('data.salesforce.new_custom_object.LastName')}",
+   "custom_column_3": "#{_('data.salesforce.new_custom_object.Type')}",
+   "custom_column_4": "#{_('data.salesforce.new_custom_object.Email')}",
+   "custom_column_5": "#{_('data.salesforce.new_custom_object.Phone')}"
+  },
+  "uuid": "2d1e6d63-d2f3-4c03-8205-de4388e68a9e",
+  "param": {}
+ }
+}

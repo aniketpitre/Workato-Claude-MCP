@@ -1,0 +1,3968 @@
+{
+ "name": "wrike_secondary",
+ "title": "Wrike secondary",
+ "requires_connection": true,
+ "categories": [
+  "Project Management",
+  "Marketing"
+ ],
+ "aliases": [
+  "Wrike"
+ ],
+ "triggers": [
+  {
+   "name": "new_comment_v2",
+   "title": "New comment",
+   "description": "New comment in Wrike secondary",
+   "help": "Retrieves up to 7 days of new comments for each poll. If the last new comment event is older than 7 days, more than 1 poll will be required to retrieve new comments up to current date & time. To manually retrieve new comments, go to the jobs tab and click 'Check now'.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get comments created since given date/time. Leave empty to get comments created one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Comment ID",
+     "control_type": "text",
+     "hint": "ID of comment."
+    },
+    {
+     "name": "authorId",
+     "type": "string",
+     "label": "Author ID",
+     "control_type": "text",
+     "hint": "Comment author's user ID."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updatedDate",
+     "type": "date_time",
+     "label": "Updated date",
+     "control_type": "date_time",
+     "hint": "Date when comment was updated."
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time",
+     "hint": "Date when comment was created."
+    },
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text",
+     "hint": "ID of folder."
+    },
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "hint": "ID of task."
+    }
+   ]
+  },
+  {
+   "name": "new_event_webhook",
+   "title": "New event",
+   "description": "New event in Wrike secondary",
+   "help": "Monitor changes done to tasks, folders, projects, attachments, time logs, and comments using this trigger. Folder events are also fired on projects. Note that all output fields may not be returned for a specific type of event.",
+   "input": [
+    {
+     "name": "event_list",
+     "type": "string",
+     "label": "Events to monitor",
+     "control_type": "multiselect",
+     "options": [
+      "TaskCreated",
+      "TaskDeleted",
+      "TaskTitleChanged",
+      "TaskImportanceChanged",
+      "TaskStatusChanged",
+      "TaskDatesChanged",
+      "TaskParentsAdded",
+      "TaskParentsRemoved",
+      "TaskResponsiblesAdded",
+      "TaskResponsiblesRemoved",
+      "TaskSharedsAdded",
+      "TaskSharedsRemoved",
+      "TaskDescriptionChanged",
+      "TaskCustomFieldChanged",
+      "AttachmentAdded",
+      "AttachmentDeleted",
+      "CommentAdded",
+      "CommentDeleted",
+      "TimelogChanged",
+      "TaskApprovalStatusChanged",
+      "TaskApprovalDecisionChanged",
+      "TaskApprovalDecisionReset",
+      "FolderCreated",
+      "FolderDeleted",
+      "FolderTitleChanged",
+      "FolderParentsAdded",
+      "FolderParentsRemoved",
+      "FolderSharedsAdded",
+      "FolderSharedsRemoved",
+      "FolderDescriptionChanged",
+      "FolderCommentAdded",
+      "FolderCommentDeleted",
+      "FolderAttachmentAdded",
+      "FolderAttachmentDeleted",
+      "FolderCustomFieldChanged",
+      "FolderApprovalStatusChanged",
+      "FolderApprovalDecisionChanged",
+      "FolderApprovalDecisionReset",
+      "ProjectDatesChanged",
+      "ProjectOwnersAdded",
+      "ProjectOwnersRemoved",
+      "ProjectStatusChanged"
+     ],
+     "extends_schema": true,
+     "hint": "Select the events to be monitored. If left blank, all events will be monitored."
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "select",
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a folder to monitor changes on. If left blank, all folders will be monitored."
+    },
+    {
+     "name": "recursive",
+     "type": "boolean",
+     "label": "Monitor nested sub-folders, projects & tasks?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "recursive",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to monitor nested subfolders, projects & tasks. Defaults to No ."
+    }
+   ],
+   "output": [
+    {
+     "name": "webhookId",
+     "type": "string",
+     "label": "Webhook ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventAuthorId",
+     "type": "string",
+     "label": "Event Author ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "eventType",
+     "type": "string",
+     "label": "Event type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastUpdatedDate",
+     "type": "date_time",
+     "label": "Last updated date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_or_updated_folder_v2",
+   "title": "New/updated folder",
+   "description": "New/updated folder in Wrike secondary",
+   "help": "Returns folder tree data of new/updated folder. To get more information about the folder, use Get folder by ID action in corresponding steps.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get events created or updated one hour ago. Once recipe has been run or tested, v…"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "project_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: metadata, hasAttachments, attachmentCount, description, briefD…"
+    },
+    {
+     "name": "strip_tags",
+     "type": "number",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": false,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_folder_webhook",
+   "title": "New/updated folder",
+   "description": "New/updated folder in Wrike secondary",
+   "help": "Fetches new/updated folder events in real-time.",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get events created or updated one hour ago. Once recipe has been run or tested, v…"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "project_fields_framework",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: metadata, hasAttachments, attachmentCount, description, briefD…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_project_v2",
+   "title": "New/updated project",
+   "description": "New/updated project in Wrike secondary",
+   "help": "Fetches new/updated project events.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get events created or updated one hour ago. Once recipe has been run or tested, v…"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "project_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: metadata, hasAttachments, attachmentCount, description, briefD…"
+    },
+    {
+     "name": "strip_tags",
+     "type": "number",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": false,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_project_webhook",
+   "title": "New/updated project",
+   "description": "New/updated project in Wrike secondary",
+   "help": "Fetches new/updated project events in real-time.",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get events created or updated one hour ago. Once recipe has been run or tested, v…"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "project_fields_framework",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: metadata, hasAttachments, attachmentCount, description, briefD…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_task_v2",
+   "title": "New/updated task",
+   "description": "New/updated task in Wrike secondary",
+   "help": "Checks for new events every 5 minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "select",
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a folder to get the task from"
+    },
+    {
+     "name": "custom_status",
+     "type": "string",
+     "label": "Custom statuses",
+     "control_type": "multiselect",
+     "pick_list": "custom_statuses",
+     "extends_schema": true,
+     "hint": "Returns tasks that match any chosen custom statuses."
+    },
+    {
+     "name": "task_status",
+     "type": "string",
+     "label": "Task status",
+     "control_type": "select",
+     "pick_list": "task_status",
+     "extends_schema": true,
+     "hint": "Trigger will pick up only new/updated tasks with this status."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "Get tasks created or updated since given date/time. Leave empty to get tasks created or updated one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "task_fields_extended",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: recurrent, description, briefDescription, parentIds, superPare…"
+    },
+    {
+     "name": "strip_tags",
+     "type": "number",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": false,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_task_webhook",
+   "title": "New/updated task",
+   "description": "New/updated task in Wrike secondary",
+   "help": "Fetches new/updated task events in real-time.",
+   "input": [
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "select",
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a folder to get the task from"
+    },
+    {
+     "name": "custom_status",
+     "type": "string",
+     "label": "Custom statuses",
+     "control_type": "multiselect",
+     "pick_list": "custom_statuses",
+     "hint": "Returns tasks that match any chosen custom statuses."
+    },
+    {
+     "name": "task_status",
+     "type": "string",
+     "label": "Task status",
+     "control_type": "select",
+     "pick_list": "task_status",
+     "hint": "Trigger will pick up only new/updated tasks with this status."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get tasks created or updated since given date/time. Leave empty to get tasks created or updated one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "recursive",
+     "type": "boolean",
+     "label": "Also trigger on nested folders, projects & tasks?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "recursive",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to monitor nested subfolders, projects & tasks. Defaults to No ."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "task_fields_extended_framework",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: recurrent, description, briefDescription, parentIds, superPare…"
+    },
+    {
+     "name": "strip_tags",
+     "type": "boolean",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_timelog",
+   "title": "New/updated timelog",
+   "description": "New/updated timelog in Wrike secondary",
+   "help": "Fetches new/updated timelog events.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get events created or updated one hour ago. Once recipe has been run or tested, v…"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Timelog ID",
+     "control_type": "text"
+    },
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text"
+    },
+    {
+     "name": "userId",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text"
+    },
+    {
+     "name": "categoryId",
+     "type": "string",
+     "label": "Category ID",
+     "control_type": "text"
+    },
+    {
+     "name": "hours",
+     "type": "number",
+     "label": "Hours",
+     "control_type": "number"
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updatedDate",
+     "type": "date_time",
+     "label": "Updated date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "trackedDate",
+     "type": "date_time",
+     "label": "Tracked date",
+     "control_type": "date"
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Wrike secondary (Custom)",
+   "help": "Build your own Wrike action with a HTTP request. The request will be authorized with your Wrike connection scopes: Scopes Default, wsReadOnly, wsReadWrite, amReadOnlyUser, amReadWriteUser, amReadOnlyAuditLog, amReadOnlyWorkflow, amReadWriteWorkflow, amReadOnlyInvitation, amReadWriteInvitation, amRea…",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "cancel_approval",
+   "title": "Cancel approval",
+   "description": "Cancel approval in Wrike secondary",
+   "help": "Cancels an approval in Wrike.",
+   "input": [
+    {
+     "name": "approvalId",
+     "type": "string",
+     "label": "Approval ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide approval ID to cancel."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "copy_folder",
+   "title": "Copy folder",
+   "description": "Copy folder in Wrike secondary",
+   "help": "Copies an existing folder within a specified folder/project. You can also add users to share the folder with.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Folder to be copied",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     },
+     "hint": "Select a folder to be copied. To use the folder's ID instead, toggle to 'Enter a folder ID'."
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Destination folder/project",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "parent",
+      "type": "string"
+     },
+     "hint": "Select a destination folder/project to copy the folder into. To use parent folder/project ID instead, toggle to 'Enter parent folder/project ID'."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Title of folder."
+    },
+    {
+     "name": "titlePrefix",
+     "type": "string",
+     "label": "Title prefix",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Title prefix of folder."
+    },
+    {
+     "name": "copyDescriptions",
+     "type": "string",
+     "label": "Copy description?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyDescriptions",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original folder's description for the copied folder. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyResponsibles",
+     "type": "string",
+     "label": "Copy assignees?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyResponsibles",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original folder's assignees for the copied folder. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "addResponsibles",
+     "type": "array",
+     "label": "Add assignees to copied tasks.",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Assignee ID",
+       "control_type": "text",
+       "hint": "User ID of user to assign copied folder to."
+      }
+     ],
+     "hint": "Add assignees to copied folder."
+    },
+    {
+     "name": "removeResponsibles",
+     "type": "array",
+     "label": "Remove assignees from copied tasks",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to remove from assignment of copied folder."
+      }
+     ],
+     "hint": "Assignees of copied folder."
+    },
+    {
+     "name": "copyCustomFields",
+     "type": "string",
+     "label": "Copy custom fields?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyCustomFields",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original folder's custom fields for the copied folder. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyCustomStatuses",
+     "type": "string",
+     "label": "Copy custom statuses?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyCustomStatuses",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original folder's custom statuses for the copied folder. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyStatuses",
+     "type": "string",
+     "label": "Copy statuses?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyStatuses",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original folder's statuses for the copied folder. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyParents",
+     "type": "string",
+     "label": "Copy parent folders/projects?",
+     "control_type": "text",
+     "default": "No",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyParents",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original folder's parent folders/projects for the copied folder. Defaults to No . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "rescheduleDate",
+     "type": "date_time",
+     "label": "Reschedule date",
+     "control_type": "date",
+     "extends_schema": true,
+     "hint": "Copy rescheduling dates to copied tasks."
+    },
+    {
+     "name": "rescheduleMode",
+     "type": "string",
+     "label": "Reschedule mode",
+     "control_type": "select",
+     "options": [
+      "Start",
+      "End"
+     ],
+     "extends_schema": true,
+     "hint": "Valid only if reschedule date is present."
+    },
+    {
+     "name": "entryLimit",
+     "type": "integer",
+     "label": "Entry limit",
+     "control_type": "number",
+     "extends_schema": true,
+     "hint": "Limit maximum allowed number for tasks/folders/projects in tree for copy. Valid range: 1-100. 100 by default."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "copy_project",
+   "title": "Copy project",
+   "description": "Copy project in Wrike secondary",
+   "help": "Copies an existing project within a specified folder/project. You can also add users to share the project with.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Project to be copied",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     },
+     "hint": "Select a project to be copied. To use the project's ID instead, toggle to 'Enter a project ID'."
+    },
+    {
+     "name": "parent",
+     "type": "string",
+     "label": "Destination folder/project",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "parent",
+      "type": "string"
+     },
+     "hint": "Select a destination folder/project to copy the project into. To use parent folder/project ID instead, toggle to 'Enter parent folder/project ID'."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Title of project."
+    },
+    {
+     "name": "titlePrefix",
+     "type": "string",
+     "label": "Title prefix",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Title prefix of project."
+    },
+    {
+     "name": "copyDescriptions",
+     "type": "string",
+     "label": "Copy description?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyDescriptions",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original project's description for the copied project. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyResponsibles",
+     "type": "string",
+     "label": "Copy assignees?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyResponsibles",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original project's assignees for the copied project. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "addResponsibles",
+     "type": "array",
+     "label": "Add assignees to copied tasks.",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Assignee ID",
+       "control_type": "text",
+       "hint": "User ID of user to assign copied project to."
+      }
+     ],
+     "hint": "Add assignees to copied project."
+    },
+    {
+     "name": "removeResponsibles",
+     "type": "array",
+     "label": "Remove assignees from copied tasks",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to remove from assignment of copied project."
+      }
+     ],
+     "hint": "Assignees of copied project."
+    },
+    {
+     "name": "copyCustomFields",
+     "type": "string",
+     "label": "Copy custom fields?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyCustomFields",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original project's custom fields for the copied project. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyCustomStatuses",
+     "type": "string",
+     "label": "Copy custom statuses?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyCustomStatuses",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original project's custom statuses for the copied project. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyStatuses",
+     "type": "string",
+     "label": "Copy statuses?",
+     "control_type": "text",
+     "default": "Yes",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyStatuses",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original project's statuses for the copied project. Defaults to Yes . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "copyParents",
+     "type": "string",
+     "label": "Copy parent folders/projects?",
+     "control_type": "text",
+     "default": "No",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "copyParents",
+      "type": "boolean"
+     },
+     "hint": "Enter Yes to copy the original project's parent folders/projects for the copied project. Defaults to No . To instead directly choose between Yes and No , toggle to 'Select'."
+    },
+    {
+     "name": "rescheduleDate",
+     "type": "date_time",
+     "label": "Reschedule date",
+     "control_type": "date",
+     "extends_schema": true,
+     "hint": "Copy rescheduling dates to copied tasks."
+    },
+    {
+     "name": "rescheduleMode",
+     "type": "string",
+     "label": "Reschedule mode",
+     "control_type": "select",
+     "options": [
+      "Start",
+      "End"
+     ],
+     "extends_schema": true,
+     "hint": "Valid only if reschedule date is present."
+    },
+    {
+     "name": "entryLimit",
+     "type": "integer",
+     "label": "Entry limit",
+     "control_type": "number",
+     "extends_schema": true,
+     "hint": "Limit maximum allowed number for tasks/folders/projects in tree for copy. Valid range: 1-100. 100 by default."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_approval",
+   "title": "Create approval",
+   "description": "Create approval in Wrike secondary",
+   "help": "Creates an approval process in Wrike.",
+   "input": [
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "taskId",
+      "type": "string"
+     },
+     "hint": "Provide a folder ID to create approval for. Toggle to Task ID to create approval on a task instead."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Provide a description for the approval."
+    },
+    {
+     "name": "dueDate",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date"
+    },
+    {
+     "name": "approvers",
+     "type": "string",
+     "label": "Approvers",
+     "control_type": "multiselect",
+     "pick_list": "contacts",
+     "toggle_field": {
+      "name": "approvers",
+      "type": "array"
+     },
+     "hint": "Select a list of approver user IDs to assign to this approval request.Creates approval in draft status when no approvers are assigned."
+    },
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments list",
+     "of": "string",
+     "hint": "Map in a list of attachment IDs to process as a part of this approval."
+    },
+    {
+     "name": "autoFinishOnApprove",
+     "type": "number",
+     "label": "Auto finish on approve?",
+     "control_type": "checkbox",
+     "default": true,
+     "toggle_field": {
+      "name": "autoFinishOnApprove",
+      "type": "string"
+     },
+     "hint": "Whether to finish the approval automatically when all approvers have approved the request. Set to Yes by default."
+    },
+    {
+     "name": "autoFinishOnReject",
+     "type": "number",
+     "label": "Auto finish on reject?",
+     "control_type": "checkbox",
+     "default": true,
+     "toggle_field": {
+      "name": "autoFinishOnReject",
+      "type": "string"
+     },
+     "hint": "Whether to finish the approval automatically when some approvers have rejected the request. Set to Yes by default."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_comment_in_folder",
+   "title": "Create comment in folder",
+   "description": "Create comment in folder in Wrike secondary",
+   "help": "Creates a comment in a folder. Select a folder or enter a folder ID to add the comment to.",
+   "input": [
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a folder to create comment in. To use folder ID instead, toggle to 'Enter a folder ID'."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "required": true,
+     "hint": "Comment text."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Comment ID",
+     "control_type": "text",
+     "hint": "ID of comment."
+    },
+    {
+     "name": "authorId",
+     "type": "string",
+     "label": "Author ID",
+     "control_type": "text",
+     "hint": "Comment author's user ID."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updatedDate",
+     "type": "date_time",
+     "label": "Updated date",
+     "control_type": "date_time",
+     "hint": "Date when comment was updated."
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time",
+     "hint": "Date when comment was created."
+    },
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text",
+     "hint": "ID of folder."
+    }
+   ]
+  },
+  {
+   "name": "create_comment_in_task",
+   "title": "Create comment in task",
+   "description": "Create comment in task in Wrike secondary",
+   "help": "Creates a comment in a task. Enter a task ID to add the comment to.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of task to create comment in."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "required": true,
+     "hint": "Comment text."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Comment ID",
+     "control_type": "text",
+     "hint": "ID of comment."
+    },
+    {
+     "name": "authorId",
+     "type": "string",
+     "label": "Author ID",
+     "control_type": "text",
+     "hint": "Comment author's user ID."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "updatedDate",
+     "type": "date_time",
+     "label": "Updated date",
+     "control_type": "date_time",
+     "hint": "Date when comment was updated."
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time",
+     "hint": "Date when comment was created."
+    },
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "hint": "ID of task."
+    }
+   ]
+  },
+  {
+   "name": "create_database",
+   "title": "Create database",
+   "description": "Create a database in Wrike secondary",
+   "help": "This action creates a database in Wrike.",
+   "input": [
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve databases/folders from"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_field",
+   "title": "Create field",
+   "description": "Create field in a database in Wrike secondary",
+   "help": "This action creates a field inside a database in Wrike.",
+   "input": [
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve databases/folders from"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_folder",
+   "title": "Create folder",
+   "description": "Create folder in Wrike secondary",
+   "help": "Creates a folder within a specified folder/project. You can also add users to share the folder with.",
+   "input": [
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Parent folder/project",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a parent folder/project to create this folder in. To use folder/project ID instead, toggle to 'Enter a folder/project ID'."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Title of folder."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Description of folder."
+    },
+    {
+     "name": "shareds",
+     "type": "array",
+     "label": "Users who share the folder",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to share folder with."
+      }
+     ]
+    },
+    {
+     "name": "metadata",
+     "type": "array",
+     "label": "Metadata",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "hint": "Key can be of alphanumeric values with maximum length up to 50 characters."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "hint": "Metadata field value."
+      }
+     ]
+    },
+    {
+     "name": "project",
+     "type": "object",
+     "label": "Project",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "hint": "Case sensitive status value. Allowed values are Green , Yellow , Red , Completed , OnHold , and Cancelled ."
+      },
+      {
+       "name": "customStatus",
+       "type": "string",
+       "label": "Custom status",
+       "control_type": "select",
+       "pick_list": "custom_statuses",
+       "toggle_field": {
+        "name": "custom_status_name",
+        "type": "string"
+       },
+       "hint": "Select custom status."
+      },
+      {
+       "name": "ownerIds",
+       "type": "array",
+       "label": "User IDs of Wrike users who should own this folder",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "User ID",
+         "control_type": "text",
+         "hint": "User ID of project owner."
+        }
+       ]
+      },
+      {
+       "name": "startDate",
+       "type": "date_time",
+       "label": "Start date",
+       "control_type": "date",
+       "required": true,
+       "hint": "Start date of project."
+      },
+      {
+       "name": "endDate",
+       "type": "date_time",
+       "label": "End date",
+       "control_type": "date",
+       "required": true,
+       "hint": "End date of project."
+      }
+     ],
+     "hint": "To create a project instead of a folder, these Project fields should have values."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be shown in the input and output. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_from_blueprint",
+   "title": "Create from blueprint",
+   "description": "Create folder or task from blueprint in Wrike secondary",
+   "help": "Creates a folder or task from a blueprint.",
+   "input": [
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Blueprint type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Folder",
+      "Task"
+     ],
+     "extends_schema": true,
+     "hint": "Select a blueprint type to create folder from."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_project",
+   "title": "Create project",
+   "description": "Create project in Wrike secondary",
+   "help": "Creates a project within a specified folder/project. You can also add users to share the project with.",
+   "input": [
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Parent folder/project",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a parent folder/project to create this project in. To use folder/project ID instead, toggle to 'Enter a folder/project ID'."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Title of project."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Description of project."
+    },
+    {
+     "name": "shareds",
+     "type": "array",
+     "label": "Users who share the project",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to share project with."
+      }
+     ]
+    },
+    {
+     "name": "metadata",
+     "type": "array",
+     "label": "Metadata",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "hint": "Key can be of alphanumeric values with maximum length up to 50 characters."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "hint": "Metadata field value."
+      }
+     ]
+    },
+    {
+     "name": "project",
+     "type": "object",
+     "label": "Project",
+     "required": true,
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "hint": "Case sensitive status value. Allowed values are Green , Yellow , Red , Completed , OnHold , and Cancelled ."
+      },
+      {
+       "name": "customStatus",
+       "type": "string",
+       "label": "Custom status",
+       "control_type": "select",
+       "pick_list": "custom_statuses",
+       "toggle_field": {
+        "name": "custom_status_name",
+        "type": "string"
+       },
+       "hint": "Select custom status."
+      },
+      {
+       "name": "ownerIds",
+       "type": "array",
+       "label": "User IDs of Wrike users who should own this project",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "User ID",
+         "control_type": "text",
+         "hint": "User ID of project owner."
+        }
+       ]
+      },
+      {
+       "name": "startDate",
+       "type": "date_time",
+       "label": "Start date",
+       "control_type": "date",
+       "required": true,
+       "hint": "Start date of project."
+      },
+      {
+       "name": "endDate",
+       "type": "date_time",
+       "label": "End date",
+       "control_type": "date",
+       "required": true,
+       "hint": "End date of project."
+      }
+     ],
+     "hint": "Enter project details"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be shown in the input and output. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_records",
+   "title": "Create records",
+   "description": "Create records in a database in Wrike secondary",
+   "help": "This action create records inside a database in Wrike.",
+   "input": [
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve databases/folders from"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_task",
+   "title": "Create task",
+   "description": "Create task in Wrike secondary",
+   "help": "Creates a task within a specified folder. Supports custom fields.",
+   "input": [
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a folder to create task in. To use folder ID instead, toggle to 'Enter a folder ID'."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "task_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be shown in the input and output. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_timelog",
+   "title": "Create timelog",
+   "description": "Create timelog record for task in Wrike secondary",
+   "help": "This action creates a timelog for a specified task in Wrike.",
+   "input": [
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "ID of task to add new timelog to",
+     "control_type": "text",
+     "required": true,
+     "hint": "Add new timelog record to specified task."
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Timelog comment",
+     "control_type": "text",
+     "hint": "Add comment to this timelog record."
+    },
+    {
+     "name": "hours",
+     "type": "number",
+     "label": "Timelog tracked hours",
+     "control_type": "number",
+     "required": true,
+     "hint": "Number of tracked hours to add to this timelog."
+    },
+    {
+     "name": "trackedDate",
+     "type": "date_time",
+     "label": "Tracked date",
+     "control_type": "date",
+     "required": true,
+     "hint": "Date to register for this timelog"
+    },
+    {
+     "name": "categoryId",
+     "type": "string",
+     "label": "Timelog category",
+     "control_type": "select",
+     "pick_list": "timelog_categories",
+     "hint": "Assign a timelog category to this timelog."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Timelog ID",
+     "control_type": "text"
+    },
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text"
+    },
+    {
+     "name": "userId",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text"
+    },
+    {
+     "name": "categoryId",
+     "type": "string",
+     "label": "Category ID",
+     "control_type": "text"
+    },
+    {
+     "name": "hours",
+     "type": "number",
+     "label": "Hours",
+     "control_type": "number"
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updatedDate",
+     "type": "date_time",
+     "label": "Updated date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "trackedDate",
+     "type": "date_time",
+     "label": "Tracked date",
+     "control_type": "date"
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_work",
+   "title": "Create work from custom item type",
+   "description": "Create work in Wrike secondary",
+   "help": "Create work using the specified custom item type in Wrike. Choose a parent folder/project for the created work to be associated with, or provide a parent task ID to create work as a sub-task.",
+   "input": [
+    {
+     "name": "cit_id",
+     "type": "string",
+     "label": "Custom item type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "custom_item_types",
+     "toggle_field": {
+      "name": "cit_id",
+      "type": "string"
+     },
+     "hint": "Select a custom item type to create work from. To use custom item type ID instead, toggle to Enter custom item type ID ."
+    },
+    {
+     "name": "parentId",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "select",
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "parentId",
+      "type": "string"
+     },
+     "hint": "Select a folder to create work in. To use folder ID instead, toggle to Enter folder ID ."
+    },
+    {
+     "name": "superTaskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "hint": "ID of parent task to create work in."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true,
+     "hint": "Title of the work item"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Created Task ID",
+     "control_type": "text"
+    },
+    {
+     "name": "relatedType",
+     "type": "string",
+     "label": "Related type",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "delete_attachment",
+   "title": "Delete attachment",
+   "description": "Delete attachment in Wrike secondary",
+   "help": "Deletes an attachment in Wrike.",
+   "input": [
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide attachment ID to delete."
+    }
+   ],
+   "output": [
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Deleted attachment ID",
+     "control_type": "text"
+    },
+    {
+     "name": "deleted",
+     "type": "number",
+     "label": "Deleted?",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "delete_records",
+   "title": "Delete records",
+   "description": "Delete records in a database in Wrike secondary",
+   "help": "This action delete records inside a database in Wrike.",
+   "input": [
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve databases/folders from"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "download_attachment",
+   "title": "Download attachment",
+   "description": "Download attachment in Wrike secondary",
+   "help": "Downloads an attachment from Wrike. The API supports downloads of file sizes upto 500 MB .",
+   "input": [
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide attachment ID to download."
+    }
+   ],
+   "output": [
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text"
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text"
+    },
+    {
+     "name": "file_size",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "get_approval_by_id",
+   "title": "Get approval by ID",
+   "description": "Get approval by ID in Wrike secondary",
+   "help": "Retrieves information about an approval process from Wrike.",
+   "input": [
+    {
+     "name": "approvalId",
+     "type": "string",
+     "label": "Approval ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide approval ID to retrieve its current status."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_attachment_metadata",
+   "title": "Get attachment metadata",
+   "description": "Get attachment metadata in Wrike secondary",
+   "help": "Retrieves an attachment's metadata information from Wrike. Use the Get record ID action to obtain attachment ID from the attachment's permalink URL.",
+   "input": [
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide attachment ID to retrieve metadata. Use the Get record ID to retrieve attachment ID from the attachment's permalink URL."
+    },
+    {
+     "name": "versions",
+     "type": "number",
+     "label": "Retrieve past versions?",
+     "control_type": "checkbox",
+     "default": false,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "versions",
+      "type": "string"
+     },
+     "hint": "Select Yes to get attachment's previous versions. Defaults to No ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_attachment_url",
+   "title": "Get attachment URL",
+   "description": "Get attachment URL in Wrike secondary",
+   "help": "Retrieves an attachment's public access URL from Wrike. The retrieved URL is valid for 24 hours from when the request is made.",
+   "input": [
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide attachment ID to download."
+    }
+   ],
+   "output": [
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "string"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "url"
+    },
+    {
+     "name": "playlistUrl",
+     "type": "string",
+     "label": "Playlist URL",
+     "control_type": "url"
+    }
+   ]
+  },
+  {
+   "name": "get_folder_by_id",
+   "title": "Get folder by ID",
+   "description": "Get folder by ID in Wrike secondary",
+   "help": "Retrieves folder/project info and metadata by specifying folder ID or selecting a folder. Also shows custom fields.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     },
+     "hint": "Select a folder to retrieve. To use folder ID instead, toggle to 'Enter a folder ID'."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "folder_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be shown in the input and output. If left blank, all custom fields and custom item type ID will be retrieved.If None is chosen, no additional fields will be retrieved."
+    },
+    {
+     "name": "strip_tags",
+     "type": "number",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_id",
+   "title": "Get record ID",
+   "description": "Get record ID in Wrike secondary",
+   "help": "Get APIv4 format ID of an object from its legacy ID in Wrike. Use the APIv4 ID in other actions such as Get task by ID , Get folder by ID , Get attachment metadata etc.",
+   "input": [
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Record type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "ApiV2Account",
+      "ApiV2User",
+      "ApiV2Folder",
+      "ApiV2Task",
+      "ApiV2Comment",
+      "ApiV2Attachment",
+      "ApiV2Timelog"
+     ],
+     "extends_schema": true,
+     "hint": "Provide record entity type to convert ID to APIv4 (current) format."
+    },
+    {
+     "name": "ids",
+     "type": "string",
+     "label": "Record IDs",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter one or more legacy record IDs. These IDs can be found at the end of the URL when accessing the recordfrom Wrike's web interface. For instance, the last 9 digits of an attachment permalink (https…"
+    }
+   ],
+   "output": [
+    {
+     "name": "id_mappings",
+     "type": "array",
+     "label": "ID mappings",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "APIv4 ID",
+       "control_type": "text"
+      },
+      {
+       "name": "apiV2Id",
+       "type": "string",
+       "label": "Legacy ID",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_task_by_id",
+   "title": "Get task by ID",
+   "description": "Get task by ID in Wrike secondary",
+   "help": "Retrieves task info and metadata by specifying task ID. Also shows custom fields.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "ID of task to retrieve."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "task_fields_medium",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the custom fields to be returned in the output datatree. If left blank, all custom fields and custom item type ID will be retrieved.If None is chosen, no additional fields will be retrieved."
+    },
+    {
+     "name": "strip_tags",
+     "type": "number",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_approvals",
+   "title": "List approvals",
+   "description": "List approvals in Wrike secondary",
+   "help": "Retrieves approvals from Wrike. Approval IDs may be used in subsequent Wrike actions. Use the Search approvals action to retrieve approvals by using specific filters.",
+   "input": [
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "taskId",
+      "type": "string"
+     },
+     "hint": "Provide a folder ID to list its associated approvals. Toggle to Task ID to list approvals on a task instead."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_attachments",
+   "title": "List attachments",
+   "description": "List attachments in Wrike secondary",
+   "help": "Retrieves attachments related info from across tasks or folders in Wrike.Provide a folder ID/task ID to limit the results to a specific folder/task.Otherwise, attachments from across the workspace will be returned based upon the filter conditions.",
+   "input": [
+    {
+     "name": "createdDate",
+     "type": "object",
+     "label": "Created date range",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "start",
+       "type": "date_time",
+       "label": "Start date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "end",
+       "type": "date_time",
+       "label": "End date",
+       "control_type": "date_time"
+      }
+     ],
+     "hint": "Filter by attachment's create date. Required to request attachments in account. Range should be less than 31 days."
+    },
+    {
+     "name": "withUrls",
+     "type": "number",
+     "label": "Retrieve attachment URLs",
+     "control_type": "checkbox",
+     "default": false,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "withUrls",
+      "type": "string"
+     },
+     "hint": "Select Yes to get temporary attachment URLs (valid for 24 hours from when it is retrieved). Defaults to No ."
+    },
+    {
+     "name": "versions",
+     "type": "number",
+     "label": "Retrieve past versions?",
+     "control_type": "checkbox",
+     "default": false,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "versions",
+      "type": "string"
+     },
+     "hint": "Select Yes to get attachments along with their previous versions. Defaults to No ."
+    },
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "taskId",
+      "type": "string"
+     },
+     "hint": "Provide a folder ID to list its attachments. Toggle to Task ID to list attachments on a task instead."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_custom_fields",
+   "title": "List custom fields",
+   "description": "List custom fields in Wrike secondary",
+   "help": "Retrieves the full list of custom fields in connected account. Field IDs may be used in subsequent Wrike actions.",
+   "input": [
+    {
+     "name": "list_domain",
+     "type": "string",
+     "label": "Search in Account or Space",
+     "control_type": "select",
+     "default": "Account",
+     "options": [
+      "Account",
+      "Space"
+     ],
+     "extends_schema": true,
+     "hint": "Choose whether to retrieve custom fields from the connected account or from a specific space."
+    },
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required_when_visible": true,
+     "visible_if": "input.list_domain == \"Space\"",
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve custom fields from."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Custom fields",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Field ID",
+       "control_type": "text",
+       "hint": "ID of field"
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "hint": "Custom field title"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Field type",
+       "control_type": "text",
+       "hint": "Custom field type"
+      },
+      {
+       "name": "spaceId",
+       "type": "string",
+       "label": "Space ID",
+       "control_type": "text",
+       "hint": "ID of Space this field belongs to"
+      },
+      {
+       "name": "sharedIds",
+       "type": "array",
+       "label": "Shared user IDs",
+       "of": "string",
+       "hint": "List of User IDs who share the custom field"
+      },
+      {
+       "name": "settings",
+       "type": "object",
+       "label": "Field settings",
+       "properties": [
+        {
+         "name": "inheritanceType",
+         "type": "string",
+         "label": "Inheritance type",
+         "control_type": "text"
+        },
+        {
+         "name": "decimalPlaces",
+         "type": "number",
+         "label": "Decimal places",
+         "control_type": "number"
+        },
+        {
+         "name": "useThousandsSeparator",
+         "type": "number",
+         "label": "Use thousands separator",
+         "control_type": "number"
+        },
+        {
+         "name": "currency",
+         "type": "string",
+         "label": "Currency",
+         "control_type": "text"
+        },
+        {
+         "name": "aggregation",
+         "type": "string",
+         "label": "Aggregation",
+         "control_type": "text"
+        },
+        {
+         "name": "allowOtherValues",
+         "type": "number",
+         "label": "Allow other values",
+         "control_type": "number"
+        },
+        {
+         "name": "contacts",
+         "type": "array",
+         "label": "Contacts",
+         "of": "string"
+        },
+        {
+         "name": "readOnly",
+         "type": "number",
+         "label": "Read only",
+         "control_type": "number"
+        },
+        {
+         "name": "allowTime",
+         "type": "number",
+         "label": "Allow time",
+         "control_type": "number"
+        },
+        {
+         "name": "timezone",
+         "type": "string",
+         "label": "Timezone",
+         "control_type": "text"
+        },
+        {
+         "name": "values",
+         "type": "array",
+         "label": "Values",
+         "of": "string"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_users",
+   "title": "List users",
+   "description": "List users in Wrike secondary",
+   "help": "Retrieves the full list of users in connected account. User IDs may be used in subsequent Wrike actions.",
+   "input": [
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields configuration",
+     "control_type": "multiselect",
+     "options": [
+      "metadata",
+      "workScheduleId",
+      "currentBillRate",
+      "currentCostRate",
+      "jobRoleId",
+      "customFields"
+     ],
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select optional fields to be included in the response."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_workflows",
+   "title": "List workflows and statuses",
+   "description": "List workflows and statuses in Wrike secondary",
+   "help": "Retrieves the full list of workflows and their statuses in connected account. Workflow or status IDs may be used in subsequent Wrike actions.",
+   "input": [
+    {
+     "name": "list_domain",
+     "type": "string",
+     "label": "Search in Account or Space",
+     "control_type": "select",
+     "default": "Account",
+     "options": [
+      "Account",
+      "Space"
+     ],
+     "extends_schema": true,
+     "hint": "Choose whether to retrieve workflows and their custom statuses from the connected account or from a specific space."
+    },
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required_when_visible": true,
+     "visible_if": "input.list_domain == \"Space\"",
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve workflows from."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Workflow",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Workflow ID",
+       "control_type": "text"
+      },
+      {
+       "name": "spaceId",
+       "type": "string",
+       "label": "Space ID",
+       "control_type": "text",
+       "hint": "If null, account workflow. Else, ID of Space this workflow belongs to."
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Workflow name",
+       "control_type": "text"
+      },
+      {
+       "name": "standard",
+       "type": "number",
+       "label": "Standard workflow",
+       "control_type": "number",
+       "hint": "Indicates if this is the default workflow"
+      },
+      {
+       "name": "hidden",
+       "type": "number",
+       "label": "Hidden",
+       "control_type": "number",
+       "hint": "Indicates if this workflow is hidden"
+      },
+      {
+       "name": "customStatuses",
+       "type": "array",
+       "label": "Statuses",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Status ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Status name",
+         "control_type": "text"
+        },
+        {
+         "name": "color",
+         "type": "string",
+         "label": "Color",
+         "control_type": "text"
+        },
+        {
+         "name": "standardName",
+         "type": "number",
+         "label": "Standard name",
+         "control_type": "number",
+         "hint": "Indicates if this is the default status"
+        },
+        {
+         "name": "group",
+         "type": "string",
+         "label": "Status group",
+         "control_type": "text",
+         "hint": "Status group; Active, Completed, Cancelled, or Deferred"
+        },
+        {
+         "name": "hidden",
+         "type": "string",
+         "label": "Hidden",
+         "control_type": "text",
+         "hint": "Indicates if the status is hidden"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "modify_user",
+   "title": "Update user",
+   "description": "Update user in Wrike secondary",
+   "help": "Updates user in Wrike. User ID can be fetched from the List User action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true
+    },
+    {
+     "name": "jobRoleId",
+     "type": "string",
+     "label": "Job role ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "jobRoleId",
+      "type": "string"
+     }
+    },
+    {
+     "name": "currentBillRate",
+     "type": "object",
+     "label": "Current bill rate",
+     "properties": [
+      {
+       "name": "rateScope",
+       "type": "string",
+       "label": "Rate scope",
+       "control_type": "text",
+       "toggle_field": {
+        "name": "rateScope",
+        "type": "string"
+       }
+      },
+      {
+       "name": "rateSource",
+       "type": "string",
+       "label": "Rate source",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "rateSource",
+        "type": "string"
+       }
+      },
+      {
+       "name": "rateValue",
+       "type": "string",
+       "label": "Rate value",
+       "control_type": "text",
+       "hint": "Rate value is displayed to 2 decimal places. Leave empty if rate source is job role"
+      }
+     ]
+    },
+    {
+     "name": "currentCostRate",
+     "type": "object",
+     "label": "Current cost rate",
+     "properties": [
+      {
+       "name": "rateScope",
+       "type": "string",
+       "label": "Rate scope",
+       "control_type": "text",
+       "toggle_field": {
+        "name": "rateScope",
+        "type": "string"
+       }
+      },
+      {
+       "name": "rateSource",
+       "type": "string",
+       "label": "Rate source",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "rateSource",
+        "type": "string"
+       }
+      },
+      {
+       "name": "rateValue",
+       "type": "string",
+       "label": "Rate value",
+       "control_type": "text",
+       "hint": "Rate value is displayed to 2 decimal places. Leave empty if rate source is job role"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "firstName",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastName",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "profiles",
+     "type": "array",
+     "label": "Profiles",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "external",
+       "type": "boolean",
+       "label": "External",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "external",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "admin",
+       "type": "boolean",
+       "label": "Admin",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "admin",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "owner",
+       "type": "boolean",
+       "label": "Owner",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "owner",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "avatarUrl",
+     "type": "string",
+     "label": "Avatar URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "timezone",
+     "type": "string",
+     "label": "Timezone",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "locale",
+     "type": "string",
+     "label": "Locale",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "deleted",
+     "type": "boolean",
+     "label": "Deleted",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "deleted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "me",
+     "type": "boolean",
+     "label": "Me",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "me",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "metadata",
+     "type": "array",
+     "label": "Metadata",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "companyName",
+     "type": "string",
+     "label": "Company name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "phone",
+     "type": "string",
+     "label": "Phone",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "primaryEmail",
+     "type": "string",
+     "label": "Primary email",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_approvals",
+   "title": "Search approvals",
+   "description": "Search approvals in Wrike secondary",
+   "help": "Retrieves approvals from Wrike. Approval IDs may be used in subsequent Wrike actions. Use the List approvals action to retrieve approvals associated with a specific folder/task ID.",
+   "input": [
+    {
+     "name": "statuses",
+     "type": "string",
+     "label": "Statuses",
+     "control_type": "multiselect",
+     "options": [
+      "Pending",
+      "Approved",
+      "Rejected",
+      "Cancelled",
+      "Draft"
+     ],
+     "hint": "Filter approvals by specific statuses"
+    },
+    {
+     "name": "updatedDate",
+     "type": "object",
+     "label": "Updated date range",
+     "properties": [
+      {
+       "name": "start",
+       "type": "date_time",
+       "label": "Start date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "end",
+       "type": "date_time",
+       "label": "End date",
+       "control_type": "date_time"
+      }
+     ],
+     "hint": "Filter by approval's last update date."
+    },
+    {
+     "name": "approvers",
+     "type": "string",
+     "label": "Approvers",
+     "control_type": "multiselect",
+     "pick_list": "contacts",
+     "toggle_field": {
+      "name": "approvers",
+      "type": "array"
+     },
+     "hint": "Select a list of approver user IDs to filter approvals returned in the response."
+    },
+    {
+     "name": "pendingApprovers",
+     "type": "string",
+     "label": "Pending approvers",
+     "control_type": "multiselect",
+     "pick_list": "contacts",
+     "toggle_field": {
+      "name": "pendingApprovers",
+      "type": "array"
+     },
+     "hint": "Select a list of pending approver user IDs to filter approvals returned in the response."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Limit the number of approvals returned in the response."
+    },
+    {
+     "name": "pageSize",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "hint": "Set the page size for number of approvals fetched as part of the response."
+    },
+    {
+     "name": "nextPageToken",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "Provide the next page token from a previous Search approvals step to retrieve the next set of approvals."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_folder",
+   "title": "Search folders",
+   "description": "Search folders in Wrike secondary",
+   "help": "Retrieves only folders that match all values entered in the filters below. Search results are returned as a list of folder. A maximum of 100 folders can be returned.",
+   "input": [
+    {
+     "name": "custom_field_list",
+     "type": "string",
+     "label": "Search custom field",
+     "control_type": "select",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "hint": "Select a custom field you want to filter with"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "project_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: description, briefDescription, metadata, hasAttachments, attac…"
+    },
+    {
+     "name": "strip_tags",
+     "type": "number",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_project",
+   "title": "Search projects",
+   "description": "Search projects in Wrike secondary",
+   "help": "Retrieves only projects that match all values entered in the filters below. Search results are returned as a list of project. A maximum of 100 projects can be returned.",
+   "input": [
+    {
+     "name": "custom_field_list",
+     "type": "string",
+     "label": "Search custom field",
+     "control_type": "select",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "hint": "Select a custom field you want to filter with"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "project_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: description, briefDescription, metadata, hasAttachments, attac…"
+    },
+    {
+     "name": "strip_tags",
+     "type": "number",
+     "label": "Convert to plaintext?",
+     "control_type": "checkbox",
+     "default": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "strip_tags",
+      "type": "string"
+     },
+     "hint": "Select Yes to convert description to plain text."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_task",
+   "title": "Search tasks",
+   "description": "Search task in Wrike secondary",
+   "help": "Retrieves only tasks that match all the values entered in the filters below. Search results are returned as a list of tasks. A maximum of 1000 tasks can be returned per page.",
+   "input": [
+    {
+     "name": "search_domain",
+     "type": "string",
+     "label": "Search in Account, Space or Folder",
+     "control_type": "select",
+     "default": "Account",
+     "options": [
+      "Account",
+      "Space",
+      "Folder"
+     ],
+     "extends_schema": true,
+     "hint": "Choose whether to search tasks in connected account or in a specific space or in a specific folder/project."
+    },
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required_when_visible": true,
+     "visible_if": "input.search_domain == \"Space\"",
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve tasks from"
+    },
+    {
+     "name": "folder_id",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "select",
+     "required_when_visible": true,
+     "visible_if": "input.search_domain == \"Folder\"",
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder_id",
+      "type": "string"
+     },
+     "hint": "Select a folder to retrieve tasks from"
+    },
+    {
+     "name": "custom_field_list",
+     "type": "string",
+     "label": "Search custom field",
+     "control_type": "select",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "hint": "Select a custom field to search with"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "task_fields_extended",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the custom fields to be returned in the output datatree. If left blank, all custom fields and the following additional fields: recurrent, description, briefDescription, parentIds, superParentId…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_timelog",
+   "title": "Search timelogs",
+   "description": "Search timelogs in Wrike secondary",
+   "help": "This action returns timelogs that match all the values entered in the fields below.",
+   "input": [
+    {
+     "name": "timelogCategories",
+     "type": "string",
+     "label": "Timelog category",
+     "control_type": "multiselect",
+     "pick_list": "timelog_categories",
+     "hint": "Return only timelogs of the specified timelog category."
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time",
+     "hint": "Retrieve timelogs created after this date."
+    },
+    {
+     "name": "updatedDate",
+     "type": "date_time",
+     "label": "Updated date",
+     "control_type": "date_time",
+     "hint": "Retrieve timelogs updated after this date."
+    },
+    {
+     "name": "trackedDate",
+     "type": "date_time",
+     "label": "Tracked date",
+     "control_type": "date",
+     "hint": "Retrieve timelogs tracked after this date."
+    },
+    {
+     "name": "descendants",
+     "type": "number",
+     "label": "Add all descendant tasks to search scope?",
+     "control_type": "checkbox",
+     "hint": "Choose Yes to retrieve timelogs found in descendant tasks. Defaults to No ."
+    }
+   ],
+   "output": [
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Data",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Timelog ID",
+       "control_type": "text"
+      },
+      {
+       "name": "taskId",
+       "type": "string",
+       "label": "Task ID",
+       "control_type": "text"
+      },
+      {
+       "name": "userId",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text"
+      },
+      {
+       "name": "categoryId",
+       "type": "string",
+       "label": "Category ID",
+       "control_type": "text"
+      },
+      {
+       "name": "hours",
+       "type": "number",
+       "label": "Hours",
+       "control_type": "number"
+      },
+      {
+       "name": "createdDate",
+       "type": "date_time",
+       "label": "Created date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "updatedDate",
+       "type": "date_time",
+       "label": "Updated date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "trackedDate",
+       "type": "date_time",
+       "label": "Tracked date",
+       "control_type": "date"
+      },
+      {
+       "name": "comment",
+       "type": "string",
+       "label": "Comment",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_approval",
+   "title": "Update approval",
+   "description": "Update approval in Wrike secondary",
+   "help": "Updates an approval process in Wrike.",
+   "input": [
+    {
+     "name": "approvalId",
+     "type": "string",
+     "label": "Approval ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide approval ID to retrieve its current status."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Provide a description for the approval."
+    },
+    {
+     "name": "dueDate",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date"
+    },
+    {
+     "name": "addApprovers",
+     "type": "string",
+     "label": "Add approvers",
+     "control_type": "multiselect",
+     "pick_list": "contacts",
+     "toggle_field": {
+      "name": "addApprovers",
+      "type": "array"
+     },
+     "hint": "Select a list of approver user IDs to add to this approval request."
+    },
+    {
+     "name": "removeApprovers",
+     "type": "string",
+     "label": "Remove approvers",
+     "control_type": "multiselect",
+     "pick_list": "contacts",
+     "toggle_field": {
+      "name": "removeApprovers",
+      "type": "array"
+     },
+     "hint": "Select a list of approver user IDs to remove from this approval request."
+    },
+    {
+     "name": "addAttachments",
+     "type": "array",
+     "label": "Add attachments",
+     "of": "string",
+     "hint": "Map in a list of attachment IDs to additionally process as a part of this approval."
+    },
+    {
+     "name": "removeAttachments",
+     "type": "array",
+     "label": "Remove attachments",
+     "of": "string",
+     "hint": "Map in a list of attachment IDs to remove from this approval process."
+    },
+    {
+     "name": "autoFinishOnApprove",
+     "type": "number",
+     "label": "Auto finish on approve?",
+     "control_type": "checkbox",
+     "default": true,
+     "toggle_field": {
+      "name": "autoFinishOnApprove",
+      "type": "string"
+     },
+     "hint": "Whether to finish the approval automatically when all approvers have approved the request. Set to Yes by default."
+    },
+    {
+     "name": "autoFinishOnReject",
+     "type": "number",
+     "label": "Auto finish on reject?",
+     "control_type": "checkbox",
+     "default": true,
+     "toggle_field": {
+      "name": "autoFinishOnReject",
+      "type": "string"
+     },
+     "hint": "Whether to finish the approval automatically when some approvers have rejected the request. Set to Yes by default."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_attachment",
+   "title": "Update attachment",
+   "description": "Update attachment in Wrike secondary",
+   "help": "Updates an existing attachment in Wrike.Previous content is overwritten and the update is treated as a new version of the attachment. Information regarding past and current versions of the attachment can be accessed through the Get attachment metadata action.",
+   "input": [
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide attachment ID to update."
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide new attachment content. The API supports file sizes of upto 500 MB ."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Use this field to update existing attachment's name."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_folder",
+   "title": "Update folder",
+   "description": "Update folder in Wrike secondary",
+   "help": "Updates a folder within a specified folder/project. You can also add users to share the folder with.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     },
+     "hint": "Select a folder to update. To use folder ID instead, toggle to 'Enter a folder ID'."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Title of folder."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Description of folder."
+    },
+    {
+     "name": "addShareds",
+     "type": "array",
+     "label": "Users to share the folder with",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to share folder with."
+      }
+     ]
+    },
+    {
+     "name": "removeShareds",
+     "type": "array",
+     "label": "Remove users from sharing of folder",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to remove sharing of this folder."
+      }
+     ]
+    },
+    {
+     "name": "removeParents",
+     "type": "array",
+     "label": "Remove parent folders/projects",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Folder/project ID",
+       "control_type": "text",
+       "hint": "Folder/proect IDs of parent folders/projects to remove. Cannot contain rootFolderId and recycleBinId."
+      }
+     ]
+    },
+    {
+     "name": "addParents",
+     "type": "array",
+     "label": "Add parent folders/projects",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Folder/project ID",
+       "control_type": "text",
+       "hint": "Folder/project IDs of parent folders/projects to add. Cannot contain rootFolderId and recycleBinId."
+      }
+     ]
+    },
+    {
+     "name": "metadata",
+     "type": "array",
+     "label": "Metadata",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "hint": "Key can be of alphanumeric values with maximum length up to 50 characters."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "hint": "Metadata field value."
+      }
+     ]
+    },
+    {
+     "name": "restore",
+     "type": "number",
+     "label": "Restore",
+     "control_type": "number",
+     "extends_schema": true,
+     "hint": "Choose Yes to restore project from recycle bin. Defaults to No ."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the custom fields to be shown in the input and output. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_project",
+   "title": "Update project",
+   "description": "Update project in Wrike secondary",
+   "help": "Updates a project within a specified folder/project. You can also add users to share the project with.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Project",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     },
+     "hint": "Select a project to update. To use project ID instead, toggle to 'Enter a project ID'."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Title of project."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Description of project."
+    },
+    {
+     "name": "addShareds",
+     "type": "array",
+     "label": "Users to share the project with",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to share project with."
+      }
+     ]
+    },
+    {
+     "name": "removeShareds",
+     "type": "array",
+     "label": "Remove users from sharing of project",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "hint": "User ID of user to remove sharing of this project."
+      }
+     ]
+    },
+    {
+     "name": "removeParents",
+     "type": "array",
+     "label": "Remove parent folders/projects",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Folder/project ID",
+       "control_type": "text",
+       "hint": "Folder/proect IDs of parent folders/projects to remove. Cannot contain rootFolderId and recycleBinId."
+      }
+     ]
+    },
+    {
+     "name": "addParents",
+     "type": "array",
+     "label": "Add parent folders/projects",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Folder/project ID",
+       "control_type": "text",
+       "hint": "Folder/project IDs of parent folders/projects to add. Cannot contain rootFolderId and recycleBinId."
+      }
+     ]
+    },
+    {
+     "name": "metadata",
+     "type": "array",
+     "label": "Metadata",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "hint": "Key can be of alphanumeric values with maximum length up to 50 characters."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "hint": "Metadata field value."
+      }
+     ]
+    },
+    {
+     "name": "restore",
+     "type": "number",
+     "label": "Restore",
+     "control_type": "number",
+     "extends_schema": true,
+     "hint": "Choose Yes to restore project from recycle bin. Defaults to No ."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "custom_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the custom fields to be shown in the input and output. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_records",
+   "title": "Update records",
+   "description": "Update records in a database in Wrike secondary",
+   "help": "This action update records inside a database in Wrike.",
+   "input": [
+    {
+     "name": "space_id",
+     "type": "string",
+     "label": "Space",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "spaces",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "space_id",
+      "type": "string"
+     },
+     "hint": "Select a space to retrieve databases/folders from"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_task",
+   "title": "Update task",
+   "description": "Update task in Wrike secondary",
+   "help": "Updates a specified task by specifying a task ID. Also supports custom fields.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "ID of task."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "task_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "field_list",
+      "type": "string"
+     },
+     "hint": "Select the additional fields to be shown in the input and output. If left blank, all custom fields will be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_timelog",
+   "title": "Update timelog",
+   "description": "Update timelog record for task in Wrike secondary",
+   "help": "This action updates a timelog for a specified task in Wrike.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID of timelog to update",
+     "control_type": "text",
+     "required": true,
+     "hint": "Timelog to update."
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Timelog comment",
+     "control_type": "text",
+     "hint": "New timelog comment to update with."
+    },
+    {
+     "name": "hours",
+     "type": "number",
+     "label": "Timelog tracked hours",
+     "control_type": "number",
+     "hint": "New timelog tracked hours to update."
+    },
+    {
+     "name": "trackedDate",
+     "type": "date_time",
+     "label": "Tracked date",
+     "control_type": "date",
+     "hint": "New timelog date to update."
+    },
+    {
+     "name": "categoryId",
+     "type": "string",
+     "label": "Timelog category",
+     "control_type": "select",
+     "pick_list": "timelog_categories",
+     "hint": "Update the assigned timelog category for this timelog."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Timelog ID",
+     "control_type": "text"
+    },
+    {
+     "name": "taskId",
+     "type": "string",
+     "label": "Task ID",
+     "control_type": "text"
+    },
+    {
+     "name": "userId",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text"
+    },
+    {
+     "name": "categoryId",
+     "type": "string",
+     "label": "Category ID",
+     "control_type": "text"
+    },
+    {
+     "name": "hours",
+     "type": "number",
+     "label": "Hours",
+     "control_type": "number"
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updatedDate",
+     "type": "date_time",
+     "label": "Updated date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "trackedDate",
+     "type": "date_time",
+     "label": "Tracked date",
+     "control_type": "date"
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "upload_attachment",
+   "title": "Upload attachment",
+   "description": "Upload attachment in Wrike secondary",
+   "help": "Uploads an attachment in the specified folder or task in Wrike. The API supports uploads of file sizes upto 500 MB .",
+   "input": [
+    {
+     "name": "folderId",
+     "type": "string",
+     "label": "Folder ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "taskId",
+      "type": "string"
+     },
+     "hint": "Provide folder ID to create attachment in. Toggle to Task ID to upload attachment in a task instead."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide attachment file name"
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide attachment content"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

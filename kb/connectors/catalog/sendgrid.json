@@ -1,0 +1,695 @@
+{
+ "name": "sendgrid",
+ "title": "SendGrid",
+ "requires_connection": true,
+ "categories": [
+  "Marketing",
+  "Developer Tool"
+ ],
+ "aliases": [
+  "SendGrid"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in SendGrid (Custom)",
+   "help": "Build your own SendGrid action with a HTTP request. The request will be authorized with your SendGrid connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "send_email",
+   "title": "Send email",
+   "description": "Send email in SendGrid",
+   "input": [
+    {
+     "name": "personalizations",
+     "type": "array",
+     "label": "Personalizations",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "to",
+       "type": "array",
+       "label": "To",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "email",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "cc",
+       "type": "array",
+       "label": "Cc",
+       "of": "object",
+       "properties": [
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "email",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "bcc",
+       "type": "array",
+       "label": "Bcc",
+       "of": "object",
+       "properties": [
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "email",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "subject",
+       "type": "string",
+       "label": "Subject",
+       "control_type": "text"
+      },
+      {
+       "name": "headers",
+       "type": "array",
+       "label": "Headers",
+       "of": "object",
+       "properties": [
+        {
+         "name": "key",
+         "type": "string",
+         "label": "Header name",
+         "control_type": "text",
+         "hint": "For example, \"Message-ID\""
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "substitutions",
+       "type": "array",
+       "label": "Substitutions",
+       "of": "object",
+       "properties": [
+        {
+         "name": "key",
+         "type": "string",
+         "label": "Original text",
+         "control_type": "text"
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Replace text",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "custom_args",
+       "type": "array",
+       "label": "Customer arguments",
+       "of": "object",
+       "properties": [
+        {
+         "name": "key",
+         "type": "string",
+         "label": "Key",
+         "control_type": "text"
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "send_at",
+       "type": "date_time",
+       "label": "Send at",
+       "control_type": "date_time",
+       "hint": "This is not necessary if you want the email to be sent at the time of request"
+      },
+      {
+       "name": "dynamic_template_data",
+       "type": "string",
+       "label": "Dynamic template data",
+       "control_type": "code",
+       "hint": "Specify handlebar substitutions to fill in values for a dynamic template. Refer to SendGrid docs on how to use dynamic templating."
+      }
+     ]
+    },
+    {
+     "name": "from",
+     "type": "object",
+     "label": "From",
+     "required": true,
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "email",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "reply_to",
+     "type": "object",
+     "label": "Reply to",
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "email",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true,
+     "hint": "This will be overwritten by subject under 'personalization' if present"
+    },
+    {
+     "name": "content",
+     "type": "array",
+     "label": "Content",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true,
+       "hint": "Accepted values are text/plain or text/html"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments",
+     "of": "object",
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true,
+       "hint": "Base64 encoded content of the attachment"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "hint": "Mime type of the content you are attaching. For example, application/pdf or image/jpeg"
+      },
+      {
+       "name": "filename",
+       "type": "string",
+       "label": "Filename",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "disposition",
+       "type": "string",
+       "label": "Disposition",
+       "control_type": "text",
+       "hint": "Defaults to \"attachment\". Can be either \"attachment\" or \"inline\""
+      },
+      {
+       "name": "content_id",
+       "type": "string",
+       "label": "Content ID",
+       "control_type": "text",
+       "hint": "A unique id that you specify for the attachment"
+      }
+     ]
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text",
+     "hint": "Click on Templates -> Transactional. Select any template or create template to get ID"
+    },
+    {
+     "name": "sections",
+     "type": "array",
+     "label": "Sections",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Original text",
+       "control_type": "text"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Replace text",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "headers",
+     "type": "array",
+     "label": "Headers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Header name",
+       "control_type": "text",
+       "hint": "For example, \"Message-ID\""
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "categories",
+     "type": "array",
+     "label": "Categories",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Categories",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "custom_args",
+     "type": "array",
+     "label": "Custom arguments",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "send_at",
+     "type": "date_time",
+     "label": "Send at",
+     "control_type": "date_time",
+     "hint": "This is not necessary if you want the email to be sent at the time of request"
+    },
+    {
+     "name": "batch_id",
+     "type": "string",
+     "label": "Batch ID",
+     "control_type": "text",
+     "hint": "ID of the batch to which email should be included"
+    },
+    {
+     "name": "asm",
+     "type": "object",
+     "label": "Asm",
+     "properties": [
+      {
+       "name": "group_id",
+       "type": "integer",
+       "label": "Group ID",
+       "control_type": "number",
+       "required": true,
+       "hint": "Click on Suppressions->Unsubscibe groups to get ID"
+      },
+      {
+       "name": "groups_to_display",
+       "type": "array",
+       "label": "Groups to display",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "integer",
+         "label": "Group ID",
+         "control_type": "number",
+         "hint": "Click on Suppressions->Unsubscibe groups to get ID"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ip_pool_name",
+     "type": "string",
+     "label": "IP pool name",
+     "control_type": "text",
+     "hint": "IP pool that you would like to send this email from"
+    },
+    {
+     "name": "mail_settings",
+     "type": "object",
+     "label": "Mail settings",
+     "properties": [
+      {
+       "name": "bcc",
+       "type": "object",
+       "label": "Bcc",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        },
+        {
+         "name": "email",
+         "type": "string",
+         "label": "Email",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "bypass_list_management",
+       "type": "object",
+       "label": "Bypass list management",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "footer",
+       "type": "object",
+       "label": "Footer",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "hint": "Plain text content of your footer"
+        },
+        {
+         "name": "html",
+         "type": "string",
+         "label": "HTML",
+         "control_type": "text",
+         "hint": "HTML content of your footer"
+        }
+       ]
+      },
+      {
+       "name": "sandbox_mode",
+       "type": "object",
+       "label": "Sandbox mode",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "spam_check",
+       "type": "object",
+       "label": "Spam check",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        },
+        {
+         "name": "threshold",
+         "type": "integer",
+         "label": "Threshold",
+         "control_type": "number",
+         "hint": "Required if 'enable' field is true. Accepted values from 1 to 10"
+        },
+        {
+         "name": "post_to_url",
+         "type": "string",
+         "label": "Post to URL",
+         "control_type": "text",
+         "hint": "Required if 'enable' field is true"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "tracking_settings",
+     "type": "object",
+     "label": "Tracking settings",
+     "properties": [
+      {
+       "name": "click_tracking",
+       "type": "object",
+       "label": "Click tracking",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        },
+        {
+         "name": "enable_text",
+         "type": "number",
+         "label": "Enable text",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "open_tracking",
+       "type": "object",
+       "label": "Open tracking",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        },
+        {
+         "name": "substitution_tag",
+         "type": "string",
+         "label": "Substitution tag",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "subscription_tracking",
+       "type": "object",
+       "label": "Subscription tracking",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        },
+        {
+         "name": "text",
+         "type": "string",
+         "label": "Text",
+         "control_type": "text",
+         "hint": "Text to be appended to the email, with the subscription tracking link. You may control where the link is by using the tag"
+        },
+        {
+         "name": "html",
+         "type": "string",
+         "label": "HTML",
+         "control_type": "text",
+         "hint": "HTML to be appended to the email, with the subscription tracking link. You may control where the link is by using the tag"
+        },
+        {
+         "name": "substitution_tag",
+         "type": "string",
+         "label": "Substitution tag",
+         "control_type": "text",
+         "hint": "A tag that will be replaced with the unsubscribe URL. If this field is specified, it will override both the text and html parameters"
+        }
+       ]
+      },
+      {
+       "name": "ganalytics",
+       "type": "object",
+       "label": "Google analytics",
+       "properties": [
+        {
+         "name": "enable",
+         "type": "number",
+         "label": "Enable",
+         "control_type": "number"
+        },
+        {
+         "name": "utm_source",
+         "type": "string",
+         "label": "UTM source",
+         "control_type": "text",
+         "hint": "Name of the referrer source. (e.g. Google, SomeDomain.com, or Marketing Email)"
+        },
+        {
+         "name": "utm_medium",
+         "type": "string",
+         "label": "UTM medium",
+         "control_type": "text",
+         "hint": "Name of the marketing medium. (e.g. Email)"
+        },
+        {
+         "name": "utm_term",
+         "type": "string",
+         "label": "UTM term",
+         "control_type": "text",
+         "hint": "Used to identify any paid keywords"
+        },
+        {
+         "name": "utm_content",
+         "type": "string",
+         "label": "UTM content",
+         "control_type": "text",
+         "hint": "Used to differentiate your campaign from advertisements"
+        },
+        {
+         "name": "utm_campaign",
+         "type": "string",
+         "label": "Campaign name",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": []
+  }
+ ]
+}

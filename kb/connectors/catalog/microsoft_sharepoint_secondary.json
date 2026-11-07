@@ -1,0 +1,3405 @@
+{
+ "name": "microsoft_sharepoint_secondary",
+ "title": "Microsoft Sharepoint secondary",
+ "requires_connection": true,
+ "categories": [
+  "Document Management",
+  "Marketing"
+ ],
+ "aliases": [
+  "Microsoft Sharepoint"
+ ],
+ "triggers": [
+  {
+   "name": "deleted_file_folder",
+   "title": "Deleted File or Folder",
+   "description": "Triggers when a file or folder is deleted in a Sharepoint site",
+   "help": "Monitors the Sharepoint Recycle Bin for newly deleted items. This trigger only works with Authorization code grant connection type.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Specify the timestamp to start monitoring deletions from. Leave blank to start from one hour ago. Once the recipe has been run or tested, this value cannot be changed. Once recipe has been run or test…"
+    },
+    {
+     "name": "scope",
+     "type": "string",
+     "label": "Monitor deletions by",
+     "control_type": "select",
+     "default": "current",
+     "options": [
+      "current",
+      "all"
+     ],
+     "hint": "Select the scope of deletions to monitor. If Connected user only is selected, only deletions by the connected user will be monitored. If All is selected, deletions by any user across the entire site c…"
+    }
+   ],
+   "output": [
+    {
+     "name": "Id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text"
+    },
+    {
+     "name": "Title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text"
+    },
+    {
+     "name": "DeletedDate",
+     "type": "string",
+     "label": "Deleted Date",
+     "control_type": "text"
+    },
+    {
+     "name": "DeletedByName",
+     "type": "string",
+     "label": "Deleted By",
+     "control_type": "text"
+    },
+    {
+     "name": "ItemType",
+     "type": "string",
+     "label": "Item Type",
+     "control_type": "text"
+    },
+    {
+     "name": "DirName",
+     "type": "string",
+     "label": "Directory Name",
+     "control_type": "text"
+    },
+    {
+     "name": "LeafName",
+     "type": "string",
+     "label": "File/Folder Name",
+     "control_type": "text"
+    },
+    {
+     "name": "Size",
+     "type": "string",
+     "label": "Size (bytes)",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "new_row_in_sharepoint_list",
+   "title": "New row in Sharepoint list",
+   "description": "New row in Sharepoint list",
+   "help": "Checks for newly created rows every {{authUser.membership.poll_interval}} minutes. Each new row will be processed as a single trigger event.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch new row from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_file_in_folder_hierarchy",
+   "title": "New/updated file in folder hierarchy",
+   "description": "New/updated file in Microsoft Sharepoint secondary folder hierarchy",
+   "help": "Triggers when a file is created or an existing file is updated in selected folder and sub folders.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Document library",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "document_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     },
+     "hint": "Select document library."
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "document_folders_list",
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select folder to monitor files."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested, …"
+    }
+   ],
+   "output": [
+    {
+     "name": "__metadata",
+     "type": "object",
+     "label": "Metadata",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text"
+      },
+      {
+       "name": "etag",
+       "type": "string",
+       "label": "Etag",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "FirstUniqueAncestorSecurableObject",
+     "type": "object",
+     "label": "First unique ancestor securable object",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "RoleAssignments",
+     "type": "object",
+     "label": "Role assignments",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "AttachmentFiles",
+     "type": "object",
+     "label": "Attachment files",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ContentType",
+     "type": "object",
+     "label": "Content type",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "GetDlpPolicyTip",
+     "type": "object",
+     "label": "Get dlp policy tip",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "FieldValuesAsHtml",
+     "type": "object",
+     "label": "Field values as html",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "FieldValuesAsText",
+     "type": "object",
+     "label": "Field values as text",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "FieldValuesForEdit",
+     "type": "object",
+     "label": "Field values for edit",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "File",
+     "type": "object",
+     "label": "File",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Folder",
+     "type": "object",
+     "label": "Folder",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "LikedByInformation",
+     "type": "object",
+     "label": "Liked by information",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ParentList",
+     "type": "object",
+     "label": "Parent list",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Properties",
+     "type": "object",
+     "label": "Properties",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Versions",
+     "type": "object",
+     "label": "Versions",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "FileSystemObjectType",
+     "type": "integer",
+     "label": "File system object type",
+     "control_type": "integer"
+    },
+    {
+     "name": "ServerRedirectedEmbedUri",
+     "type": "string",
+     "label": "Server redirected embed URI",
+     "control_type": "text"
+    },
+    {
+     "name": "ServerRedirectedEmbedUrl",
+     "type": "string",
+     "label": "Server redirected embed URL",
+     "control_type": "text"
+    },
+    {
+     "name": "ContentTypeId",
+     "type": "string",
+     "label": "Content type ID",
+     "control_type": "text"
+    },
+    {
+     "name": "FileLeafRef",
+     "type": "string",
+     "label": "File leaf ref",
+     "control_type": "text"
+    },
+    {
+     "name": "ComplianceAssetId",
+     "type": "string",
+     "label": "Compliance asset ID",
+     "control_type": "text"
+    },
+    {
+     "name": "Id",
+     "type": "integer",
+     "label": "Id",
+     "control_type": "integer"
+    },
+    {
+     "name": "ID",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "Created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time"
+    },
+    {
+     "name": "AuthorId",
+     "type": "integer",
+     "label": "Author ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "Modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time"
+    },
+    {
+     "name": "EditorId",
+     "type": "integer",
+     "label": "Editor ID",
+     "control_type": "integer"
+    },
+    {
+     "name": "OData__CopySource",
+     "type": "string",
+     "label": "O data copy source",
+     "control_type": "text"
+    },
+    {
+     "name": "FileRef",
+     "type": "string",
+     "label": "File ref",
+     "control_type": "text"
+    },
+    {
+     "name": "FSObjType",
+     "type": "integer",
+     "label": "FS obj type",
+     "control_type": "integer"
+    },
+    {
+     "name": "CheckoutUserId",
+     "type": "string",
+     "label": "Checkout user ID",
+     "control_type": "text"
+    },
+    {
+     "name": "UniqueId",
+     "type": "string",
+     "label": "Unique ID",
+     "control_type": "text"
+    },
+    {
+     "name": "OData__UIVersionString",
+     "type": "string",
+     "label": "O data UI version string",
+     "control_type": "text"
+    },
+    {
+     "name": "GUID",
+     "type": "string",
+     "label": "GUID",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "new_updated_file_in_folder_hierarchy_v2",
+   "title": "New/updated file in folder hierarchy (large site)",
+   "description": "New/updated file in Microsoft Sharepoint secondary folder hierarchy (large site)",
+   "help": "Triggers when a file is created or an existing file is updated in selected folder and sub folders. Use this trigger when the specified folder is located in a large site with more than 5000 files. Note that this trigger does not poll for past updates (updates before the start of a new recipe), and on…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Document library",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "document_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     },
+     "hint": "Select document library."
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "document_folders_list",
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select folder to monitor files."
+    },
+    {
+     "name": "time_zone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timezone_name_global_pick_list",
+     "hint": "Required for consistency with Sharepoint - pick same as found in Settings > Site Settings > Site Administration > Regional Settings > Time Zone . Learn more ."
+    }
+   ],
+   "output": [
+    {
+     "name": "Author",
+     "type": "string",
+     "label": "Created by",
+     "control_type": "text"
+    },
+    {
+     "name": "BaseName",
+     "type": "string",
+     "label": "Base name",
+     "control_type": "text"
+    },
+    {
+     "name": "CheckedOutUserId",
+     "type": "string",
+     "label": "Checked out user ID",
+     "control_type": "text"
+    },
+    {
+     "name": "ComplianceAssetId",
+     "type": "string",
+     "label": "Compliance asset ID",
+     "control_type": "text"
+    },
+    {
+     "name": "ContentType",
+     "type": "string",
+     "label": "Content type",
+     "control_type": "text"
+    },
+    {
+     "name": "ContentTypeId",
+     "type": "string",
+     "label": "Content type ID",
+     "control_type": "text"
+    },
+    {
+     "name": "Created",
+     "type": "date_time",
+     "label": "Created",
+     "control_type": "date_time"
+    },
+    {
+     "name": "Editor",
+     "type": "string",
+     "label": "Modified by",
+     "control_type": "text"
+    },
+    {
+     "name": "EncodedAbsUrl",
+     "type": "string",
+     "label": "Encoded absolute URL",
+     "control_type": "url"
+    },
+    {
+     "name": "FSObjType",
+     "type": "string",
+     "label": "Item type",
+     "control_type": "text"
+    },
+    {
+     "name": "FileDirRef",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text"
+    },
+    {
+     "name": "FileLeafRef",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "FileRef",
+     "type": "string",
+     "label": "URL path",
+     "control_type": "text"
+    },
+    {
+     "name": "FileSizeDisplay",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "integer"
+    },
+    {
+     "name": "FolderChildCount",
+     "type": "integer",
+     "label": "Folder child count",
+     "control_type": "integer"
+    },
+    {
+     "name": "GUID",
+     "type": "string",
+     "label": "GUID",
+     "control_type": "text"
+    },
+    {
+     "name": "ID",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "ItemChildCount",
+     "type": "integer",
+     "label": "Item child count",
+     "control_type": "integer"
+    },
+    {
+     "name": "Modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time"
+    },
+    {
+     "name": "ParentUniqueId",
+     "type": "string",
+     "label": "Document parent identifier",
+     "control_type": "text"
+    },
+    {
+     "name": "ServerUrl",
+     "type": "string",
+     "label": "Server relative URL",
+     "control_type": "url"
+    },
+    {
+     "name": "Title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text"
+    },
+    {
+     "name": "UniqueId",
+     "type": "string",
+     "label": "Unique ID",
+     "control_type": "text"
+    },
+    {
+     "name": "_CopySource",
+     "type": "string",
+     "label": "Copy source",
+     "control_type": "text"
+    },
+    {
+     "name": "_UIVersionString",
+     "type": "string",
+     "label": "Version",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "new_updated_file_in_sharepoint_library",
+   "title": "New or updated file",
+   "description": "New or updated file in Microsoft Sharepoint secondary folder",
+   "help": "Triggers when a file is created or an existing file is updated in a selected folder.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Document library",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "document_list",
+     "extends_schema": true
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "document_folders",
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select folder to process files"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested, …"
+    }
+   ],
+   "output": [
+    {
+     "name": "CheckInComment",
+     "type": "string",
+     "label": "Check in comment",
+     "control_type": "text"
+    },
+    {
+     "name": "CheckOutType",
+     "type": "integer",
+     "label": "Check out type",
+     "control_type": "integer"
+    },
+    {
+     "name": "ContentTag",
+     "type": "string",
+     "label": "Content tag",
+     "control_type": "text"
+    },
+    {
+     "name": "CustomizedPageStatus",
+     "type": "integer",
+     "label": "Customized page status",
+     "control_type": "integer"
+    },
+    {
+     "name": "ETag",
+     "type": "string",
+     "label": "E tag",
+     "control_type": "text"
+    },
+    {
+     "name": "Exists",
+     "type": "number",
+     "label": "Exists",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "Length",
+     "type": "integer",
+     "label": "Length",
+     "control_type": "integer"
+    },
+    {
+     "name": "Level",
+     "type": "integer",
+     "label": "Level",
+     "control_type": "integer"
+    },
+    {
+     "name": "MajorVersion",
+     "type": "integer",
+     "label": "Major version",
+     "control_type": "integer"
+    },
+    {
+     "name": "MinorVersion",
+     "type": "integer",
+     "label": "Minor version",
+     "control_type": "integer"
+    },
+    {
+     "name": "Name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "ServerRelativeUrl",
+     "type": "string",
+     "label": "Server relative URL",
+     "control_type": "text"
+    },
+    {
+     "name": "TimeCreated",
+     "type": "date_time",
+     "label": "Time created",
+     "control_type": "date_time"
+    },
+    {
+     "name": "TimeLastModified",
+     "type": "date_time",
+     "label": "Time last modified",
+     "control_type": "date_time"
+    },
+    {
+     "name": "Title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text"
+    },
+    {
+     "name": "UiVersion",
+     "type": "string",
+     "label": "Ui version",
+     "control_type": "text"
+    },
+    {
+     "name": "UiVersionLabel",
+     "type": "string",
+     "label": "Ui version label",
+     "control_type": "text"
+    },
+    {
+     "name": "UniqueId",
+     "type": "string",
+     "label": "Unique ID",
+     "control_type": "text"
+    },
+    {
+     "name": "LinkingUri",
+     "type": "string",
+     "label": "Linking URI",
+     "control_type": "text"
+    },
+    {
+     "name": "LinkingUrl",
+     "type": "string",
+     "label": "Linking URL",
+     "control_type": "text"
+    },
+    {
+     "name": "IrmEnabled",
+     "type": "number",
+     "label": "Irm enabled",
+     "control_type": "checkbox"
+    },
+    {
+     "name": "__metadata",
+     "type": "object",
+     "label": "Metadata",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "uri",
+       "type": "string",
+       "label": "URI",
+       "control_type": "text"
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "Author",
+     "type": "object",
+     "label": "Author",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "CheckedOutByUser",
+     "type": "object",
+     "label": "Checked out by user",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "EffectiveInformationRightsManagementSettings",
+     "type": "object",
+     "label": "Effective information rights management settings",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "InformationRightsManagementSettings",
+     "type": "object",
+     "label": "Information rights management settings",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ListItemAllFields",
+     "type": "object",
+     "label": "List item all fields",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "LockedByUser",
+     "type": "object",
+     "label": "Locked by user",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ModifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Properties",
+     "type": "object",
+     "label": "Properties",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "VersionEvents",
+     "type": "object",
+     "label": "Version events",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Versions",
+     "type": "object",
+     "label": "Versions",
+     "properties": [
+      {
+       "name": "__deferred",
+       "type": "object",
+       "label": "Deferred",
+       "properties": [
+        {
+         "name": "uri",
+         "type": "string",
+         "label": "URI",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "new_updated_row_in_sharepoint_list",
+   "title": "New/updated row in Sharepoint list",
+   "description": "New/updated row in Sharepoint list",
+   "help": "This trigger checks for newly created or updated rows in Sharepoint list based on polling interval selected. Each new/updated row will be processed as a single trigger event.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Fetch new or updated row from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Microsoft Sharepoint secondary (Custom)",
+   "help": "Build your own Microsoft Sharepoint action with a HTTP request. The request will be authorized under your Microsoft Sharepoint connection OAuth scopes. To find out the scopes authorized for this connection, go to this link and select App registrations > Application used for this connection > Setting…",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_row_in_sharepoint_list",
+   "title": "Add row in Sharepoint list",
+   "description": "Add row in Sharepoint list",
+   "help": "Add a row item. First select the specific list to add a row, then provide the data.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "copy_file",
+   "title": "Copy file",
+   "description": "Copy a file in Sharepoint",
+   "help": "This action copies a file to a specific folder.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select the parent folder."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "files",
+     "toggle_field": {
+      "name": "file_name",
+      "type": "string"
+     },
+     "hint": "Select the file to be copied."
+    },
+    {
+     "name": "destinationServerRelativeUrl",
+     "type": "string",
+     "label": "Destination folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "toggle_field": {
+      "name": "destinationServerRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Choose the destination folder where the file needs to be copied."
+    },
+    {
+     "name": "destination_file_name",
+     "type": "string",
+     "label": "Destination file name",
+     "control_type": "text",
+     "hint": "Provide the name for the file in the destination folder. If empty, the original name of the file will be used."
+    },
+    {
+     "name": "allow_overwrite",
+     "type": "number",
+     "label": "Overwrite existing file?",
+     "control_type": "checkbox",
+     "hint": "If set to true , overwrites the existing file in the destination. Defaults to false ."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_folder",
+   "title": "Create Folder",
+   "description": "Create folder in Sharepoint library",
+   "help": "Use this action to create a folder in Sharepoint library.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Create a new folder inside this parent folder"
+    },
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "text",
+     "visible_if": "input.folder_name",
+     "hint": "Name of the new folder you want to create"
+    },
+    {
+     "name": "folder_name_with_spcl_chars",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "text",
+     "visible_if": "!input.folder_name",
+     "hint": "Name of the new folder you want to create"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_row_in_sharepoint_list_batch",
+   "title": "Create rows",
+   "description": "Create rows in Sharepoint list",
+   "help": "This action creates/inserts a batch of rows in the Sharepoint list. Select the specific list and provide the values to the fields of the list.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_name",
+      "type": "string"
+     }
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_file_from_library",
+   "title": "Delete file or folder from library",
+   "description": "Delete a file or a folder from Microsoft Sharepoint secondary library",
+   "help": "Delete file or folder from Microsoft Sharepoint library.",
+   "input": [
+    {
+     "name": "type",
+     "type": "string",
+     "label": "File or Folder",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "File",
+     "options": [
+      "File",
+      "Folder"
+     ],
+     "extends_schema": true,
+     "hint": "Select the entity to be deleted."
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select the folder."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "select",
+     "required_when_visible": true,
+     "visible_if": "input.type == \"File\" || !input.type",
+     "pick_list": "files",
+     "toggle_field": {
+      "name": "file_name",
+      "type": "string"
+     },
+     "hint": "Select the file to be deleted."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "delete_row_in_sharepoint_list",
+   "title": "Delete row",
+   "description": "Deletes a row in Sharepoint list",
+   "help": "This action deletes a row/item in the list. Select the specific list and provide the row/item ID to delete it from the list.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "row_id",
+     "type": "string",
+     "label": "Row ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter the row/item ID which needs to be deleted."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "number",
+     "label": "Success",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "download_attachment",
+   "title": "Download attachment",
+   "description": "Download attachment in Sharepoint list",
+   "help": "Download attachment in Sharepoint list",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Can be found in the url of items page"
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": [
+    {
+     "name": "content",
+     "type": "string",
+     "label": "Content",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "download_file_from_library",
+   "title": "Download file from library",
+   "description": "Download file from Microsoft Sharepoint secondary library",
+   "help": "Download file from Microsoft Sharepoint library.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "_technical_path",
+     "type": "string",
+     "label": "Technical path",
+     "control_type": "boolean",
+     "visible_if": "false",
+     "default": false,
+     "extends_schema": true
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select parent folder."
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Provide a direct path to the file. For example, /sites/sitename/documentlibrary/foldername/filename.txt ."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "select",
+     "visible_if": "!input.file_path",
+     "pick_list": "files",
+     "toggle_field": {
+      "name": "file_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": [
+    {
+     "name": "content",
+     "type": "string",
+     "label": "Content",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_file_folder",
+   "title": "Get file and folder details",
+   "description": "Get details of a file or folder in Sharepoint",
+   "help": "This action fetches details of a particular file or a folder.",
+   "input": [
+    {
+     "name": "type",
+     "type": "string",
+     "label": "File or Folder",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "File",
+      "Folder"
+     ],
+     "extends_schema": true,
+     "hint": "Select which entity to provide details for."
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_permission",
+   "title": "Get file or folder permissions",
+   "description": "Get permission details of a file or a folder in Microsoft Sharepoint secondary",
+   "help": "This action fetches permission details of a particular file or a folder (folder can be a document library also). All associated permissions (both individual and group permissions) are listed.",
+   "input": [
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Document Library/Folder/Files",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "File",
+      "Folder",
+      "document"
+     ],
+     "extends_schema": true,
+     "hint": "Select which entity to provide the permissions for. If File or Folder is selected, please choose the file or folder in the dropdown below in addition to selecting the document library."
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "document",
+     "type": "string",
+     "label": "Document library",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "document_library_folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "document",
+      "type": "string"
+     },
+     "hint": "Choose or provide the title of the parent Document Library. If document library is chosen as the entity type, the permissions for this document library will be returned in the response."
+    }
+   ],
+   "output": [
+    {
+     "name": "odata_metadata",
+     "type": "string",
+     "label": "Odata metadata",
+     "control_type": "text"
+    },
+    {
+     "name": "value",
+     "type": "array",
+     "label": "Value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "odata_type",
+       "type": "string",
+       "label": "Odata type",
+       "control_type": "text"
+      },
+      {
+       "name": "odata_id",
+       "type": "string",
+       "label": "Odata ID",
+       "control_type": "text"
+      },
+      {
+       "name": "odata_editLink",
+       "type": "string",
+       "label": "Odata edit link",
+       "control_type": "text"
+      },
+      {
+       "name": "Member_odata_navigationLinkUrl",
+       "type": "string",
+       "label": "Member odata navigation link URL",
+       "control_type": "text"
+      },
+      {
+       "name": "Member",
+       "type": "object",
+       "label": "Member",
+       "properties": [
+        {
+         "name": "odata_type",
+         "type": "string",
+         "label": "Odata type",
+         "control_type": "text"
+        },
+        {
+         "name": "odata_id",
+         "type": "string",
+         "label": "Odata ID",
+         "control_type": "text"
+        },
+        {
+         "name": "odata_editLink",
+         "type": "string",
+         "label": "Odata edit link",
+         "control_type": "text"
+        },
+        {
+         "name": "Users_odata_navigationLinkUrl",
+         "type": "string",
+         "label": "Users odata navigation link URL",
+         "control_type": "text"
+        },
+        {
+         "name": "Users",
+         "type": "array",
+         "label": "Users",
+         "of": "object",
+         "properties": [
+          {
+           "name": "odata_type",
+           "type": "string",
+           "label": "Odata type",
+           "control_type": "text"
+          },
+          {
+           "name": "odata_id",
+           "type": "string",
+           "label": "Odata ID",
+           "control_type": "text"
+          },
+          {
+           "name": "odata_editLink",
+           "type": "string",
+           "label": "Odata edit link",
+           "control_type": "text"
+          },
+          {
+           "name": "Id",
+           "type": "number",
+           "label": "ID",
+           "control_type": "number"
+          },
+          {
+           "name": "IsHiddenInUI",
+           "type": "number",
+           "label": "Is hidden in UI",
+           "control_type": "number"
+          },
+          {
+           "name": "LoginName",
+           "type": "string",
+           "label": "Login name",
+           "control_type": "text"
+          },
+          {
+           "name": "Title",
+           "type": "string",
+           "label": "Title",
+           "control_type": "text"
+          },
+          {
+           "name": "PrincipalType",
+           "type": "number",
+           "label": "Principal type",
+           "control_type": "number"
+          },
+          {
+           "name": "Email",
+           "type": "string",
+           "label": "Email",
+           "control_type": "text"
+          },
+          {
+           "name": "Expiration",
+           "type": "string",
+           "label": "Expiration",
+           "control_type": "text"
+          },
+          {
+           "name": "IsEmailAuthenticationGuestUser",
+           "type": "number",
+           "label": "Is email authentication guest user",
+           "control_type": "number"
+          },
+          {
+           "name": "IsShareByEmailGuestUser",
+           "type": "number",
+           "label": "Is share by email guest user",
+           "control_type": "number"
+          },
+          {
+           "name": "IsSiteAdmin",
+           "type": "number",
+           "label": "Is site admin",
+           "control_type": "number"
+          },
+          {
+           "name": "UserId",
+           "type": "string",
+           "label": "User ID",
+           "control_type": "text"
+          },
+          {
+           "name": "UserPrincipalName",
+           "type": "string",
+           "label": "User principal name",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "Id",
+         "type": "number",
+         "label": "ID",
+         "control_type": "number"
+        },
+        {
+         "name": "IsHiddenInUI",
+         "type": "number",
+         "label": "Is hidden in UI",
+         "control_type": "number"
+        },
+        {
+         "name": "LoginName",
+         "type": "string",
+         "label": "Login name",
+         "control_type": "text"
+        },
+        {
+         "name": "Title",
+         "type": "string",
+         "label": "Title",
+         "control_type": "text"
+        },
+        {
+         "name": "PrincipalType",
+         "type": "number",
+         "label": "Principal type",
+         "control_type": "number"
+        },
+        {
+         "name": "AllowMembersEditMembership",
+         "type": "number",
+         "label": "Allow members edit membership",
+         "control_type": "number"
+        },
+        {
+         "name": "AllowRequestToJoinLeave",
+         "type": "number",
+         "label": "Allow request to join leave",
+         "control_type": "number"
+        },
+        {
+         "name": "AutoAcceptRequestToJoinLeave",
+         "type": "number",
+         "label": "Auto accept request to join leave",
+         "control_type": "number"
+        },
+        {
+         "name": "Description",
+         "type": "string",
+         "label": "Description",
+         "control_type": "text"
+        },
+        {
+         "name": "OnlyAllowMembersViewMembership",
+         "type": "number",
+         "label": "Only allow members view membership",
+         "control_type": "number"
+        },
+        {
+         "name": "OwnerTitle",
+         "type": "string",
+         "label": "Owner title",
+         "control_type": "text"
+        },
+        {
+         "name": "RequestToJoinLeaveEmailSetting",
+         "type": "string",
+         "label": "Request to join leave email setting",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "RoleDefinitionBindings_odata_navigationLinkUrl",
+       "type": "string",
+       "label": "Role definition bindings odata navigation link URL",
+       "control_type": "text"
+      },
+      {
+       "name": "RoleDefinitionBindings",
+       "type": "array",
+       "label": "Role definition bindings",
+       "of": "object",
+       "properties": [
+        {
+         "name": "odata_type",
+         "type": "string",
+         "label": "Odata type",
+         "control_type": "text"
+        },
+        {
+         "name": "odata_id",
+         "type": "string",
+         "label": "Odata ID",
+         "control_type": "text"
+        },
+        {
+         "name": "odata_editLink",
+         "type": "string",
+         "label": "Odata edit link",
+         "control_type": "text"
+        },
+        {
+         "name": "BasePermissions",
+         "type": "object",
+         "label": "Base permissions",
+         "properties": [
+          {
+           "name": "High",
+           "type": "string",
+           "label": "High",
+           "control_type": "text"
+          },
+          {
+           "name": "Low",
+           "type": "string",
+           "label": "Low",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "Description",
+         "type": "string",
+         "label": "Description",
+         "control_type": "text"
+        },
+        {
+         "name": "Hidden",
+         "type": "number",
+         "label": "Hidden",
+         "control_type": "number"
+        },
+        {
+         "name": "Id",
+         "type": "number",
+         "label": "ID",
+         "control_type": "number"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "name",
+         "control_type": "text"
+        },
+        {
+         "name": "Order",
+         "type": "number",
+         "label": "Order",
+         "control_type": "number"
+        },
+        {
+         "name": "RoleTypeKind",
+         "type": "number",
+         "label": "Role type kind",
+         "control_type": "number"
+        }
+       ]
+      },
+      {
+       "name": "PrincipalId",
+       "type": "number",
+       "label": "Principal ID",
+       "control_type": "number"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_files_folders",
+   "title": "List files and folders within a folder",
+   "description": "List files and folders within a folder in Microsoft Sharepoint secondary",
+   "help": "This action retrieves all files and folders under a particular folder.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "folder",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "folder",
+      "type": "string"
+     },
+     "hint": "Select the folder from the list."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "move_file",
+   "title": "Move file",
+   "description": "Move a file in Sharepoint",
+   "help": "This action moves a file to a specific folder.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select the parent folder."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "files",
+     "toggle_field": {
+      "name": "file_name",
+      "type": "string"
+     },
+     "hint": "Select the file to be moved."
+    },
+    {
+     "name": "destinationServerRelativeUrl",
+     "type": "string",
+     "label": "Destination folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "toggle_field": {
+      "name": "destinationServerRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Choose the destination folder where the file needs to be moved."
+    },
+    {
+     "name": "destination_file_name",
+     "type": "string",
+     "label": "Destination file name",
+     "control_type": "text",
+     "hint": "Provide the name for the file in the destination folder. If empty, the original name of the file will be used."
+    },
+    {
+     "name": "allow_overwrite",
+     "type": "number",
+     "label": "Overwrite existing file?",
+     "control_type": "checkbox",
+     "hint": "If set to true , overwrites the existing file in the destination. Defaults to false ."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "rename_file_folder",
+   "title": "Rename file or folder",
+   "description": "Rename a file or a folder in Sharepoint",
+   "help": "This action renames a file or a folder.",
+   "input": [
+    {
+     "name": "type",
+     "type": "string",
+     "label": "File or Folder",
+     "control_type": "select",
+     "required": true,
+     "default": "File",
+     "options": [
+      "File",
+      "Folder"
+     ],
+     "extends_schema": true,
+     "hint": "Select the entity to rename."
+    },
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "search_file_by_name",
+   "title": "Search files",
+   "description": "Search files in Sharepoint library",
+   "help": "This action searches for files in the selected folder in Sharepoint library. It returns the files that match the filter criteria.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "get_type",
+     "type": "string",
+     "label": "File search method",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "search_by_filename",
+     "options": [
+      "regular",
+      "search_by_filename"
+     ],
+     "extends_schema": true,
+     "hint": "Choose a method to search files. Defaults to Search by filename ."
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Folder to search for the files. Sub-folders will not be monitored."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "visible_if": "input.get_type != 'regular'",
+     "hint": "Search for files with file names exactly matching this keyword"
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "visible_if": "input.get_type == 'regular'",
+     "hint": "Search for files with file names matching this keyword. Prefix matching is also supported. You can use the wildcard operator (*) to search for files with filename containing the search term. Else, an …"
+    },
+    {
+     "name": "search_text",
+     "type": "string",
+     "label": "Search text",
+     "control_type": "text",
+     "visible_if": "input.get_type == 'regular'",
+     "hint": "Search for files with content or metadata matching this keyword."
+    },
+    {
+     "name": "Author",
+     "type": "string",
+     "label": "Author",
+     "control_type": "text",
+     "visible_if": "input.get_type == 'regular'",
+     "hint": "Search for files with the specified author."
+    },
+    {
+     "name": "LastModifiedTime",
+     "type": "object",
+     "label": "Last Modified Time",
+     "visible_if": "input.get_type == 'regular'",
+     "properties": [
+      {
+       "name": "operator",
+       "type": "string",
+       "label": "Operator",
+       "control_type": "select",
+       "required_when_visible": true,
+       "visible_if": "input.get_type == 'regular'",
+       "options": [
+        ":",
+        ">",
+        ">=",
+        "<",
+        "<=",
+        "<>"
+       ],
+       "hint": "The operator to evaluate Last Modified Time against the value below."
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "date_time",
+       "required_when_visible": true,
+       "visible_if": "input.get_type == 'regular'",
+       "hint": "Filters based on the last modified date/time of files."
+      }
+     ]
+    },
+    {
+     "name": "Size",
+     "type": "object",
+     "label": "File size",
+     "visible_if": "input.get_type == 'regular'",
+     "properties": [
+      {
+       "name": "operator",
+       "type": "string",
+       "label": "Operator",
+       "control_type": "select",
+       "required_when_visible": true,
+       "visible_if": "input.get_type == 'regular'",
+       "options": [
+        ":",
+        ">",
+        ">=",
+        "<",
+        "<=",
+        "<>"
+       ],
+       "hint": "The operator to evaluate File size against the value below."
+      },
+      {
+       "name": "value",
+       "type": "number",
+       "label": "Value",
+       "control_type": "number",
+       "required_when_visible": true,
+       "visible_if": "input.get_type == 'regular'",
+       "hint": "Filters based on the size of files (in bytes)."
+      }
+     ]
+    },
+    {
+     "name": "include_all_file_type",
+     "type": "number",
+     "label": "Include all file types?",
+     "control_type": "checkbox",
+     "visible_if": "input.get_type == 'regular'",
+     "default": false,
+     "hint": "When set to true , this option will return all file types matching your search. Defaults to false , it will only return files classified as documents."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_list_items_v2",
+   "title": "Search list items",
+   "description": "Search item in Microsoft Sharepoint secondary list",
+   "help": "Search list item in Microsoft Sharepoint library using the filter or by providing value in the search by field.If filter condition is entered, value from any search by field will not be considered.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Filter",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Provide the filter condition to search for the user. For example, useremail eq 'xyz@microsoft.com' and Id eq 6"
+    },
+    {
+     "name": "search_by",
+     "type": "array",
+     "label": "Search by",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "Id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "integer"
+      },
+      {
+       "name": "FileSystemObjectType",
+       "type": "integer",
+       "label": "File system object type",
+       "control_type": "integer"
+      },
+      {
+       "name": "ServerRedirectedEmbedUri",
+       "type": "string",
+       "label": "Server redirected embed URI",
+       "control_type": "text"
+      },
+      {
+       "name": "ServerRedirectedEmbedUrl",
+       "type": "string",
+       "label": "Server redirected embed URL",
+       "control_type": "text"
+      },
+      {
+       "name": "ContentTypeId",
+       "type": "string",
+       "label": "Content type ID",
+       "control_type": "text"
+      },
+      {
+       "name": "Title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text"
+      },
+      {
+       "name": "Modified",
+       "type": "date_time",
+       "label": "Modified",
+       "control_type": "date_time"
+      },
+      {
+       "name": "Created",
+       "type": "date_time",
+       "label": "Created",
+       "control_type": "date_time"
+      },
+      {
+       "name": "AuthorId",
+       "type": "integer",
+       "label": "Author ID",
+       "control_type": "integer"
+      },
+      {
+       "name": "EditorId",
+       "type": "integer",
+       "label": "Editor ID",
+       "control_type": "integer"
+      },
+      {
+       "name": "OData__UIVersionString",
+       "type": "string",
+       "label": "O data UI version string",
+       "control_type": "text"
+      },
+      {
+       "name": "Attachments",
+       "type": "number",
+       "label": "Attachments",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "Attachments",
+        "type": "string"
+       }
+      },
+      {
+       "name": "GUID",
+       "type": "string",
+       "label": "GUID",
+       "control_type": "text"
+      },
+      {
+       "name": "ComplianceAssetId",
+       "type": "string",
+       "label": "Compliance asset ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "page_size",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "integer",
+       "default": 100,
+       "hint": "Enter a value for maximum results returned. Defaults to 100 ."
+      },
+      {
+       "name": "next_link",
+       "type": "string",
+       "label": "Next page link",
+       "control_type": "text",
+       "hint": "Specify next page link. This can be found from the output of Search list items actions."
+      },
+      {
+       "name": "orderby",
+       "type": "string",
+       "label": "Orderby",
+       "control_type": "text",
+       "hint": "Specifies the field by which list results are ordered. For example, Id asc . Learn more"
+      }
+     ]
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_users",
+   "title": "Search users",
+   "description": "Search users in Microsoft Sharepoint secondary library",
+   "help": "Search users in Microsoft Sharepoint library using the filter or by providing value in the search by field. If filter condition is entered, value from any search by field will not be considered.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Filter",
+     "control_type": "text",
+     "hint": "Provide the filter condition to search for the user. For example Email eq 'xyz@microsoft.com' and Id eq 6"
+    },
+    {
+     "name": "search_by",
+     "type": "array",
+     "label": "Search by",
+     "of": "object",
+     "properties": [
+      {
+       "name": "Id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "integer"
+      },
+      {
+       "name": "IsHiddenInUI",
+       "type": "number",
+       "label": "Is hidden in UI?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsHiddenInUI",
+        "type": "string"
+       }
+      },
+      {
+       "name": "Title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text"
+      },
+      {
+       "name": "LoginName",
+       "type": "string",
+       "label": "Login name",
+       "control_type": "text"
+      },
+      {
+       "name": "Expiration",
+       "type": "string",
+       "label": "Expiration",
+       "control_type": "text"
+      },
+      {
+       "name": "UserPrincipalName",
+       "type": "string",
+       "label": "User principal name",
+       "control_type": "text"
+      },
+      {
+       "name": "IsEmailAuthenticationGuestUser",
+       "type": "number",
+       "label": "Is email authentication guest user?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsEmailAuthenticationGuestUser",
+        "type": "string"
+       }
+      },
+      {
+       "name": "IsShareByEmailGuestUser",
+       "type": "number",
+       "label": "Is shared by email guest user?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsShareByEmailGuestUser",
+        "type": "string"
+       }
+      },
+      {
+       "name": "IsSiteAdmin",
+       "type": "number",
+       "label": "Is site Admin?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsSiteAdmin",
+        "type": "string"
+       }
+      },
+      {
+       "name": "PrincipalType",
+       "type": "integer",
+       "label": "Principal type",
+       "control_type": "integer"
+      },
+      {
+       "name": "Email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "odata_id",
+       "type": "string",
+       "label": "Odata ID",
+       "control_type": "text"
+      },
+      {
+       "name": "odata_type",
+       "type": "string",
+       "label": "Odata type",
+       "control_type": "text"
+      },
+      {
+       "name": "odata_editLink",
+       "type": "string",
+       "label": "Odata edit link",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "properties": [
+      {
+       "name": "page_size",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "integer",
+       "default": 100,
+       "hint": "Enter a value for maximum results returned. Defaults to 100 ."
+      },
+      {
+       "name": "offset",
+       "type": "integer",
+       "label": "Offset",
+       "control_type": "integer",
+       "hint": "Used for pagination. Use this to skip a specified number of responses."
+      },
+      {
+       "name": "orderby",
+       "type": "string",
+       "label": "Orderby",
+       "control_type": "text",
+       "hint": "Specifies the field by which list results are ordered. For example, Id asc . Learn more"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "records",
+     "type": "array",
+     "label": "Users",
+     "of": "object",
+     "properties": [
+      {
+       "name": "Id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "integer"
+      },
+      {
+       "name": "IsHiddenInUI",
+       "type": "number",
+       "label": "Is hidden in UI?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsHiddenInUI",
+        "type": "string"
+       }
+      },
+      {
+       "name": "Title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text"
+      },
+      {
+       "name": "LoginName",
+       "type": "string",
+       "label": "Login name",
+       "control_type": "text"
+      },
+      {
+       "name": "Expiration",
+       "type": "string",
+       "label": "Expiration",
+       "control_type": "text"
+      },
+      {
+       "name": "UserPrincipalName",
+       "type": "string",
+       "label": "User principal name",
+       "control_type": "text"
+      },
+      {
+       "name": "IsEmailAuthenticationGuestUser",
+       "type": "number",
+       "label": "Is email authentication guest user?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsEmailAuthenticationGuestUser",
+        "type": "string"
+       }
+      },
+      {
+       "name": "IsShareByEmailGuestUser",
+       "type": "number",
+       "label": "Is shared by email guest user?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsShareByEmailGuestUser",
+        "type": "string"
+       }
+      },
+      {
+       "name": "IsSiteAdmin",
+       "type": "number",
+       "label": "Is site Admin?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "IsSiteAdmin",
+        "type": "string"
+       }
+      },
+      {
+       "name": "PrincipalType",
+       "type": "integer",
+       "label": "Principal type",
+       "control_type": "integer"
+      },
+      {
+       "name": "Email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "UserId",
+       "type": "object",
+       "label": "User ID",
+       "properties": [
+        {
+         "name": "NameId",
+         "type": "string",
+         "label": "Name ID",
+         "control_type": "text"
+        },
+        {
+         "name": "NameIdIssuer",
+         "type": "string",
+         "label": "Name ID issuer",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "odata_id",
+       "type": "string",
+       "label": "Odata ID",
+       "control_type": "text"
+      },
+      {
+       "name": "odata_type",
+       "type": "string",
+       "label": "Odata type",
+       "control_type": "text"
+      },
+      {
+       "name": "odata_editLink",
+       "type": "string",
+       "label": "Odata edit link",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_file_in_library",
+   "title": "Update file using file contents",
+   "description": "Update file in Microsoft Sharepoint secondary library",
+   "help": "Update file in Microsoft Sharepoint library.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select parent folder."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "files",
+     "toggle_field": {
+      "name": "file_name",
+      "type": "string"
+     },
+     "hint": "Select the file to update."
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the file contents to be updated."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "update_file_metadata",
+   "title": "Update file metadata",
+   "description": "Update file metadata in Sharepoint library",
+   "help": "Update file metadata in Sharepoint library.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "Document library",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "document_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "document_folders",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Select parent folder to create new file in."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "update_row_in_sharepoint_list",
+   "title": "Update row",
+   "description": "Updates a row in Sharepoint list",
+   "help": "This action updates a row item in the list. Select the specific list and provide the updated values to the fields of the list.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "row_id",
+     "type": "string",
+     "label": "Row ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter the row/item ID which needs to be updated."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "number",
+     "label": "Success",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "update_row_in_sharepoint_list_batch",
+   "title": "Update rows",
+   "description": "Update rows in Sharepoint list",
+   "help": "This action updates a batch of rows in the Sharepoint list. Select the specific list and provide the row/item ID and the updated values to the fields of the list.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_name",
+      "type": "string"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "records",
+     "type": "array",
+     "label": "Record status",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Row id",
+       "control_type": "text"
+      },
+      {
+       "name": "success",
+       "type": "number",
+       "label": "Success",
+       "control_type": "number"
+      },
+      {
+       "name": "error",
+       "type": "string",
+       "label": "Error",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "upload_attachment",
+   "title": "Upload attachment",
+   "description": "Upload attachment in Sharepoint list",
+   "help": "Upload attachment in Sharepoint list",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "list_id",
+     "type": "string",
+     "label": "List",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "list_id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Can be found in the url of items page"
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "Content",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "FileName",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text"
+    },
+    {
+     "name": "FileNameAsPath",
+     "type": "object",
+     "label": "File name as path",
+     "properties": [
+      {
+       "name": "DecodedUrl",
+       "type": "string",
+       "label": "Decoded url",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "ServerRelativePath",
+     "type": "object",
+     "label": "Server relative path",
+     "properties": [
+      {
+       "name": "DecodedUrl",
+       "type": "string",
+       "label": "Decoded url",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "ServerRelativeUrl",
+     "type": "string",
+     "label": "Server relative url",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "upload_file_in_library",
+   "title": "Upload file in library",
+   "description": "Upload file into a folder in Sharepoint library",
+   "help": "Upload a file into a folder in Sharepoint library. If a file with the same name already exists in the folder, this action will overwrite that duplicated file. The newly uploaded file will effectively be the new version of that duplicated file.",
+   "input": [
+    {
+     "name": "siteurl",
+     "type": "string",
+     "label": "Site name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "The name of the Sharepoint site you want to connect to. If left blank, Workato will connect to Site name in your connection setting. Use the site name as found in the URL of site page. eg. If the URL …"
+    },
+    {
+     "name": "serverRelativeUrl",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders",
+     "toggle_field": {
+      "name": "serverRelativeUrl",
+      "type": "string"
+     },
+     "hint": "Folder to upload the file to"
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Give this uploaded file a name, e.g. report.csv"
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required_when_visible": true,
+     "hint": "Input here a File contents pill from another action or trigger. Or input text directly. Leave it blank to create an empty file at the target location."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

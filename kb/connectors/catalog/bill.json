@@ -1,0 +1,910 @@
+{
+ "name": "bill",
+ "title": "BILL",
+ "requires_connection": true,
+ "categories": [
+  "Payment Processing/POS"
+ ],
+ "aliases": [
+  "BILL",
+  "Bill.com"
+ ],
+ "triggers": [
+  {
+   "name": "new_record",
+   "title": "New record",
+   "description": "New object in BILL",
+   "help": "Triggers when a record in a selected object is created.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "search_object",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start a recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created one hour ago. Once recipe has been run or tested, value can…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_record",
+   "title": "New/updated record",
+   "description": "New/updated object in BILL",
+   "help": "Triggers when a record is created or an existing record is updated in a selected object.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "search_object",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start a recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested…"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in BILL (Custom)",
+   "help": "Build your own action with a HTTP request. The request will be authorized with your Bill connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "add_line_item_invoice",
+   "title": "Add line to invoice",
+   "description": "Add line item to invoice in BILL",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Invoice ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "BILL internal ID of Invoice to update"
+    },
+    {
+     "name": "itemId",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "quantity",
+     "type": "integer",
+     "label": "Quantity",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "price",
+     "type": "number",
+     "label": "Price",
+     "control_type": "number"
+    },
+    {
+     "name": "taxable",
+     "type": "boolean",
+     "label": "Taxable",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "taxable",
+      "type": "boolean"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isActive",
+     "type": "boolean",
+     "label": "Is active",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isActive",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "customerId",
+     "type": "string",
+     "label": "Customer ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "customer",
+     "type": "object",
+     "label": "Customer",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shortName",
+       "type": "string",
+       "label": "Short name",
+       "control_type": "text"
+      },
+      {
+       "name": "companyName",
+       "type": "string",
+       "label": "Company name",
+       "control_type": "text"
+      },
+      {
+       "name": "contactFirstName",
+       "type": "string",
+       "label": "Contact first name",
+       "control_type": "text"
+      },
+      {
+       "name": "contactLastName",
+       "type": "string",
+       "label": "Contact last name",
+       "control_type": "text"
+      },
+      {
+       "name": "accNumber",
+       "type": "string",
+       "label": "Account number",
+       "control_type": "text",
+       "hint": "Optional identification of the customer's account"
+      },
+      {
+       "name": "billAddress1",
+       "type": "string",
+       "label": "Billing address 1",
+       "control_type": "text"
+      },
+      {
+       "name": "billAddress2",
+       "type": "string",
+       "label": "Billing address 2",
+       "control_type": "text"
+      },
+      {
+       "name": "billAddress3",
+       "type": "string",
+       "label": "Billing address 3",
+       "control_type": "text"
+      },
+      {
+       "name": "billAddress4",
+       "type": "string",
+       "label": "Billing address 4",
+       "control_type": "text"
+      },
+      {
+       "name": "billAddressCity",
+       "type": "string",
+       "label": "Billing address city",
+       "control_type": "text"
+      },
+      {
+       "name": "billAddressState",
+       "type": "string",
+       "label": "Billing address state",
+       "control_type": "text"
+      },
+      {
+       "name": "billAddressCountry",
+       "type": "string",
+       "label": "Billing address country",
+       "control_type": "text"
+      },
+      {
+       "name": "billAddressZip",
+       "type": "string",
+       "label": "Billing address zip",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "phone",
+       "type": "string",
+       "label": "Phone",
+       "control_type": "text"
+      },
+      {
+       "name": "altPhone",
+       "type": "string",
+       "label": "Alternate phone",
+       "control_type": "text"
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text"
+      },
+      {
+       "name": "printAs",
+       "type": "string",
+       "label": "Print as",
+       "control_type": "text"
+      },
+      {
+       "name": "parentCustomerId",
+       "type": "string",
+       "label": "Parent customer ID",
+       "control_type": "text",
+       "hint": "ID of parent object"
+      },
+      {
+       "name": "accountType",
+       "type": "string",
+       "label": "Account type",
+       "control_type": "text",
+       "toggle_field": {
+        "name": "accountType",
+        "type": "string"
+       }
+      },
+      {
+       "name": "isActive",
+       "type": "string",
+       "label": "Is active",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdTime",
+       "type": "date_time",
+       "label": "Created time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "updatedTime",
+       "type": "date_time",
+       "label": "Updated time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "shipAddress1",
+       "type": "string",
+       "label": "Ship address 1",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shipAddress2",
+       "type": "string",
+       "label": "Ship address 2",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shipAddress3",
+       "type": "string",
+       "label": "Ship address 3",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shipAddress4",
+       "type": "string",
+       "label": "Ship address 4",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shipAddressCity",
+       "type": "string",
+       "label": "Ship address city",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shipAddressState",
+       "type": "string",
+       "label": "Ship address state",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shipAddressCountry",
+       "type": "string",
+       "label": "Ship address country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shipAddressZip",
+       "type": "string",
+       "label": "Ship address zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mergedIntoId",
+       "type": "string",
+       "label": "Merged into ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "jobId",
+     "type": "string",
+     "label": "Job ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "invoiceNumber",
+     "type": "string",
+     "label": "Invoice number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "invoiceDate",
+     "type": "date_time",
+     "label": "Invoice date",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "dueDate",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "createdTime",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "updatedTime",
+     "type": "date_time",
+     "label": "Updated time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "amount",
+     "type": "number",
+     "label": "Amount",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "amountDue",
+     "type": "number",
+     "label": "Amount due",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "paymentStatus",
+     "type": "string",
+     "label": "Payment status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "poNumber",
+     "type": "string",
+     "label": "Po number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isToBePrinted",
+     "type": "boolean",
+     "label": "Is to be printed",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isToBePrinted",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "isToBeEmailed",
+     "type": "boolean",
+     "label": "Is to be emailed",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isToBeEmailed",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "itemSalesTax",
+     "type": "string",
+     "label": "Item sales tax",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesTaxPercentage",
+     "type": "number",
+     "label": "Sales tax percentage",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesTaxTotal",
+     "type": "number",
+     "label": "Sales tax total",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "departmentId",
+     "type": "string",
+     "label": "Department ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "payToBankAccountId",
+     "type": "string",
+     "label": "Pay to bank account ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "payToChartOfAccountId",
+     "type": "string",
+     "label": "Pay to chart of account ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "invoiceLineItems",
+     "type": "array",
+     "label": "Invoice line items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "invoiceId",
+       "type": "string",
+       "label": "Invoice ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "itemId",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "quantity",
+       "type": "integer",
+       "label": "Quantity",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "price",
+       "type": "number",
+       "label": "Price",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "amount",
+       "type": "number",
+       "label": "Amount",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "taxable",
+       "type": "boolean",
+       "label": "Taxable",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "taxable",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_object",
+   "title": "Create record",
+   "description": "Create object in BILL",
+   "help": "Create a new record in BILL. Select the object you want to create, then provide the relevant data for creating the record.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "create_update_objects",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_object",
+   "title": "Delete record",
+   "description": "Delete object in BILL",
+   "help": "Delete a record in BILL. Select the object you want to delete, then provide the ID for deleting the record.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "delete_object",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide ID of the selected object."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_disbursement_data",
+   "title": "Get disbursement data",
+   "description": "Get disbursement data in BILL",
+   "help": "Return the details on how a payment is made once a bill is paid via BILL. Payments are disbursed 1-3 business days after the payment is scheduled. If the payment is scheduled and not yet disbursed, response is empty. Learn more",
+   "input": [
+    {
+     "name": "sentPayId",
+     "type": "string",
+     "label": "Bill payment ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the payment scheduled. This can be found in the output of Bill payment trigger."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_record_details_by_id",
+   "title": "Get record details by ID",
+   "description": "Get object by ID in BILL",
+   "help": "Retrieve details of a record in BILL.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "search_object",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide ID of the selected object."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_record",
+   "title": "Search record",
+   "description": "Search object in BILL",
+   "help": "Search for list of records in BILL. Select the object to search for, then provide the search criteria. This action returns a maximum of 999 records.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "search_object",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "send_invoice",
+   "title": "Send invoice",
+   "description": "Send an invoice to a customer in BILL",
+   "help": "Send an invoice to a customer in BILL.",
+   "input": [
+    {
+     "name": "invoiceId",
+     "type": "string",
+     "label": "Invoice ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the BILL-generated ID of the invoice."
+    },
+    {
+     "name": "headers",
+     "type": "object",
+     "label": "Headers",
+     "required": true,
+     "properties": [
+      {
+       "name": "fromUserId",
+       "type": "string",
+       "label": "From",
+       "control_type": "text",
+       "hint": "Provide the ID of the user sending the invoice."
+      },
+      {
+       "name": "toEmailAddresses",
+       "type": "string",
+       "label": "To",
+       "control_type": "text",
+       "hint": "Provide comma separated list of recipient email addresses."
+      },
+      {
+       "name": "ccMe",
+       "type": "number",
+       "label": "Cc me",
+       "control_type": "checkbox",
+       "default": false,
+       "toggle_field": {
+        "name": "ccMe",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "subject",
+       "type": "string",
+       "label": "Subject",
+       "control_type": "text",
+       "hint": "Email subject line."
+      }
+     ]
+    },
+    {
+     "name": "content",
+     "type": "object",
+     "label": "Content",
+     "required": true,
+     "properties": [
+      {
+       "name": "body",
+       "type": "string",
+       "label": "Body",
+       "control_type": "text",
+       "required": true,
+       "hint": "Email body information."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "response_status",
+     "type": "integer",
+     "label": "Response status",
+     "control_type": "number"
+    },
+    {
+     "name": "response_message",
+     "type": "string",
+     "label": "Response message",
+     "control_type": "text"
+    },
+    {
+     "name": "response_data",
+     "type": "object",
+     "label": "Response data",
+     "properties": [
+      {
+       "name": "error_code",
+       "type": "string",
+       "label": "Error code",
+       "control_type": "text"
+      },
+      {
+       "name": "error_message",
+       "type": "string",
+       "label": "Error message",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_object",
+   "title": "Update record",
+   "description": "Update object in BILL",
+   "help": "Update a record in BILL. Select the object you want to update, then provide the relevant data for updating the record.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "create_update_objects",
+     "extends_schema": true,
+     "hint": "Select the object from picklist."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

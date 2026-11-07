@@ -1,0 +1,1094 @@
+{
+ "id": 3302323,
+ "name": "PAN_Verification_API_Platform",
+ "description": "When there is a new API request, do action",
+ "applications": [
+  "workato_api_platform",
+  "rest"
+ ],
+ "action_applications": [
+  "rest"
+ ],
+ "trigger_application": "workato_api_platform",
+ "business_objects": [],
+ "categories": [
+  "API tool",
+  "Developer Tool",
+  "API Integration"
+ ],
+ "copy_count": 7,
+ "curated": false,
+ "recipe_type": "apim",
+ "trigger_type": "apim",
+ "published_at": null,
+ "updated_at": "2022-11-18T02:02:47.209-08:00",
+ "source_url": "https://app.workato.com/recipes/3302323?community=us",
+ "steps": [
+  "workato_api_platform.receive_request",
+  "rest.make_request_v2",
+  "workato_api_platform.return_response",
+  "workato_api_platform.return_response"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "workato_api_platform",
+  "name": "receive_request",
+  "as": "b46b7a1f",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "request.content_type": "application/json"
+  },
+  "toggleCfg": {
+   "response.responses.0.http_status_code": true
+  },
+  "input": {
+   "request": {
+    "content_type": "json",
+    "schema": "[{\"control_type\":\"text\",\"label\":\"pan_number\",\"name\":\"pan_number\",\"type\":\"string\",\"optional\":false}]"
+   },
+   "response": {
+    "content_type": "json",
+    "responses": [
+     {
+      "name": "Success",
+      "http_status_code": "200",
+      "body_schema": "[{\"name\":\"pan_status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"PAN status\"},{\"name\":\"pan_user_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Pan user name\"},{\"name\":\"pan_type\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Pan type\"},{\"name\":\"pan_number\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Pan number\"}]"
+     }
+    ]
+   }
+  },
+  "extended_output_schema": [
+   {
+    "label": "Context",
+    "name": "context",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Calling IP address",
+      "optional": true,
+      "type": "string",
+      "name": "calling_ip"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Access profile ID",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Access profile name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       },
+       {
+        "control_type": "text",
+        "label": "Access profile authentication type",
+        "optional": true,
+        "type": "string",
+        "name": "type"
+       }
+      ],
+      "label": "Access profile",
+      "type": "object",
+      "name": "access_profile"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "API client ID",
+        "optional": true,
+        "type": "string",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "API client name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       }
+      ],
+      "label": "API client",
+      "type": "object",
+      "name": "client"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Issued At",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "iat"
+       },
+       {
+        "control_type": "integer",
+        "label": "Not Before",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "nbf"
+       },
+       {
+        "control_type": "integer",
+        "label": "Expiration Time",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "exp"
+       },
+       {
+        "control_type": "text",
+        "label": "Audience",
+        "optional": true,
+        "type": "string",
+        "name": "aud"
+       },
+       {
+        "control_type": "text",
+        "label": "JWT ID",
+        "optional": true,
+        "type": "string",
+        "name": "jti"
+       },
+       {
+        "control_type": "text",
+        "label": "Issuer",
+        "optional": true,
+        "type": "string",
+        "name": "iss"
+       }
+      ],
+      "label": "JWT claims",
+      "type": "object",
+      "name": "jwt_payload"
+     }
+    ],
+    "type": "object"
+   },
+   {
+    "label": "Request parameters",
+    "name": "request",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "pan_number",
+      "name": "pan_number",
+      "type": "string",
+      "optional": false
+     }
+    ],
+    "type": "object"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "rest",
+    "name": "make_request_v2",
+    "as": "52d14879",
+    "title": "Send request",
+    "description": "<span class=\"provider\">Send request</span> via <span class=\"provider\">HTTP</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "response.ignore_http_errors": true
+    },
+    "input": {
+     "request_name": "Send request"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Headers",
+      "name": "headers",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Access control allow origin",
+        "type": "string",
+        "name": "access_control_allow_origin"
+       },
+       {
+        "control_type": "text",
+        "label": "X dns prefetch control",
+        "type": "string",
+        "name": "x_dns_prefetch_control"
+       },
+       {
+        "control_type": "text",
+        "label": "X frame options",
+        "type": "string",
+        "name": "x_frame_options"
+       },
+       {
+        "control_type": "text",
+        "label": "Strict transport security",
+        "type": "string",
+        "name": "strict_transport_security"
+       },
+       {
+        "control_type": "text",
+        "label": "X download options",
+        "type": "string",
+        "name": "x_download_options"
+       },
+       {
+        "control_type": "text",
+        "label": "X content type options",
+        "type": "string",
+        "name": "x_content_type_options"
+       },
+       {
+        "control_type": "text",
+        "label": "X xss protection",
+        "type": "string",
+        "name": "x_xss_protection"
+       },
+       {
+        "control_type": "text",
+        "label": "Content type",
+        "type": "string",
+        "name": "content_type"
+       },
+       {
+        "control_type": "text",
+        "label": "Content length",
+        "type": "string",
+        "name": "content_length"
+       },
+       {
+        "control_type": "text",
+        "label": "Etag",
+        "type": "string",
+        "name": "etag"
+       },
+       {
+        "control_type": "text",
+        "label": "Vary",
+        "type": "string",
+        "name": "vary"
+       },
+       {
+        "control_type": "text",
+        "label": "Date",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "date"
+       },
+       {
+        "control_type": "text",
+        "label": "X envoy upstream service time",
+        "type": "string",
+        "name": "x_envoy_upstream_service_time"
+       },
+       {
+        "control_type": "text",
+        "label": "Server",
+        "type": "string",
+        "name": "server"
+       }
+      ],
+      "type": "object"
+     },
+     {
+      "label": "Response",
+      "name": "response",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Request ID",
+        "type": "string",
+        "name": "request_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Task ID",
+        "type": "string",
+        "name": "task_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Group ID",
+        "type": "string",
+        "name": "group_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Success",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Success",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "success"
+        },
+        "type": "boolean",
+        "name": "success"
+       },
+       {
+        "control_type": "text",
+        "label": "Response code",
+        "type": "string",
+        "name": "response_code"
+       },
+       {
+        "control_type": "text",
+        "label": "Response message",
+        "type": "string",
+        "name": "response_message"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Billable",
+          "type": "string",
+          "name": "billable"
+         }
+        ],
+        "label": "Metadata",
+        "type": "object",
+        "name": "metadata"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Pan number",
+          "type": "string",
+          "name": "pan_number"
+         },
+         {
+          "control_type": "text",
+          "label": "Pan status",
+          "type": "string",
+          "name": "pan_status"
+         },
+         {
+          "control_type": "text",
+          "label": "User full name",
+          "type": "string",
+          "name": "user_full_name"
+         },
+         {
+          "control_type": "text",
+          "label": "Pan type",
+          "type": "string",
+          "name": "pan_type"
+         }
+        ],
+        "label": "Result",
+        "type": "object",
+        "name": "result"
+       },
+       {
+        "control_type": "text",
+        "label": "Request timestamp",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "request_timestamp"
+       },
+       {
+        "control_type": "text",
+        "label": "Response timestamp",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "response_timestamp"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "label": "Response",
+      "name": "response",
+      "override": true,
+      "properties": [
+       {
+        "control_type": "select",
+        "label": "Response content type",
+        "pick_list": [
+         [
+          "Text",
+          "rawdatatxt"
+         ],
+         [
+          "Binary",
+          "rawdata"
+         ],
+         [
+          "JSON",
+          "json"
+         ],
+         [
+          "XML",
+          "xml2"
+         ]
+        ],
+        "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+        "default": "json",
+        "extends_schema": true,
+        "type": "string",
+        "name": "output_type"
+       },
+       {
+        "control_type": "select",
+        "label": "Encoding",
+        "pick_list": [
+         [
+          "UTF-8",
+          "UTF-8"
+         ],
+         [
+          "US-ASCII",
+          "US-ASCII"
+         ],
+         [
+          "UTF-16BE",
+          "UTF-16BE"
+         ],
+         [
+          "UTF-16LE",
+          "UTF-16LE"
+         ],
+         [
+          "UTF-32BE",
+          "UTF-32BE"
+         ],
+         [
+          "UTF-32LE",
+          "UTF-32LE"
+         ],
+         [
+          "UTF-16",
+          "UTF-16"
+         ],
+         [
+          "UTF-32",
+          "UTF-32"
+         ],
+         [
+          "UTF8-MAC",
+          "UTF8-MAC"
+         ],
+         [
+          "EUC-JP",
+          "EUC-JP"
+         ],
+         [
+          "Windows-31J",
+          "Windows-31J"
+         ],
+         [
+          "Big5",
+          "Big5"
+         ],
+         [
+          "Big5-HKSCS",
+          "Big5-HKSCS"
+         ],
+         [
+          "Big5-UAO",
+          "Big5-UAO"
+         ],
+         [
+          "CP949",
+          "CP949"
+         ],
+         [
+          "Emacs-Mule",
+          "Emacs-Mule"
+         ],
+         [
+          "EUC-KR",
+          "EUC-KR"
+         ],
+         [
+          "EUC-TW",
+          "EUC-TW"
+         ],
+         [
+          "GB2312",
+          "GB2312"
+         ],
+         [
+          "GB18030",
+          "GB18030"
+         ],
+         [
+          "GBK",
+          "GBK"
+         ],
+         [
+          "ISO-8859-1",
+          "ISO-8859-1"
+         ],
+         [
+          "ISO-8859-2",
+          "ISO-8859-2"
+         ],
+         [
+          "ISO-8859-3",
+          "ISO-8859-3"
+         ],
+         [
+          "ISO-8859-4",
+          "ISO-8859-4"
+         ],
+         [
+          "ISO-8859-5",
+          "ISO-8859-5"
+         ],
+         [
+          "ISO-8859-6",
+          "ISO-8859-6"
+         ],
+         [
+          "ISO-8859-7",
+          "ISO-8859-7"
+         ],
+         [
+          "ISO-8859-8",
+          "ISO-8859-8"
+         ],
+         [
+          "ISO-8859-9",
+          "ISO-8859-9"
+         ],
+         [
+          "ISO-8859-10",
+          "ISO-8859-10"
+         ],
+         [
+          "ISO-8859-11",
+          "ISO-8859-11"
+         ],
+         [
+          "ISO-8859-13",
+          "ISO-8859-13"
+         ],
+         [
+          "ISO-8859-14",
+          "ISO-8859-14"
+         ],
+         [
+          "ISO-8859-15",
+          "ISO-8859-15"
+         ],
+         [
+          "ISO-8859-16",
+          "ISO-8859-16"
+         ],
+         [
+          "KOI8-R",
+          "KOI8-R"
+         ],
+         [
+          "KOI8-U",
+          "KOI8-U"
+         ],
+         [
+          "Shift_JIS",
+          "Shift_JIS"
+         ],
+         [
+          "Windows-1250",
+          "Windows-1250"
+         ],
+         [
+          "Windows-1251",
+          "Windows-1251"
+         ],
+         [
+          "Windows-1252",
+          "Windows-1252"
+         ],
+         [
+          "Windows-1253",
+          "Windows-1253"
+         ],
+         [
+          "Windows-1254",
+          "Windows-1254"
+         ],
+         [
+          "Windows-1257",
+          "Windows-1257"
+         ],
+         [
+          "IBM437",
+          "IBM437"
+         ],
+         [
+          "IBM737",
+          "IBM737"
+         ],
+         [
+          "IBM775",
+          "IBM775"
+         ],
+         [
+          "CP850",
+          "CP850"
+         ],
+         [
+          "IBM852",
+          "IBM852"
+         ],
+         [
+          "CP852",
+          "CP852"
+         ],
+         [
+          "IBM855",
+          "IBM855"
+         ],
+         [
+          "CP855",
+          "CP855"
+         ],
+         [
+          "IBM857",
+          "IBM857"
+         ],
+         [
+          "IBM860",
+          "IBM860"
+         ],
+         [
+          "IBM861",
+          "IBM861"
+         ],
+         [
+          "IBM862",
+          "IBM862"
+         ],
+         [
+          "IBM863",
+          "IBM863"
+         ],
+         [
+          "IBM864",
+          "IBM864"
+         ],
+         [
+          "IBM865",
+          "IBM865"
+         ],
+         [
+          "IBM866",
+          "IBM866"
+         ],
+         [
+          "IBM869",
+          "IBM869"
+         ],
+         [
+          "Windows-1258",
+          "Windows-1258"
+         ],
+         [
+          "GB1988",
+          "GB1988"
+         ],
+         [
+          "macCentEuro",
+          "macCentEuro"
+         ],
+         [
+          "macCroatian",
+          "macCroatian"
+         ],
+         [
+          "macCyrillic",
+          "macCyrillic"
+         ],
+         [
+          "macGreek",
+          "macGreek"
+         ],
+         [
+          "macIceland",
+          "macIceland"
+         ],
+         [
+          "macRoman",
+          "macRoman"
+         ],
+         [
+          "macRomania",
+          "macRomania"
+         ],
+         [
+          "macThai",
+          "macThai"
+         ],
+         [
+          "macTurkish",
+          "macTurkish"
+         ],
+         [
+          "macUkraine",
+          "macUkraine"
+         ],
+         [
+          "CP950",
+          "CP950"
+         ],
+         [
+          "CP951",
+          "CP951"
+         ],
+         [
+          "IBM037",
+          "IBM037"
+         ],
+         [
+          "stateless-ISO-2022-JP",
+          "stateless-ISO-2022-JP"
+         ],
+         [
+          "eucJP-ms",
+          "eucJP-ms"
+         ],
+         [
+          "CP51932",
+          "CP51932"
+         ],
+         [
+          "EUC-JIS-2004",
+          "EUC-JIS-2004"
+         ],
+         [
+          "GB12345",
+          "GB12345"
+         ],
+         [
+          "ISO-2022-JP",
+          "ISO-2022-JP"
+         ],
+         [
+          "ISO-2022-JP-2",
+          "ISO-2022-JP-2"
+         ],
+         [
+          "CP50220",
+          "CP50220"
+         ],
+         [
+          "CP50221",
+          "CP50221"
+         ],
+         [
+          "Windows-1256",
+          "Windows-1256"
+         ],
+         [
+          "Windows-1255",
+          "Windows-1255"
+         ],
+         [
+          "TIS-620",
+          "TIS-620"
+         ],
+         [
+          "Windows-874",
+          "Windows-874"
+         ],
+         [
+          "MacJapanese",
+          "MacJapanese"
+         ],
+         [
+          "UTF-7",
+          "UTF-7"
+         ],
+         [
+          "UTF8-DoCoMo",
+          "UTF8-DoCoMo"
+         ],
+         [
+          "SJIS-DoCoMo",
+          "SJIS-DoCoMo"
+         ],
+         [
+          "UTF8-KDDI",
+          "UTF8-KDDI"
+         ],
+         [
+          "SJIS-KDDI",
+          "SJIS-KDDI"
+         ],
+         [
+          "ISO-2022-JP-KDDI",
+          "ISO-2022-JP-KDDI"
+         ],
+         [
+          "stateless-ISO-2022-JP-KDDI",
+          "stateless-ISO-2022-JP-KDDI"
+         ],
+         [
+          "UTF8-SoftBank",
+          "UTF8-SoftBank"
+         ],
+         [
+          "SJIS-SoftBank",
+          "SJIS-SoftBank"
+         ]
+        ],
+        "optional": true,
+        "default": "UTF-8",
+        "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#expected-encoding\" target=\"_blank\">Learn more</a>",
+        "type": "string",
+        "name": "expected_encoding"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "Response schema",
+        "sample_data_type": "json_http",
+        "extends_schema": true,
+        "empty_schema_title": "Describe all fields in your response.",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "response_schema"
+       },
+       {
+        "control_type": "schema-designer",
+        "label": "HTTP response headers",
+        "extends_schema": true,
+        "empty_schema_title": "Describe all the response headers",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "headers_schema"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Mark non-2xx response codes as success?",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Mark non-2xx response codes as success?",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "default": false,
+         "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+         "optional": true,
+         "type": "boolean",
+         "name": "ignore_http_errors"
+        },
+        "default": "false",
+        "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+        "optional": true,
+        "type": "boolean",
+        "name": "ignore_http_errors"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "264d67b2-bd1e-4ffe-adb7-f8a1c4af0ac5",
+    "wizardFinished": true
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "starts_with",
+       "lhs": "#{_('data.rest.52d14879.response.response_message')}",
+       "rhs": "Valid",
+       "uuid": "condition-4b3e0d73-ebb1-4f7b-8b85-85c2e748700a"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "workato_api_platform",
+      "name": "return_response",
+      "as": "71e37d55",
+      "title": null,
+      "description": "<span class=\"step-statement step-statement_return-variant\">Return</span><span class=\"provider\">Success</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "http_status_code": "200",
+       "response": {
+        "pan_status": "#{_('data.rest.52d14879.response.result.pan_status')}",
+        "pan_user_name": "#{_('data.rest.52d14879.response.result.user_full_name')}",
+        "pan_type": "#{_('data.rest.52d14879.response.result.pan_type')}",
+        "pan_number": "#{_('data.rest.52d14879.response.result.pan_number')}"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "change_on_blur": true,
+        "control_type": "select",
+        "extends_schema": true,
+        "label": "Response",
+        "name": "http_status_code",
+        "pick_list": [
+         [
+          "Success",
+          "200"
+         ]
+        ],
+        "type": "string"
+       },
+       {
+        "label": "Response body",
+        "name": "response",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "PAN status",
+          "name": "pan_status",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Pan user name",
+          "name": "pan_user_name",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Pan type",
+          "name": "pan_type",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Pan number",
+          "name": "pan_number",
+          "type": "string",
+          "optional": false
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "2b68b42f-9811-43ef-ba6a-fe66bfa9ffeb"
+     },
+     {
+      "number": 4,
+      "keyword": "else",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {},
+      "block": [
+       {
+        "number": 5,
+        "provider": "workato_api_platform",
+        "name": "return_response",
+        "as": "13943657",
+        "title": null,
+        "description": "<span class=\"step-statement step-statement_return-variant\">Return</span><span class=\"provider\">Success</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "http_status_code": "200",
+         "response": {
+          "pan_status": "Invalid",
+          "pan_number": "#{_('data.workato_api_platform.b46b7a1f.request.pan_number')}"
+         }
+        },
+        "extended_input_schema": [
+         {
+          "change_on_blur": true,
+          "control_type": "select",
+          "extends_schema": true,
+          "label": "Response",
+          "name": "http_status_code",
+          "pick_list": [
+           [
+            "Success",
+            "200"
+           ]
+          ],
+          "type": "string"
+         },
+         {
+          "label": "Response body",
+          "name": "response",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "PAN status",
+            "name": "pan_status",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Pan user name",
+            "name": "pan_user_name",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Pan type",
+            "name": "pan_type",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Pan number",
+            "name": "pan_number",
+            "type": "string",
+            "optional": false
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "b71ba679-c28c-42d8-8a80-d34f4980c7d9"
+       }
+      ],
+      "uuid": "9da2f5d7-75c5-4701-a71b-59e6679e78d9"
+     }
+    ],
+    "uuid": "da8d53e9-b6af-440a-b0d6-677784d0cfb4"
+   }
+  ],
+  "comment": "Define the request and response parameters for this API endpoint",
+  "uuid": "2d4f88da-954e-450c-8af5-6f818c1eb5ab",
+  "param": {}
+ }
+}

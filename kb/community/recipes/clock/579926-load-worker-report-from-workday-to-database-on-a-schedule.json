@@ -1,0 +1,1087 @@
+{
+ "id": 579926,
+ "name": "Load Worker Report from Workday to Database on a Schedule",
+ "description": "Make a SOAP or REST call to a Workday report (using Reports as a Service, Raas) to retrieve information about workers, and load the data into a table in our on-premises SQL Server database.  This is for an Operational Data Store (ODS) or Data Warehouse in SQL.",
+ "applications": [
+  "clock",
+  "workday",
+  "logger",
+  "json_parser",
+  "workato_list",
+  "lookup_table",
+  "postgresql",
+  "email"
+ ],
+ "action_applications": [
+  "workday",
+  "logger",
+  "json_parser",
+  "workato_list",
+  "lookup_table",
+  "postgresql",
+  "email"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "email"
+ ],
+ "categories": [
+  "Utilities",
+  "Marketing",
+  "HR",
+  "Developer"
+ ],
+ "copy_count": 24,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2017-08-01T03:16:07.488-07:00",
+ "source_url": "https://app.workato.com/recipes/579926?community=us",
+ "steps": [
+  "clock.timer",
+  "workday.get_report",
+  "logger.log_message",
+  "json_parser.parse_json",
+  "workato_list.accumulate_list_items",
+  "lookup_table.search_entries",
+  "lookup_table.add_entry",
+  "lookup_table.update_entry",
+  "logger.log_message",
+  "postgresql.search_rows",
+  "postgresql.insert_row",
+  "email.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "timer",
+  "as": "timer",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "interval": "5"
+  },
+  "block": [
+   {
+    "number": 1,
+    "provider": "workday",
+    "name": "get_report",
+    "as": "get_report__1",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "report_url": "https://wd2-impl-services1.workday.com/ccx/service/customreport2/workato_pt1/szaretsky/Demo_Worker_Expense_Report?format=json"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "report",
+      "label": "Report",
+      "optional": true,
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Employee",
+        "optional": true,
+        "type": "string",
+        "name": "Employee"
+       },
+       {
+        "control_type": "text",
+        "label": "Supervisory organization",
+        "optional": true,
+        "type": "string",
+        "name": "Supervisory_Organization"
+       },
+       {
+        "control_type": "text",
+        "label": "Location",
+        "optional": true,
+        "type": "string",
+        "name": "location"
+       },
+       {
+        "control_type": "text",
+        "label": "Location",
+        "optional": true,
+        "type": "string",
+        "name": "location"
+       },
+       {
+        "control_type": "text",
+        "label": "Expense reports - all statuses",
+        "optional": true,
+        "type": "string",
+        "name": "Expense_Reports_-_All_Statuses"
+       }
+      ]
+     }
+    ],
+    "comment": "get worker expense report",
+    "uuid": "87096599-9ff5-4a8a-ad85-5d651f54c24d"
+   },
+   {
+    "number": 2,
+    "provider": "logger",
+    "name": "log_message",
+    "as": "log_message__1",
+    "title": null,
+    "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "message": "=_('data.workday.get_report__1.report').pluck('Employee')"
+    },
+    "comment": "extract the list of employee information from workday",
+    "uuid": "3e4e553d-b680-4264-9264-215cdee98395"
+   },
+   {
+    "number": 3,
+    "provider": "json_parser",
+    "name": "parse_json",
+    "as": "parse_json",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "sample_document": "{\n\"Message\": [\n\"00161000004jxANAAY\"\n]\n}",
+     "document": "{\n  \"Message\": #{_('data.logger.log_message__1.message')}\n}"
+    },
+    "extended_output_schema": [
+     {
+      "type": "object",
+      "name": "document",
+      "label": "Document",
+      "properties": [
+       {
+        "name": "Message",
+        "type": "array",
+        "of": "string",
+        "control_type": "text",
+        "label": "Message"
+       }
+      ]
+     }
+    ],
+    "comment": "converts the list of employee into an array type",
+    "uuid": "1c3a216a-5d2f-4909-99a5-3b87f730857b"
+   },
+   {
+    "number": 4,
+    "as": "foreach",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 5,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "present",
+         "lhs": "=_('data.workday.get_report__1.report').where(Employee: _('data.foreach.foreach.value')).pluck('Expense_Reports_-_All_Statuses').first",
+         "rhs": null
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 6,
+        "provider": "workato_list",
+        "name": "accumulate_list_items",
+        "as": "accumulate_list_items",
+        "title": "Accumulate items to Workers list",
+        "description": "Accumulate <span class=\"provider\">items</span> to <span class=\"provider\">Workers</span> list",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "name": "Workers",
+         "list_item": {
+          "schema": "[{\"type\":\"string\",\"optional\":true,\"label\":\"Name\",\"name\":\"name\",\"control_type\":\"text\"},{\"type\":\"string\",\"optional\":true,\"label\":\"Expenses\",\"name\":\"expenses\",\"control_type\":\"text\"},{\"type\":\"string\",\"optional\":true,\"label\":\"ID\",\"name\":\"id\",\"control_type\":\"text\"},{\"type\":\"string\",\"optional\":true,\"label\":\"expense report\",\"name\":\"expense_report\",\"control_type\":\"text\"},{\"type\":\"string\",\"optional\":true,\"label\":\"amount\",\"name\":\"amount\",\"control_type\":\"text\"}]",
+          "data": {
+           "expenses": "=_('data.workday.get_report__1.report').where(Employee: _('data.foreach.foreach.value')).pluck('Expense_Reports_-_All_Statuses')",
+           "name": "=_('data.foreach.foreach.value')",
+           "id": "=_('data.workday.get_report__1.report').where(Employee: _('data.foreach.foreach.value')).pluck('ID').first",
+           "expense_report": "=_('data.workday.get_report__1.report').where(Employee: _('data.foreach.foreach.value')).pluck('Expense_Reports_-_All_Statuses').flatten.pluck('Expense_Report').flatten.first",
+           "amount": "=_('data.workday.get_report__1.report').where(Employee: _('data.foreach.foreach.value')).pluck('Expense_Reports_-_All_Statuses').flatten.pluck('Expense_Report_Total_Amount').flatten.first"
+          }
+         }
+        },
+        "extended_output_schema": [
+         {
+          "type": "array",
+          "name": "list_items",
+          "label": "Items",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "optional": true,
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "Expenses",
+            "type": "string",
+            "optional": true,
+            "name": "expenses"
+           },
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "optional": true,
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "expense report",
+            "type": "string",
+            "optional": true,
+            "name": "expense_report"
+           },
+           {
+            "control_type": "text",
+            "label": "amount",
+            "type": "string",
+            "optional": true,
+            "name": "amount"
+           }
+          ]
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "type": "object",
+          "name": "list_item",
+          "control_type": "form-schema-builder",
+          "label": "List item fields",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Schema",
+            "extends_schema": true,
+            "type": "string",
+            "name": "schema",
+            "parent": "list_item",
+            "path": "list_item.schema"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Name",
+              "type": "string",
+              "optional": true,
+              "name": "name",
+              "parent": "list_item.data",
+              "path": "list_item.data.name"
+             },
+             {
+              "control_type": "text",
+              "label": "Expenses",
+              "type": "string",
+              "optional": true,
+              "name": "expenses",
+              "parent": "list_item.data",
+              "path": "list_item.data.expenses"
+             },
+             {
+              "control_type": "text",
+              "label": "ID",
+              "type": "string",
+              "optional": true,
+              "name": "id",
+              "parent": "list_item.data",
+              "path": "list_item.data.id"
+             },
+             {
+              "control_type": "text",
+              "label": "expense report",
+              "type": "string",
+              "optional": true,
+              "name": "expense_report",
+              "parent": "list_item.data",
+              "path": "list_item.data.expense_report"
+             },
+             {
+              "control_type": "text",
+              "label": "amount",
+              "type": "string",
+              "optional": true,
+              "name": "amount",
+              "parent": "list_item.data",
+              "path": "list_item.data.amount"
+             }
+            ],
+            "label": "Data",
+            "type": "object",
+            "name": "data",
+            "parent": "list_item",
+            "path": "list_item.data"
+           }
+          ],
+          "override": true
+         }
+        ],
+        "visible_config_fields": [
+         "name",
+         "list_item.data.name",
+         "list_item",
+         "list_item.schema",
+         "list_item.data.expenses",
+         "list_item.data",
+         "list_item.data.id",
+         "list_item.data.expense_report",
+         "list_item.data.amount"
+        ],
+        "comment": "list of workers with an expense report",
+        "uuid": "cf27dad0-8a6f-44a9-836c-4c2856d8be58"
+       }
+      ],
+      "uuid": "2657086c-56ef-4804-be6d-a2989bc7e7cb"
+     }
+    ],
+    "source": "#{_('data.json_parser.parse_json.document.Message')}",
+    "comment": "Create a list only for workers with an expense report attached",
+    "uuid": "1c67705c-139d-44df-a68a-092132c1b71e"
+   },
+   {
+    "number": 7,
+    "as": "foreach__1",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 8,
+      "keyword": "try",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {},
+      "block": [
+       {
+        "number": 9,
+        "provider": "lookup_table",
+        "name": "search_entries",
+        "as": "search_entries",
+        "title": null,
+        "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">Workday Employees - postgreSQL</span> lookup table",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "lookup_table_id": "Workday Employees - postgreSQL"
+        },
+        "toggleCfg": {},
+        "input": {
+         "lookup_table_id": "1241",
+         "parameters": {
+          "col1": "#{_('data.foreach.foreach__1.id')}"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "type": "array",
+          "name": "entries",
+          "label": "Entries",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "Entry ID",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "id"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "worker ID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "name",
+              "name": "col2",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "expense report",
+              "name": "col3",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "amount",
+              "name": "col4",
+              "type": "string",
+              "sticky": true
+             }
+            ],
+            "label": "Entry",
+            "type": "object",
+            "name": "entry"
+           }
+          ]
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "type": "object",
+          "name": "parameters",
+          "label": "Search by",
+          "hint": "Provide one or more entry fields to search the entry",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "worker ID",
+            "name": "col1",
+            "type": "string",
+            "sticky": true,
+            "optional": true,
+            "parent": "parameters",
+            "path": "parameters.col1"
+           },
+           {
+            "control_type": "text",
+            "label": "name",
+            "name": "col2",
+            "type": "string",
+            "sticky": true,
+            "optional": true,
+            "parent": "parameters",
+            "path": "parameters.col2"
+           },
+           {
+            "control_type": "text",
+            "label": "expense report",
+            "name": "col3",
+            "type": "string",
+            "sticky": true,
+            "optional": true,
+            "parent": "parameters",
+            "path": "parameters.col3"
+           },
+           {
+            "control_type": "text",
+            "label": "amount",
+            "name": "col4",
+            "type": "string",
+            "sticky": true,
+            "optional": true,
+            "parent": "parameters",
+            "path": "parameters.col4"
+           }
+          ]
+         }
+        ],
+        "comment": "lookup worker in our own workato database",
+        "uuid": "9a32cf07-a1c7-41bd-b7a1-3b89ed42a7f4"
+       },
+       {
+        "number": 10,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "equals_to",
+           "lhs": "#{_('data.lookup_table.search_entries.entries.first.____Size', 'list_meta', '____Size', 'data.lookup_table.search_entries.entries')}",
+           "rhs": "0"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 11,
+          "provider": "lookup_table",
+          "name": "add_entry",
+          "as": "add_entry__1",
+          "title": null,
+          "description": "Add <span class=\"provider\">an entry</span> to <span class=\"provider\">Workday Employees - postgreSQL</span> lookup table",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "lookup_table_id": "Workday Employees - postgreSQL"
+          },
+          "toggleCfg": {},
+          "input": {
+           "lookup_table_id": "1241",
+           "parameters": {
+            "col1": "#{_('data.foreach.foreach__1.id')}",
+            "col2": "#{_('data.foreach.foreach__1.name')}",
+            "col3": "#{_('data.foreach.foreach__1.expense_report')}",
+            "col4": "#{_('data.foreach.foreach__1.amount')}"
+           }
+          },
+          "extended_output_schema": [
+           {
+            "type": "integer",
+            "name": "id",
+            "control_type": "number",
+            "label": "Entry ID",
+            "parse_output": "integer_conversion"
+           },
+           {
+            "type": "object",
+            "name": "entry",
+            "label": "Entry",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "worker ID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "name",
+              "name": "col2",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "expense report",
+              "name": "col3",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "amount",
+              "name": "col4",
+              "type": "string",
+              "sticky": true
+             }
+            ]
+           }
+          ],
+          "extended_input_schema": [
+           {
+            "type": "object",
+            "name": "parameters",
+            "label": "Entry fields",
+            "hint": "Fill the fields for the new entry",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "worker ID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true,
+              "optional": true
+             },
+             {
+              "control_type": "text",
+              "label": "name",
+              "name": "col2",
+              "type": "string",
+              "sticky": true,
+              "optional": true
+             },
+             {
+              "control_type": "text",
+              "label": "expense report",
+              "name": "col3",
+              "type": "string",
+              "sticky": true,
+              "optional": true
+             },
+             {
+              "control_type": "text",
+              "label": "amount",
+              "name": "col4",
+              "type": "string",
+              "sticky": true,
+              "optional": true
+             }
+            ]
+           }
+          ],
+          "uuid": "e401e291-3ab9-4476-a512-1e8f410e011d"
+         },
+         {
+          "number": 12,
+          "provider": "lookup_table",
+          "name": "update_entry",
+          "as": "update_entry",
+          "title": null,
+          "description": "Update <span class=\"provider\">an entry</span> in <span class=\"provider\">Workday Employees - postgreSQL</span> lookup table",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "lookup_table_id": "Workday Employees - postgreSQL"
+          },
+          "toggleCfg": {
+           "ignore_not_found": true
+          },
+          "input": {
+           "ignore_not_found": "false",
+           "lookup_table_id": "1241",
+           "id": "#{_('data.lookup_table.add_entry__1.id')}",
+           "parameters": {
+            "col5": "#{_('data.lookup_table.add_entry__1.id')}"
+           }
+          },
+          "extended_output_schema": [
+           {
+            "type": "integer",
+            "name": "id",
+            "control_type": "number",
+            "label": "Entry ID",
+            "parse_output": "integer_conversion"
+           },
+           {
+            "type": "object",
+            "name": "entry",
+            "label": "Entry",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "worker ID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "name",
+              "name": "col2",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "expense report",
+              "name": "col3",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "amount",
+              "name": "col4",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Internal ID",
+              "name": "col5",
+              "type": "string",
+              "sticky": true
+             }
+            ]
+           }
+          ],
+          "extended_input_schema": [
+           {
+            "type": "object",
+            "name": "parameters",
+            "label": "Entry fields",
+            "hint": "Fill the fields you want to update",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "worker ID",
+              "name": "col1",
+              "type": "string",
+              "sticky": true,
+              "optional": true,
+              "parent": "parameters",
+              "path": "parameters.col1"
+             },
+             {
+              "control_type": "text",
+              "label": "name",
+              "name": "col2",
+              "type": "string",
+              "sticky": true,
+              "optional": true,
+              "parent": "parameters",
+              "path": "parameters.col2"
+             },
+             {
+              "control_type": "text",
+              "label": "expense report",
+              "name": "col3",
+              "type": "string",
+              "sticky": true,
+              "optional": true,
+              "parent": "parameters",
+              "path": "parameters.col3"
+             },
+             {
+              "control_type": "text",
+              "label": "amount",
+              "name": "col4",
+              "type": "string",
+              "sticky": true,
+              "optional": true,
+              "parent": "parameters",
+              "path": "parameters.col4"
+             },
+             {
+              "control_type": "text",
+              "label": "Internal ID",
+              "name": "col5",
+              "type": "string",
+              "sticky": true,
+              "optional": true,
+              "parent": "parameters",
+              "path": "parameters.col5"
+             }
+            ]
+           }
+          ],
+          "comment": "update entry ID",
+          "uuid": "5b43d3c6-1037-4c96-8f35-1e9491c8dc4d"
+         }
+        ],
+        "comment": "create worker data if it is not present",
+        "uuid": "cd337f68-7610-4055-892e-0c97b2bfc8d7"
+       },
+       {
+        "number": 13,
+        "provider": "logger",
+        "name": "log_message",
+        "as": "log_message__2",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "message": "=_('data.lookup_table.search_entries.entries.first.id') or _('data.lookup_table.add_entry__1.id')"
+        },
+        "comment": "extract ID from the workato database in order to match it with the on prem database",
+        "uuid": "d58f8bb4-0ffb-41fb-8398-597a945982aa",
+        "title": null,
+        "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>"
+       },
+       {
+        "number": 14,
+        "provider": "postgresql",
+        "name": "search_rows",
+        "as": "search_rows",
+        "title": "Select rows in public.test",
+        "description": "Select <span class=\"provider\">rows</span> in <span class=\"provider\">public.test</span> table in <span class=\"provider\">PostgreSQL</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "table": "public.test"
+        },
+        "toggleCfg": {},
+        "input": {
+         "table": "public.test",
+         "where": "id = '#{_('data.logger.log_message__2.message')}'"
+        },
+        "extended_output_schema": [
+         {
+          "type": "array",
+          "name": "rows",
+          "label": "Rows",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "id",
+            "parse_output": "parse_numeric_output",
+            "details": {
+             "primary_key": true,
+             "data_type": "numeric",
+             "column_name": "id"
+            },
+            "event_title": true,
+            "hint": "numeric, primary key",
+            "type": "number",
+            "name": "id"
+           },
+           {
+            "control_type": "text",
+            "label": "name",
+            "details": {
+             "primary_key": false,
+             "data_type": "text",
+             "column_name": "name"
+            },
+            "optional": true,
+            "hint": "text",
+            "type": "string",
+            "name": "name"
+           },
+           {
+            "control_type": "text",
+            "label": "reportname",
+            "details": {
+             "primary_key": false,
+             "data_type": "text",
+             "column_name": "reportname"
+            },
+            "optional": true,
+            "hint": "text",
+            "type": "string",
+            "name": "reportname"
+           },
+           {
+            "control_type": "number",
+            "label": "reportamount",
+            "parse_output": "parse_integer_output",
+            "details": {
+             "primary_key": false,
+             "data_type": "integer",
+             "column_name": "reportamount"
+            },
+            "optional": true,
+            "hint": "integer",
+            "type": "integer",
+            "name": "reportamount"
+           }
+          ]
+         }
+        ],
+        "visible_config_fields": [
+         "table",
+         "where"
+        ],
+        "comment": "lookup worker in the on prem database",
+        "uuid": "2c7d209a-890e-419f-afbb-a14943002e6f"
+       },
+       {
+        "number": 15,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "equals_to",
+           "lhs": "#{_('data.postgresql.search_rows.rows.first.____Size', 'list_meta', '____Size', 'data.postgresql.search_rows.rows')}",
+           "rhs": "0"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 16,
+          "provider": "postgresql",
+          "name": "insert_row",
+          "as": "insert_row",
+          "title": "Insert row in test",
+          "description": "Insert <span class=\"provider\">row</span> in <span class=\"provider\">test</span> table in <span class=\"provider\">PostgreSQL</span>",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "table": "test"
+          },
+          "toggleCfg": {},
+          "input": {
+           "table": "test",
+           "columns": {
+            "id": "=_('data.lookup_table.add_entry__1.id')",
+            "name": "#{_('data.foreach.foreach__1.name')}",
+            "reportname": "#{_('data.foreach.foreach__1.expense_report')}",
+            "reportamount": "=_('data.foreach.foreach__1.amount').to_i"
+           }
+          },
+          "extended_output_schema": [
+           {
+            "type": "object",
+            "name": "columns",
+            "label": "Inserted key",
+            "properties": [
+             {
+              "control_type": "number",
+              "label": "id",
+              "parse_output": "parse_numeric_output",
+              "details": {
+               "primary_key": true,
+               "data_type": "numeric",
+               "column_name": "id"
+              },
+              "event_title": true,
+              "hint": "numeric, primary key",
+              "type": "number",
+              "name": "id"
+             }
+            ]
+           }
+          ],
+          "extended_input_schema": [
+           {
+            "type": "object",
+            "name": "columns",
+            "label": "Columns",
+            "properties": [
+             {
+              "control_type": "number",
+              "label": "id",
+              "parse_output": "parse_numeric_output",
+              "details": {
+               "primary_key": true,
+               "data_type": "numeric",
+               "column_name": "id"
+              },
+              "event_title": true,
+              "hint": "numeric, primary key",
+              "optional": true,
+              "type": "number",
+              "name": "id",
+              "parent": "columns",
+              "path": "columns.id"
+             },
+             {
+              "control_type": "text",
+              "label": "name",
+              "details": {
+               "primary_key": false,
+               "data_type": "text",
+               "column_name": "name"
+              },
+              "optional": true,
+              "hint": "text",
+              "type": "string",
+              "name": "name",
+              "parent": "columns",
+              "path": "columns.name"
+             },
+             {
+              "control_type": "text",
+              "label": "reportname",
+              "details": {
+               "primary_key": false,
+               "data_type": "text",
+               "column_name": "reportname"
+              },
+              "optional": true,
+              "hint": "text",
+              "type": "string",
+              "name": "reportname",
+              "parent": "columns",
+              "path": "columns.reportname"
+             },
+             {
+              "control_type": "number",
+              "label": "reportamount",
+              "parse_output": "parse_integer_output",
+              "details": {
+               "primary_key": false,
+               "data_type": "integer",
+               "column_name": "reportamount"
+              },
+              "optional": true,
+              "hint": "integer",
+              "type": "integer",
+              "name": "reportamount",
+              "parent": "columns",
+              "path": "columns.reportamount"
+             }
+            ]
+           }
+          ],
+          "visible_config_fields": [
+           "table",
+           "columns",
+           "columns.id",
+           "columns.name",
+           "columns.expenses_dab11123",
+           "columns.reportname",
+           "columns.reportamount"
+          ],
+          "uuid": "8fc1bd78-401e-452d-833d-992d980c1491"
+         }
+        ],
+        "comment": "create the work if not present",
+        "uuid": "bb0fabaf-8c89-44b4-937b-9046665e5364"
+       },
+       {
+        "number": 17,
+        "as": "catch",
+        "keyword": "catch",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "block": [
+         {
+          "number": 18,
+          "provider": "email",
+          "name": "send_mail",
+          "as": "send_mail",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "email_type": "-- REDACTED --",
+           "to": "#{_('data.workato.job_context.user_email')}",
+           "subject": "Unable to add worker #{_('data.foreach.foreach__1.name')}'s data into database",
+           "body": "Error: #{_('data.catch.catch.message')}\n\nPlease resolve the error and you may rerun the job if necessary\n------------------------------------------------------------------\nJob ID: #{_('data.workato.job_context.job_id')}\nJob URL: #{_('data.workato.job_context.job_url')}\nRecipe ID: #{_('data.workato.job_context.recipe_id')}\nRecipe URL: #{_('data.workato.job_context.recipe_url')}"
+          },
+          "uuid": "4280ddbc-be31-464e-9f8c-f6cc7ed27a6f",
+          "title": null,
+          "description": null
+         }
+        ],
+        "uuid": "a4f9845b-bb60-407a-9f1f-c4ce4729a7d5"
+       }
+      ],
+      "uuid": "3161f9b2-aecb-4de1-8436-b73f1bd03417"
+     }
+    ],
+    "source": "#{_('data.workato_list.accumulate_list_items.list_items')}",
+    "comment": "Load the workers with an expense report into the database",
+    "uuid": "dca3ab52-f17a-4d5c-972f-7166bff37a1a"
+   }
+  ],
+  "comment": "triggered off a 5 minute interval",
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Scheduled Time"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Total Workers"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Total Workers with expense report"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "=_('data.clock.timer.time').strftime(\"%B %e,%I:%M%p\")",
+   "custom_column_2": "#{_('data.workday.get_report__1.report.first.____Size', 'list_meta', '____Size', 'data.workday.get_report__1.report')}",
+   "custom_column_3": "#{_('data.foreach.foreach__1.size', 'foreach_meta')}"
+  },
+  "uuid": "de635c26-92c8-45a5-8c52-15411e5c5ec3",
+  "param": {}
+ }
+}

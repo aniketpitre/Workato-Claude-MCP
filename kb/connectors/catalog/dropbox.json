@@ -1,0 +1,2983 @@
+{
+ "name": "dropbox",
+ "title": "Dropbox",
+ "requires_connection": true,
+ "categories": [
+  "Document/File",
+  "Marketing"
+ ],
+ "aliases": [
+  "Dropbox"
+ ],
+ "triggers": [
+  {
+   "name": "file_revision",
+   "title": "New file revision",
+   "description": "New file revision in Dropbox",
+   "help": "Monitors a file in Dropbox, and triggers immediately when the file is updated (and a new file revision created). If the file name is changed, updates will no longer be picked up. Picks up file revisions from a day ago when recipe is first started.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_and_csv_tree",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select CSV file to process"
+    },
+    {
+     "name": "obtain_url",
+     "type": "boolean",
+     "label": "Obtain a direct URL to file?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "obtain_url",
+      "type": "boolean"
+     },
+     "hint": "Generate a public URL that is valid for 4 hours"
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "bytes",
+     "type": "integer",
+     "label": "Bytes",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text",
+     "required": true,
+     "hint": "A human-readable description of the file size"
+    },
+    {
+     "name": "mime_type",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text",
+     "required": true,
+     "hint": "Auto detected file MIME type"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "A url that serves the media directly"
+    },
+    {
+     "name": "url_expires",
+     "type": "date_time",
+     "label": "URL expires",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "A date when direct URL expires"
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true,
+     "hint": "A unique identifier for the current revision of a file"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified on Dropbox"
+    },
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "For files, this is the modification time set by the desktop client when the file was added to Dropbox"
+    }
+   ]
+  },
+  {
+   "name": "new_batch_csv_file_lines",
+   "title": "New lines in CSV file",
+   "description": "New lines in CSV file in Dropbox",
+   "help": "On recipe start, trigger will pick up all existing lines in the CSV file. Each batch of lines will be processed as one trigger event. Trigger will not pick up lines subsequently added to the file. Learn more about CSV handling here",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_and_csv_tree",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file",
+      "type": "string"
+     },
+     "hint": "Select CSV file to process"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column separator",
+     "control_type": "select",
+     "required": true,
+     "default": ",",
+     "options": [
+      ",",
+      "space",
+      "tab",
+      "colon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "Delimiter separating the values"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Number of CSV lines in a trigger event. Might be smaller if a batch cannot fit in 524288 bytes."
+    },
+    {
+     "name": "file_encoding_type",
+     "type": "string",
+     "label": "File encoding type",
+     "control_type": "select",
+     "default": "UTF-8",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "toggle_field": {
+      "name": "file_encoding_type",
+      "type": "string"
+     },
+     "hint": "Default encoding type is set to UTF-8 , typically doesn't need to be changed"
+    }
+   ],
+   "output": [
+    {
+     "name": "line_start",
+     "type": "integer",
+     "label": "Line start",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "line_end",
+     "type": "integer",
+     "label": "Line end",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "range_start",
+     "type": "integer",
+     "label": "Range start",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "range_end",
+     "type": "integer",
+     "label": "Range end",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_csv_file_line",
+   "title": "New line in CSV file",
+   "description": "New line in CSV file in Dropbox",
+   "help": "On recipe start, trigger will pick up all existing lines in the CSV file. Each line will be processed as a single trigger event. Trigger will pick up lines subsequently added to new versions of the file.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_and_csv_tree",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file",
+      "type": "string"
+     },
+     "hint": "Select CSV file to process"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column separator",
+     "control_type": "select",
+     "required": true,
+     "default": ",",
+     "options": [
+      ",",
+      "space",
+      "tab",
+      "colon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "Delimiter separating the values"
+    }
+   ],
+   "output": [
+    {
+     "name": "line",
+     "type": "integer",
+     "label": "Line",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_or_changed_file",
+   "title": "New/updated file in directory",
+   "description": "New/updated file in Dropbox",
+   "help": "Triggers when a new file is added or existing file is updated in a specified folder. New and updated files in subfolders will also be picked up. When a file is moved or copied from another folder, trigger picks up only if Timestamp field is set to Server modified . Picks up files created or updated …",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select the folder to monitor for new/updated files. Sub-folders will also be monitored."
+    },
+    {
+     "name": "obtain_url",
+     "type": "boolean",
+     "label": "Obtain a direct URL to file?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "obtain_url",
+      "type": "boolean"
+     },
+     "hint": "Generate a public URL that is valid for only 4 hours"
+    },
+    {
+     "name": "timestamp",
+     "type": "string",
+     "label": "Timestamp",
+     "control_type": "select",
+     "default": "client_modified",
+     "options": [
+      "client_modified",
+      "server_modified"
+     ],
+     "hint": "Trigger picks up files created or updated based on this timestamp. Defaults to Client modified . Once recipe has been run or tested, value should not be changed."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "bytes",
+     "type": "integer",
+     "label": "Bytes",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text",
+     "required": true,
+     "hint": "A human-readable description of the file size"
+    },
+    {
+     "name": "mime_type",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text",
+     "required": true,
+     "hint": "Auto detected file MIME type"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "A url that serves the media directly"
+    },
+    {
+     "name": "url_expires",
+     "type": "date_time",
+     "label": "URL expires",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "A date when direct URL expires"
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true,
+     "hint": "A unique identifier for the current revision of a file"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified on Dropbox"
+    },
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "For files, this is the modification time set by the desktop client when the file was added to Dropbox"
+    }
+   ]
+  },
+  {
+   "name": "new_or_updated_csv_file",
+   "title": "New/updated CSV file in directory",
+   "description": "New/updated CSV file in Dropbox",
+   "help": "Triggers when a new CSV file is added or existing CSV file is updated in a specified folder. New and updated CSV files in subfolders will also be picked up.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up CSV files modified from this specified date and time. Defaults to fetching CSV files created/updated an hour ago if left blank. Once recipe has be…"
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select the folder to monitor for new/updated CSV files. Sub-folders will also be monitored."
+    },
+    {
+     "name": "obtain_url",
+     "type": "boolean",
+     "label": "Obtain a direct URL to file?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "obtain_url",
+      "type": "boolean"
+     },
+     "hint": "Generate a public URL that is valid for only 4 hours"
+    },
+    {
+     "name": "csv_batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Number of CSV rows per batch. Instead of reading rows one by one, Workato reads a batch of CSV rows at a time to increase throughput. Learn more"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "CSV column delimiter",
+     "control_type": "select",
+     "required": true,
+     "default": "comma",
+     "options": [
+      "comma",
+      "space",
+      "tab",
+      "colon",
+      "semicolon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "The character used to separate column values within each CSV line."
+    },
+    {
+     "name": "header_fields",
+     "type": "boolean",
+     "label": "Provide CSV column names manually?",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "header_fields",
+      "type": "boolean"
+     },
+     "hint": "If Yes , provide CSV column names manually. If No , Workato will get the column names from the latest CSV file in your selected folder."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": [
+    {
+     "name": "event",
+     "type": "object",
+     "label": "Event",
+     "required": true,
+     "properties": [
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true,
+       "hint": "File path"
+      },
+      {
+       "name": "bytes",
+       "type": "integer",
+       "label": "Bytes",
+       "control_type": "text",
+       "required": true,
+       "hint": "File size in bytes"
+      },
+      {
+       "name": "size",
+       "type": "string",
+       "label": "Size",
+       "control_type": "text",
+       "required": true,
+       "hint": "A human-readable description of the file size"
+      },
+      {
+       "name": "mime_type",
+       "type": "string",
+       "label": "Mime type",
+       "control_type": "text",
+       "required": true,
+       "hint": "Auto detected file MIME type"
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "text",
+       "required": true,
+       "hint": "A url that serves the media directly"
+      },
+      {
+       "name": "url_expires",
+       "type": "date_time",
+       "label": "URL expires",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "A date when direct URL expires"
+      },
+      {
+       "name": "rev",
+       "type": "string",
+       "label": "Rev",
+       "control_type": "text",
+       "required": true,
+       "hint": "A unique identifier for the current revision of a file"
+      },
+      {
+       "name": "modified",
+       "type": "date_time",
+       "label": "Modified",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "The last time the file was modified on Dropbox"
+      },
+      {
+       "name": "client_mtime",
+       "type": "date_time",
+       "label": "Client modified time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "For files, this is the modification time set by the desktop client when the file was added to Dropbox"
+      },
+      {
+       "name": "is_dir",
+       "type": "boolean",
+       "label": "Is directory?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_dir",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "read_only",
+       "type": "boolean",
+       "label": "Read only",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "read_only",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "modifier",
+       "type": "string",
+       "label": "Modifier",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "content_hash",
+       "type": "string",
+       "label": "Content hash",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "thumb_exists",
+       "type": "boolean",
+       "label": "Thumb exists",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "thumb_exists",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "icon",
+       "type": "string",
+       "label": "Icon",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "first",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "updated_csv_file_line",
+   "title": "New/updated line in CSV file",
+   "description": "New/updated line in CSV file in Dropbox",
+   "help": "CSV file must have a column containing datetime that line was updated (create counts as an update). When recipe is first started, lines updated after the From datetime will be picked up. Subsequently, any line with an updated datetime will be picked up.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_and_csv_tree",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file",
+      "type": "string"
+     },
+     "hint": "Select CSV file to process"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column separator",
+     "control_type": "select",
+     "required": true,
+     "default": ",",
+     "options": [
+      ",",
+      "space",
+      "tab",
+      "colon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "Delimiter separating the values"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up CSV lines updated from this specified date and time. Defaults to fetching CSV lines updated an hour ago if left blank. Once recipe has been run or…"
+    }
+   ],
+   "output": [
+    {
+     "name": "line",
+     "type": "integer",
+     "label": "Line",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Dropbox (Custom)",
+   "help": "Build your own Dropbox action with a HTTP request. The request will be authorized under your Dropbox connection OAuth scopes: Scopes files:read, files:write, folders:read, folders:write",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "copy_file",
+   "title": "Copy file or folder",
+   "description": "Copy file or folder in Dropbox",
+   "help": "Copy a file or folder to a different location in the user's Dropbox. If the source path is a folder all its contents will be copied. Please provide the full path of the file or folder for both source and destination",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "from_path",
+     "type": "string",
+     "label": "From path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path (incl. parent folders) of file/folder to copy. Eg: /folder_1/file_name.doc"
+    },
+    {
+     "name": "to_path",
+     "type": "string",
+     "label": "Destination path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path (incl. parent folders) of destination name. Eg: /folder_2/file_name.doc"
+    },
+    {
+     "name": "autorename",
+     "type": "boolean",
+     "label": "Auto rename",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "autorename",
+      "type": "boolean"
+     },
+     "hint": "If there's a conflict, have the Dropbox server try to autorename the file to avoid the conflict. The default for this field is False ."
+    }
+   ],
+   "output": [
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "content_hash",
+     "type": "string",
+     "label": "Content hash",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "file_lock_info",
+     "type": "object",
+     "label": "File lock info",
+     "required": true,
+     "properties": [
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Created",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "is_lockholder",
+       "type": "boolean",
+       "label": "Is lockholder?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_lockholder",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "lockholder_name",
+       "type": "string",
+       "label": "Lockholder name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "has_explicit_shared_members",
+     "type": "boolean",
+     "label": "Has explicit shared members?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_explicit_shared_members",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_downloadable",
+     "type": "boolean",
+     "label": "Is downloadable?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_downloadable",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "is_dir",
+     "type": "boolean",
+     "label": "Is directory?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_dir",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path_display",
+     "type": "string",
+     "label": "Path display",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path_lower",
+     "type": "string",
+     "label": "Path lower",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "property_groups",
+     "type": "object",
+     "label": "Property groups",
+     "required": true,
+     "properties": [
+      {
+       "name": "template_id",
+       "type": "string",
+       "label": "Template ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fields",
+       "type": "array",
+       "label": "Fields",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Server modified time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "sharing_info",
+     "type": "object",
+     "label": "Sharing info",
+     "required": true,
+     "properties": [
+      {
+       "name": "read_only",
+       "type": "string",
+       "label": "Read only",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "parent_shared_folder_id",
+       "type": "string",
+       "label": "Parent shared folder ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "modified_by",
+       "type": "string",
+       "label": "Modified by",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "bytes",
+     "type": "number",
+     "label": "Bytes",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_folder",
+   "title": "Create folder",
+   "description": "Create folder in Dropbox",
+   "help": "Creates a new folder in Dropbox. Action fails if folder with a duplicate name already exists in the parent folder. Caution: When using an updated team space, creating files or folders directly in the root folder can result in errors.",
+   "input": [
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name for the new folder"
+    },
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select a location to create the new folder"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_dir",
+     "type": "boolean",
+     "label": "Is directory?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_dir",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "create_shared_link",
+   "title": "Create shared link",
+   "description": "Create shared link for a file or folder in Dropbox",
+   "help": "Creates a shared link for a file or folder. Returns an error if a shared link already exists for the given path — use the List shared links action first to check.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File or folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_file_tree_no_root",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select the file or folder to create a shared link for."
+    }
+   ],
+   "output": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "delete_file",
+   "title": "Delete file or folder",
+   "description": "Delete file or folder in Dropbox",
+   "help": "Delete the file or folder at a given path. If the path is a folder, all its contents will be deleted too.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path (incl. parent folders) of file/folder to be deleted. Eg: /folder 1/file name.doc"
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "fetch_deleted_files_and_folders",
+   "title": "Fetch deleted files and folders",
+   "description": "Fetch deleted files and folders in Dropbox",
+   "help": "Retrieves the deleted files and folders of a given path and its subfolders.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select the folder to fetch deleted files."
+    },
+    {
+     "name": "cursor",
+     "type": "string",
+     "label": "Cursor",
+     "control_type": "text",
+     "hint": "Cursor to paginate through the results."
+    }
+   ],
+   "output": [
+    {
+     "name": "entries",
+     "type": "array",
+     "label": "Entries",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "tag",
+       "type": "string",
+       "label": "Tag",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path_lower",
+       "type": "string",
+       "label": "Path lower",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path_display",
+       "type": "string",
+       "label": "Path display",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "preview_url",
+       "type": "string",
+       "label": "Preview URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "cursor",
+     "type": "string",
+     "label": "Cursor",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "file_download",
+   "title": "Download file",
+   "description": "Download file from Dropbox",
+   "help": "Download contents of a file. File contents can be used in subsequent steps of the recipe to upload the file into other applications.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_file_tree",
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Select the file to be downloaded."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": [
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_metadata",
+   "title": "Get metadata of a file or folder",
+   "description": "Get metadata of a file or folder in Dropbox",
+   "help": "Returns the metadata for a file or folder. Note: Metadata for the root folder is unsupported.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "The path of a file or folder on Dropbox. Eg: /folder_1/file_name.doc"
+    },
+    {
+     "name": "include_deleted",
+     "type": "boolean",
+     "label": "Include deleted?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "include_deleted",
+      "type": "boolean"
+     },
+     "hint": "If Yes , Deleted metadata will be returned for deleted file or folder, otherwise LookupError.not_found will be returned. The default is No"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_dir",
+     "type": "boolean",
+     "label": "Is directory?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_dir",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "bytes",
+     "type": "number",
+     "label": "Bytes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "tag",
+     "type": "string",
+     "label": "Tag",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_downloadable",
+     "type": "boolean",
+     "label": "Is downloadable?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_downloadable",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "content_hash",
+     "type": "string",
+     "label": "Content hash",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_temporary_link",
+   "title": "Get temporary link",
+   "description": "Get temporary link for a file in Dropbox",
+   "help": "Generates a temporary direct download link for a Dropbox file. The link can be used without authentication for the duration of its validity.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_file_tree",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select the file."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "File ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size_bytes",
+     "type": "integer",
+     "label": "Size bytes",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "server_modified",
+     "type": "string",
+     "label": "Server modified",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "client_modified",
+     "type": "string",
+     "label": "Client modified",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "content_hash",
+     "type": "string",
+     "label": "Content hash",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_downloadable",
+     "type": "boolean",
+     "label": "Is downloadable?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_downloadable",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "temporary_link",
+     "type": "string",
+     "label": "Temporary link",
+     "control_type": "url",
+     "required": true,
+     "hint": "Direct download URL valid for 4 hours"
+    }
+   ]
+  },
+  {
+   "name": "list_folder_contents",
+   "title": "List folder contents",
+   "description": "List files and folders in Dropbox",
+   "help": "List files and folders within a Dropbox folder. Supports cursor-based pagination.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select the folder to list contents of. Leave blank to list the root folder."
+    },
+    {
+     "name": "cursor",
+     "type": "string",
+     "label": "Next page cursor",
+     "control_type": "text",
+     "hint": "Cursor from a previous response to fetch the next page. Leave blank for first page."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "hint": "Number of items to return per page, 1–2000."
+    }
+   ],
+   "output": [
+    {
+     "name": "items",
+     "type": "array",
+     "label": "Entries",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true,
+       "hint": "file or folder"
+      },
+      {
+       "name": "size_bytes",
+       "type": "integer",
+       "label": "Size bytes",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "last_modified",
+       "type": "string",
+       "label": "Last modified",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_cursor",
+     "type": "string",
+     "label": "Next cursor",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "list_shared_links",
+   "title": "List shared links",
+   "description": "List shared links in Dropbox",
+   "help": "List shared links for a specific file or folder, or all shared links. When Has more is true, pass the Next cursor into the next action call to retrieve the remaining links.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File or folder",
+     "control_type": "tree",
+     "pick_list": "get_file_tree_no_root",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Optional. Select a file or folder to filter shared links by. Leave empty to list all."
+    },
+    {
+     "name": "direct_only",
+     "type": "boolean",
+     "label": "Direct links only?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "direct_only",
+      "type": "boolean"
+     },
+     "hint": "If Yes , return only links that directly point to the given path. If No , also includes links inherited from parent folders. Only applies when a path is specified."
+    },
+    {
+     "name": "cursor",
+     "type": "string",
+     "label": "Next page cursor",
+     "control_type": "text",
+     "hint": "Pass the Next cursor from a previous response when Has more is true to retrieve the next page. Leave blank for first page."
+    }
+   ],
+   "output": [
+    {
+     "name": "items",
+     "type": "array",
+     "label": "Shared links",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "url",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "has_more",
+     "type": "boolean",
+     "label": "Has more?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "has_more",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_cursor",
+     "type": "string",
+     "label": "Next cursor",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "move_file",
+   "title": "Move/rename file or folder",
+   "description": "Move/rename file or folder in Dropbox",
+   "help": "To rename a file/folder, simply change the file/folder name at the end of the path, e.g. folder 1/file 1.docx to folder 1/file 2.docx . To move a file/folder, change the path to that file/folder, e.g. folder 1/file 1.docx to folder 2/file 1.docx .",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "from_path",
+     "type": "string",
+     "label": "From path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path (incl. parent folders) of file/folder to move. Eg: /folder 1/file name.doc"
+    },
+    {
+     "name": "to_path",
+     "type": "string",
+     "label": "Destination path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path (incl. parent folders) of destination name. Eg: /folder 2/file name.doc"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_dir",
+     "type": "boolean",
+     "label": "Is directory?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_dir",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "bytes",
+     "type": "number",
+     "label": "Bytes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "read_csv_file_lines",
+   "title": "Read CSV file lines",
+   "description": "Read CSV file lines from Dropbox",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_and_csv_tree",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file",
+      "type": "string"
+     },
+     "hint": "Select CSV file to process"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column separator",
+     "control_type": "select",
+     "required": true,
+     "default": ",",
+     "options": [
+      ",",
+      "space",
+      "tab",
+      "colon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "Delimiter separating the values"
+    },
+    {
+     "name": "header_fields",
+     "type": "boolean",
+     "label": "Add column names manually",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "header_fields",
+      "type": "boolean"
+     },
+     "hint": "Set column name from the input field below. Otherwise the first line of the selected CSV file will be taken to get column names."
+    },
+    {
+     "name": "column_names",
+     "type": "string",
+     "label": "Column names",
+     "control_type": "text-area",
+     "extends_schema": true,
+     "hint": "Input one column names per line"
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "revoke_shared_link",
+   "title": "Revoke shared link",
+   "description": "Revoke shared link in Dropbox",
+   "help": "Revokes a shared link permanently, making it inaccessible to anyone with the link.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "Shared link URL",
+     "control_type": "url",
+     "required": true,
+     "hint": "Shared link URL to revoke, e.g. https://www.dropbox.com/s/..."
+    }
+   ],
+   "output": [
+    {
+     "name": "revoked_url",
+     "type": "string",
+     "label": "Revoked URL",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_files",
+   "title": "Search files",
+   "description": "Search files in Dropbox",
+   "help": "Retrieves a list of files whose name contains the search keywords. Partial matches are also returned.",
+   "input": [
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search keywords",
+     "control_type": "text",
+     "hint": "Separate keywords with spaces. Search will return files containing all entered keywords in name. Example: csv"
+    },
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Search is performed on this folder as well as its sub-folders."
+    },
+    {
+     "name": "advanced_search_input",
+     "type": "object",
+     "label": "Advanced search settings",
+     "properties": [
+      {
+       "name": "cursor",
+       "type": "string",
+       "label": "Next page cursor",
+       "control_type": "text",
+       "hint": "Cursor to paginate through the results."
+      },
+      {
+       "name": "max_results",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "integer",
+       "hint": "Number of results per page. Minimum is 1 and maximum is 1000 . Defaults to 100"
+      },
+      {
+       "name": "order_by",
+       "type": "string",
+       "label": "Order by",
+       "control_type": "select",
+       "options": [
+        "relevance",
+        "last_modified_time"
+       ],
+       "hint": "Specified property of the order of search results. If left blank, results are sorted by relevance ."
+      },
+      {
+       "name": "filename_only",
+       "type": "boolean",
+       "label": "Filename only?",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "filename_only",
+        "type": "boolean"
+       },
+       "hint": "Restricts search to only match on filenames. If left blank, this field is false"
+      },
+      {
+       "name": "file_extensions",
+       "type": "array",
+       "label": "File extensions",
+       "control_type": "text",
+       "of": "string",
+       "hint": "Restricts search to only the extensions specified. Only supported for active file search. Enter an array of strings eg. [\"png\", \"csv\"]"
+      },
+      {
+       "name": "file_categories",
+       "type": "string",
+       "label": "File categories",
+       "control_type": "multiselect",
+       "options": [
+        "image",
+        "document",
+        "pdf",
+        "spreadsheet",
+        "presentation",
+        "audio",
+        "video",
+        "paper",
+        "others"
+       ],
+       "hint": "Restricts search to only the file categories specified. Only supported for active file search. Defaults to all categories if left blank."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path_lower",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "is_dir",
+       "type": "boolean",
+       "label": "Is directory?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_dir",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "rev",
+       "type": "string",
+       "label": "Rev",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "bytes",
+       "type": "number",
+       "label": "Bytes",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "size",
+       "type": "number",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "modified",
+       "type": "date_time",
+       "label": "Modified",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "client_mtime",
+       "type": "date_time",
+       "label": "Client modified time",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "cursor",
+     "type": "string",
+     "label": "Next page cursor",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_folder",
+   "title": "Search folders",
+   "description": "Search folders in Dropbox",
+   "help": "Retrieves a list of folders whose name contains the search keywords. Partial matches are also returned.",
+   "input": [
+    {
+     "name": "search_keyword",
+     "type": "string",
+     "label": "Search keywords",
+     "control_type": "text",
+     "hint": "Separate keywords with spaces. Search will return folders containing all entered keywords in name. Example: Receipts"
+    },
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Search is performed on this folder as well as its sub-folders."
+    },
+    {
+     "name": "advanced_search_input",
+     "type": "object",
+     "label": "Advanced search settings",
+     "properties": [
+      {
+       "name": "cursor",
+       "type": "string",
+       "label": "Next page cursor",
+       "control_type": "text",
+       "hint": "Cursor to paginate through the results."
+      },
+      {
+       "name": "max_results",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "integer",
+       "hint": "Number of results per page. Minimum is 1 and maximum is 1000 . Defaults to 100"
+      },
+      {
+       "name": "order_by",
+       "type": "string",
+       "label": "Order by",
+       "control_type": "select",
+       "options": [
+        "relevance",
+        "last_modified_time"
+       ],
+       "hint": "Specified property of the order of search results. If left blank, results are sorted by relevance ."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "folders",
+     "type": "array",
+     "label": "Folders",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "path",
+       "type": "string",
+       "label": "Path",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "is_dir",
+       "type": "boolean",
+       "label": "Is directory?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_dir",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "cursor",
+     "type": "string",
+     "label": "Next page cursor",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "update_csv_file",
+   "title": "Update CSV file in dropbox",
+   "description": "Update CSV file in dropbox",
+   "help": "The size of the file after appending should not exceed 150MB.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_and_csv_tree",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file",
+      "type": "string"
+     },
+     "hint": "Select CSV file to process"
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column separator",
+     "control_type": "select",
+     "required": true,
+     "default": ",",
+     "options": [
+      ",",
+      "space",
+      "tab",
+      "colon",
+      "pipe"
+     ],
+     "extends_schema": true,
+     "hint": "Delimiter separating the values"
+    },
+    {
+     "name": "file_encoding_type",
+     "type": "string",
+     "label": "File encoding type",
+     "control_type": "select",
+     "default": "UTF-8",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "toggle_field": {
+      "name": "file_encoding_type",
+      "type": "string"
+     },
+     "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed."
+    },
+    {
+     "name": "append",
+     "type": "boolean",
+     "label": "Append",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "append",
+      "type": "boolean"
+     },
+     "hint": "Setting to Yes appends content to existing file, setting to No overwrites the existing file"
+    },
+    {
+     "name": "obtain_url",
+     "type": "boolean",
+     "label": "Obtain a direct URL to file?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "obtain_url",
+      "type": "boolean"
+     },
+     "hint": "Generate a public URL that is valid for only 4 hours"
+    },
+    {
+     "name": "column_headers",
+     "type": "string",
+     "label": "Column headers",
+     "control_type": "text-area",
+     "extends_schema": true,
+     "hint": "Enter column names, each on a new line. By default, the column names of the given CSV file will be retrieved."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "bytes",
+     "type": "integer",
+     "label": "Bytes",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text",
+     "required": true,
+     "hint": "A human-readable description of the file size"
+    },
+    {
+     "name": "mime_type",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text",
+     "required": true,
+     "hint": "Auto detected file MIME type"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "A url that serves the media directly"
+    },
+    {
+     "name": "url_expires",
+     "type": "date_time",
+     "label": "URL expires",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "A date when direct URL expires"
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true,
+     "hint": "A unique identifier for the current revision of a file"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified on Dropbox"
+    },
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "For files, this is the modification time set by the desktop client when the file was added to Dropbox"
+    }
+   ]
+  },
+  {
+   "name": "upload_file_content_stream",
+   "title": "Upload file using file contents",
+   "description": "Upload file to Dropbox using file contents",
+   "help": "Upload any file to Dropbox by providing the file contents. If a file with the same name already exists in the folder, action will fail. Caution: When using an updated team space, creating files or folders directly in the root folder can result in errors.",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select the folder where the new file will be uploaded"
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Name for the uploaded file"
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "File contents can be obtained using action Download file in Dropbox connector or other connectors."
+    },
+    {
+     "name": "obtain_url",
+     "type": "boolean",
+     "label": "Obtain a direct URL to file?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "obtain_url",
+      "type": "boolean"
+     },
+     "hint": "Generate a public URL that is valid for 4 hours"
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "bytes",
+     "type": "integer",
+     "label": "Bytes",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text",
+     "required": true,
+     "hint": "A human-readable description of the file size"
+    },
+    {
+     "name": "mime_type",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text",
+     "required": true,
+     "hint": "Auto detected file MIME type"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "A url that serves the media directly"
+    },
+    {
+     "name": "url_expires",
+     "type": "date_time",
+     "label": "URL expires",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "A date when direct URL expires"
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true,
+     "hint": "A unique identifier for the current revision of a file"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified on Dropbox"
+    },
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "For files, this is the modification time set by the desktop client when the file was added to Dropbox"
+    }
+   ]
+  },
+  {
+   "name": "upload_file_from_url",
+   "title": "Upload file from URL",
+   "description": "Upload file from public URL to Dropbox",
+   "help": "Upload a file to Dropbox by providing as input the public URL where the file can be found. If a file with the same name already exists in the folder, action will fail. Caution: When using an updated team space, creating files or folders directly in the root folder can result in errors.",
+   "input": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "Source URL",
+     "control_type": "url",
+     "required": true,
+     "hint": "Upload file from this public URL"
+    },
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "get_folder_tree",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Select the folder where the new file will be uploaded"
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "hint": "Name for the uploaded file. If not entered, the name is automatically determined from the source URL."
+    },
+    {
+     "name": "obtain_url",
+     "type": "boolean",
+     "label": "Obtain a direct URL to file?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "toggle_field": {
+      "name": "obtain_url",
+      "type": "boolean"
+     },
+     "hint": "Generate a public URL that is valid for only 4 hours"
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "bytes",
+     "type": "integer",
+     "label": "Bytes",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "size",
+     "type": "string",
+     "label": "Size",
+     "control_type": "text",
+     "required": true,
+     "hint": "A human-readable description of the file size"
+    },
+    {
+     "name": "mime_type",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text",
+     "required": true,
+     "hint": "Auto detected file MIME type"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "A url that serves the media directly"
+    },
+    {
+     "name": "url_expires",
+     "type": "date_time",
+     "label": "URL expires",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "A date when direct URL expires"
+    },
+    {
+     "name": "rev",
+     "type": "string",
+     "label": "Rev",
+     "control_type": "text",
+     "required": true,
+     "hint": "A unique identifier for the current revision of a file"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Modified",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified on Dropbox"
+    },
+    {
+     "name": "client_mtime",
+     "type": "date_time",
+     "label": "Client modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "For files, this is the modification time set by the desktop client when the file was added to Dropbox"
+    }
+   ]
+  },
+  {
+   "name": "upload_multiline_file",
+   "title": "Upload multiline file",
+   "description": "Upload multiline file to Dropbox",
+   "input": [
+    {
+     "name": "account_type",
+     "type": "string",
+     "label": "Account type",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "personal",
+     "pick_list": "account_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "account_type",
+      "type": "string"
+     },
+     "hint": "Default account type is set to Personal ."
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full file path including extension and folders, e.g. /folder 1/folder2/filename.txt"
+    },
+    {
+     "name": "header_line",
+     "type": "string",
+     "label": "Header line",
+     "control_type": "text",
+     "hint": "A newline will be added to the end of this line unless it already ends with one"
+    },
+    {
+     "name": "content_lines",
+     "type": "array",
+     "label": "Content lines",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "line",
+       "type": "string",
+       "label": "Line",
+       "control_type": "text",
+       "required": true,
+       "hint": "A newline will be added to the end of each line unless it already ends with one"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path_lower",
+     "type": "string",
+     "label": "Lower case path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "path_display",
+     "type": "string",
+     "label": "Display path",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

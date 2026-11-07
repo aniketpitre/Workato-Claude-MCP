@@ -1,0 +1,307 @@
+{
+ "id": 899241,
+ "name": "Sync Snowflake rows to Salesforce Marketing Cloud",
+ "description": "1. Every new scheduled event is created in Scheduler.\n2. Workato selects rows using SQL commands in Snowflake.\n3. Workato bulk upserts the rows selected from Snowflake in data extension in Salesforce Marketing Cloud.",
+ "applications": [
+  "clock",
+  "snowflake",
+  "salesforce_marketing_cloud"
+ ],
+ "action_applications": [
+  "snowflake",
+  "salesforce_marketing_cloud"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [],
+ "categories": [
+  "Recipe Tools",
+  "Database",
+  "Marketing"
+ ],
+ "copy_count": 59,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2019-02-22T04:58:17.882-08:00",
+ "source_url": "https://app.workato.com/recipes/899241?community=us",
+ "steps": [
+  "clock.timer",
+  "snowflake.search_rows_sql",
+  "salesforce_marketing_cloud.upsert_data_extension_row_bulk"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "timer",
+  "as": "a25cd59e",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "interval": "10080"
+  },
+  "block": [
+   {
+    "number": 1,
+    "provider": "snowflake",
+    "name": "search_rows_sql",
+    "as": "dfbf784a",
+    "title": "Select rows using custom SQL",
+    "description": "Select <span class=\"provider\">rows</span> using <span class=\"provider\">custom SQL</span> in <span class=\"provider\">Snowflake</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "sql": "SELECT * FROM DEMO_DB.\"PUBLIC\".SFMCPROD;"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "ID",
+        "parse_output": "parse_integer_output",
+        "details": {
+         "primary_key": false,
+         "data_type": "number",
+         "column_name": "ID",
+         "length": 38,
+         "precision": 38,
+         "scale": 0
+        },
+        "optional": true,
+        "hint": "number, max length 38",
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "NAME",
+        "details": {
+         "primary_key": false,
+         "data_type": "varchar",
+         "column_name": "NAME",
+         "length": 50,
+         "precision": 50,
+         "scale": 0
+        },
+        "parse_output": "fix_encoding",
+        "optional": true,
+        "hint": "varchar, max length 50",
+        "type": "string",
+        "name": "name"
+       },
+       {
+        "control_type": "integer",
+        "label": "PRICE",
+        "parse_output": "parse_integer_output",
+        "details": {
+         "primary_key": false,
+         "data_type": "number",
+         "column_name": "PRICE",
+         "length": 38,
+         "precision": 38,
+         "scale": 0
+        },
+        "optional": true,
+        "hint": "number, max length 38",
+        "type": "integer",
+        "name": "price"
+       },
+       {
+        "control_type": "integer",
+        "label": "QUANTITY",
+        "parse_output": "parse_integer_output",
+        "details": {
+         "primary_key": false,
+         "data_type": "number",
+         "column_name": "QUANTITY",
+         "length": 38,
+         "precision": 38,
+         "scale": 0
+        },
+        "optional": true,
+        "hint": "number, max length 38",
+        "type": "integer",
+        "name": "quantity"
+       }
+      ],
+      "order_by_hint": false
+     }
+    ],
+    "visible_config_fields": [
+     "sql"
+    ],
+    "comment": "Select rows from Snowflake using custom SQL commands",
+    "uuid": "b1baf1ad-3e2b-48e0-808d-46bd5347ddc6"
+   },
+   {
+    "number": 2,
+    "provider": "salesforce_marketing_cloud",
+    "name": "upsert_data_extension_row_bulk",
+    "as": "49b1db75",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "key": "Products",
+     "field_list": [
+      {
+       "label": "Quantity in hand",
+       "value": "Quantity in hand"
+      },
+      {
+       "label": "Price",
+       "value": "Price"
+      },
+      {
+       "label": "Name",
+       "value": "Name"
+      },
+      {
+       "label": "ID",
+       "value": "ID"
+      }
+     ]
+    },
+    "toggleCfg": {
+     "key": true
+    },
+    "input": {
+     "key": "4CB2F722-7943-4FA5-A780-F689EA3E4059",
+     "rows": {
+      "____source": "#{_('data.snowflake.dfbf784a.rows')}",
+      "keys": {
+       "quantity__in__hand": "#{_('data.snowflake.dfbf784a.rows.first.quantity')}",
+       "price": "#{_('data.snowflake.dfbf784a.rows.first.price')}",
+       "name": "#{_('data.snowflake.dfbf784a.rows.first.name')}",
+       "id": "#{_('data.snowflake.dfbf784a.rows.first.id')}"
+      }
+     },
+     "field_list": "Quantity in hand\nPrice\nName\nID"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Quantity in hand",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "quantity__in__hand"
+         },
+         {
+          "control_type": "number",
+          "label": "Price",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "price"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "type": "string",
+          "name": "name"
+         },
+         {
+          "control_type": "text",
+          "label": "ID",
+          "optional": false,
+          "type": "string",
+          "name": "id"
+         }
+        ],
+        "label": "Primary key field(s)",
+        "type": "object",
+        "name": "keys"
+       }
+      ]
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Quantity in hand",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "quantity__in__hand",
+          "parent": "rows.keys"
+         },
+         {
+          "control_type": "number",
+          "label": "Price",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "type": "integer",
+          "name": "price",
+          "parent": "rows.keys"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "type": "string",
+          "name": "name",
+          "parent": "rows.keys"
+         },
+         {
+          "control_type": "text",
+          "label": "ID",
+          "optional": false,
+          "type": "string",
+          "name": "id",
+          "parent": "rows.keys"
+         }
+        ],
+        "label": "Primary key field(s)",
+        "type": "object",
+        "name": "keys",
+        "parent": "rows"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "key",
+     "field_list",
+     "rows",
+     "rows.keys",
+     "rows.keys.quantity__in__hand",
+     "rows.keys.price",
+     "rows.keys.name"
+    ],
+    "comment": "Selected rows are Bulk upserted in data extension in Salesforce Marketing Cloud",
+    "uuid": "287c7805-af34-4b05-9bfa-bbcf4348f79f"
+   }
+  ],
+  "comment": "Recipe is triggered in the specified time interval",
+  "uuid": "1d3c5162-4991-4d55-a97d-6fdf59bebde0",
+  "param": {}
+ }
+}

@@ -1,0 +1,320 @@
+{
+ "name": "confluent_cloud",
+ "title": "Confluent Cloud",
+ "requires_connection": true,
+ "categories": [
+  "messaging",
+  "Marketing"
+ ],
+ "aliases": [
+  "Confluent Cloud",
+  "kafka",
+  "messaging"
+ ],
+ "triggers": [
+  {
+   "name": "new_message",
+   "title": "New message in topic",
+   "description": "New message in Confluent Cloud topic",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "confluent"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure your registry credentials."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"confluent\"}} Select from your Confluent schema registry. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update sc…"
+    },
+    {
+     "name": "auto_offset",
+     "type": "string",
+     "label": "Initial offset",
+     "control_type": "select",
+     "options": [
+      "earliest",
+      "latest"
+     ],
+     "hint": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server. Defaults to Earliest ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_message_batch",
+   "title": "New messages in topic",
+   "description": "New messages in Confluent Cloud topic",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "confluent"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure your registry credentials."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"confluent\"}} Select from your Confluent schema registry. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update sc…"
+    },
+    {
+     "name": "auto_offset",
+     "type": "string",
+     "label": "Initial offset",
+     "control_type": "select",
+     "options": [
+      "earliest",
+      "latest"
+     ],
+     "hint": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server. Defaults to Earliest ."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "text",
+     "required": true,
+     "default": "100",
+     "hint": "Select size of returned events batch Ranging from 1 to 100. Default is 100."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "publish_to_topic",
+   "title": "Publish message",
+   "description": "Publish message to Confluent Cloud topic",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "confluent"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure your registry credentials."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"confluent\"}} Select from your Confluent schema registry. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update sc…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "publish_to_topic_batch",
+   "title": "Publish messages",
+   "description": "Publish multiple messages to Confluent Cloud topic",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "confluent"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure your registry credentials."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"confluent\"}} Select from your Confluent schema registry. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update sc…"
+    }
+   ],
+   "output": [
+    {
+     "name": "failed_messages",
+     "type": "array",
+     "label": "Failed messages",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "index",
+       "type": "integer",
+       "label": "Message index",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "error",
+       "type": "string",
+       "label": "Error",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

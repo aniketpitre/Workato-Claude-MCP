@@ -1,0 +1,3744 @@
+{
+ "id": 65183242,
+ "name": "Customer_File_Trigger___S3",
+ "description": "When there is a trigger event, do action",
+ "applications": [
+  "amazon_s3",
+  "workato_template",
+  "email",
+  "workato_variable",
+  "lookup_table",
+  "workato_recipe_function",
+  "csv_parser",
+  "workato_db_table",
+  "clock"
+ ],
+ "action_applications": [
+  "workato_template",
+  "email",
+  "workato_variable",
+  "lookup_table",
+  "workato_recipe_function",
+  "csv_parser",
+  "workato_db_table",
+  "clock"
+ ],
+ "trigger_application": "amazon_s3",
+ "business_objects": [
+  "email",
+  "4377299",
+  "41520",
+  "42625"
+ ],
+ "categories": [
+  "Developer Tool",
+  "Marketing",
+  "Recipe Tools",
+  "Workato",
+  "Data Parser",
+  "Utilities"
+ ],
+ "copy_count": 5,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2025-10-16T06:46:36.206-07:00",
+ "source_url": "https://app.workato.com/recipes/65183242?community=us",
+ "steps": [
+  "amazon_s3.new_updated_file",
+  "workato_template.create_document",
+  "email.send_mail",
+  "amazon_s3.upload_file_streaming",
+  "workato_variable.declare_variable",
+  "lookup_table.search_entries",
+  "workato_template.create_document",
+  "email.send_mail",
+  "amazon_s3.upload_file_streaming",
+  "lookup_table.add_entry",
+  "workato_variable.declare_variable",
+  "lookup_table.update_entry",
+  "workato_recipe_function.call_recipe",
+  "lookup_table.search_entries",
+  "workato_recipe_function.call_recipe",
+  "csv_parser.parse_csv",
+  "workato_recipe_function.call_recipe",
+  "lookup_table.delete_entry",
+  "workato_recipe_function.call_recipe",
+  "lookup_table.delete_entry",
+  "workato_recipe_function.call_recipe",
+  "workato_db_table.add_record",
+  "workato_variable.declare_variable",
+  "clock.wait_for_interval",
+  "lookup_table.search_entries",
+  "workato_db_table.get_records",
+  "workato_db_table.get_records",
+  "workato_recipe_function.call_recipe_async",
+  "workato_recipe_function.call_recipe_async",
+  "workato_recipe_function.call_recipe_async",
+  "workato_variable.update_variables",
+  "workato_template.create_document",
+  "email.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "amazon_s3",
+  "name": "new_updated_file",
+  "as": "a2602b25",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "prefix": {
+    "ids": [
+     "TangoTargetedSpend/",
+     "TangoTargetedSpend/Incoming/"
+    ],
+    "titles": [
+     "TangoTargetedSpend/",
+     "TangoTargetedSpend/Incoming/"
+    ]
+   }
+  },
+  "toggleCfg": {
+   "prefix": true
+  },
+  "input": {
+   "include_subfolders": "false",
+   "prefix": "TangoTargetedSpend/Incoming/"
+  },
+  "extended_input_schema": [
+   {
+    "control_type": "text",
+    "label": "Region",
+    "name": "region",
+    "ngIf": "false",
+    "optional": true,
+    "override": true,
+    "type": "string"
+   },
+   {
+    "control_type": "tree",
+    "hint": "Choose the folder path to monitor. Leave it blank if all files/objects are to be monitored.",
+    "label": "Folder",
+    "name": "prefix",
+    "optional": true,
+    "pick_list": "folders_tree",
+    "pick_list_unlinked_params": {
+     "bucket": "bucket",
+     "region": "region"
+    },
+    "sticky": true,
+    "toggle_field": {
+     "name": "prefix",
+     "optional": true,
+     "label": "Folder name",
+     "toggle_hint": "Enter folder name",
+     "type": "string",
+     "control_type": "text",
+     "hint": "Enter the path to monitor. Specify a folder or sub-folder path with a “/” at the end. For ex. <b>folder/subfolder1/</b>."
+    },
+    "toggle_hint": "Select a folder",
+    "tree_options": {
+     "selectable_folder": true
+    },
+    "type": "string"
+   },
+   {
+    "control_type": "checkbox",
+    "default": true,
+    "hint": "Select this option if you wish to monitor files/objects of sub-folders present in the source folder. Defaults to <b>No</b> if <b>Restrict to Path</b> is specified in connection. Otherwise, defaults to <b>Yes</b>.",
+    "label": "Include Sub-Folders?",
+    "name": "include_subfolders",
+    "optional": true,
+    "parse_output": "boolean_conversion",
+    "type": "number",
+    "render_input": "boolean_conversion"
+   },
+   {
+    "control_type": "number",
+    "hint": "Download this many kilobytes at a time. Default is <b>1024 (1MB)</b>, minimum is <b>32 (KB)</b>",
+    "label": "Download chunk size in kilobytes",
+    "name": "chunk_size",
+    "ngIf": "!!input.chunk_size",
+    "optional": true,
+    "parse_output": "integer_conversion",
+    "type": "integer"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "is_not_true",
+       "lhs": "=['csv'].include?(_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Key\"]}').split('/').last.split('.').last.downcase)\n",
+       "rhs": "",
+       "uuid": "f5d2054b-0a04-4fc1-b692-82f1b83646fd"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "workato_template",
+      "name": "create_document",
+      "as": "951842b8",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "template_id": "Order Confirmation"
+      },
+      "input": {
+       "template_id": "116481",
+       "template_input": {
+        "message_header": "=\"Unsupported file type\"+_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Key\"]}').split('/').last",
+        "message_body": "=\"The file\" +_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Key\"]}').split('/').last + \"type is unsupported.\""
+       }
+      },
+      "extended_input_schema": [
+       {
+        "label": "Template input",
+        "name": "template_input",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Message header",
+          "name": "message_header",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Message body",
+          "name": "message_body",
+          "type": "string",
+          "optional": false
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "bf135f37-1ce1-46dc-b5ac-ebd10644245c",
+      "title": null,
+      "description": "Create <span class=\"provider\">message</span> using <span class=\"provider\">Order Confirmation</span> template"
+     },
+     {
+      "number": 3,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "ea44f8b4",
+      "keyword": "action",
+      "input": {
+       "email_type": "-- REDACTED --",
+       "subject": "Tango Card | File Not Processed ",
+       "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_template\",\"line\":\"951842b8\",\"path\":[\"document\"]}')}",
+       "to": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_to_send_email\"}')}"
+      },
+      "visible_config_fields": [
+       "to",
+       "subject",
+       "email_type",
+       "body",
+       "attachments.file_name",
+       "attachments.file_binary_content"
+      ],
+      "comment": "We will not process a file that contains more than 10,000 rows",
+      "uuid": "a47a19da-2e10-4bd6-9505-1c5b3ae9afcd",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 4,
+      "provider": "amazon_s3",
+      "name": "upload_file_streaming",
+      "as": "aa0fc922",
+      "keyword": "action",
+      "input": {
+       "accelerate": "false",
+       "object_name": "=_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_download_directory\"}')+ _dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Key\"]}').split('/').last.sub(/\\.[^\\.]+$/, '') +\"_Err.csv\"",
+       "file": "=\"Unsupported file type,\" + _dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Key\"]}').split('/').last"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "text",
+        "hint": "Folder path of the object from the bucket to monitor. For example, <b>subfolder001/subfolder002/subfolder003/</b>. Ensure this to be exact, as name of object/file is case-sensitive. Refer to <a href='https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html' target='_blank'>AWS prefix docs</a> for more information.",
+        "label": "Object name",
+        "name": "object_name",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "hint": "The file contents to upload",
+        "label": "Contents",
+        "name": "file",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "strip_interpolation": true
+       },
+       {
+        "control_type": "number",
+        "default": "false",
+        "hint": "                Default is <b>false</b>. Enter <b>true</b> to use accelerated endpoint.\n                Go to <b>Bucket</b>><b>Properties</b>><b>Transfer acceleration</b> to check if accelerated endpoint is enabled\n",
+        "label": "Use accelerated endpoint",
+        "name": "accelerate",
+        "optional": true,
+        "parse_output": "float_conversion",
+        "sticky": true,
+        "type": "number"
+       },
+       {
+        "control_type": "select",
+        "hint": "                Learn more about canned ACL\n                <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl\" target=\"_blank\">here</a>.\n",
+        "label": "Canned ACL",
+        "name": "canned_permission",
+        "optional": true,
+        "pick_list": [
+         [
+          "Private",
+          "private"
+         ],
+         [
+          "Public  read",
+          "public-read"
+         ],
+         [
+          "Public  read  write",
+          "public-read-write"
+         ],
+         [
+          "AW s  exec  read",
+          "aws-exec-read"
+         ],
+         [
+          "Authenticated  read",
+          "authenticated-read"
+         ],
+         [
+          "Bucket  owner  read",
+          "bucket-owner-read"
+         ],
+         [
+          "Bucket  owner  full  control",
+          "bucket-owner-full-control"
+         ],
+         [
+          "Log  delivery  write",
+          "log-delivery-write"
+         ]
+        ],
+        "sticky": true,
+        "toggle_field": {
+         "type": "array",
+         "name": "explicit_permissions",
+         "label": "Explicit permissions",
+         "control_type": "key_value",
+         "optional": true,
+         "toggle_hint": "Use explicit permissions",
+         "empty_list_title": "Does this HTTP request require headers?",
+         "empty_list_text": "Refer to the API documentation and add required headers to this HTTP request",
+         "item_label": "Header",
+         "properties": [
+          {
+           "name": "name",
+           "label": "Permission name"
+          },
+          {
+           "name": "value",
+           "label": "Grantee",
+           "placeholder": "Email, user ID or group URI"
+          }
+         ],
+         "hint": "                  Learn more about Access Control List (ACL) specific request headers\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/archive-RESTObjectPUTacl.html\" target=\"_blank\">here</a>.\n"
+        },
+        "toggle_hint": "Select canned ACL",
+        "type": "string"
+       }
+      ],
+      "uuid": "7cee323b-ccb7-4c5c-943c-3a9a343ae9ea",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 5,
+      "as": "b24a779f",
+      "keyword": "stop",
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "a0012456-e441-4260-90e2-968e89170d53"
+     }
+    ],
+    "uuid": "bd89cc6a-4e2c-4841-a9dc-c0f03d72339a"
+   },
+   {
+    "number": 6,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "48cb84b8",
+    "keyword": "action",
+    "input": {
+     "variables": {
+      "schema": "[{\"name\":\"file_name\",\"type\":\"string\",\"optional\":true,\"label\":\"File Name\",\"details\":{\"real_name\":\"File Name\"},\"control_type\":\"text\",\"parent\":[\"variables\",\"data\"]}]",
+      "data": {
+       "file_name": "=_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Key\"]}').split('/').last.sub(/\\.[^\\.]+$/, '')"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "label": "File Name",
+      "name": "file_name",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "File Name"
+      }
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_field_label": "Add a variable",
+      "control_type": "form-schema-builder",
+      "empty_schema_title": "Add variables by giving them a name, type and default value",
+      "exclude_fields": [
+       "hint"
+      ],
+      "item_label": "variable",
+      "label": "Variables",
+      "mark_as_required": true,
+      "name": "variables",
+      "ngIf": "!input.name",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "File Name",
+          "name": "file_name",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "File Name"
+          },
+          "parent": [
+           "variables",
+           "data"
+          ],
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.file_name"
+    ],
+    "uuid": "9d661454-08eb-4cc6-8734-d64a07caeb98",
+    "title": "  Create variable File Name",
+    "description": "Create variable <span class=\"provider\">File Name</span>"
+   },
+   {
+    "number": 7,
+    "provider": "lookup_table",
+    "name": "search_entries",
+    "as": "faec3aad",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "lookup_table_id": "SH Targeted Spend - File Uploads"
+    },
+    "input": {
+     "lookup_table_id": "4377299",
+     "parameters": {
+      "col1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Entries",
+      "name": "entries",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Entry ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Filename",
+          "name": "col1",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Date",
+          "name": "col2",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Rows",
+          "name": "col3",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Errors",
+          "name": "col4",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Filehash",
+          "name": "col5",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Processed",
+          "name": "col6",
+          "type": "string",
+          "sticky": true
+         }
+        ],
+        "label": "Entry",
+        "type": "object",
+        "name": "entry"
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Provide one or more entry fields to search the entry",
+      "label": "Search by",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Filename",
+        "name": "col1",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Date",
+        "name": "col2",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Rows",
+        "name": "col3",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Errors",
+        "name": "col4",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Filehash",
+        "name": "col5",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Processed",
+        "name": "col6",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "comment": "searching for same filename  exists  or previously processed",
+    "uuid": "e4f257cc-3c1a-4bd1-b387-1e42b1bd677a",
+    "title": null,
+    "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">SH Targeted Spend - File Uploads</span> lookup table"
+   },
+   {
+    "number": 8,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "greater_than",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"faec3aad\",\"path\":[\"entries\",{\"path_element_type\":\"size\"}]}')}",
+       "rhs": "0",
+       "uuid": "23251405-316c-44a4-bf58-90fed70e259f"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 9,
+      "provider": "workato_template",
+      "name": "create_document",
+      "as": "f8357c38",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "template_id": "Order Confirmation"
+      },
+      "input": {
+       "template_id": "116481",
+       "template_input": {
+        "message_header": "File Not Processed - Same filename #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')} already processed once",
+        "message_body": "The file #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}already been processed  on #{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"faec3aad\",\"path\":[\"entries\",{\"path_element_type\":\"current_item\"},\"entry\",\"col2\"]}')}"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "label": "Template input",
+        "name": "template_input",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Message header",
+          "name": "message_header",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Message body",
+          "name": "message_body",
+          "type": "string",
+          "optional": false
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "d1adc1ce-1398-4fe3-8412-a4d803c54a01",
+      "title": null,
+      "description": "Create <span class=\"provider\">message</span> using <span class=\"provider\">Order Confirmation</span> template"
+     },
+     {
+      "number": 10,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "8f2bae16",
+      "keyword": "action",
+      "input": {
+       "email_type": "-- REDACTED --",
+       "subject": "Tango Card | File Not Processed ",
+       "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_template\",\"line\":\"f8357c38\",\"path\":[\"document\"]}')}",
+       "to": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_to_send_email\"}')}"
+      },
+      "visible_config_fields": [
+       "to",
+       "subject",
+       "email_type",
+       "body",
+       "attachments.file_name",
+       "attachments.file_binary_content"
+      ],
+      "comment": "We will not process a file that contains more than 10,000 rows",
+      "uuid": "cb2d8d17-15d3-4d92-910a-31d68968ee55",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 11,
+      "provider": "amazon_s3",
+      "name": "upload_file_streaming",
+      "as": "fd1198bb",
+      "keyword": "action",
+      "input": {
+       "accelerate": "false",
+       "object_name": "=_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_download_directory\"}')+_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')+\"_Err.csv\"",
+       "file": "=\"Duplicate order file submitted. Please rename file and submit order again,\" + _dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Key\"]}').split('/').last"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "text",
+        "hint": "Folder path of the object from the bucket to monitor. For example, <b>subfolder001/subfolder002/subfolder003/</b>. Ensure this to be exact, as name of object/file is case-sensitive. Refer to <a href='https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html' target='_blank'>AWS prefix docs</a> for more information.",
+        "label": "Object name",
+        "name": "object_name",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "hint": "The file contents to upload",
+        "label": "Contents",
+        "name": "file",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "strip_interpolation": true
+       },
+       {
+        "control_type": "number",
+        "default": "false",
+        "hint": "                Default is <b>false</b>. Enter <b>true</b> to use accelerated endpoint.\n                Go to <b>Bucket</b>><b>Properties</b>><b>Transfer acceleration</b> to check if accelerated endpoint is enabled\n",
+        "label": "Use accelerated endpoint",
+        "name": "accelerate",
+        "optional": true,
+        "parse_output": "float_conversion",
+        "sticky": true,
+        "type": "number"
+       },
+       {
+        "control_type": "select",
+        "hint": "                Learn more about canned ACL\n                <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl\" target=\"_blank\">here</a>.\n",
+        "label": "Canned ACL",
+        "name": "canned_permission",
+        "optional": true,
+        "pick_list": [
+         [
+          "Private",
+          "private"
+         ],
+         [
+          "Public  read",
+          "public-read"
+         ],
+         [
+          "Public  read  write",
+          "public-read-write"
+         ],
+         [
+          "AW s  exec  read",
+          "aws-exec-read"
+         ],
+         [
+          "Authenticated  read",
+          "authenticated-read"
+         ],
+         [
+          "Bucket  owner  read",
+          "bucket-owner-read"
+         ],
+         [
+          "Bucket  owner  full  control",
+          "bucket-owner-full-control"
+         ],
+         [
+          "Log  delivery  write",
+          "log-delivery-write"
+         ]
+        ],
+        "sticky": true,
+        "toggle_field": {
+         "type": "array",
+         "name": "explicit_permissions",
+         "label": "Explicit permissions",
+         "control_type": "key_value",
+         "optional": true,
+         "toggle_hint": "Use explicit permissions",
+         "empty_list_title": "Does this HTTP request require headers?",
+         "empty_list_text": "Refer to the API documentation and add required headers to this HTTP request",
+         "item_label": "Header",
+         "properties": [
+          {
+           "name": "name",
+           "label": "Permission name"
+          },
+          {
+           "name": "value",
+           "label": "Grantee",
+           "placeholder": "Email, user ID or group URI"
+          }
+         ],
+         "hint": "                  Learn more about Access Control List (ACL) specific request headers\n                  <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/archive-RESTObjectPUTacl.html\" target=\"_blank\">here</a>.\n"
+        },
+        "toggle_hint": "Select canned ACL",
+        "type": "string"
+       }
+      ],
+      "uuid": "58ac4d5b-758e-4ca0-8475-1da2d96fde30",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 12,
+      "as": "fc70a3aa",
+      "keyword": "stop",
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "b5c0d63c-e195-411c-b1c6-777b261b3980"
+     }
+    ],
+    "uuid": "d49eb5ab-cac6-4419-b407-e674fe2436ae"
+   },
+   {
+    "number": 13,
+    "provider": "lookup_table",
+    "name": "add_entry",
+    "as": "1ef99c52",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "lookup_table_id": "SH Targeted Spend - File Uploads"
+    },
+    "input": {
+     "lookup_table_id": "4377299",
+     "parameters": {
+      "col1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+      "col2": "=now"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "number",
+      "label": "Entry ID",
+      "name": "id",
+      "parse_output": "integer_conversion",
+      "type": "integer"
+     },
+     {
+      "label": "Entry",
+      "name": "entry",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Filename",
+        "name": "col1",
+        "type": "string",
+        "sticky": true
+       },
+       {
+        "control_type": "text",
+        "label": "Date",
+        "name": "col2",
+        "type": "string",
+        "sticky": true
+       },
+       {
+        "control_type": "text",
+        "label": "Rows",
+        "name": "col3",
+        "type": "string",
+        "sticky": true
+       },
+       {
+        "control_type": "text",
+        "label": "Errors",
+        "name": "col4",
+        "type": "string",
+        "sticky": true
+       },
+       {
+        "control_type": "text",
+        "label": "Filehash",
+        "name": "col5",
+        "type": "string",
+        "sticky": true
+       },
+       {
+        "control_type": "text",
+        "label": "Processed",
+        "name": "col6",
+        "type": "string",
+        "sticky": true
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Fill the fields for the new entry",
+      "label": "Entry fields",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Filename",
+        "name": "col1",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Date",
+        "name": "col2",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Rows",
+        "name": "col3",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Errors",
+        "name": "col4",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Filehash",
+        "name": "col5",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Processed",
+        "name": "col6",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "609e4f46-1280-41dc-9f6d-9bb8e2ccf935",
+    "title": null,
+    "description": "Add <span class=\"provider\">an entry</span> to <span class=\"provider\">SH Targeted Spend - File Uploads</span> lookup table"
+   },
+   {
+    "number": 14,
+    "keyword": "try",
+    "input": {},
+    "block": [
+     {
+      "number": 15,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "a1378eaa",
+      "keyword": "action",
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"file_hash\",\"type\":\"string\",\"optional\":true,\"label\":\"file_hash\",\"control_type\":\"text\"}]",
+        "data": {
+         "file_hash": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"ETag\"]}')}"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "text",
+        "label": "file_hash",
+        "name": "file_hash",
+        "optional": true,
+        "type": "string"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_field_label": "Add a variable",
+        "control_type": "form-schema-builder",
+        "empty_schema_title": "Add variables by giving them a name, type and default value",
+        "exclude_fields": [
+         "hint"
+        ],
+        "item_label": "variable",
+        "label": "Variables",
+        "mark_as_required": true,
+        "name": "variables",
+        "ngIf": "!input.name",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "file_hash",
+            "name": "file_hash",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.file_hash"
+      ],
+      "comment": "Hash the file contents",
+      "uuid": "8b3b8b8c-fc18-4d23-8163-11dbd9eea444",
+      "title": "  Create variable file_hash",
+      "description": "Create variable <span class=\"provider\">file_hash</span>"
+     },
+     {
+      "number": 16,
+      "provider": "lookup_table",
+      "name": "update_entry",
+      "as": "6ce0c0d7",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "lookup_table_id": "SH Targeted Spend - File Uploads"
+      },
+      "toggleCfg": {
+       "ignore_not_found": true
+      },
+      "input": {
+       "ignore_not_found": "false",
+       "lookup_table_id": "4377299",
+       "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}",
+       "parameters": {
+        "col5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"a1378eaa\",\"path\":[\"file_hash\"]}')}"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "number",
+        "label": "Entry ID",
+        "name": "id",
+        "parse_output": "integer_conversion",
+        "type": "integer"
+       },
+       {
+        "label": "Entry",
+        "name": "entry",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Filename",
+          "name": "col1",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Date",
+          "name": "col2",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Rows",
+          "name": "col3",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Errors",
+          "name": "col4",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Filehash",
+          "name": "col5",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Processed",
+          "name": "col6",
+          "type": "string",
+          "sticky": true
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "hint": "Fill the fields you want to update",
+        "label": "Entry fields",
+        "name": "parameters",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Filename",
+          "name": "col1",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Date",
+          "name": "col2",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Rows",
+          "name": "col3",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Errors",
+          "name": "col4",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Filehash",
+          "name": "col5",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Processed",
+          "name": "col6",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "ea532fbd-ae62-4b1e-9c0a-c179042484d3",
+      "title": null,
+      "description": "Update <span class=\"provider\">an entry</span> in <span class=\"provider\">SH Targeted Spend - File Uploads</span> lookup table"
+     },
+     {
+      "number": 17,
+      "as": "704f3216",
+      "keyword": "catch",
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 18,
+        "provider": "workato_recipe_function",
+        "name": "call_recipe",
+        "as": "ad8ba28d",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "flow_id": "SH - File Error Notification"
+        },
+        "input": {
+         "flow_id": "64739052",
+         "parameters": {
+          "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+          "Error_Message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"704f3216\",\"path\":[\"message\"]}')}",
+          "Entity_ID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}",
+          "Processed": "No"
+         }
+        },
+        "extended_input_schema": [
+         {
+          "label": "Parameters",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "File Name",
+            "name": "File_Name",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Error Message",
+            "name": "Error_Message",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Entity ID",
+            "name": "Entity_ID",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "File Content",
+            "name": "File_Content",
+            "type": "string",
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Processed",
+            "name": "Processed",
+            "type": "string",
+            "optional": true
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "visible_config_fields": [
+         "flow_id",
+         "parameters",
+         "parameters.File_Name",
+         "parameters.Error_Message",
+         "parameters.Entity_ID",
+         "parameters.Processed"
+        ],
+        "uuid": "2a969a82-744e-4b06-8abc-6f1455108f46",
+        "title": null,
+        "description": "Call <span class=\"provider\">File_Error_Notification</span>"
+       },
+       {
+        "number": 19,
+        "keyword": "stop",
+        "input": {
+         "stop_with_error": "false"
+        },
+        "uuid": "8d1d0a18-25cd-4a1b-8d4d-f0fcfebf1da3"
+       }
+      ],
+      "uuid": "40e2ee94-0065-4ad8-9a3c-956fab12b145"
+     }
+    ],
+    "uuid": "ed0afb03-a3af-4a46-a623-ce86e3b1e069"
+   },
+   {
+    "number": 20,
+    "provider": "lookup_table",
+    "name": "search_entries",
+    "as": "62fc93f4",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "lookup_table_id": "SH Targeted Spend - File Uploads"
+    },
+    "input": {
+     "lookup_table_id": "4377299",
+     "parameters": {
+      "col5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"a1378eaa\",\"path\":[\"file_hash\"]}')}",
+      "col6": "Yes"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Entries",
+      "name": "entries",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Entry ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Filename",
+          "name": "col1",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Date",
+          "name": "col2",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Rows",
+          "name": "col3",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Errors",
+          "name": "col4",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Filehash",
+          "name": "col5",
+          "type": "string",
+          "sticky": true
+         },
+         {
+          "control_type": "text",
+          "label": "Processed",
+          "name": "col6",
+          "type": "string",
+          "sticky": true
+         }
+        ],
+        "label": "Entry",
+        "type": "object",
+        "name": "entry"
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Provide one or more entry fields to search the entry",
+      "label": "Search by",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Filename",
+        "name": "col1",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Date",
+        "name": "col2",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Rows",
+        "name": "col3",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Errors",
+        "name": "col4",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Filehash",
+        "name": "col5",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Processed",
+        "name": "col6",
+        "type": "string",
+        "sticky": true,
+        "optional": true
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "838f74f0-bbd8-4410-9d72-5d73144ba86a",
+    "title": null,
+    "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">SH Targeted Spend - File Uploads</span> lookup table"
+   },
+   {
+    "number": 21,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "or",
+     "conditions": [
+      {
+       "operand": "not_equals_to",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"62fc93f4\",\"path\":[\"entries\",{\"path_element_type\":\"size\"}]}')}",
+       "rhs": "0",
+       "uuid": "condition-c9c8d773-b3d5-432a-905b-3e0e48f91ce1"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 22,
+      "provider": "workato_recipe_function",
+      "name": "call_recipe",
+      "as": "5b76be4c",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "flow_id": "SH - File Error Notification"
+      },
+      "input": {
+       "flow_id": "64739052",
+       "parameters": {
+        "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+        "Error_Message": "The file contents already processed",
+        "Processed": "No",
+        "Entity_ID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "File Name",
+          "name": "File_Name",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Error Message",
+          "name": "Error_Message",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Entity ID",
+          "name": "Entity_ID",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "File Content",
+          "name": "File_Content",
+          "type": "string",
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Processed",
+          "name": "Processed",
+          "type": "string",
+          "optional": true
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "flow_id",
+       "parameters",
+       "parameters.File_Name",
+       "parameters.Error_Message",
+       "parameters.Processed"
+      ],
+      "uuid": "935918b4-e57f-4706-9567-eef2d34d5219",
+      "title": null,
+      "description": "Call <span class=\"provider\">File_Error_Notification</span>"
+     },
+     {
+      "number": 23,
+      "keyword": "stop",
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "cb7eb169-f3ed-455e-b84d-9048742ca8c2"
+     }
+    ],
+    "comment": "If it has a duplicate filename of file contents",
+    "uuid": "026dc11c-4cf4-4a42-af7f-e414a5d936df"
+   },
+   {
+    "number": 24,
+    "keyword": "try",
+    "input": {},
+    "block": [
+     {
+      "number": 25,
+      "provider": "csv_parser",
+      "name": "parse_csv",
+      "as": "32c84bc9",
+      "keyword": "action",
+      "input": {
+       "col_sep": ",",
+       "skip_first_line": "true",
+       "column_value_by": "index",
+       "quote_char": "\"",
+       "csv_content": "=_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"file_content\"]}').to_s.gsub(\"\\r\", \"\")",
+       "header_line": "UTID (Required), Reward Amount (Required), Order Ship To First Name (Required), Order Ship To Last Name (Required),Company Name (Optional),Address 1 (Required), Address 2 (Optional), City (Required),State (Required),Zip (Required),Phone Number (Optional),Email (Optional),Message (Optional),From Name (Optional),To Name (Optional),Customer Notes (Optional)"
+      },
+      "extended_output_schema": [
+       {
+        "label": "Lines",
+        "name": "lines",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "UTID (Required)",
+          "type": "string",
+          "name": "column_0"
+         },
+         {
+          "control_type": "text",
+          "label": " Reward Amount (Required)",
+          "type": "string",
+          "name": "column_1"
+         },
+         {
+          "control_type": "text",
+          "label": " Order Ship To First Name (Required)",
+          "type": "string",
+          "name": "column_2"
+         },
+         {
+          "control_type": "text",
+          "label": " Order Ship To Last Name (Required)",
+          "type": "string",
+          "name": "column_3"
+         },
+         {
+          "control_type": "text",
+          "label": "Company Name (Optional)",
+          "type": "string",
+          "name": "column_4"
+         },
+         {
+          "control_type": "text",
+          "label": "Address 1 (Required)",
+          "type": "string",
+          "name": "column_5"
+         },
+         {
+          "control_type": "text",
+          "label": " Address 2 (Optional)",
+          "type": "string",
+          "name": "column_6"
+         },
+         {
+          "control_type": "text",
+          "label": " City (Required)",
+          "type": "string",
+          "name": "column_7"
+         },
+         {
+          "control_type": "text",
+          "label": "State (Required)",
+          "type": "string",
+          "name": "column_8"
+         },
+         {
+          "control_type": "text",
+          "label": "Zip (Required)",
+          "type": "string",
+          "name": "column_9"
+         },
+         {
+          "control_type": "text",
+          "label": "Phone Number (Optional)",
+          "type": "string",
+          "name": "column_10"
+         },
+         {
+          "control_type": "text",
+          "label": "Email (Optional)",
+          "type": "string",
+          "name": "column_11"
+         },
+         {
+          "control_type": "text",
+          "label": "Message (Optional)",
+          "type": "string",
+          "name": "column_12"
+         },
+         {
+          "control_type": "text",
+          "label": "From Name (Optional)",
+          "type": "string",
+          "name": "column_13"
+         },
+         {
+          "control_type": "text",
+          "label": "To Name (Optional)",
+          "type": "string",
+          "name": "column_14"
+         },
+         {
+          "control_type": "text",
+          "label": "Customer Notes (Optional)",
+          "type": "string",
+          "name": "column_15"
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "comment": "Attempt to grab the lines from the file.",
+      "uuid": "146b289c-a239-45b1-9041-ec83b65678bc",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 26,
+      "as": "4ecf9c70",
+      "keyword": "catch",
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 27,
+        "provider": "workato_recipe_function",
+        "name": "call_recipe",
+        "as": "3501fc12",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "flow_id": "SH - File Error Notification"
+        },
+        "input": {
+         "flow_id": "64739052",
+         "parameters": {
+          "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+          "Error_Message": "An error occurred processing the file.",
+          "Entity_ID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}"
+         }
+        },
+        "extended_input_schema": [
+         {
+          "label": "Parameters",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "File Name",
+            "name": "File_Name",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Error Message",
+            "name": "Error_Message",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Entity ID",
+            "name": "Entity_ID",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "File Content",
+            "name": "File_Content",
+            "type": "string",
+            "optional": true
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "81c8994e-9685-46b7-80ed-b55bf868edd8",
+        "title": null,
+        "description": "Call <span class=\"provider\">File_Error_Notification</span>"
+       },
+       {
+        "number": 28,
+        "provider": "lookup_table",
+        "name": "delete_entry",
+        "as": "53df0873",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "lookup_table_id": "SH Targeted Spend - File Uploads"
+        },
+        "toggleCfg": {
+         "ignore_not_found": true
+        },
+        "input": {
+         "ignore_not_found": "true",
+         "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}",
+         "lookup_table_id": "4377299"
+        },
+        "uuid": "0551486d-885e-4aff-8adb-4431608ecf37",
+        "title": null,
+        "description": "Delete <span class=\"provider\">an entry</span> from <span class=\"provider\">SH Targeted Spend - File Uploads</span> lookup table"
+       },
+       {
+        "number": 29,
+        "keyword": "stop",
+        "input": {
+         "stop_with_error": "true",
+         "stop_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"4ecf9c70\",\"path\":[\"message\"]}')}"
+        },
+        "uuid": "b21aa335-7d4f-431c-9d2c-5bede1235b3c"
+       }
+      ],
+      "uuid": "05fc8ab2-7570-4677-8d28-c6dd5c1bf076"
+     }
+    ],
+    "uuid": "5ecc8eb0-115e-453b-bf23-54163b452962"
+   },
+   {
+    "number": 30,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "greater_than",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"32c84bc9\",\"path\":[\"lines\",{\"path_element_type\":\"size\"}]}')}",
+       "rhs": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_file_size\"}')}",
+       "uuid": "aed8059f-1324-4fc0-a391-f9d707ca0a48"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 31,
+      "provider": "workato_recipe_function",
+      "name": "call_recipe",
+      "as": "a5d1661d",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "flow_id": "SH - File Error Notification"
+      },
+      "input": {
+       "flow_id": "64739052",
+       "parameters": {
+        "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+        "Error_Message": "The file contains more than 1000 records. Please upload a file with #{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_file_size\"}')} records or fewer",
+        "Entity_ID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}",
+        "File_Content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"file_content\"]}')}"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "File Name",
+          "name": "File_Name",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Error Message",
+          "name": "Error_Message",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Entity ID",
+          "name": "Entity_ID",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "File Content",
+          "name": "File_Content",
+          "type": "string",
+          "optional": false
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "bdff9e5e-91b8-4543-a409-0b5b43573154",
+      "title": null,
+      "description": "Call <span class=\"provider\">File_Error_Notification</span>"
+     },
+     {
+      "number": 32,
+      "provider": "lookup_table",
+      "name": "delete_entry",
+      "as": "bbdf8fd9",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "lookup_table_id": "SH Targeted Spend - File Uploads"
+      },
+      "toggleCfg": {
+       "ignore_not_found": true
+      },
+      "input": {
+       "ignore_not_found": "true",
+       "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}",
+       "lookup_table_id": "4377299"
+      },
+      "uuid": "7f0fd06c-22d5-412a-acaf-21c8e6ba6f7a",
+      "title": null,
+      "description": "Delete <span class=\"provider\">an entry</span> from <span class=\"provider\">SH Targeted Spend - File Uploads</span> lookup table"
+     },
+     {
+      "number": 33,
+      "as": "3d4544be",
+      "keyword": "stop",
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "a12ba609-9108-42c7-8fe0-968b790fe8a8"
+     }
+    ],
+    "uuid": "530dbb45-1bdb-4e08-a8cb-21e1fc34260b"
+   },
+   {
+    "number": 34,
+    "as": "b16b3bb3",
+    "keyword": "foreach",
+    "repeat_mode": "simple",
+    "clear_scope": "false",
+    "input": {},
+    "block": [
+     {
+      "number": 35,
+      "keyword": "try",
+      "input": {},
+      "block": [
+       {
+        "number": 36,
+        "provider": "workato_recipe_function",
+        "name": "call_recipe",
+        "as": "b99e943b",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "flow_id": "Dry_Run___Validation"
+        },
+        "toggleCfg": {
+         "parameters.is_last": false
+        },
+        "input": {
+         "flow_id": "64740285",
+         "parameters": {
+          "Recipient_Email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_11\"]}')}",
+          "Recipient_First_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_2\"]}')}",
+          "Recipient_Last_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_3\"]}')}",
+          "UTID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_0\"]}')}",
+          "Reward_Amount": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_1\"]}')}",
+          "Row_Number": "=_dp('{\"pill_type\":\"foreach_meta\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"key\":\"index\"}')+1",
+          "Address1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_5\"]}')}",
+          "Address2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_6\"]}')}",
+          "City": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_7\"]}')}",
+          "State": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_8\"]}')}",
+          "Zip": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_9\"]}')}",
+          "Phone_Number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_10\"]}')}",
+          "EntryId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"1ef99c52\",\"path\":[\"id\"]}')}",
+          "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+          "Customer_Notes": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_15\"]}')}",
+          "Message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_12\"]}')}",
+          "Sender_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"path\":[\"column_13\"]}')}",
+          "File_Length": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"Size\"]}')}",
+          "is_last": "#{_dp('{\"pill_type\":\"foreach_meta\",\"provider\":\"foreach\",\"line\":\"b16b3bb3\",\"key\":\"is_last\"}')}"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "label": "Result",
+          "name": "result",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Success",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "Success",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "type": "boolean",
+             "name": "success"
+            },
+            "type": "boolean",
+            "name": "success"
+           },
+           {
+            "control_type": "text",
+            "label": "Message",
+            "type": "string",
+            "name": "message"
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "label": "Parameters",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Recipient email",
+            "name": "Recipient_Email",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Recipient first name",
+            "name": "Recipient_First_Name",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Recipient last name",
+            "name": "Recipient_Last_Name",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "UTID",
+            "name": "UTID",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Reward amount",
+            "name": "Reward_Amount",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Customer notes",
+            "name": "Customer_Notes",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Message",
+            "name": "Message",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Sender name",
+            "name": "Sender_Name",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "File name",
+            "name": "File_Name",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "number",
+            "label": "Row number",
+            "parse_output": "float_conversion",
+            "name": "Row_Number",
+            "optional": false,
+            "render_input": "float_conversion",
+            "type": "number"
+           },
+           {
+            "control_type": "text",
+            "label": "File length",
+            "name": "File_Length",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "checkbox",
+            "label": "Is last",
+            "render_input": {},
+            "parse_output": {},
+            "name": "is_last",
+            "optional": true,
+            "toggle_field": {
+             "control_type": "text",
+             "label": "Is last",
+             "name": "is_last",
+             "optional": true,
+             "toggle_hint": "Use custom value",
+             "type": "boolean"
+            },
+            "toggle_hint": "Select from option list",
+            "type": "boolean"
+           },
+           {
+            "control_type": "text",
+            "label": "Account identifier",
+            "name": "Account_Identifier",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Customer identifier",
+            "name": "Customer_Identifier",
+            "optional": true,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Address 1",
+            "name": "Address1",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Address 2",
+            "name": "Address2",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "City",
+            "name": "City",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "State",
+            "name": "State",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Zip",
+            "name": "Zip",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Phone number",
+            "name": "Phone_Number",
+            "optional": false,
+            "type": "string"
+           },
+           {
+            "control_type": "text",
+            "label": "Entry ID",
+            "name": "EntryId",
+            "optional": false,
+            "type": "string"
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "visible_config_fields": [
+         "flow_id",
+         "parameters",
+         "parameters.Recipient_Email",
+         "parameters.Recipient_First_Name",
+         "parameters.Recipient_Last_Name",
+         "parameters.UTID",
+         "parameters.Reward_Amount",
+         "parameters.Row_Number",
+         "parameters.Address1",
+         "parameters.Address2",
+         "parameters.City",
+         "parameters.State",
+         "parameters.Zip",
+         "parameters.Phone_Number",
+         "parameters.EntryId",
+         "parameters.File_Name",
+         "parameters.is_last",
+         "parameters.File_Length",
+         "parameters.Sender_Name",
+         "parameters.Message",
+         "parameters.Customer_Notes"
+        ],
+        "uuid": "666bbd24-e728-475d-8433-99e9d1c3397f",
+        "title": null,
+        "description": "Call <span class=\"provider\">Dry_Run___Validation</span>"
+       },
+       {
+        "number": 37,
+        "as": "4388c00c",
+        "keyword": "catch",
+        "input": {
+         "max_retry_count": "0",
+         "retry_interval": "2"
+        },
+        "block": [
+         {
+          "number": 38,
+          "provider": "workato_db_table",
+          "name": "add_record",
+          "as": "3f9bf151",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "table_id": "SH Targeted Spend - Error Report"
+          },
+          "input": {
+           "table_id": "41520",
+           "parameters": {
+            "58f7d50a_84f1_4d56_806c_c90bf8e7bc47": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+            "ca5c779e_0182_4638_ae33_a71ab413cf38": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"4388c00c\",\"path\":[\"message\"]}')}"
+           }
+          },
+          "extended_output_schema": [
+           {
+            "label": "Record",
+            "name": "record",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Record ID",
+              "type": "string",
+              "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+             },
+             {
+              "control_type": "text",
+              "label": "FIle Name",
+              "type": "string",
+              "name": "58f7d50a_84f1_4d56_806c_c90bf8e7bc47"
+             },
+             {
+              "control_type": "number",
+              "label": "Row Number",
+              "parse_output": "integer_conversion",
+              "type": "integer",
+              "name": "f1b63e40_e44b_4bc7_ba3f_36568e8435eb"
+             },
+             {
+              "control_type": "text",
+              "label": "Recipient Email",
+              "type": "string",
+              "name": "e75fe3a5_cf40_4f36_9510_fa6009c71691"
+             },
+             {
+              "control_type": "text",
+              "label": "UTID",
+              "type": "string",
+              "name": "ce650eaf_2fef_4386_bbe4_f93d32fc4f63"
+             },
+             {
+              "control_type": "text",
+              "label": "Reward Amount",
+              "type": "string",
+              "name": "bc322ea9_abc0_40f6_b03c_f64310681c38"
+             },
+             {
+              "control_type": "text",
+              "label": "Error",
+              "type": "string",
+              "name": "ca5c779e_0182_4638_ae33_a71ab413cf38"
+             },
+             {
+              "control_type": "text",
+              "label": "Error Type",
+              "type": "string",
+              "name": "a83bd202_6994_4427_a660_86c8543377b2"
+             },
+             {
+              "control_type": "text",
+              "label": "Recipient Phone",
+              "type": "string",
+              "name": "73abdbbd_346e_4316_a31c_d6ce49d3a699"
+             },
+             {
+              "control_type": "text",
+              "label": "First Name",
+              "type": "string",
+              "name": "8eb641c9_cba7_444c_b854_9757fadeb07e"
+             },
+             {
+              "control_type": "text",
+              "label": "Last Name",
+              "type": "string",
+              "name": "502ea650_4afb_41cd_8b93_8c09cbd2cf0d"
+             },
+             {
+              "control_type": "text",
+              "label": "Address 1",
+              "type": "string",
+              "name": "993428d9_e313_4689_a697_8243eae60b49"
+             },
+             {
+              "control_type": "text",
+              "label": "City",
+              "type": "string",
+              "name": "d5b282d1_774a_43cc_a373_d8670b6b8057"
+             },
+             {
+              "control_type": "text",
+              "label": "State",
+              "type": "string",
+              "name": "f184d5a4_edae_4d82_a6b1_654f1c593abf"
+             },
+             {
+              "control_type": "text",
+              "label": "ZIP",
+              "type": "string",
+              "name": "376e5eee_9ab1_4983_af52_14ec42c5646c"
+             },
+             {
+              "control_type": "date_time",
+              "label": "Created at",
+              "render_input": "date_time_conversion",
+              "parse_output": "date_time_conversion",
+              "type": "date_time",
+              "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+             },
+             {
+              "control_type": "date_time",
+              "label": "Updated at",
+              "render_input": "date_time_conversion",
+              "parse_output": "date_time_conversion",
+              "type": "date_time",
+              "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "extended_input_schema": [
+           {
+            "hint": "Fill the fields for the new record",
+            "label": "New record fields",
+            "name": "parameters",
+            "properties": [
+             {
+              "control_type": "text-area",
+              "label": "FIle Name",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "name": "58f7d50a_84f1_4d56_806c_c90bf8e7bc47"
+             },
+             {
+              "control_type": "integer",
+              "label": "Row Number",
+              "parse_output": "integer_conversion",
+              "optional": true,
+              "sticky": true,
+              "render_input": "integer_conversion",
+              "type": "integer",
+              "name": "f1b63e40_e44b_4bc7_ba3f_36568e8435eb"
+             },
+             {
+              "control_type": "text-area",
+              "label": "Recipient Email",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "name": "e75fe3a5_cf40_4f36_9510_fa6009c71691"
+             },
+             {
+              "control_type": "text-area",
+              "label": "UTID",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "name": "ce650eaf_2fef_4386_bbe4_f93d32fc4f63"
+             },
+             {
+              "control_type": "text-area",
+              "label": "Reward Amount",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "name": "bc322ea9_abc0_40f6_b03c_f64310681c38"
+             },
+             {
+              "control_type": "text-area",
+              "label": "Error",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "ca5c779e_0182_4638_ae33_a71ab413cf38"
+             },
+             {
+              "control_type": "text-area",
+              "label": "Error Type",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "a83bd202_6994_4427_a660_86c8543377b2"
+             },
+             {
+              "control_type": "text-area",
+              "label": "Recipient Phone",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "73abdbbd_346e_4316_a31c_d6ce49d3a699"
+             },
+             {
+              "control_type": "text-area",
+              "label": "First Name",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "8eb641c9_cba7_444c_b854_9757fadeb07e"
+             },
+             {
+              "control_type": "text",
+              "label": "Last Name",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "502ea650_4afb_41cd_8b93_8c09cbd2cf0d"
+             },
+             {
+              "control_type": "text-area",
+              "label": "Address 1",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "993428d9_e313_4689_a697_8243eae60b49"
+             },
+             {
+              "control_type": "text",
+              "label": "City",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "d5b282d1_774a_43cc_a373_d8670b6b8057"
+             },
+             {
+              "control_type": "text",
+              "label": "State",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "f184d5a4_edae_4d82_a6b1_654f1c593abf"
+             },
+             {
+              "control_type": "text",
+              "label": "ZIP",
+              "optional": true,
+              "sticky": false,
+              "type": "string",
+              "name": "376e5eee_9ab1_4983_af52_14ec42c5646c"
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "visible_config_fields": [
+           "table_id",
+           "parameters.58f7d50a_84f1_4d56_806c_c90bf8e7bc47",
+           "parameters.f1b63e40_e44b_4bc7_ba3f_36568e8435eb",
+           "parameters.e75fe3a5_cf40_4f36_9510_fa6009c71691",
+           "parameters.ce650eaf_2fef_4386_bbe4_f93d32fc4f63",
+           "parameters.bc322ea9_abc0_40f6_b03c_f64310681c38",
+           "parameters.ca5c779e_0182_4638_ae33_a71ab413cf38"
+          ],
+          "uuid": "b6e000cc-b964-4693-aa2b-7dc0b23d9d83",
+          "title": null,
+          "description": "Create a new record in <span class=\"provider\">a data table</span>"
+         }
+        ],
+        "comment": "Unlikely we will actually run into errors adding entries to the PubSub Topic, but it is possible, e.g. if they included an extremely long \"Message\"",
+        "uuid": "6cfb571e-31f8-46f5-bea3-22359e36c7d2"
+       }
+      ],
+      "uuid": "fd0d85ae-3172-43d4-a618-90664c47d6f1"
+     }
+    ],
+    "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"32c84bc9\",\"path\":[\"lines\"]}')}",
+    "comment": "Publish each row of file in PubSub Topic for processing",
+    "uuid": "bff46636-643e-4d17-9595-9d324d048b5a"
+   },
+   {
+    "number": 39,
+    "keyword": "try",
+    "input": {},
+    "block": [
+     {
+      "number": 40,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "d90b84de",
+      "keyword": "action",
+      "toggleCfg": {
+       "variables.data.repeatReportAction": true
+      },
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"repeatReportAction\",\"type\":\"boolean\",\"optional\":true,\"label\":\"repeatReportAction\",\"details\":{\"real_name\":\"repeatReportAction\"},\"control_type\":\"checkbox\",\"parent\":[\"variables\",\"data\"]}]",
+        "data": {
+         "repeatReportAction": "true"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "checkbox",
+        "label": "repeatReportAction",
+        "name": "repeatReportAction",
+        "optional": true,
+        "parse_output": "boolean_conversion",
+        "toggle_field": {
+         "label": "repeatReportAction",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "name": "repeatReportAction",
+         "type": "boolean",
+         "optional": true,
+         "details": {
+          "real_name": "repeatReportAction"
+         },
+         "parent": [
+          "variables",
+          "data"
+         ]
+        },
+        "toggle_hint": "Select from option list",
+        "type": "boolean",
+        "details": {
+         "real_name": "repeatReportAction"
+        },
+        "render_input": "boolean_conversion"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_field_label": "Add a variable",
+        "control_type": "form-schema-builder",
+        "empty_schema_title": "Add variables by giving them a name, type and default value",
+        "exclude_fields": [
+         "hint"
+        ],
+        "item_label": "variable",
+        "label": "Variables",
+        "mark_as_required": true,
+        "name": "variables",
+        "ngIf": "!input.name",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "checkbox",
+            "label": "repeatReportAction",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "name": "repeatReportAction",
+            "type": "boolean",
+            "optional": true,
+            "details": {
+             "real_name": "repeatReportAction"
+            },
+            "parent": [
+             "variables",
+             "data"
+            ],
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+             "label": "repeatReportAction",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "name": "repeatReportAction",
+             "type": "boolean",
+             "optional": true,
+             "details": {
+              "real_name": "repeatReportAction"
+             },
+             "parent": [
+              "variables",
+              "data"
+             ]
+            },
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.repeatReportAction"
+      ],
+      "uuid": "28b98544-7af4-4187-a438-be6bfe6e4fe1",
+      "title": "  Create variable repeatReportAction",
+      "description": "Create variable <span class=\"provider\">repeatReportAction</span>"
+     },
+     {
+      "number": 41,
+      "as": "8e297f34",
+      "keyword": "repeat",
+      "input": {},
+      "block": [
+       {
+        "number": 42,
+        "provider": "clock",
+        "name": "wait_for_interval",
+        "as": "881ee110",
+        "keyword": "action",
+        "toggleCfg": {
+         "interval": false
+        },
+        "input": {
+         "interval": "2"
+        },
+        "uuid": "88738ae0-d618-4f97-b1b5-0d41cfd38a7f",
+        "title": null,
+        "description": null
+       },
+       {
+        "number": 43,
+        "provider": "lookup_table",
+        "name": "search_entries",
+        "as": "4164112d",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "lookup_table_id": "SH Targeted Spend - File Uploads"
+        },
+        "input": {
+         "lookup_table_id": "4377299",
+         "parameters": {
+          "col1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+          "col6": "Yes"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "label": "Entries",
+          "name": "entries",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "number",
+            "label": "Entry ID",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "id"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Filename",
+              "name": "col1",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Date",
+              "name": "col2",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Rows",
+              "name": "col3",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Errors",
+              "name": "col4",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Filehash",
+              "name": "col5",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Processed",
+              "name": "col6",
+              "type": "string",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "SodaHealth Status",
+              "name": "col7",
+              "type": "string",
+              "sticky": true
+             }
+            ],
+            "label": "Entry",
+            "type": "object",
+            "name": "entry"
+           }
+          ],
+          "type": "array"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "hint": "Provide one or more entry fields to search the entry",
+          "label": "Search by",
+          "name": "parameters",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Filename",
+            "name": "col1",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Date",
+            "name": "col2",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Rows",
+            "name": "col3",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Errors",
+            "name": "col4",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Filehash",
+            "name": "col5",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Processed",
+            "name": "col6",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "SodaHealth Status",
+            "name": "col7",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "bab2ec88-9580-44c7-81e5-35a24e148b94",
+        "title": null,
+        "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">SH Targeted Spend - File Uploads</span> lookup table"
+       },
+       {
+        "number": 44,
+        "provider": "workato_db_table",
+        "name": "get_records",
+        "as": "11ea5406",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "table_id": "DT_Error_Record",
+         "filters.0.field_id": "FIle Name"
+        },
+        "input": {
+         "order_direction": "asc",
+         "limit": "1000",
+         "table_id": "41520",
+         "58f7d50a-84f1-4d56-806c-c90bf8e7bc47": "string",
+         "f1b63e40-e44b-4bc7-ba3f-36568e8435eb": "integer",
+         "e75fe3a5-cf40-4f36-9510-fa6009c71691": "string",
+         "ce650eaf-2fef-4386-bbe4-f93d32fc4f63": "string",
+         "bc322ea9-abc0-40f6-b03c-f64310681c38": "string",
+         "ca5c779e-0182-4638-ae33-a71ab413cf38": "string",
+         "a83bd202-6994-4427-a660-86c8543377b2": "string",
+         "73abdbbd-346e-4316-a31c-d6ce49d3a699": "string",
+         "8eb641c9-cba7-444c-b854-9757fadeb07e": "string",
+         "502ea650-4afb-41cd-8b93-8c09cbd2cf0d": "string",
+         "993428d9-e313-4689-a697-8243eae60b49": "string",
+         "d5b282d1-774a-43cc-a373-d8670b6b8057": "string",
+         "f184d5a4-edae-4d82-a6b1-654f1c593abf": "string",
+         "376e5eee-9ab1-4983-af52-14ec42c5646c": "string",
+         "7195b839-2244-42e9-96d7-c4ac1bccf01b": "string",
+         "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+         "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+         "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+         "filters": [
+          {
+           "field_id": "58f7d50a-84f1-4d56-806c-c90bf8e7bc47",
+           "op_default": "eq",
+           "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}"
+          }
+         ]
+        },
+        "extended_output_schema": [
+         {
+          "label": "Records",
+          "name": "records",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Record ID",
+            "type": "string",
+            "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+           },
+           {
+            "control_type": "text",
+            "label": "FIle Name",
+            "type": "string",
+            "name": "58f7d50a_84f1_4d56_806c_c90bf8e7bc47"
+           },
+           {
+            "control_type": "number",
+            "label": "Row Number",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "f1b63e40_e44b_4bc7_ba3f_36568e8435eb"
+           },
+           {
+            "control_type": "text",
+            "label": "Recipient Email",
+            "type": "string",
+            "name": "e75fe3a5_cf40_4f36_9510_fa6009c71691"
+           },
+           {
+            "control_type": "text",
+            "label": "UTID",
+            "type": "string",
+            "name": "ce650eaf_2fef_4386_bbe4_f93d32fc4f63"
+           },
+           {
+            "control_type": "text",
+            "label": "Reward Amount",
+            "type": "string",
+            "name": "bc322ea9_abc0_40f6_b03c_f64310681c38"
+           },
+           {
+            "control_type": "text",
+            "label": "Error",
+            "type": "string",
+            "name": "ca5c779e_0182_4638_ae33_a71ab413cf38"
+           },
+           {
+            "control_type": "text",
+            "label": "Error Type",
+            "type": "string",
+            "name": "a83bd202_6994_4427_a660_86c8543377b2"
+           },
+           {
+            "control_type": "text",
+            "label": "Recipient Phone",
+            "type": "string",
+            "name": "73abdbbd_346e_4316_a31c_d6ce49d3a699"
+           },
+           {
+            "control_type": "text",
+            "label": "First Name",
+            "type": "string",
+            "name": "8eb641c9_cba7_444c_b854_9757fadeb07e"
+           },
+           {
+            "control_type": "text",
+            "label": "Last Name",
+            "type": "string",
+            "name": "502ea650_4afb_41cd_8b93_8c09cbd2cf0d"
+           },
+           {
+            "control_type": "text",
+            "label": "Address 1",
+            "type": "string",
+            "name": "993428d9_e313_4689_a697_8243eae60b49"
+           },
+           {
+            "control_type": "text",
+            "label": "City",
+            "type": "string",
+            "name": "d5b282d1_774a_43cc_a373_d8670b6b8057"
+           },
+           {
+            "control_type": "text",
+            "label": "State",
+            "type": "string",
+            "name": "f184d5a4_edae_4d82_a6b1_654f1c593abf"
+           },
+           {
+            "control_type": "text",
+            "label": "ZIP",
+            "type": "string",
+            "name": "376e5eee_9ab1_4983_af52_14ec42c5646c"
+           },
+           {
+            "control_type": "text",
+            "label": "Address 2",
+            "type": "string",
+            "name": "7195b839_2244_42e9_96d7_c4ac1bccf01b"
+           },
+           {
+            "control_type": "date_time",
+            "label": "Created at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+           },
+           {
+            "control_type": "date_time",
+            "label": "Updated at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+           }
+          ],
+          "type": "array"
+         },
+         {
+          "control_type": "text",
+          "label": "Next Page Token",
+          "name": "continuation_token",
+          "type": "string"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_58f7d50a-84f1-4d56-806c-c90bf8e7bc47",
+          "name": "58f7d50a-84f1-4d56-806c-c90bf8e7bc47",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "integer",
+          "label": "$internal_value_f1b63e40-e44b-4bc7-ba3f-36568e8435eb",
+          "name": "f1b63e40-e44b-4bc7-ba3f-36568e8435eb",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_e75fe3a5-cf40-4f36-9510-fa6009c71691",
+          "name": "e75fe3a5-cf40-4f36-9510-fa6009c71691",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_ce650eaf-2fef-4386-bbe4-f93d32fc4f63",
+          "name": "ce650eaf-2fef-4386-bbe4-f93d32fc4f63",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_bc322ea9-abc0-40f6-b03c-f64310681c38",
+          "name": "bc322ea9-abc0-40f6-b03c-f64310681c38",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_ca5c779e-0182-4638-ae33-a71ab413cf38",
+          "name": "ca5c779e-0182-4638-ae33-a71ab413cf38",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_a83bd202-6994-4427-a660-86c8543377b2",
+          "name": "a83bd202-6994-4427-a660-86c8543377b2",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_73abdbbd-346e-4316-a31c-d6ce49d3a699",
+          "name": "73abdbbd-346e-4316-a31c-d6ce49d3a699",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_8eb641c9-cba7-444c-b854-9757fadeb07e",
+          "name": "8eb641c9-cba7-444c-b854-9757fadeb07e",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_502ea650-4afb-41cd-8b93-8c09cbd2cf0d",
+          "name": "502ea650-4afb-41cd-8b93-8c09cbd2cf0d",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_993428d9-e313-4689-a697-8243eae60b49",
+          "name": "993428d9-e313-4689-a697-8243eae60b49",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_d5b282d1-774a-43cc-a373-d8670b6b8057",
+          "name": "d5b282d1-774a-43cc-a373-d8670b6b8057",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_f184d5a4-edae-4d82-a6b1-654f1c593abf",
+          "name": "f184d5a4-edae-4d82-a6b1-654f1c593abf",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_376e5eee-9ab1-4983-af52-14ec42c5646c",
+          "name": "376e5eee-9ab1-4983-af52-14ec42c5646c",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_7195b839-2244-42e9-96d7-c4ac1bccf01b",
+          "name": "7195b839-2244-42e9-96d7-c4ac1bccf01b",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "id",
+          "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+          "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "date_time",
+          "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+          "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "date_time",
+          "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+          "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         }
+        ],
+        "uuid": "9fdb49fc-12fd-4279-935c-c7808d278cdc",
+        "title": null,
+        "description": "Search records in <span class=\"provider\">a data table</span>"
+       },
+       {
+        "number": 45,
+        "provider": "workato_db_table",
+        "name": "get_records",
+        "as": "a4d304fd",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "table_id": "DT_Success_Record",
+         "filters.0.field_id": "File Name"
+        },
+        "input": {
+         "order_direction": "asc",
+         "limit": "1000",
+         "table_id": "42625",
+         "19c84b30-793b-40ae-89c8-798ef9bec05e": "string",
+         "f98457e8-59e0-4a2d-8ecd-b91fe7204b8a": "string",
+         "0ee9220d-3445-492f-ac82-7d8be4571a96": "string",
+         "6675ebd6-990f-4add-a16f-0750149482c6": "string",
+         "647af816-35d2-49bc-9d05-6ed7a7614a28": "string",
+         "a2dd292d-852f-4652-8e98-3a51dd4b752f": "string",
+         "8baafd62-cc55-4e4c-bc9a-608758c448e1": "string",
+         "a82bc2ce-ad79-4793-8bc8-b6f0bfc3e193": "string",
+         "fffca1fe-4d68-4680-b67f-f8d8ee163c98": "string",
+         "d0085c78-21fe-46f4-802f-2509bc196f19": "string",
+         "c0fc796c-e9c6-4241-a9ca-c51e5abe5968": "string",
+         "1b6af9cb-6f23-49fb-8b43-fa6dd3493028": "string",
+         "4ed31982-7740-4c55-90ea-7db2280b52ca": "string",
+         "799ed91d-2dc6-4352-8190-f4a0e8783e68": "string",
+         "58085030-985e-4a7b-b853-1a9780682eb0": "string",
+         "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+         "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+         "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+         "filters": [
+          {
+           "field_id": "19c84b30-793b-40ae-89c8-798ef9bec05e",
+           "op_default": "eq",
+           "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}"
+          }
+         ]
+        },
+        "extended_output_schema": [
+         {
+          "label": "Records",
+          "name": "records",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Record ID",
+            "type": "string",
+            "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+           },
+           {
+            "control_type": "text",
+            "label": "File Name",
+            "type": "string",
+            "name": "19c84b30_793b_40ae_89c8_798ef9bec05e"
+           },
+           {
+            "control_type": "text",
+            "label": "Member Identifier",
+            "type": "string",
+            "name": "f98457e8_59e0_4a2d_8ecd_b91fe7204b8a"
+           },
+           {
+            "control_type": "text",
+            "label": "UTID",
+            "type": "string",
+            "name": "0ee9220d_3445_492f_ac82_7d8be4571a96"
+           },
+           {
+            "control_type": "text",
+            "label": "Email",
+            "type": "string",
+            "name": "6675ebd6_990f_4add_a16f_0750149482c6"
+           },
+           {
+            "control_type": "text",
+            "label": "Phone",
+            "type": "string",
+            "name": "647af816_35d2_49bc_9d05_6ed7a7614a28"
+           },
+           {
+            "control_type": "text",
+            "label": "First Name",
+            "type": "string",
+            "name": "a2dd292d_852f_4652_8e98_3a51dd4b752f"
+           },
+           {
+            "control_type": "text",
+            "label": "Last Name",
+            "type": "string",
+            "name": "8baafd62_cc55_4e4c_bc9a_608758c448e1"
+           },
+           {
+            "control_type": "text",
+            "label": "Address 1",
+            "type": "string",
+            "name": "a82bc2ce_ad79_4793_8bc8_b6f0bfc3e193"
+           },
+           {
+            "control_type": "text",
+            "label": "Address 2",
+            "type": "string",
+            "name": "fffca1fe_4d68_4680_b67f_f8d8ee163c98"
+           },
+           {
+            "control_type": "text",
+            "label": "Zip",
+            "type": "string",
+            "name": "d0085c78_21fe_46f4_802f_2509bc196f19"
+           },
+           {
+            "control_type": "text",
+            "label": "City",
+            "type": "string",
+            "name": "c0fc796c_e9c6_4241_a9ca_c51e5abe5968"
+           },
+           {
+            "control_type": "text",
+            "label": "State",
+            "type": "string",
+            "name": "1b6af9cb_6f23_49fb_8b43_fa6dd3493028"
+           },
+           {
+            "control_type": "text",
+            "label": "Reward Amount",
+            "type": "string",
+            "name": "4ed31982_7740_4c55_90ea_7db2280b52ca"
+           },
+           {
+            "control_type": "text",
+            "label": "Reward Type",
+            "type": "string",
+            "name": "799ed91d_2dc6_4352_8190_f4a0e8783e68"
+           },
+           {
+            "control_type": "text",
+            "label": "Reward Identifier",
+            "type": "string",
+            "name": "58085030_985e_4a7b_b853_1a9780682eb0"
+           },
+           {
+            "control_type": "date_time",
+            "label": "Created at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+           },
+           {
+            "control_type": "date_time",
+            "label": "Updated at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+           }
+          ],
+          "type": "array"
+         },
+         {
+          "control_type": "text",
+          "label": "Next Page Token",
+          "name": "continuation_token",
+          "type": "string"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_19c84b30-793b-40ae-89c8-798ef9bec05e",
+          "name": "19c84b30-793b-40ae-89c8-798ef9bec05e",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_f98457e8-59e0-4a2d-8ecd-b91fe7204b8a",
+          "name": "f98457e8-59e0-4a2d-8ecd-b91fe7204b8a",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_0ee9220d-3445-492f-ac82-7d8be4571a96",
+          "name": "0ee9220d-3445-492f-ac82-7d8be4571a96",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_6675ebd6-990f-4add-a16f-0750149482c6",
+          "name": "6675ebd6-990f-4add-a16f-0750149482c6",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_647af816-35d2-49bc-9d05-6ed7a7614a28",
+          "name": "647af816-35d2-49bc-9d05-6ed7a7614a28",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_a2dd292d-852f-4652-8e98-3a51dd4b752f",
+          "name": "a2dd292d-852f-4652-8e98-3a51dd4b752f",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_8baafd62-cc55-4e4c-bc9a-608758c448e1",
+          "name": "8baafd62-cc55-4e4c-bc9a-608758c448e1",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_a82bc2ce-ad79-4793-8bc8-b6f0bfc3e193",
+          "name": "a82bc2ce-ad79-4793-8bc8-b6f0bfc3e193",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_fffca1fe-4d68-4680-b67f-f8d8ee163c98",
+          "name": "fffca1fe-4d68-4680-b67f-f8d8ee163c98",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_d0085c78-21fe-46f4-802f-2509bc196f19",
+          "name": "d0085c78-21fe-46f4-802f-2509bc196f19",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_c0fc796c-e9c6-4241-a9ca-c51e5abe5968",
+          "name": "c0fc796c-e9c6-4241-a9ca-c51e5abe5968",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_1b6af9cb-6f23-49fb-8b43-fa6dd3493028",
+          "name": "1b6af9cb-6f23-49fb-8b43-fa6dd3493028",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_4ed31982-7740-4c55-90ea-7db2280b52ca",
+          "name": "4ed31982-7740-4c55-90ea-7db2280b52ca",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_799ed91d-2dc6-4352-8190-f4a0e8783e68",
+          "name": "799ed91d-2dc6-4352-8190-f4a0e8783e68",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_58085030-985e-4a7b-b853-1a9780682eb0",
+          "name": "58085030-985e-4a7b-b853-1a9780682eb0",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "id",
+          "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+          "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "date_time",
+          "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+          "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "date_time",
+          "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+          "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         }
+        ],
+        "uuid": "29eeb80e-27ff-4be3-b134-ab3ba9b62998",
+        "title": null,
+        "description": "Search records in <span class=\"provider\">a data table</span>"
+       },
+       {
+        "number": 46,
+        "keyword": "if",
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "greater_than",
+           "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"4164112d\",\"path\":[\"entries\",{\"path_element_type\":\"size\"}]}')}",
+           "rhs": "0",
+           "uuid": "dc0dea88-93f8-49b2-9a58-9ba6031773b2"
+          },
+          {
+           "operand": "equals_to",
+           "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"a4d304fd\",\"path\":[\"records\",{\"path_element_type\":\"size\"}]}')+_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"11ea5406\",\"path\":[\"records\",{\"path_element_type\":\"size\"}]}')",
+           "rhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"32c84bc9\",\"path\":[\"lines\",{\"path_element_type\":\"size\"}]}')}",
+           "uuid": "92e614a4-9ab1-42d3-9dbc-fb8ec46de419"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 47,
+          "provider": "workato_recipe_function",
+          "name": "call_recipe_async",
+          "as": "0846ea72",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "flow_id": "SH Targeted Spend -  Error Report"
+          },
+          "input": {
+           "flow_id": "64477743",
+           "parameters": {
+            "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}"
+           }
+          },
+          "extended_input_schema": [
+           {
+            "label": "Parameters",
+            "name": "parameters",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "File name",
+              "name": "File_Name",
+              "type": "string",
+              "optional": false,
+              "hint": "Name of the file that needs an error report generated"
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "uuid": "2dbdc826-1cea-4860-ba2b-95ff37ed087b",
+          "title": null,
+          "description": "Call <span class=\"provider\">Error_Report_Export_CSV</span> (async)"
+         },
+         {
+          "number": 48,
+          "provider": "workato_recipe_function",
+          "name": "call_recipe_async",
+          "as": "0546896e",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "flow_id": "Recipient Data Delivery to Soda Health"
+          },
+          "input": {
+           "flow_id": "64554196",
+           "parameters": {
+            "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}"
+           }
+          },
+          "extended_input_schema": [
+           {
+            "label": "Parameters",
+            "name": "parameters",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "File name",
+              "name": "File_Name",
+              "type": "string",
+              "optional": false,
+              "hint": "Name of the file that needs an error report generated"
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "uuid": "1764f95d-29d0-4ce4-beaa-c4ebf5676769",
+          "title": null,
+          "description": "Call <span class=\"provider\">Recipient_Data_CSV_To_SH___Upload</span> (async)"
+         },
+         {
+          "number": 49,
+          "provider": "workato_recipe_function",
+          "name": "call_recipe_async",
+          "as": "f9a5d131",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "flow_id": "Share_Summary_Of_transaction_To_Customer"
+          },
+          "input": {
+           "flow_id": "65355601",
+           "parameters": {
+            "File_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+            "No_Of_Records": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"32c84bc9\",\"path\":[\"lines\",{\"path_element_type\":\"size\"}]}')}"
+           }
+          },
+          "extended_input_schema": [
+           {
+            "label": "Parameters",
+            "name": "parameters",
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "File name",
+              "name": "File_Name",
+              "type": "string",
+              "optional": false,
+              "hint": "Name of the file that needs an error report generated"
+             },
+             {
+              "control_type": "text",
+              "label": "No of records",
+              "name": "No_Of_Records",
+              "type": "string",
+              "optional": false
+             }
+            ],
+            "type": "object"
+           }
+          ],
+          "uuid": "2490ded5-bdc0-4e8f-a4fd-b9060a2cf8ed",
+          "title": null,
+          "description": "Call <span class=\"provider\">Transaction_Summary_Report___Upload</span> (async)"
+         },
+         {
+          "number": 50,
+          "provider": "workato_variable",
+          "name": "update_variables",
+          "as": "99deca82",
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "name": [
+            {
+             "label": "repeatReportAction (step 44)",
+             "value": "28b98544-7af4-4187-a438-be6bfe6e4fe1:d90b84de:repeatReportAction"
+            }
+           ]
+          },
+          "toggleCfg": {
+           "repeatReportAction": true
+          },
+          "input": {
+           "name": "28b98544-7af4-4187-a438-be6bfe6e4fe1:d90b84de:repeatReportAction",
+           "repeatReportAction": "false"
+          },
+          "extended_input_schema": [
+           {
+            "control_type": "checkbox",
+            "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+            "label": "repeatReportAction",
+            "name": "repeatReportAction",
+            "optional": true,
+            "parse_output": "boolean_conversion",
+            "sticky": true,
+            "toggle_field": {
+             "label": "repeatReportAction",
+             "control_type": "text",
+             "toggle_hint": "Use custom value",
+             "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+             "strip_interpolation": true,
+             "sticky": true,
+             "optional": true,
+             "type": "boolean",
+             "name": "repeatReportAction"
+            },
+            "toggle_hint": "Select from option list",
+            "type": "boolean",
+            "render_input": "boolean_conversion",
+            "strip_interpolation": true
+           }
+          ],
+          "uuid": "d11131da-43b8-43c3-84b1-201cdaff0916",
+          "title": null,
+          "description": "Update variables <span class=\"provider\">repeatReportAction</span>"
+         }
+        ],
+        "uuid": "915fcb0d-ce27-4795-a3bf-b8bfdb19c809"
+       },
+       {
+        "number": 51,
+        "keyword": "while_condition",
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "is_true",
+           "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"d90b84de\",\"path\":[\"repeatReportAction\"]}')}",
+           "rhs": "",
+           "uuid": "3a293ed1-e592-4a78-85bd-09ea6a6ae02d"
+          }
+         ]
+        },
+        "uuid": "b953ae56-9729-4a8c-8dce-e22d0fee566d"
+       }
+      ],
+      "uuid": "b17a31f9-43f8-44d6-b77d-1dec8d5c7086"
+     },
+     {
+      "number": 52,
+      "as": "9ecfe5c2",
+      "keyword": "catch",
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 53,
+        "provider": "workato_template",
+        "name": "create_document",
+        "as": "a316e715",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "template_id": "Order Confirmation"
+        },
+        "input": {
+         "template_id": "116481",
+         "template_input": {
+          "message_header": "File Not Processed -  uploading to sodahealth failed",
+          "message_body": "uploading to sodahealth sftp failed - #{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"9ecfe5c2\",\"path\":[\"message\"]}')}"
+         }
+        },
+        "extended_input_schema": [
+         {
+          "label": "Template input",
+          "name": "template_input",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Message header",
+            "name": "message_header",
+            "type": "string",
+            "optional": false
+           },
+           {
+            "control_type": "text",
+            "label": "Message body",
+            "name": "message_body",
+            "type": "string",
+            "optional": false
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "uuid": "c667b203-23ec-407d-912d-c2d784028877",
+        "title": null,
+        "description": "Create <span class=\"provider\">message</span> using <span class=\"provider\">Order Confirmation</span> template"
+       },
+       {
+        "number": 54,
+        "provider": "email",
+        "name": "send_mail",
+        "as": "fbc7ccd4",
+        "keyword": "action",
+        "input": {
+         "email_type": "-- REDACTED --",
+         "to": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_to_send_email\"}')}",
+         "subject": "Tango Card | File Not Processed - Orders Must Contain Less than #{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"sh_targeted_spend_file_size\"}')} Rows: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+         "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_template\",\"line\":\"a316e715\",\"path\":[\"document\"]}')}",
+         "attachments": {
+          "file_binary_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"amazon_s3\",\"line\":\"a2602b25\",\"path\":[\"file_content\"]}')}",
+          "file_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}"
+         }
+        },
+        "visible_config_fields": [
+         "to",
+         "subject",
+         "email_type",
+         "body",
+         "attachments.file_name",
+         "attachments.file_binary_content"
+        ],
+        "comment": "We will not process a file that contains more than 1,000 rows",
+        "uuid": "7d570d8d-c618-4fa4-9246-a197cb2975f2",
+        "title": null,
+        "description": null
+       },
+       {
+        "number": 55,
+        "as": "cb248f43",
+        "keyword": "stop",
+        "input": {
+         "stop_with_error": "true",
+         "stop_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"9ecfe5c2\",\"path\":[\"message\"]}')}"
+        },
+        "uuid": "dbbc6547-215d-4851-8fba-ccead5c7b0a6"
+       }
+      ],
+      "uuid": "129bbf2b-7ee1-40c0-b824-ca42b2d513d5"
+     }
+    ],
+    "uuid": "439569d9-7a33-4b85-9b73-1e5c891e56fc"
+   },
+   {
+    "number": 56,
+    "as": "3e195cb8",
+    "keyword": "stop",
+    "input": {
+     "stop_with_error": "false"
+    },
+    "uuid": "e6fd5762-794f-44ab-8ee5-f9269edfa579"
+   }
+  ],
+  "comment": "Triggering  action",
+  "job_report_schema": [
+   {
+    "name": "custom_column_0",
+    "label": "Filename"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "Length"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Hash"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"48cb84b8\",\"path\":[\"file_name\"]}')}",
+   "custom_column_1": "#{_('data.csv_parser.32c84bc9.lines.first.____Size', 'list_meta', '____Size', 'data.csv_parser.32c84bc9.lines')}",
+   "custom_column_3": "#{_('data.workato_variable.a1378eaa.file_hash')}"
+  },
+  "uuid": "a06a24c4-4f05-45c3-b7ae-93b1661f1c88",
+  "format_version": 2,
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

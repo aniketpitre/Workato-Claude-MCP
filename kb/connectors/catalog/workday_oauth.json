@@ -1,0 +1,288 @@
+{
+ "name": "workday_oauth",
+ "title": "Workday Web Services",
+ "requires_connection": true,
+ "categories": [
+  "HR management",
+  "ERP",
+  "Financial Management",
+  "Sales Enablement"
+ ],
+ "aliases": [
+  "Workday Web Services"
+ ],
+ "triggers": [
+  {
+   "name": "new_updated_object",
+   "title": "New/updated business object",
+   "description": "New/updated business object in Workday",
+   "help": "Order of jobs is unsorted.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When left blank, trigger will start picking up updates created or updated 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "trigger_objects",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_updated_object_batch",
+   "title": "New/updated business object",
+   "description": "New/updated business object in Workday",
+   "help": "Trigger will retrieve records created/updated since the last time recipe triggered.Maximum batch size is 100 records. Order of jobs is unsorted.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When left blank, trigger will start picking up updates created or updated 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "trigger_objects",
+     "extends_schema": true
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "hint": "Number of records in a single trigger event, default is 50 and maximum batch size is 100."
+    }
+   ],
+   "output": [
+    {
+     "name": "first_id",
+     "type": "string",
+     "label": "First ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_id",
+     "type": "string",
+     "label": "Last ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_batch",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "total_records",
+     "type": "integer",
+     "label": "Total records",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "Get_business_object_details",
+   "title": "Get business object details",
+   "description": "Get business object in Workday",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Staffing/Get_Applicants/Get_Applicants_Request/Get_Applicants_Response",
+      "Staffing/Get_Citizenship_Statuses/Get_Citizenship_Statuses_Request/Get_Citizenship_Statuses_Response",
+      "Integrations/Get_References/Get_References_Request/Get_References_Response",
+      "Staffing/Get_Job_Classification_Groups/Get_Job_Classification_Groups_Request/Get_Job_Classification_Groups_Response",
+      "Staffing/Get_Job_Families/Get_Job_Families_Request/Get_Job_Families_Response",
+      "Staffing/Get_Job_Family_Groups/Get_Job_Family_Groups_Request/Get_Job_Family_Groups_Response",
+      "Human_Resources/Get_Locations/Get_Locations_Request/Get_Locations_Response",
+      "Staffing/Get_Organizations/Get_Organizations_Request/Get_Organizations_Response",
+      "Staffing/Get_Positions/Get_Positions_Request/Get_Positions_Response",
+      "Staffing/Get_Student_Employment_Eligibility_Data/Get_Student_Employment_Eligibility_Data_Request/Get_Student_Employment_Eligibility_Data_Response",
+      "Staffing/Get_Worker_Documents/Get_Worker_Documents_Request/Get_Worker_Documents_Response",
+      "Staffing/Get_Workers/Get_Workers_Request/Get_Workers_Response"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "Search_business_object",
+   "title": "Search business object",
+   "description": "Search business object in Workday",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Staffing/Get_Applicants/Get_Applicants_Request/Get_Applicants_Response",
+      "Staffing/Get_Citizenship_Statuses/Get_Citizenship_Statuses_Request/Get_Citizenship_Statuses_Response",
+      "Integrations/Get_References/Get_References_Request/Get_References_Response",
+      "Staffing/Get_Job_Classification_Groups/Get_Job_Classification_Groups_Request/Get_Job_Classification_Groups_Response",
+      "Staffing/Get_Job_Families/Get_Job_Families_Request/Get_Job_Families_Response",
+      "Staffing/Get_Job_Family_Groups/Get_Job_Family_Groups_Request/Get_Job_Family_Groups_Response",
+      "Human_Resources/Get_Locations/Get_Locations_Request/Get_Locations_Response",
+      "Staffing/Get_Organizations/Get_Organizations_Request/Get_Organizations_Response",
+      "Staffing/Get_Positions/Get_Positions_Request/Get_Positions_Response",
+      "Staffing/Get_Student_Employment_Eligibility_Data/Get_Student_Employment_Eligibility_Data_Request/Get_Student_Employment_Eligibility_Data_Response",
+      "Staffing/Get_Worker_Documents/Get_Worker_Documents_Request/Get_Worker_Documents_Response",
+      "Staffing/Get_Workers/Get_Workers_Request/Get_Workers_Response"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "Update_business_object",
+   "title": "Update business object",
+   "description": "Update business object in Workday",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Business object",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "Staffing/Edit_Hiring_Restrictions/Edit_Hiring_Restrictions_Request/Edit_Hiring_Restrictions_Response",
+      "Staffing/Edit_Position/Edit_Position_Request/Edit_Position_Event_Response",
+      "Staffing/Edit_Position_Restrictions/Edit_Position_Restrictions_Request/Edit_Positon_Restriction_Response",
+      "Staffing/Edit_Position_Restrictions_Additional_Data/Edit_Position_Restrictions_Additional_Data_Request/Edit_Position_Restrictions_Additional_Data_Response",
+      "Staffing/Edit_Service_Dates/Edit_Service_Dates_Request/Edit_Service_Dates_Response",
+      "Staffing/Edit_Worker_Additional_Data/Edit_Worker_Additional_Data_Request/Edit_Worker_Additional_Data_Response"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "call_operation",
+   "title": "Call operation",
+   "description": "Call operation in Workday",
+   "help": "Call any Workday Web Services operation. First select the operation, then select any necessary attributes for each field. Finally, provide data for the operation. Reference fields with string input values are delimited with commas by default. If a value contains comma in it, use <!--no_split--> synt…",
+   "input": [
+    {
+     "name": "web_service",
+     "type": "string",
+     "label": "Operation",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "web_services_pl",
+     "extends_schema": true,
+     "hint": "Upon changing operation, ensure to Reset the step to clear any input that was configured for a different operation."
+    },
+    {
+     "name": "use_user_payload",
+     "type": "boolean",
+     "label": "Switch to user-defined XML payload",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "use_user_payload",
+      "type": "boolean"
+     },
+     "hint": "Enabling this feature allows you to manually enter the XML payload. To understand how input fields are synchronised between the guided setup and user-defined XML payload setup, please read our documen…"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

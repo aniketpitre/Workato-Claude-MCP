@@ -1,0 +1,742 @@
+{
+ "name": "gmail",
+ "title": "Gmail",
+ "requires_connection": true,
+ "categories": [
+  "Productivity",
+  "Sales Enablement"
+ ],
+ "aliases": [
+  "Gmail",
+  "email",
+  "google"
+ ],
+ "triggers": [
+  {
+   "name": "new_email",
+   "title": "New email",
+   "description": "New email in Gmail",
+   "help": "Checks for new emails every {{authUser.membership.poll_interval}} minutes. Supports email attachment of up to 25mb.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Defaults to one day from time of start of recipe. Once recipe has been run or tested, value cann…"
+    },
+    {
+     "name": "label_ids",
+     "type": "string",
+     "label": "Label",
+     "control_type": "select",
+     "pick_list": "mailbox_labels",
+     "toggle_field": {
+      "name": "label_ids_text",
+      "type": "string"
+     },
+     "hint": "Fetch only emails with selected labels. All emails will be fetched if left blank. Learn more"
+    },
+    {
+     "name": "includeSpamTrash",
+     "type": "boolean",
+     "label": "Include spam and trash",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "includeSpamTrash",
+      "type": "boolean"
+     },
+     "hint": "Include emails from spam and trash in the results. Defaults to No if left blank."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "threadId",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "snippet",
+     "type": "string",
+     "label": "Snippet",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "body_plain",
+     "type": "string",
+     "label": "Body as plain text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "body_html",
+     "type": "string",
+     "label": "Body as HTML",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "from_email",
+     "type": "string",
+     "label": "From",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "labelIds",
+     "type": "array",
+     "label": "Label IDs",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "to_emails",
+     "type": "array",
+     "label": "To Emails",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "cc_emails",
+     "type": "array",
+     "label": "Cc Emails",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "received_time",
+     "type": "date_time",
+     "label": "Received time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "mimeType",
+       "type": "string",
+       "label": "Mime type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "filename",
+       "type": "string",
+       "label": "Filename",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "filesize",
+       "type": "integer",
+       "label": "Filesize",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "attachmentId",
+       "type": "string",
+       "label": "Attachment ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "references",
+     "type": "string",
+     "label": "References",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Gmail (Custom)",
+   "help": "Build your own Gmail action with a HTTP request. The request will be authorized with your Gmail connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_draft",
+   "title": "Create draft",
+   "description": "Create draft email in Gmail",
+   "help": "Create a draft email that can be reviewed and sent later. The draft will be saved in the connected user's Drafts folder.",
+   "input": [
+    {
+     "name": "to",
+     "type": "string",
+     "label": "To",
+     "control_type": "email",
+     "required": true,
+     "hint": "Provide the recipient email address(es) separated by comma."
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "email_type",
+     "type": "string",
+     "label": "Email type",
+     "control_type": "select",
+     "default": "text",
+     "options": [
+      "text",
+      "html"
+     ],
+     "toggle_field": {
+      "name": "email_type",
+      "type": "string"
+     },
+     "hint": "Select the format of the email message"
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Message",
+     "control_type": "text-area",
+     "hint": "Plain text if selected email type is Text , HTML formatted if selected email type is HTML"
+    },
+    {
+     "name": "from",
+     "type": "string",
+     "label": "From",
+     "control_type": "email",
+     "hint": "Provide alias email ID or name. Leave blank to use the connected account."
+    },
+    {
+     "name": "cc",
+     "type": "string",
+     "label": "Cc",
+     "control_type": "email",
+     "hint": "Provide the email address(es) to send carbon copy (cc) separated by comma."
+    },
+    {
+     "name": "bcc",
+     "type": "string",
+     "label": "Bcc",
+     "control_type": "email",
+     "hint": "Provide the email address(es) to send blind carbon copy (bcc) separated by comma."
+    },
+    {
+     "name": "reply_to",
+     "type": "string",
+     "label": "Reply to",
+     "control_type": "text",
+     "hint": "Provide the email address to reply to"
+    },
+    {
+     "name": "thread_id",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "hint": "Thread ID to associate this draft with an existing conversation"
+    },
+    {
+     "name": "in_reply_to",
+     "type": "string",
+     "label": "In-Reply-To",
+     "control_type": "text",
+     "hint": "Message-ID of the email being replied to"
+    },
+    {
+     "name": "references",
+     "type": "string",
+     "label": "References",
+     "control_type": "text",
+     "hint": "References header for threading"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Draft ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "threadId",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "labelIds",
+     "type": "array",
+     "label": "Label IDs",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    }
+   ]
+  },
+  {
+   "name": "download_attachment",
+   "title": "Download attachment",
+   "description": "Download email attachment from Gmail",
+   "help": "Retrieve the content of a specific attachment of an email. This content can be used to upload the attachment into another app in subsequent recipe steps.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Email ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of email containing attachment. Obtain from the New email trigger."
+    },
+    {
+     "name": "attachmentId",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of attachment to download. Obtain from the New email trigger."
+    }
+   ],
+   "output": [
+    {
+     "name": "content_bytes",
+     "type": "string",
+     "label": "Content bytes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "filesize",
+     "type": "integer",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_email_or_draft_by_id",
+   "title": "Get email or draft by ID",
+   "description": "Get email or draft by ID in Gmail",
+   "help": "Get details and content of a specific email or draft from Gmail by providing its ID.",
+   "input": [
+    {
+     "name": "message_type",
+     "type": "string",
+     "label": "Message type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "email",
+      "draft"
+     ],
+     "extends_schema": true,
+     "hint": "Select whether to fetch an email or a draft"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the email or draft to fetch"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "threadId",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "snippet",
+     "type": "string",
+     "label": "Snippet",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "body_plain",
+     "type": "string",
+     "label": "Body as plain text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "body_html",
+     "type": "string",
+     "label": "Body as HTML",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "from_email",
+     "type": "string",
+     "label": "From",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "labelIds",
+     "type": "array",
+     "label": "Label IDs",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "to_emails",
+     "type": "array",
+     "label": "To Emails",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "cc_emails",
+     "type": "array",
+     "label": "Cc Emails",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "received_time",
+     "type": "date_time",
+     "label": "Received time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "mimeType",
+       "type": "string",
+       "label": "Mime type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "filename",
+       "type": "string",
+       "label": "Filename",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "filesize",
+       "type": "integer",
+       "label": "Filesize",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "attachmentId",
+       "type": "string",
+       "label": "Attachment ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "references",
+     "type": "string",
+     "label": "References",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "send_draft",
+   "title": "Send draft",
+   "description": "Send draft email via Gmail",
+   "help": "Send a previously created draft email. Provide the draft ID obtained from the Create draft action.",
+   "input": [
+    {
+     "name": "draftId",
+     "type": "string",
+     "label": "Draft ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The ID of the draft to send. Obtain from the Create draft action."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "threadId",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "labelIds",
+     "type": "array",
+     "label": "Label IDs",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    }
+   ]
+  },
+  {
+   "name": "send_mail",
+   "title": "Send email",
+   "description": "Send email via Gmail",
+   "help": "Send a plain text or HTML formatted email to specified recipient. Email will be sent from the email address connected to Workato.",
+   "input": [
+    {
+     "name": "to",
+     "type": "string",
+     "label": "To",
+     "control_type": "email",
+     "required": true,
+     "hint": "Provide the recipient email address(es) separated by comma."
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Subject",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "email_type",
+     "type": "string",
+     "label": "Email type",
+     "control_type": "select",
+     "default": "text",
+     "options": [
+      "text",
+      "html"
+     ],
+     "hint": "Select the format of the email message"
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Message",
+     "control_type": "text-area",
+     "hint": "Plain text if selected email type is Text , HTML formatted if selected email type is HTML"
+    },
+    {
+     "name": "from",
+     "type": "string",
+     "label": "From",
+     "control_type": "email",
+     "hint": "Provide alias email ID or name you want to send the email from. Alias email ID should be configured in your gmail setting in Accounts and Import -> Send email as section. Leave blank to send email fro…"
+    },
+    {
+     "name": "bcc",
+     "type": "string",
+     "label": "Bcc",
+     "control_type": "email",
+     "hint": "Provide the email address(es) to send blind carbon copy (bcc) separated by comma."
+    },
+    {
+     "name": "cc",
+     "type": "string",
+     "label": "Cc",
+     "control_type": "email",
+     "hint": "Provide the email address(es) to send carbon copy (cc) separated by comma."
+    },
+    {
+     "name": "reply_to",
+     "type": "string",
+     "label": "Reply to",
+     "control_type": "text",
+     "hint": "Provide the email address to reply to"
+    },
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments",
+     "of": "object",
+     "properties": [
+      {
+       "name": "file_binary_content",
+       "type": "string",
+       "label": "File binary content",
+       "control_type": "text-area",
+       "toggle_field": {
+        "name": "file_url",
+        "type": "string"
+       },
+       "hint": "If 'File binary content' is provided, 'File name' is required"
+      },
+      {
+       "name": "file_name",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "hint": "Ex: sample.pdf. Required when File binary content is provided"
+      }
+     ],
+     "hint": "Total attachments size should be less than 25 MB"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "threadId",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "labelIds",
+     "type": "array",
+     "label": "Label IDs",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    }
+   ]
+  }
+ ]
+}

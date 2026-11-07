@@ -1,0 +1,374 @@
+{
+ "name": "db2",
+ "title": "IBM Db2",
+ "requires_connection": true,
+ "categories": [
+  "database"
+ ],
+ "aliases": [
+  "IBM Db2"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "delete_rows",
+   "title": "Delete rows",
+   "description": "Delete rows in a table in IBM Db2",
+   "help": "Delete one or more rows in any table that matches a filter. First select the table, then specify the WHERE condition to filter the row(s) to delete.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be deleted, e.g. currency = 'USD' (enclose strings in single quotes)"
+    }
+   ],
+   "output": [
+    {
+     "name": "rows_deleted",
+     "type": "integer",
+     "label": "Number of rows deleted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "export_csv_v2",
+   "title": "Export query result",
+   "description": "Export query result as a CSV file in IBM Db2",
+   "help": "This action executes a SQL query and exports the result into a CSV file. This action is intended to write SQL(SELECT) queries.",
+   "input": [
+    {
+     "name": "_action_version",
+     "type": "string",
+     "label": "Action version",
+     "control_type": "text",
+     "visible_if": "false",
+     "default": "2"
+    },
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Export the results of this SQL (SELECT) query."
+    },
+    {
+     "name": "delimiter",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "comma",
+      "space",
+      "tab",
+      "colon",
+      "semicolon",
+      "pipe"
+     ],
+     "hint": "The delimiter character that separates each column in the CSV file. CSV files typically use comma ."
+    },
+    {
+     "name": "target_url",
+     "type": "string",
+     "label": "Upload URL",
+     "control_type": "text",
+     "visible_if": "input._action_version != '2'",
+     "hint": "Export the CSV file to this URL. Use the output of Generate on-prem file URL or an S3 presigned URL (with PUT method)."
+    }
+   ],
+   "output": [
+    {
+     "name": "row_count",
+     "type": "integer",
+     "label": "Number of rows exported",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "names",
+     "type": "array",
+     "label": "Column names",
+     "required": true,
+     "of": "string"
+    }
+   ]
+  },
+  {
+   "name": "insert_rows_batch",
+   "title": "Insert rows",
+   "description": "Insert batch of rows in a table in IBM Db2",
+   "help": "Inserts a batch of rows in the selected table. Select the table, then provide data for the rows.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only first 1000 are displayed. Enter name if table is not shown."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "run_custom_sql",
+   "title": "Run custom SQL",
+   "description": "Run custom SQL in IBM Db2",
+   "help": "Execute a SQL in IBM Db2. Provide a valid SQL string and define the expected output fields. This action is intended for write SQL (INSERT and UPDATE) and DDL (CREATE, ALTER and DROP). Maximum number of rows returned in this action is 50000. For SELECT queries, you may use Select rows using custom SQ…",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SQL string to be executed here. Use bind variables, e.g. id = :id , and the parameter field to parameterize inputs."
+    },
+    {
+     "name": "update_only",
+     "type": "boolean",
+     "label": "Execute update only SQL statement without row limit",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "update_only",
+      "type": "boolean"
+     },
+     "hint": "Defaults to No. When Yes, this action imposes no row limits on SQL statements but returns no rows. Use this to do bulk transformations of data."
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "visible_if": "input.update_only != \"true\"",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_rows",
+   "title": "Select rows",
+   "description": "Select rows in a table in IBM Db2",
+   "help": "Select rows from the selected table/view that match your WHERE condition. Result is limited to 50000 rows.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "output_columns",
+     "type": "string",
+     "label": "Output columns",
+     "control_type": "multiselect",
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Choose columns to be selected from the table. Default is to return all columns."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be selected, e.g. currency = 'USD' (enclose strings in single quotes). Use bind variables, e.g. id = :id , and the parameter field to parameterize inputs."
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "orderby",
+     "type": "string",
+     "label": "Order by",
+     "control_type": "text",
+     "hint": "Order of rows to return. e.g. updated_at DESC"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Max number of rows to return. Limit is 50000 and default is 100."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "number",
+     "default": 0,
+     "hint": "Number of rows to skip. e.g. 100 ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_rows_sql",
+   "title": "Select rows using custom SQL",
+   "description": "Select rows using custom SQL in IBM Db2",
+   "help": "Select rows in IBM Db2 with a custom SQL query.",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Put your native SQL query here with meaningful column aliases. Any ORDER BY clauses should be removed from the query and placed in the Order by input field below. Avoid using any restrictive clauses l…"
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "orderby",
+     "type": "string",
+     "label": "Order by",
+     "control_type": "text",
+     "hint": "Order of rows to return. e.g. updated_at DESC"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Limit number of rows (default is 100)"
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to define the columns returned in your query. We try to do this for you dynamically but this can be used to override any columns in case of errors. The name of fields defined should match the…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upsert_rows_batch",
+   "title": "Upsert rows",
+   "description": "Upsert batch of rows in a table in IBM Db2",
+   "help": "Inserts/updates a batch of rows in the selected table by the specified unique key. Select the table, then provide data for the rows. Rows with unique key values found will be updated with the data provided. Rows without existing unique key values will be created with data provided.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only first 1000 are displayed. Enter name if table is not shown."
+    }
+   ],
+   "output": [
+    {
+     "name": "rows_affected",
+     "type": "integer",
+     "label": "Number of rows upserted",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

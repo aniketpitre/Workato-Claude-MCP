@@ -1,0 +1,5670 @@
+{
+ "name": "jira_service_desk",
+ "title": "JIRA Service Desk",
+ "requires_connection": true,
+ "categories": [
+  "Project Management",
+  "Customer Service"
+ ],
+ "aliases": [
+  "JIRA Service Desk",
+  "Atlassian"
+ ],
+ "triggers": [
+  {
+   "name": "new_customer_request",
+   "title": "New customer request",
+   "description": "New customer request in Jira Service Desk",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in JIRA Service Desk (Custom)",
+   "help": "Build your own JIRA Service Desk action with a HTTP request. The request will be authorized with your JIRA Service Desk connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_comment",
+   "title": "Create comment",
+   "description": "Create comment for issue in Jira Service Desk",
+   "input": [
+    {
+     "name": "Issue",
+     "type": "string",
+     "label": "Issue",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key"
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text",
+     "required": true,
+     "hint": "To mention a user in Jira Cloud, use [~accountid:accountId] e.g. [~accountid:5b10ac8d82e05b22cc7d4ef5]. For Jira Server/Data Center, use [~username] e.g. [~johndoe]."
+    },
+    {
+     "name": "public",
+     "type": "number",
+     "label": "Public",
+     "control_type": "number",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "_expands",
+     "type": "array",
+     "label": "Expands",
+     "of": "string"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text-area"
+    },
+    {
+     "name": "public",
+     "type": "number",
+     "label": "Public",
+     "control_type": "number"
+    },
+    {
+     "name": "author",
+     "type": "object",
+     "label": "Author",
+     "properties": [
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text"
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text"
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "active",
+       "type": "number",
+       "label": "Active",
+       "control_type": "number"
+      },
+      {
+       "name": "timeZone",
+       "type": "string",
+       "label": "Time zone",
+       "control_type": "text"
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "properties": [
+        {
+         "name": "jiraRest",
+         "type": "string",
+         "label": "Jira rest",
+         "control_type": "text"
+        },
+        {
+         "name": "avatarUrls",
+         "type": "object",
+         "label": "Avatar urls",
+         "properties": [
+          {
+           "name": "48x48",
+           "type": "string",
+           "label": "48 x 48",
+           "control_type": "text"
+          },
+          {
+           "name": "24x24",
+           "type": "string",
+           "label": "24 x 24",
+           "control_type": "text"
+          },
+          {
+           "name": "16x16",
+           "type": "string",
+           "label": "16 x 16",
+           "control_type": "text"
+          },
+          {
+           "name": "32x32",
+           "type": "string",
+           "label": "32 x 32",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "created",
+     "type": "array",
+     "label": "Created (Deprecated)",
+     "of": "object",
+     "properties": [
+      {
+       "name": "iso8601",
+       "type": "string",
+       "label": "Iso 8601",
+       "control_type": "text"
+      },
+      {
+       "name": "jira",
+       "type": "string",
+       "label": "Jira",
+       "control_type": "text"
+      },
+      {
+       "name": "friendly",
+       "type": "string",
+       "label": "Friendly",
+       "control_type": "text"
+      },
+      {
+       "name": "epochMillis",
+       "type": "string",
+       "label": "Epoch millis",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "createdDate",
+     "type": "object",
+     "label": "Created",
+     "properties": [
+      {
+       "name": "iso8601",
+       "type": "string",
+       "label": "Iso 8601",
+       "control_type": "text"
+      },
+      {
+       "name": "jira",
+       "type": "string",
+       "label": "Jira",
+       "control_type": "text"
+      },
+      {
+       "name": "friendly",
+       "type": "string",
+       "label": "Friendly",
+       "control_type": "text"
+      },
+      {
+       "name": "epochMillis",
+       "type": "string",
+       "label": "Epoch millis",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_customer",
+   "title": "Create customer",
+   "description": "Create customer in Jira Service Desk",
+   "input": [
+    {
+     "name": "email",
+     "type": "string",
+     "label": "Email",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fullName",
+     "type": "string",
+     "label": "Full name",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Key",
+     "control_type": "text"
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text"
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "active",
+     "type": "string",
+     "label": "Active",
+     "control_type": "text"
+    },
+    {
+     "name": "timeZone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "text"
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "properties": [
+      {
+       "name": "jiraRest",
+       "type": "string",
+       "label": "Jira rest",
+       "control_type": "text"
+      },
+      {
+       "name": "avatarUrls",
+       "type": "object",
+       "label": "Avatar urls",
+       "properties": [
+        {
+         "name": "48x48",
+         "type": "string",
+         "label": "48 x 48",
+         "control_type": "text"
+        },
+        {
+         "name": "24x24",
+         "type": "string",
+         "label": "24 x 24",
+         "control_type": "text"
+        },
+        {
+         "name": "16x16",
+         "type": "string",
+         "label": "16 x 16",
+         "control_type": "text"
+        },
+        {
+         "name": "32x32",
+         "type": "string",
+         "label": "32 x 32",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_customer_request",
+   "title": "Create customer request",
+   "description": "Create customer request in Jira Service Desk",
+   "help": "This action allows file attachment up to 500MB in size.",
+   "input": [
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service Desk",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_desk",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serviceDeskId",
+      "type": "integer"
+     },
+     "hint": "Select the service desk. Only the first 100 service desks are shown. Toggle to Enter service desk ID to provide service desk ID manually."
+    },
+    {
+     "name": "requestTypeId",
+     "type": "string",
+     "label": "Request type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "request_type",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "requestTypeId",
+      "type": "integer"
+     }
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_comment_by_ID",
+   "title": "Get comment by ID",
+   "description": "Get comment by ID in Jira Service Desk",
+   "input": [
+    {
+     "name": "Issue",
+     "type": "string",
+     "label": "Issue",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key"
+    },
+    {
+     "name": "commentId",
+     "type": "string",
+     "label": "Comment ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the comment to retrieve"
+    }
+   ],
+   "output": [
+    {
+     "name": "_expands",
+     "type": "array",
+     "label": "Expands",
+     "of": "string"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text-area"
+    },
+    {
+     "name": "public",
+     "type": "number",
+     "label": "Public",
+     "control_type": "number"
+    },
+    {
+     "name": "author",
+     "type": "object",
+     "label": "Author",
+     "properties": [
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text"
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text"
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "active",
+       "type": "number",
+       "label": "Active",
+       "control_type": "number"
+      },
+      {
+       "name": "timeZone",
+       "type": "string",
+       "label": "Time zone",
+       "control_type": "text"
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "properties": [
+        {
+         "name": "jiraRest",
+         "type": "string",
+         "label": "Jira rest",
+         "control_type": "text"
+        },
+        {
+         "name": "avatarUrls",
+         "type": "object",
+         "label": "Avatar urls",
+         "properties": [
+          {
+           "name": "48x48",
+           "type": "string",
+           "label": "48 x 48",
+           "control_type": "text"
+          },
+          {
+           "name": "24x24",
+           "type": "string",
+           "label": "24 x 24",
+           "control_type": "text"
+          },
+          {
+           "name": "16x16",
+           "type": "string",
+           "label": "16 x 16",
+           "control_type": "text"
+          },
+          {
+           "name": "32x32",
+           "type": "string",
+           "label": "32 x 32",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "created",
+     "type": "array",
+     "label": "Created (Deprecated)",
+     "of": "object",
+     "properties": [
+      {
+       "name": "iso8601",
+       "type": "string",
+       "label": "Iso 8601",
+       "control_type": "text"
+      },
+      {
+       "name": "jira",
+       "type": "string",
+       "label": "Jira",
+       "control_type": "text"
+      },
+      {
+       "name": "friendly",
+       "type": "string",
+       "label": "Friendly",
+       "control_type": "text"
+      },
+      {
+       "name": "epochMillis",
+       "type": "string",
+       "label": "Epoch millis",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "createdDate",
+     "type": "object",
+     "label": "Created",
+     "properties": [
+      {
+       "name": "iso8601",
+       "type": "string",
+       "label": "Iso 8601",
+       "control_type": "text"
+      },
+      {
+       "name": "jira",
+       "type": "string",
+       "label": "Jira",
+       "control_type": "text"
+      },
+      {
+       "name": "friendly",
+       "type": "string",
+       "label": "Friendly",
+       "control_type": "text"
+      },
+      {
+       "name": "epochMillis",
+       "type": "string",
+       "label": "Epoch millis",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_current_user",
+   "title": "Get current user",
+   "description": "Get current user in Jira Service Desk",
+   "input": [],
+   "output": [
+    {
+     "name": "accountId",
+     "type": "string",
+     "label": "Account ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "emailAddress",
+     "type": "string",
+     "label": "Email address",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "active",
+     "type": "boolean",
+     "label": "Active",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "active",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "timeZone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "locale",
+     "type": "string",
+     "label": "Locale",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_customer_request",
+   "title": "Get customer request",
+   "description": "Get customer request in Jira Service Desk",
+   "input": [
+    {
+     "name": "issueIdOrKey",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID or key of the customer request."
+    },
+    {
+     "name": "expand",
+     "type": "string",
+     "label": "Expand",
+     "control_type": "multiselect",
+     "options": [
+      "serviceDesk",
+      "requestType",
+      "participant",
+      "sla",
+      "status",
+      "attachment",
+      "action",
+      "comment",
+      "comment.attachment"
+     ],
+     "toggle_field": {
+      "name": "expand",
+      "type": "string"
+     },
+     "hint": "Additional properties to include in the response."
+    }
+   ],
+   "output": [
+    {
+     "name": "issueId",
+     "type": "string",
+     "label": "Issue ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "issueKey",
+     "type": "string",
+     "label": "Issue key",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "summary",
+     "type": "string",
+     "label": "Summary",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "requestTypeId",
+     "type": "string",
+     "label": "Request type ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "requestType",
+     "type": "object",
+     "label": "Request type",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "defaultName",
+       "type": "string",
+       "label": "Default name",
+       "control_type": "text",
+       "required": true,
+       "hint": "Untranslated request type name, before any language-pack translation."
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "helpText",
+       "type": "string",
+       "label": "Help text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "issueTypeId",
+       "type": "string",
+       "label": "Issue type ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "serviceDeskId",
+       "type": "string",
+       "label": "Service desk ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "portalId",
+       "type": "string",
+       "label": "Portal ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "groupIds",
+       "type": "array",
+       "label": "Group IDs",
+       "control_type": "text",
+       "required": true,
+       "of": "integer"
+      },
+      {
+       "name": "restrictionStatus",
+       "type": "string",
+       "label": "Restriction status",
+       "control_type": "text",
+       "required": true,
+       "hint": "e.g. OPEN — whether any customer can raise this request type."
+      },
+      {
+       "name": "canCreateRequest",
+       "type": "boolean",
+       "label": "Can create request",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "canCreateRequest",
+        "type": "boolean"
+       },
+       "hint": "Whether the connected user is permitted to raise this request type."
+      },
+      {
+       "name": "icon",
+       "type": "object",
+       "label": "Icon",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Icon ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "iconUrls",
+           "type": "object",
+           "label": "Icon URLs",
+           "required": true,
+           "properties": [
+            {
+             "name": "48x48",
+             "type": "string",
+             "label": "48x48",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "24x24",
+             "type": "string",
+             "label": "24x24",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "16x16",
+             "type": "string",
+             "label": "16x16",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "32x32",
+             "type": "string",
+             "label": "32x32",
+             "control_type": "url",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "serviceDesk",
+     "type": "object",
+     "label": "Service desk",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "projectId",
+       "type": "string",
+       "label": "Project ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "projectName",
+       "type": "string",
+       "label": "Project name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "projectKey",
+       "type": "string",
+       "label": "Project key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "projectTypeKey",
+       "type": "string",
+       "label": "Project type key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "currentStatus",
+     "type": "object",
+     "label": "Current status",
+     "required": true,
+     "properties": [
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "statusCategory",
+       "type": "string",
+       "label": "Status category",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "statusDate",
+       "type": "object",
+       "label": "Status date",
+       "required": true,
+       "properties": [
+        {
+         "name": "iso8601",
+         "type": "string",
+         "label": "ISO 8601",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "jira",
+         "type": "string",
+         "label": "Jira",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "friendly",
+         "type": "string",
+         "label": "Friendly",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "epochMillis",
+         "type": "string",
+         "label": "Epoch millis",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "status",
+     "type": "object",
+     "label": "Status transitions",
+     "required": true,
+     "properties": [
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "start",
+       "type": "integer",
+       "label": "Start",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isLastPage",
+       "type": "boolean",
+       "label": "Is last page",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isLastPage",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "base",
+         "type": "string",
+         "label": "Base",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "context",
+         "type": "string",
+         "label": "Context",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "values",
+       "type": "array",
+       "label": "Values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "status",
+         "type": "string",
+         "label": "Status",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "statusDate",
+         "type": "object",
+         "label": "Status date",
+         "required": true,
+         "properties": [
+          {
+           "name": "iso8601",
+           "type": "string",
+           "label": "ISO 8601",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "jira",
+           "type": "string",
+           "label": "Jira",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "friendly",
+           "type": "string",
+           "label": "Friendly",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "epochMillis",
+           "type": "string",
+           "label": "Epoch millis",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "createdDate",
+     "type": "object",
+     "label": "Created date",
+     "required": true,
+     "properties": [
+      {
+       "name": "iso8601",
+       "type": "string",
+       "label": "ISO 8601",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "jira",
+       "type": "string",
+       "label": "Jira",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "friendly",
+       "type": "string",
+       "label": "Friendly",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "epochMillis",
+       "type": "string",
+       "label": "Epoch millis",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "reporter",
+     "type": "object",
+     "label": "Reporter",
+     "required": true,
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accountId",
+       "type": "string",
+       "label": "Account ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "emailAddress",
+       "type": "string",
+       "label": "Email address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "timeZone",
+       "type": "string",
+       "label": "Time zone",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "participants",
+     "type": "object",
+     "label": "Participants",
+     "required": true,
+     "properties": [
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "start",
+       "type": "integer",
+       "label": "Start",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isLastPage",
+       "type": "boolean",
+       "label": "Is last page",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isLastPage",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "base",
+         "type": "string",
+         "label": "Base",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "context",
+         "type": "string",
+         "label": "Context",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "values",
+       "type": "array",
+       "label": "Values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "accountId",
+         "type": "string",
+         "label": "Account ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "active",
+         "type": "boolean",
+         "label": "Active",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "active",
+          "type": "boolean"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "sla",
+     "type": "object",
+     "label": "SLA",
+     "required": true,
+     "properties": [
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "start",
+       "type": "integer",
+       "label": "Start",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isLastPage",
+       "type": "boolean",
+       "label": "Is last page",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isLastPage",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "base",
+         "type": "string",
+         "label": "Base",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "context",
+         "type": "string",
+         "label": "Context",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "values",
+       "type": "array",
+       "label": "Values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "completedCycles",
+         "type": "array",
+         "label": "Completed cycles",
+         "required": true,
+         "of": "object"
+        },
+        {
+         "name": "ongoingCycle",
+         "type": "object",
+         "label": "Ongoing cycle",
+         "required": true,
+         "properties": [
+          {
+           "name": "startTime",
+           "type": "object",
+           "label": "Start time",
+           "required": true,
+           "properties": [
+            {
+             "name": "iso8601",
+             "type": "string",
+             "label": "ISO 8601",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "jira",
+             "type": "string",
+             "label": "Jira",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "friendly",
+             "type": "string",
+             "label": "Friendly",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "epochMillis",
+             "type": "string",
+             "label": "Epoch millis",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "breachTime",
+           "type": "object",
+           "label": "Breach time",
+           "required": true,
+           "properties": [
+            {
+             "name": "iso8601",
+             "type": "string",
+             "label": "ISO 8601",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "jira",
+             "type": "string",
+             "label": "Jira",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "friendly",
+             "type": "string",
+             "label": "Friendly",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "epochMillis",
+             "type": "string",
+             "label": "Epoch millis",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "breached",
+           "type": "boolean",
+           "label": "Breached",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "breached",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "paused",
+           "type": "boolean",
+           "label": "Paused",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "paused",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "withinCalendarHours",
+           "type": "boolean",
+           "label": "Within calendar hours",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "withinCalendarHours",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "goalDuration",
+           "type": "object",
+           "label": "Goal duration",
+           "required": true,
+           "properties": [
+            {
+             "name": "millis",
+             "type": "integer",
+             "label": "Milliseconds",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "friendly",
+             "type": "string",
+             "label": "Friendly",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "elapsedTime",
+           "type": "object",
+           "label": "Elapsed time",
+           "required": true,
+           "properties": [
+            {
+             "name": "millis",
+             "type": "integer",
+             "label": "Milliseconds",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "friendly",
+             "type": "string",
+             "label": "Friendly",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "remainingTime",
+           "type": "object",
+           "label": "Remaining time",
+           "required": true,
+           "properties": [
+            {
+             "name": "millis",
+             "type": "integer",
+             "label": "Milliseconds",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "friendly",
+             "type": "string",
+             "label": "Friendly",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "attachments",
+     "type": "object",
+     "label": "Attachments",
+     "required": true,
+     "properties": [
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "start",
+       "type": "integer",
+       "label": "Start",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isLastPage",
+       "type": "boolean",
+       "label": "Is last page",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isLastPage",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "base",
+         "type": "string",
+         "label": "Base",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "context",
+         "type": "string",
+         "label": "Context",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "values",
+       "type": "array",
+       "label": "Values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "url",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Attachment ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "filename",
+         "type": "string",
+         "label": "Filename",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "author",
+         "type": "object",
+         "label": "Author",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "accountId",
+           "type": "string",
+           "label": "Account ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "emailAddress",
+           "type": "string",
+           "label": "Email address",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "avatarUrls",
+           "type": "object",
+           "label": "Avatar URLs",
+           "required": true,
+           "properties": [
+            {
+             "name": "48x48",
+             "type": "string",
+             "label": "48x48",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "24x24",
+             "type": "string",
+             "label": "24x24",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "16x16",
+             "type": "string",
+             "label": "16x16",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "32x32",
+             "type": "string",
+             "label": "32x32",
+             "control_type": "url",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "active",
+           "type": "boolean",
+           "label": "Active",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "active",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "timeZone",
+           "type": "string",
+           "label": "Time zone",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "accountType",
+           "type": "string",
+           "label": "Account type",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "created",
+         "type": "date_time",
+         "label": "Created date",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "File size",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "mimeType",
+         "type": "string",
+         "label": "MIME type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "content",
+         "type": "string",
+         "label": "Content",
+         "control_type": "url",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "comments",
+     "type": "object",
+     "label": "Comments",
+     "required": true,
+     "properties": [
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "start",
+       "type": "integer",
+       "label": "Start",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isLastPage",
+       "type": "boolean",
+       "label": "Is last page",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isLastPage",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "base",
+         "type": "string",
+         "label": "Base",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "context",
+         "type": "string",
+         "label": "Context",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "values",
+       "type": "array",
+       "label": "Values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "_expands",
+         "type": "array",
+         "label": "Expands",
+         "control_type": "text",
+         "required": true,
+         "of": "string"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "body",
+         "type": "string",
+         "label": "Body",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "public",
+         "type": "boolean",
+         "label": "Public",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "public",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "author",
+         "type": "object",
+         "label": "Author",
+         "required": true,
+         "properties": [
+          {
+           "name": "accountId",
+           "type": "string",
+           "label": "Account ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "key",
+           "type": "string",
+           "label": "Key",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "emailAddress",
+           "type": "string",
+           "label": "Email address",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "active",
+           "type": "boolean",
+           "label": "Active",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "active",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "timeZone",
+           "type": "string",
+           "label": "Time zone",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "_links",
+           "type": "object",
+           "label": "Links",
+           "required": true,
+           "properties": [
+            {
+             "name": "jiraRest",
+             "type": "string",
+             "label": "Jira REST",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "avatarUrls",
+             "type": "object",
+             "label": "Avatar URLs",
+             "required": true,
+             "properties": [
+              {
+               "name": "48x48",
+               "type": "string",
+               "label": "48x48",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "24x24",
+               "type": "string",
+               "label": "24x24",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "16x16",
+               "type": "string",
+               "label": "16x16",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "32x32",
+               "type": "string",
+               "label": "32x32",
+               "control_type": "url",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self",
+             "control_type": "url",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "createdDate",
+         "type": "object",
+         "label": "Created date",
+         "required": true,
+         "properties": [
+          {
+           "name": "iso8601",
+           "type": "string",
+           "label": "ISO 8601",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "jira",
+           "type": "string",
+           "label": "Jira",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "friendly",
+           "type": "string",
+           "label": "Friendly",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "epochMillis",
+           "type": "string",
+           "label": "Epoch millis",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "attachments",
+         "type": "array",
+         "label": "Attachments",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "id",
+           "type": "string",
+           "label": "Attachment ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "filename",
+           "type": "string",
+           "label": "Filename",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "author",
+           "type": "object",
+           "label": "Author",
+           "required": true,
+           "properties": [
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "accountId",
+             "type": "string",
+             "label": "Account ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "emailAddress",
+             "type": "string",
+             "label": "Email address",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "avatarUrls",
+             "type": "object",
+             "label": "Avatar URLs",
+             "required": true,
+             "properties": [
+              {
+               "name": "48x48",
+               "type": "string",
+               "label": "48x48",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "24x24",
+               "type": "string",
+               "label": "24x24",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "16x16",
+               "type": "string",
+               "label": "16x16",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "32x32",
+               "type": "string",
+               "label": "32x32",
+               "control_type": "url",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "displayName",
+             "type": "string",
+             "label": "Display name",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "active",
+             "type": "boolean",
+             "label": "Active",
+             "control_type": "text",
+             "required": true,
+             "toggle_field": {
+              "name": "active",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "timeZone",
+             "type": "string",
+             "label": "Time zone",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "accountType",
+             "type": "string",
+             "label": "Account type",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "created",
+           "type": "date_time",
+           "label": "Created date",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "size",
+           "type": "integer",
+           "label": "File size",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "mimeType",
+           "type": "string",
+           "label": "MIME type",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content",
+           "type": "string",
+           "label": "Content",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "actions",
+     "type": "object",
+     "label": "Available actions",
+     "required": true,
+     "properties": [
+      {
+       "name": "addAttachment",
+       "type": "object",
+       "label": "Add attachment",
+       "required": true,
+       "properties": [
+        {
+         "name": "allowed",
+         "type": "boolean",
+         "label": "Allowed",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "allowed",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "addComment",
+       "type": "object",
+       "label": "Add comment",
+       "required": true,
+       "properties": [
+        {
+         "name": "allowed",
+         "type": "boolean",
+         "label": "Allowed",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "allowed",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "addParticipant",
+       "type": "object",
+       "label": "Add participant",
+       "required": true,
+       "properties": [
+        {
+         "name": "allowed",
+         "type": "boolean",
+         "label": "Allowed",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "allowed",
+          "type": "boolean"
+         }
+        }
+       ]
+      },
+      {
+       "name": "removeParticipant",
+       "type": "object",
+       "label": "Remove participant",
+       "required": true,
+       "properties": [
+        {
+         "name": "allowed",
+         "type": "boolean",
+         "label": "Allowed",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "allowed",
+          "type": "boolean"
+         }
+        }
+       ]
+      }
+     ],
+     "hint": "Keys observed so far: addAttachment, addComment, addParticipant, removeParticipant — not necessarily exhaustive, other keys (e.g. transition-related) may appear depending on ticket state."
+    },
+    {
+     "name": "requestFieldValues",
+     "type": "array",
+     "label": "Request field values",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "fieldId",
+       "type": "string",
+       "label": "Field ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "required": true,
+       "hint": "Plain text/number fields are returned as-is. Fields whose value isn't plain text (checkboxes, multi-select, radio, cascading select, user pickers) are JSON-encoded into this string - use the Parse JSO…"
+      },
+      {
+       "name": "renderedValue",
+       "type": "object",
+       "label": "Rendered value",
+       "required": true,
+       "properties": [
+        {
+         "name": "html",
+         "type": "string",
+         "label": "HTML",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "web",
+       "type": "string",
+       "label": "Web",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "agent",
+       "type": "string",
+       "label": "Agent",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "jiraRest",
+       "type": "string",
+       "label": "Jira REST",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "portal",
+       "type": "string",
+       "label": "Portal",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service desk ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_issue_in_queue_v2",
+   "title": "Get issue in queue",
+   "description": "Get issues in queue in Jira Service Desk",
+   "input": [
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service Desk",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_desk",
+     "toggle_field": {
+      "name": "serviceDeskId",
+      "type": "integer"
+     },
+     "hint": "Select the service desk. Only the first 100 service desks are shown. Toggle to Enter service desk ID to provide service desk ID manually."
+    },
+    {
+     "name": "queueId",
+     "type": "integer",
+     "label": "Queue ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Provide queue ID. To find queue ID, login to Jira Service Desk -> Click Projects -> Select the Project -> Select a Queue -> Queue ID can be found at the end of the URL."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 50,
+     "hint": "Maximum number of records to return in the query response. Defaults to 50 . Maximum allowed limit is 50 ."
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Starting position from which records should be fetched. Defaults to 0 . Provide a value that is a multiple of the Limit parameter."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_knowledgebase_article",
+   "title": "Get knowledge base article",
+   "description": "Get knowledge base article in Jira Service Desk",
+   "input": [
+    {
+     "name": "pageId",
+     "type": "string",
+     "label": "Page ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the knowledge base article page to retrieve."
+    }
+   ],
+   "output": [
+    {
+     "name": "pageId",
+     "type": "string",
+     "label": "Page ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Body",
+     "control_type": "text-area",
+     "required": true
+    },
+    {
+     "name": "iframeSrc",
+     "type": "string",
+     "label": "Iframe source",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_queues",
+   "title": "Get queues",
+   "description": "Get queues in Jira Service Desk",
+   "input": [
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service Desk",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_desk",
+     "toggle_field": {
+      "name": "serviceDeskId",
+      "type": "integer"
+     },
+     "hint": "Select the service desk. Only the first 100 service desks are shown. Toggle to Enter service desk ID to provide service desk ID manually."
+    }
+   ],
+   "output": [
+    {
+     "name": "queues",
+     "type": "array",
+     "label": "Queues",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "jql",
+       "type": "string",
+       "label": "Jql",
+       "control_type": "text"
+      },
+      {
+       "name": "fields",
+       "type": "array",
+       "label": "Fields",
+       "of": "object",
+       "properties": [
+        {
+         "name": "field",
+         "type": "string",
+         "label": "Field",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_request_type_fields",
+   "title": "Get request type fields",
+   "description": "Get request type fields in Jira Service Desk",
+   "input": [
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service Desk",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_desk",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serviceDeskId",
+      "type": "integer"
+     },
+     "hint": "Select the service desk. Only the first 100 service desks are shown. Toggle to Enter service desk ID to provide service desk ID manually."
+    },
+    {
+     "name": "requestTypeId",
+     "type": "string",
+     "label": "Request type",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "request_type",
+     "toggle_field": {
+      "name": "requestTypeId",
+      "type": "integer"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "fields",
+     "type": "array",
+     "label": "Fields",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "fieldId",
+       "type": "string",
+       "label": "Field ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "required",
+       "type": "boolean",
+       "label": "Required",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "required",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "visible",
+       "type": "boolean",
+       "label": "Visible",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "visible",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "validValues",
+       "type": "array",
+       "label": "Valid values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "label",
+         "type": "string",
+         "label": "Label",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "children",
+         "type": "array",
+         "label": "Children",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "value",
+           "type": "string",
+           "label": "Value",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "label",
+           "type": "string",
+           "label": "Label",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "defaultValues",
+       "type": "array",
+       "label": "Default values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "label",
+         "type": "string",
+         "label": "Label",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "presetValues",
+       "type": "array",
+       "label": "Preset values",
+       "control_type": "text",
+       "required": true,
+       "of": "string"
+      },
+      {
+       "name": "jiraSchema",
+       "type": "object",
+       "label": "Jira schema",
+       "required": true,
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "system",
+         "type": "string",
+         "label": "System",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "custom",
+         "type": "string",
+         "label": "Custom",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "items",
+         "type": "string",
+         "label": "Items",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_comments",
+   "title": "List comments",
+   "description": "Search comment in Jira Service Desk",
+   "input": [
+    {
+     "name": "Issue",
+     "type": "string",
+     "label": "Issue",
+     "control_type": "text",
+     "required": true,
+     "hint": "Issue ID or key"
+    },
+    {
+     "name": "public",
+     "type": "number",
+     "label": "Public",
+     "control_type": "number",
+     "hint": "Returns public comments if true . Defaults to public if left blank."
+    },
+    {
+     "name": "internal",
+     "type": "number",
+     "label": "Internal",
+     "control_type": "number",
+     "hint": "Returns internal comments if true . Defaults to internal if left blank."
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Starting position from which records should be fetched."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return in the query response."
+    }
+   ],
+   "output": [
+    {
+     "name": "_expands",
+     "type": "array",
+     "label": "Expands",
+     "of": "string"
+    },
+    {
+     "name": "values",
+     "type": "array",
+     "label": "Comments",
+     "of": "object",
+     "properties": [
+      {
+       "name": "_expands",
+       "type": "array",
+       "label": "Expands",
+       "of": "string"
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "body",
+       "type": "string",
+       "label": "Body",
+       "control_type": "text-area"
+      },
+      {
+       "name": "public",
+       "type": "number",
+       "label": "Public",
+       "control_type": "number"
+      },
+      {
+       "name": "author",
+       "type": "object",
+       "label": "Author",
+       "properties": [
+        {
+         "name": "accountId",
+         "type": "string",
+         "label": "Account ID",
+         "control_type": "text"
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "key",
+         "type": "string",
+         "label": "Key",
+         "control_type": "text"
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text"
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text"
+        },
+        {
+         "name": "active",
+         "type": "number",
+         "label": "Active",
+         "control_type": "number"
+        },
+        {
+         "name": "timeZone",
+         "type": "string",
+         "label": "Time zone",
+         "control_type": "text"
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "properties": [
+          {
+           "name": "jiraRest",
+           "type": "string",
+           "label": "Jira rest",
+           "control_type": "text"
+          },
+          {
+           "name": "avatarUrls",
+           "type": "object",
+           "label": "Avatar urls",
+           "properties": [
+            {
+             "name": "48x48",
+             "type": "string",
+             "label": "48 x 48",
+             "control_type": "text"
+            },
+            {
+             "name": "24x24",
+             "type": "string",
+             "label": "24 x 24",
+             "control_type": "text"
+            },
+            {
+             "name": "16x16",
+             "type": "string",
+             "label": "16 x 16",
+             "control_type": "text"
+            },
+            {
+             "name": "32x32",
+             "type": "string",
+             "label": "32 x 32",
+             "control_type": "text"
+            }
+           ]
+          },
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "created",
+       "type": "array",
+       "label": "Created (Deprecated)",
+       "of": "object",
+       "properties": [
+        {
+         "name": "iso8601",
+         "type": "string",
+         "label": "Iso 8601",
+         "control_type": "text"
+        },
+        {
+         "name": "jira",
+         "type": "string",
+         "label": "Jira",
+         "control_type": "text"
+        },
+        {
+         "name": "friendly",
+         "type": "string",
+         "label": "Friendly",
+         "control_type": "text"
+        },
+        {
+         "name": "epochMillis",
+         "type": "string",
+         "label": "Epoch millis",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "createdDate",
+       "type": "object",
+       "label": "Created",
+       "properties": [
+        {
+         "name": "iso8601",
+         "type": "string",
+         "label": "Iso 8601",
+         "control_type": "text"
+        },
+        {
+         "name": "jira",
+         "type": "string",
+         "label": "Jira",
+         "control_type": "text"
+        },
+        {
+         "name": "friendly",
+         "type": "string",
+         "label": "Friendly",
+         "control_type": "text"
+        },
+        {
+         "name": "epochMillis",
+         "type": "string",
+         "label": "Epoch millis",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number"
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Start",
+     "control_type": "number"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number"
+    },
+    {
+     "name": "isLastPage",
+     "type": "number",
+     "label": "Is last page",
+     "control_type": "number"
+    },
+    {
+     "name": "next_start",
+     "type": "integer",
+     "label": "Next start",
+     "control_type": "number",
+     "hint": "Offset to pass as start for the next page. Absent when isLastPage is true."
+    },
+    {
+     "name": "_links",
+     "type": "object",
+     "label": "Links",
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text"
+      },
+      {
+       "name": "base",
+       "type": "string",
+       "label": "Base",
+       "control_type": "text"
+      },
+      {
+       "name": "context",
+       "type": "string",
+       "label": "Context",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_customer_requests",
+   "title": "List customer requests",
+   "description": "List customer requests in Jira Service Desk",
+   "input": [
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service Desk",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_desk",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serviceDeskId",
+      "type": "integer"
+     },
+     "hint": "Select the service desk. Only the first 100 service desks are shown. Toggle to Enter service desk ID to provide service desk ID manually."
+    },
+    {
+     "name": "requestOwnership",
+     "type": "string",
+     "label": "Request ownership",
+     "control_type": "multiselect",
+     "options": [
+      "OWNED_REQUESTS",
+      "PARTICIPATED_REQUESTS",
+      "ALL_ORGANIZATIONS"
+     ],
+     "toggle_field": {
+      "name": "requestOwnership",
+      "type": "string"
+     },
+     "hint": "Defaults to OWNED_REQUESTS , PARTICIPATED_REQUESTS , and ALL_ORGANIZATIONS if left blank. Select multiple values to filter by more than one ownership type."
+    },
+    {
+     "name": "requestStatus",
+     "type": "string",
+     "label": "Request status",
+     "control_type": "select",
+     "options": [
+      "OPEN_REQUESTS",
+      "CLOSED_REQUESTS",
+      "ALL_REQUESTS"
+     ],
+     "toggle_field": {
+      "name": "requestStatus",
+      "type": "string"
+     }
+    },
+    {
+     "name": "expand",
+     "type": "string",
+     "label": "Expand",
+     "control_type": "multiselect",
+     "options": [
+      "serviceDesk",
+      "requestType",
+      "participant",
+      "sla",
+      "status",
+      "attachment",
+      "action",
+      "comment"
+     ],
+     "toggle_field": {
+      "name": "expand",
+      "type": "string"
+     },
+     "hint": "Additional properties to include for each returned request."
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Starting position from which records should be fetched. Defaults to 0 ."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 50,
+     "hint": "Maximum number of records to return in the query response. Defaults to 50 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "values",
+     "type": "array",
+     "label": "Values",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "issueId",
+       "type": "string",
+       "label": "Issue ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "issueKey",
+       "type": "string",
+       "label": "Issue key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "summary",
+       "type": "string",
+       "label": "Summary",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "requestTypeId",
+       "type": "string",
+       "label": "Request type ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "requestType",
+       "type": "object",
+       "label": "Request type",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "defaultName",
+         "type": "string",
+         "label": "Default name",
+         "control_type": "text",
+         "required": true,
+         "hint": "Untranslated request type name, before any language-pack translation."
+        },
+        {
+         "name": "description",
+         "type": "string",
+         "label": "Description",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "helpText",
+         "type": "string",
+         "label": "Help text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "issueTypeId",
+         "type": "string",
+         "label": "Issue type ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "serviceDeskId",
+         "type": "string",
+         "label": "Service desk ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "portalId",
+         "type": "string",
+         "label": "Portal ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "groupIds",
+         "type": "array",
+         "label": "Group IDs",
+         "control_type": "text",
+         "required": true,
+         "of": "integer"
+        },
+        {
+         "name": "restrictionStatus",
+         "type": "string",
+         "label": "Restriction status",
+         "control_type": "text",
+         "required": true,
+         "hint": "e.g. OPEN — whether any customer can raise this request type."
+        },
+        {
+         "name": "canCreateRequest",
+         "type": "boolean",
+         "label": "Can create request",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "canCreateRequest",
+          "type": "boolean"
+         },
+         "hint": "Whether the connected user is permitted to raise this request type."
+        },
+        {
+         "name": "icon",
+         "type": "object",
+         "label": "Icon",
+         "required": true,
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "Icon ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "_links",
+           "type": "object",
+           "label": "Links",
+           "required": true,
+           "properties": [
+            {
+             "name": "iconUrls",
+             "type": "object",
+             "label": "Icon URLs",
+             "required": true,
+             "properties": [
+              {
+               "name": "48x48",
+               "type": "string",
+               "label": "48x48",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "24x24",
+               "type": "string",
+               "label": "24x24",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "16x16",
+               "type": "string",
+               "label": "16x16",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "32x32",
+               "type": "string",
+               "label": "32x32",
+               "control_type": "url",
+               "required": true
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "serviceDesk",
+       "type": "object",
+       "label": "Service desk",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "projectId",
+         "type": "string",
+         "label": "Project ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "projectName",
+         "type": "string",
+         "label": "Project name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "projectKey",
+         "type": "string",
+         "label": "Project key",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "projectTypeKey",
+         "type": "string",
+         "label": "Project type key",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "currentStatus",
+       "type": "object",
+       "label": "Current status",
+       "required": true,
+       "properties": [
+        {
+         "name": "status",
+         "type": "string",
+         "label": "Status",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "statusCategory",
+         "type": "string",
+         "label": "Status category",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "statusDate",
+         "type": "object",
+         "label": "Status date",
+         "required": true,
+         "properties": [
+          {
+           "name": "iso8601",
+           "type": "string",
+           "label": "ISO 8601",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "jira",
+           "type": "string",
+           "label": "Jira",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "friendly",
+           "type": "string",
+           "label": "Friendly",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "epochMillis",
+           "type": "string",
+           "label": "Epoch millis",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "status",
+       "type": "object",
+       "label": "Status transitions",
+       "required": true,
+       "properties": [
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "Size",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "start",
+         "type": "integer",
+         "label": "Start",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "limit",
+         "type": "integer",
+         "label": "Limit",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isLastPage",
+         "type": "boolean",
+         "label": "Is last page",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "isLastPage",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "base",
+           "type": "string",
+           "label": "Base",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "context",
+           "type": "string",
+           "label": "Context",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "values",
+         "type": "array",
+         "label": "Values",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "status",
+           "type": "string",
+           "label": "Status",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "statusDate",
+           "type": "object",
+           "label": "Status date",
+           "required": true,
+           "properties": [
+            {
+             "name": "iso8601",
+             "type": "string",
+             "label": "ISO 8601",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "jira",
+             "type": "string",
+             "label": "Jira",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "friendly",
+             "type": "string",
+             "label": "Friendly",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "epochMillis",
+             "type": "string",
+             "label": "Epoch millis",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "createdDate",
+       "type": "object",
+       "label": "Created date",
+       "required": true,
+       "properties": [
+        {
+         "name": "iso8601",
+         "type": "string",
+         "label": "ISO 8601",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "jira",
+         "type": "string",
+         "label": "Jira",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "friendly",
+         "type": "string",
+         "label": "Friendly",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "epochMillis",
+         "type": "string",
+         "label": "Epoch millis",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "reporter",
+       "type": "object",
+       "label": "Reporter",
+       "required": true,
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "key",
+         "type": "string",
+         "label": "Key",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "accountId",
+         "type": "string",
+         "label": "Account ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "emailAddress",
+         "type": "string",
+         "label": "Email address",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "displayName",
+         "type": "string",
+         "label": "Display name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "active",
+         "type": "boolean",
+         "label": "Active",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "active",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "timeZone",
+         "type": "string",
+         "label": "Time zone",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "participants",
+       "type": "object",
+       "label": "Participants",
+       "required": true,
+       "properties": [
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "Size",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "start",
+         "type": "integer",
+         "label": "Start",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "limit",
+         "type": "integer",
+         "label": "Limit",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isLastPage",
+         "type": "boolean",
+         "label": "Is last page",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "isLastPage",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "base",
+           "type": "string",
+           "label": "Base",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "context",
+           "type": "string",
+           "label": "Context",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "values",
+         "type": "array",
+         "label": "Values",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "accountId",
+           "type": "string",
+           "label": "Account ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "emailAddress",
+           "type": "string",
+           "label": "Email address",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "displayName",
+           "type": "string",
+           "label": "Display name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "active",
+           "type": "boolean",
+           "label": "Active",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "active",
+            "type": "boolean"
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "sla",
+       "type": "object",
+       "label": "SLA",
+       "required": true,
+       "properties": [
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "Size",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "start",
+         "type": "integer",
+         "label": "Start",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "limit",
+         "type": "integer",
+         "label": "Limit",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isLastPage",
+         "type": "boolean",
+         "label": "Is last page",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "isLastPage",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "base",
+           "type": "string",
+           "label": "Base",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "context",
+           "type": "string",
+           "label": "Context",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "values",
+         "type": "array",
+         "label": "Values",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "_links",
+           "type": "object",
+           "label": "Links",
+           "required": true,
+           "properties": [
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "completedCycles",
+           "type": "array",
+           "label": "Completed cycles",
+           "required": true,
+           "of": "object"
+          },
+          {
+           "name": "ongoingCycle",
+           "type": "object",
+           "label": "Ongoing cycle",
+           "required": true,
+           "properties": [
+            {
+             "name": "startTime",
+             "type": "object",
+             "label": "Start time",
+             "required": true,
+             "properties": [
+              {
+               "name": "iso8601",
+               "type": "string",
+               "label": "ISO 8601",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "jira",
+               "type": "string",
+               "label": "Jira",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "friendly",
+               "type": "string",
+               "label": "Friendly",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "epochMillis",
+               "type": "string",
+               "label": "Epoch millis",
+               "control_type": "text",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "breachTime",
+             "type": "object",
+             "label": "Breach time",
+             "required": true,
+             "properties": [
+              {
+               "name": "iso8601",
+               "type": "string",
+               "label": "ISO 8601",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "jira",
+               "type": "string",
+               "label": "Jira",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "friendly",
+               "type": "string",
+               "label": "Friendly",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "epochMillis",
+               "type": "string",
+               "label": "Epoch millis",
+               "control_type": "text",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "breached",
+             "type": "boolean",
+             "label": "Breached",
+             "control_type": "text",
+             "required": true,
+             "toggle_field": {
+              "name": "breached",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "paused",
+             "type": "boolean",
+             "label": "Paused",
+             "control_type": "text",
+             "required": true,
+             "toggle_field": {
+              "name": "paused",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "withinCalendarHours",
+             "type": "boolean",
+             "label": "Within calendar hours",
+             "control_type": "text",
+             "required": true,
+             "toggle_field": {
+              "name": "withinCalendarHours",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "goalDuration",
+             "type": "object",
+             "label": "Goal duration",
+             "required": true,
+             "properties": [
+              {
+               "name": "millis",
+               "type": "integer",
+               "label": "Milliseconds",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "friendly",
+               "type": "string",
+               "label": "Friendly",
+               "control_type": "text",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "elapsedTime",
+             "type": "object",
+             "label": "Elapsed time",
+             "required": true,
+             "properties": [
+              {
+               "name": "millis",
+               "type": "integer",
+               "label": "Milliseconds",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "friendly",
+               "type": "string",
+               "label": "Friendly",
+               "control_type": "text",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "remainingTime",
+             "type": "object",
+             "label": "Remaining time",
+             "required": true,
+             "properties": [
+              {
+               "name": "millis",
+               "type": "integer",
+               "label": "Milliseconds",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "friendly",
+               "type": "string",
+               "label": "Friendly",
+               "control_type": "text",
+               "required": true
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "attachments",
+       "type": "object",
+       "label": "Attachments",
+       "required": true,
+       "properties": [
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "Size",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "start",
+         "type": "integer",
+         "label": "Start",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "limit",
+         "type": "integer",
+         "label": "Limit",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isLastPage",
+         "type": "boolean",
+         "label": "Is last page",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "isLastPage",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "base",
+           "type": "string",
+           "label": "Base",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "context",
+           "type": "string",
+           "label": "Context",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "values",
+         "type": "array",
+         "label": "Values",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "url",
+           "required": true
+          },
+          {
+           "name": "id",
+           "type": "string",
+           "label": "Attachment ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "filename",
+           "type": "string",
+           "label": "Filename",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "author",
+           "type": "object",
+           "label": "Author",
+           "required": true,
+           "properties": [
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "accountId",
+             "type": "string",
+             "label": "Account ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "emailAddress",
+             "type": "string",
+             "label": "Email address",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "avatarUrls",
+             "type": "object",
+             "label": "Avatar URLs",
+             "required": true,
+             "properties": [
+              {
+               "name": "48x48",
+               "type": "string",
+               "label": "48x48",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "24x24",
+               "type": "string",
+               "label": "24x24",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "16x16",
+               "type": "string",
+               "label": "16x16",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "32x32",
+               "type": "string",
+               "label": "32x32",
+               "control_type": "url",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "displayName",
+             "type": "string",
+             "label": "Display name",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "active",
+             "type": "boolean",
+             "label": "Active",
+             "control_type": "text",
+             "required": true,
+             "toggle_field": {
+              "name": "active",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "timeZone",
+             "type": "string",
+             "label": "Time zone",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "accountType",
+             "type": "string",
+             "label": "Account type",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "created",
+           "type": "date_time",
+           "label": "Created date",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "size",
+           "type": "integer",
+           "label": "File size",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "mimeType",
+           "type": "string",
+           "label": "MIME type",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "content",
+           "type": "string",
+           "label": "Content",
+           "control_type": "url",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "comments",
+       "type": "object",
+       "label": "Comments",
+       "required": true,
+       "properties": [
+        {
+         "name": "size",
+         "type": "integer",
+         "label": "Size",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "start",
+         "type": "integer",
+         "label": "Start",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "limit",
+         "type": "integer",
+         "label": "Limit",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "isLastPage",
+         "type": "boolean",
+         "label": "Is last page",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "isLastPage",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "base",
+           "type": "string",
+           "label": "Base",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "context",
+           "type": "string",
+           "label": "Context",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "values",
+         "type": "array",
+         "label": "Values",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "_expands",
+           "type": "array",
+           "label": "Expands",
+           "control_type": "text",
+           "required": true,
+           "of": "string"
+          },
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "body",
+           "type": "string",
+           "label": "Body",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "public",
+           "type": "boolean",
+           "label": "Public",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "public",
+            "type": "boolean"
+           }
+          },
+          {
+           "name": "author",
+           "type": "object",
+           "label": "Author",
+           "required": true,
+           "properties": [
+            {
+             "name": "accountId",
+             "type": "string",
+             "label": "Account ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "key",
+             "type": "string",
+             "label": "Key",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "emailAddress",
+             "type": "string",
+             "label": "Email address",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "displayName",
+             "type": "string",
+             "label": "Display name",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "active",
+             "type": "boolean",
+             "label": "Active",
+             "control_type": "text",
+             "required": true,
+             "toggle_field": {
+              "name": "active",
+              "type": "boolean"
+             }
+            },
+            {
+             "name": "timeZone",
+             "type": "string",
+             "label": "Time zone",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "_links",
+             "type": "object",
+             "label": "Links",
+             "required": true,
+             "properties": [
+              {
+               "name": "jiraRest",
+               "type": "string",
+               "label": "Jira REST",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "avatarUrls",
+               "type": "object",
+               "label": "Avatar URLs",
+               "required": true,
+               "properties": [
+                {
+                 "name": "48x48",
+                 "type": "string",
+                 "label": "48x48",
+                 "control_type": "url",
+                 "required": true
+                },
+                {
+                 "name": "24x24",
+                 "type": "string",
+                 "label": "24x24",
+                 "control_type": "url",
+                 "required": true
+                },
+                {
+                 "name": "16x16",
+                 "type": "string",
+                 "label": "16x16",
+                 "control_type": "url",
+                 "required": true
+                },
+                {
+                 "name": "32x32",
+                 "type": "string",
+                 "label": "32x32",
+                 "control_type": "url",
+                 "required": true
+                }
+               ]
+              },
+              {
+               "name": "self",
+               "type": "string",
+               "label": "Self",
+               "control_type": "url",
+               "required": true
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "name": "createdDate",
+           "type": "object",
+           "label": "Created date",
+           "required": true,
+           "properties": [
+            {
+             "name": "iso8601",
+             "type": "string",
+             "label": "ISO 8601",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "jira",
+             "type": "string",
+             "label": "Jira",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "friendly",
+             "type": "string",
+             "label": "Friendly",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "epochMillis",
+             "type": "string",
+             "label": "Epoch millis",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "attachments",
+           "type": "array",
+           "label": "Attachments",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "id",
+             "type": "string",
+             "label": "Attachment ID",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "filename",
+             "type": "string",
+             "label": "Filename",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "author",
+             "type": "object",
+             "label": "Author",
+             "required": true,
+             "properties": [
+              {
+               "name": "self",
+               "type": "string",
+               "label": "Self",
+               "control_type": "url",
+               "required": true
+              },
+              {
+               "name": "accountId",
+               "type": "string",
+               "label": "Account ID",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "emailAddress",
+               "type": "string",
+               "label": "Email address",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "avatarUrls",
+               "type": "object",
+               "label": "Avatar URLs",
+               "required": true,
+               "properties": [
+                {
+                 "name": "48x48",
+                 "type": "string",
+                 "label": "48x48",
+                 "control_type": "url",
+                 "required": true
+                },
+                {
+                 "name": "24x24",
+                 "type": "string",
+                 "label": "24x24",
+                 "control_type": "url",
+                 "required": true
+                },
+                {
+                 "name": "16x16",
+                 "type": "string",
+                 "label": "16x16",
+                 "control_type": "url",
+                 "required": true
+                },
+                {
+                 "name": "32x32",
+                 "type": "string",
+                 "label": "32x32",
+                 "control_type": "url",
+                 "required": true
+                }
+               ]
+              },
+              {
+               "name": "displayName",
+               "type": "string",
+               "label": "Display name",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "active",
+               "type": "boolean",
+               "label": "Active",
+               "control_type": "text",
+               "required": true,
+               "toggle_field": {
+                "name": "active",
+                "type": "boolean"
+               }
+              },
+              {
+               "name": "timeZone",
+               "type": "string",
+               "label": "Time zone",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "accountType",
+               "type": "string",
+               "label": "Account type",
+               "control_type": "text",
+               "required": true
+              }
+             ]
+            },
+            {
+             "name": "created",
+             "type": "date_time",
+             "label": "Created date",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "size",
+             "type": "integer",
+             "label": "File size",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "mimeType",
+             "type": "string",
+             "label": "MIME type",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "content",
+             "type": "string",
+             "label": "Content",
+             "control_type": "url",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "_links",
+           "type": "object",
+           "label": "Links",
+           "required": true,
+           "properties": [
+            {
+             "name": "self",
+             "type": "string",
+             "label": "Self",
+             "control_type": "url",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "actions",
+       "type": "object",
+       "label": "Available actions",
+       "required": true,
+       "properties": [
+        {
+         "name": "addAttachment",
+         "type": "object",
+         "label": "Add attachment",
+         "required": true,
+         "properties": [
+          {
+           "name": "allowed",
+           "type": "boolean",
+           "label": "Allowed",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "allowed",
+            "type": "boolean"
+           }
+          }
+         ]
+        },
+        {
+         "name": "addComment",
+         "type": "object",
+         "label": "Add comment",
+         "required": true,
+         "properties": [
+          {
+           "name": "allowed",
+           "type": "boolean",
+           "label": "Allowed",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "allowed",
+            "type": "boolean"
+           }
+          }
+         ]
+        },
+        {
+         "name": "addParticipant",
+         "type": "object",
+         "label": "Add participant",
+         "required": true,
+         "properties": [
+          {
+           "name": "allowed",
+           "type": "boolean",
+           "label": "Allowed",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "allowed",
+            "type": "boolean"
+           }
+          }
+         ]
+        },
+        {
+         "name": "removeParticipant",
+         "type": "object",
+         "label": "Remove participant",
+         "required": true,
+         "properties": [
+          {
+           "name": "allowed",
+           "type": "boolean",
+           "label": "Allowed",
+           "control_type": "text",
+           "required": true,
+           "toggle_field": {
+            "name": "allowed",
+            "type": "boolean"
+           }
+          }
+         ]
+        }
+       ],
+       "hint": "Keys observed so far: addAttachment, addComment, addParticipant, removeParticipant — not necessarily exhaustive, other keys (e.g. transition-related) may appear depending on ticket state."
+      },
+      {
+       "name": "requestFieldValues",
+       "type": "array",
+       "label": "Request field values",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "fieldId",
+         "type": "string",
+         "label": "Field ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "label",
+         "type": "string",
+         "label": "Label",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true,
+         "hint": "Plain text/number fields are returned as-is. Fields whose value isn't plain text (checkboxes, multi-select, radio, cascading select, user pickers) are JSON-encoded into this string - use the Parse JSO…"
+        },
+        {
+         "name": "renderedValue",
+         "type": "object",
+         "label": "Rendered value",
+         "required": true,
+         "properties": [
+          {
+           "name": "html",
+           "type": "string",
+           "label": "HTML",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "_links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "web",
+         "type": "string",
+         "label": "Web",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "agent",
+         "type": "string",
+         "label": "Agent",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "jiraRest",
+         "type": "string",
+         "label": "Jira REST",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "portal",
+         "type": "string",
+         "label": "Portal",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "serviceDeskId",
+       "type": "string",
+       "label": "Service desk ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Start",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isLastPage",
+     "type": "boolean",
+     "label": "Is last page",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "isLastPage",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_start",
+     "type": "integer",
+     "label": "Next start",
+     "control_type": "text",
+     "hint": "Offset to pass as start for the next page. Absent when isLastPage is true."
+    }
+   ]
+  },
+  {
+   "name": "list_request_transitions",
+   "title": "List customer request transitions",
+   "description": "List customer request transitions in Jira Service Desk",
+   "input": [
+    {
+     "name": "issueIdOrKey",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID or key of the customer request."
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Starting position from which records should be fetched. Defaults to 0 ."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 50,
+     "hint": "Maximum number of records to return in the query response. Defaults to 50 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "values",
+     "type": "array",
+     "label": "Values",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Start",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isLastPage",
+     "type": "boolean",
+     "label": "Is last page",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "isLastPage",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_start",
+     "type": "integer",
+     "label": "Next start",
+     "control_type": "text",
+     "hint": "Offset to pass as start for the next page. Absent when isLastPage is true."
+    }
+   ]
+  },
+  {
+   "name": "list_request_types",
+   "title": "List request types",
+   "description": "List request types in Jira Service Desk",
+   "input": [
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service Desk",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_desk",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serviceDeskId",
+      "type": "integer"
+     },
+     "hint": "Select the service desk. Only the first 100 service desks are shown. Toggle to Enter service desk ID to provide service desk ID manually."
+    },
+    {
+     "name": "searchQuery",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "hint": "Filter request types by name."
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Starting position from which records should be fetched. Defaults to 0 ."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 50,
+     "hint": "Maximum number of records to return in the query response. Defaults to 50 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "values",
+     "type": "array",
+     "label": "Values",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "defaultName",
+       "type": "string",
+       "label": "Default name",
+       "control_type": "text",
+       "required": true,
+       "hint": "Untranslated request type name, before any language-pack translation."
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "helpText",
+       "type": "string",
+       "label": "Help text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "issueTypeId",
+       "type": "string",
+       "label": "Issue type ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "serviceDeskId",
+       "type": "string",
+       "label": "Service desk ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "portalId",
+       "type": "string",
+       "label": "Portal ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "groupIds",
+       "type": "array",
+       "label": "Group IDs",
+       "control_type": "text",
+       "required": true,
+       "of": "integer"
+      },
+      {
+       "name": "restrictionStatus",
+       "type": "string",
+       "label": "Restriction status",
+       "control_type": "text",
+       "required": true,
+       "hint": "e.g. OPEN — whether any customer can raise this request type."
+      },
+      {
+       "name": "canCreateRequest",
+       "type": "boolean",
+       "label": "Can create request",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "canCreateRequest",
+        "type": "boolean"
+       },
+       "hint": "Whether the connected user is permitted to raise this request type."
+      },
+      {
+       "name": "icon",
+       "type": "object",
+       "label": "Icon",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "Icon ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "_links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "iconUrls",
+           "type": "object",
+           "label": "Icon URLs",
+           "required": true,
+           "properties": [
+            {
+             "name": "48x48",
+             "type": "string",
+             "label": "48x48",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "24x24",
+             "type": "string",
+             "label": "24x24",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "16x16",
+             "type": "string",
+             "label": "16x16",
+             "control_type": "url",
+             "required": true
+            },
+            {
+             "name": "32x32",
+             "type": "string",
+             "label": "32x32",
+             "control_type": "url",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "start",
+     "type": "integer",
+     "label": "Start",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isLastPage",
+     "type": "boolean",
+     "label": "Is last page",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "isLastPage",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_start",
+     "type": "integer",
+     "label": "Next start",
+     "control_type": "text",
+     "hint": "Offset to pass as start for the next page. Absent when isLastPage is true."
+    }
+   ]
+  },
+  {
+   "name": "search_knowledgebase_articles",
+   "title": "Search knowledge base articles",
+   "description": "Search knowledge base articles in Jira Service Desk",
+   "input": [
+    {
+     "name": "serviceDeskId",
+     "type": "string",
+     "label": "Service Desk",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "service_desk",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "serviceDeskId",
+      "type": "integer"
+     },
+     "hint": "Select the service desk. Only the first 100 service desks are shown. Toggle to Enter service desk ID to provide service desk ID manually."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Query",
+     "control_type": "text",
+     "required": true,
+     "hint": "Search term to look up in the service desk's knowledge base."
+    },
+    {
+     "name": "highlight",
+     "type": "boolean",
+     "label": "Highlight",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "highlight",
+      "type": "boolean"
+     },
+     "hint": "Highlight the matching search term in the returned excerpt. Defaults to true ."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 50,
+     "hint": "Maximum number of records to return in the query response. Defaults to 50 ."
+    },
+    {
+     "name": "page_token",
+     "type": "string",
+     "label": "Page token",
+     "control_type": "text",
+     "hint": "Opaque pagination token from a previous page's Next page token output. Leave blank for the first page."
+    }
+   ],
+   "output": [
+    {
+     "name": "values",
+     "type": "array",
+     "label": "Values",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "excerpt",
+       "type": "string",
+       "label": "Excerpt",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "pageId",
+       "type": "string",
+       "label": "Page ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "spaceKey",
+       "type": "string",
+       "label": "Space key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "article_content_url",
+       "type": "string",
+       "label": "Article content URL",
+       "control_type": "url",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "isLastPage",
+     "type": "boolean",
+     "label": "Is last page",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isLastPage",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "next_page_token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "Token to pass as Page token to fetch the next page. Absent when there is no next page."
+    }
+   ]
+  },
+  {
+   "name": "transition_customer_request",
+   "title": "Transition customer request",
+   "description": "Transition customer request in Jira Service Desk",
+   "input": [
+    {
+     "name": "issueIdOrKey",
+     "type": "string",
+     "label": "Issue ID or key",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID or key of the customer request."
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Transition ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the transition to perform."
+    },
+    {
+     "name": "additionalComment",
+     "type": "object",
+     "label": "Additional comment",
+     "properties": [
+      {
+       "name": "body",
+       "type": "string",
+       "label": "Body",
+       "control_type": "text-area",
+       "required": true,
+       "hint": "Comment to add. Customers can only post public comments."
+      }
+     ],
+     "hint": "Public comment to add with the transition."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  }
+ ]
+}

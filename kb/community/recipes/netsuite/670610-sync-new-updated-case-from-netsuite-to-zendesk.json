@@ -1,0 +1,3907 @@
+{
+ "id": 670610,
+ "name": "          Sync new/updated case from NetSuite\n to Zendesk",
+ "description": "1. A case is created or updated in NetSuite. \n\n2. Workato searches for a matching ticket in Zendesk by **subject**. \n\n3. If no matching ticket is found in Zendesk, Workato creates a new ticket. \n\n4. If a matching ticket is found in Zendesk, Workato updates that ticket. ",
+ "applications": [
+  "netsuite",
+  "zendesk"
+ ],
+ "action_applications": [
+  "zendesk"
+ ],
+ "trigger_application": "netsuite",
+ "business_objects": [
+  "support case",
+  "ticket"
+ ],
+ "categories": [
+  "Accounting",
+  "ERP",
+  "CRM",
+  "Ecommerce",
+  "Financial Management",
+  "HR management",
+  "Customer Service"
+ ],
+ "copy_count": 391,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-05-06T23:05:19.267-07:00",
+ "source_url": "https://app.workato.com/recipes/670610?community=us",
+ "steps": [
+  "netsuite.updated_object",
+  "zendesk.search_ticket",
+  "zendesk.create_ticket",
+  "zendesk.update_ticket"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "netsuite",
+  "name": "updated_object",
+  "as": "updated_object",
+  "title": "New/updated Support  case",
+  "description": "New or updated <span class=\"provider\">Support  case</span> in <span class=\"provider\">NetSuite</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "netsuite_object": "Support Case"
+  },
+  "toggleCfg": {},
+  "input": {
+   "netsuite_object": "SupportCase",
+   "since": "=1.days.ago"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "internal_id",
+    "control_type": "text",
+    "label": "Internal ID",
+    "optional": true,
+    "ns_content_type": "attribute",
+    "ns_tag": ""
+   },
+   {
+    "type": "string",
+    "name": "external_id",
+    "control_type": "text",
+    "label": "External ID",
+    "optional": true,
+    "ns_content_type": "attribute",
+    "ns_tag": ""
+   },
+   {
+    "type": "string",
+    "name": "escalationMessage",
+    "control_type": "text",
+    "label": "Escalation message",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "lastReopenedDate",
+    "control_type": "date_time",
+    "label": "Last reopened date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "endDate",
+    "control_type": "date_time",
+    "label": "End date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "incomingMessage",
+    "control_type": "text",
+    "label": "Incoming message",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "insertSolution",
+    "label": "Insert solution",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "outgoingMessage",
+    "control_type": "text",
+    "label": "Outgoing message",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "searchSolution",
+    "control_type": "text",
+    "label": "Search solution",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "emailForm",
+    "control_type": "checkbox",
+    "label": "Email form",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Email form",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "emailForm"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "newSolutionFromMsg",
+    "control_type": "text",
+    "label": "New solution from msg",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "internalOnly",
+    "control_type": "checkbox",
+    "label": "Internal only",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Internal only",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "internalOnly"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "customForm",
+    "label": "Custom form",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "title",
+    "control_type": "text",
+    "label": "Title",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "caseNumber",
+    "control_type": "text",
+    "label": "Case number",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "startDate",
+    "control_type": "date_time",
+    "label": "Start date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "createdDate",
+    "control_type": "date_time",
+    "label": "Created date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "lastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last modified date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "lastMessageDate",
+    "control_type": "date_time",
+    "label": "Last message date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "company",
+    "label": "Company",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "profile",
+    "label": "Profile",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "subsidiary",
+    "label": "Subsidiary",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "contact",
+    "label": "Contact",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "email",
+    "control_type": "text",
+    "label": "Email",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "phone",
+    "control_type": "text",
+    "label": "Phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "product",
+    "label": "Product",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "module",
+    "label": "Module",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "item",
+    "label": "Item",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "serialNumber",
+    "label": "Serial number",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "inboundEmail",
+    "control_type": "text",
+    "label": "Inbound email",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "issue",
+    "label": "Issue",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "status",
+    "label": "Status",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "isInactive",
+    "control_type": "checkbox",
+    "label": "Is inactive",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Is inactive",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "isInactive"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "priority",
+    "label": "Priority",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "origin",
+    "label": "Origin",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "category",
+    "label": "Category",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "assigned",
+    "label": "Assigned",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "helpDesk",
+    "control_type": "checkbox",
+    "label": "Help desk",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Help desk",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "helpDesk"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "emailEmployeesList",
+    "label": "Email employees list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "emailEmployees",
+      "type": "array",
+      "of": "object",
+      "label": "Email employees",
+      "optional": true,
+      "ns_ref_type": "RecordRef",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Internal ID",
+        "optional": true,
+        "ns_content_type": "attribute",
+        "ns_tag": "",
+        "type": "string",
+        "name": "internal_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCore",
+        "type": "string",
+        "name": "name"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "escalateToList",
+    "label": "Escalate to list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "escalateTo",
+      "type": "array",
+      "of": "object",
+      "label": "Escalate to",
+      "optional": true,
+      "ns_ref_type": "SupportCaseEscalateTo",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Escalatee",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "object",
+        "name": "escalatee"
+       },
+       {
+        "control_type": "text",
+        "label": "Email",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "string",
+        "name": "email"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "string",
+        "name": "phone"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "timeItemList",
+    "label": "Time item list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "timeItem",
+      "type": "array",
+      "of": "object",
+      "label": "Time item",
+      "optional": true,
+      "ns_ref_type": "TimeItem",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "ID",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "number",
+        "name": "id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Employee",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "employee"
+       },
+       {
+        "control_type": "select",
+        "label": "Time type",
+        "pick_list": [
+         [
+          "Actual Time",
+          "_actualTime"
+         ],
+         [
+          "Planned Time",
+          "_plannedTime"
+         ]
+        ],
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Time type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "toggle_to_primary_hint": "Select from list",
+         "toggle_to_secondary_hint": "Enter custom value",
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "string",
+         "name": "timeType"
+        },
+        "type": "string",
+        "name": "timeType"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Tran date",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "date_time",
+        "name": "tranDate",
+        "parse_output": "parse_iso8601_timestamp",
+        "render_input": "render_iso8601_timestamp"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Customer",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "customer"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is billable",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is billable",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isBillable"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isBillable"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Payroll item",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "payrollItem"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Item",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "item"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Temporary local jurisdiction",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "temporaryLocalJurisdiction"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Temporary state jurisdiction",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "temporaryStateJurisdiction"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Department",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "department"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Class",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "class"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Location",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "location"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Time span",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "number",
+          "name": "timeSpan"
+         },
+         {
+          "control_type": "select",
+          "label": "Unit",
+          "pick_list": [
+           [
+            "Hour",
+            "hour"
+           ]
+          ],
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Unit",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "toggle_to_primary_hint": "Select from list",
+           "toggle_to_secondary_hint": "Enter custom value",
+           "ns_content_type": "element",
+           "ns_tag": "platformCore",
+           "type": "string",
+           "name": "unit"
+          },
+          "type": "string",
+          "name": "unit"
+         }
+        ],
+        "label": "Hours",
+        "optional": true,
+        "ns_ref_type": "Duration",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "hours"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Price",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "price"
+       },
+       {
+        "control_type": "text",
+        "label": "Rate",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "number",
+        "name": "rate"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Override rate",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Override rate",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "overrideRate"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "overrideRate"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Time span",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "number",
+          "name": "timeSpan"
+         },
+         {
+          "control_type": "select",
+          "label": "Unit",
+          "pick_list": [
+           [
+            "Hour",
+            "hour"
+           ]
+          ],
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Unit",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "toggle_to_primary_hint": "Select from list",
+           "toggle_to_secondary_hint": "Enter custom value",
+           "ns_content_type": "element",
+           "ns_tag": "platformCore",
+           "type": "string",
+           "name": "unit"
+          },
+          "type": "string",
+          "name": "unit"
+         }
+        ],
+        "label": "Hours total",
+        "optional": true,
+        "ns_ref_type": "Duration",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "hoursTotal"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Case task event",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "caseTaskEvent"
+       },
+       {
+        "control_type": "text",
+        "label": "Memo",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "string",
+        "name": "memo"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is utilized",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is utilized",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isUtilized"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isUtilized"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is productive",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is productive",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isProductive"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isProductive"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is exempt",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is exempt",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isExempt"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isExempt"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "solutionsList",
+    "label": "Solutions list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "solutions",
+      "type": "array",
+      "of": "object",
+      "label": "Solutions",
+      "optional": true,
+      "ns_ref_type": "SupportCaseSolutions",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Solution",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "object",
+        "name": "solution"
+       },
+       {
+        "control_type": "text",
+        "label": "Message",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "string",
+        "name": "message"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date applied",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "date_time",
+        "name": "dateApplied",
+        "parse_output": "parse_iso8601_timestamp",
+        "render_input": "render_iso8601_timestamp"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "custom_fields",
+    "label": "Custom fields",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Help Desk Case Type",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Help Desk Case Type",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_42_custevent_ishdcasetype",
+       "pick_list": [
+        [
+         "Application Issue",
+         "4"
+        ],
+        [
+         "Computer Equipment",
+         "2"
+        ],
+        [
+         "Connection to Internet",
+         "3"
+        ],
+        [
+         "Telephone Issue",
+         "1"
+        ]
+       ]
+      },
+      "type": "string",
+      "name": "f_42_custevent_ishdcasetype"
+     },
+     {
+      "control_type": "text",
+      "label": "Help Desk Case Type ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_42_custevent_ishdcasetype_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case Link Type",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Related Case Link Type",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3053_custevent_relatedcaselinktype",
+       "pick_list": [
+        [
+         "Same As",
+         "1"
+        ],
+        [
+         "Reference",
+         "2"
+        ],
+        [
+         "Same Issue - Different Customer",
+         "3"
+        ]
+       ]
+      },
+      "type": "string",
+      "name": "f_3053_custevent_relatedcaselinktype"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case Link Type ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3053_custevent_relatedcaselinktype_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Related Case",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3054_custevent_relatedcase"
+      },
+      "type": "string",
+      "name": "f_3054_custevent_relatedcase"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3054_custevent_relatedcase_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Close Reason",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Close Reason",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3055_custevent_closereason",
+       "pick_list": [
+        [
+         "100% Answered",
+         "5"
+        ],
+        [
+         "Led Way to Answering",
+         "6"
+        ],
+        [
+         "Answered but need to update doc.",
+         "7"
+        ],
+        [
+         "New Doc From Case",
+         "8"
+        ],
+        [
+         "Duplicate Case/Call",
+         "2"
+        ],
+        [
+         "Spam/Ignore",
+         "4"
+        ]
+       ]
+      },
+      "type": "string",
+      "name": "f_3055_custevent_closereason"
+     },
+     {
+      "control_type": "text",
+      "label": "Close Reason ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3055_custevent_closereason_id"
+     },
+     {
+      "control_type": "text",
+      "label": "From KB Solution",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "From KB Solution",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3056_custevent_pf_zms_solution"
+      },
+      "type": "string",
+      "name": "f_3056_custevent_pf_zms_solution"
+     },
+     {
+      "control_type": "text",
+      "label": "From KB Solution ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3056_custevent_pf_zms_solution_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Last Updated by Workato",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_4986_custevent107"
+     },
+     {
+      "control_type": "text",
+      "label": "Google Calendar Event ID",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_4987_custevent108"
+     },
+     {
+      "control_type": "text",
+      "label": "Sales Associate",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Sales Associate",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_40_custevent1"
+      },
+      "type": "string",
+      "name": "f_40_custevent1"
+     },
+     {
+      "control_type": "text",
+      "label": "Sales Associate ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_40_custevent1_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Sales Associate Phone",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_41_custevent2"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "zendesk",
+    "name": "search_ticket",
+    "as": "search_ticket",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "subject": "#{_('data.netsuite.updated_object.title')}"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "tickets",
+      "label": "Tickets",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Ticket ID",
+        "parse_output": "integer_conversion",
+        "event_title": true,
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Subject",
+        "hint": "Ticket topic or subject",
+        "event_title": true,
+        "type": "string",
+        "name": "subject"
+       },
+       {
+        "control_type": "select",
+        "label": "Type",
+        "pick_list": "ticket_type",
+        "hint": "The type of support ticket to create",
+        "optional": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "render_input": "convert_to_downcase",
+         "hint": "Allowed values are <b>problem</b>, <b>incident</b>, <b>question</b>, <b>task</b>",
+         "type": "string",
+         "name": "type"
+        },
+        "type": "string",
+        "name": "type"
+       },
+       {
+        "control_type": "select",
+        "label": "Priority",
+        "pick_list": "ticket_priority",
+        "hint": "Ticket priority",
+        "optional": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Priority",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "render_input": "convert_to_downcase",
+         "hint": "Allowed values are <b>urgent</b>, <b>high</b>, <b>normal</b>, <b>low</b>",
+         "type": "string",
+         "name": "priority"
+        },
+        "type": "string",
+        "name": "priority"
+       },
+       {
+        "control_type": "text",
+        "label": "External ID",
+        "hint": "ID to link this ticket to external records",
+        "optional": true,
+        "type": "string",
+        "name": "external_id"
+       },
+       {
+        "control_type": "select",
+        "label": "Status",
+        "pick_list": "ticket_status",
+        "hint": "Ticket status",
+        "optional": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Status",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "render_input": "convert_to_downcase",
+         "hint": "Allowed values are <b>open</b>, <b>pending</b>, <b>hold</b>, <b>solved</b>, <b>closed</b>",
+         "type": "string",
+         "name": "status"
+        },
+        "type": "string",
+        "name": "status"
+       },
+       {
+        "control_type": "text",
+        "label": "Requester ID",
+        "parse_output": "integer_conversion",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to user who requested the ticket if left empty",
+        "foreign_key": "user",
+        "fetch_with": "get_user_by_id(id)",
+        "join_point_label": "Requester",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Requester name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to user who requested the ticket if left empty",
+         "type": "string",
+         "name": "requester_name"
+        },
+        "type": "integer",
+        "name": "requester_id"
+       },
+       {
+        "name": "get_user_by_id+requester_id",
+        "type": "object",
+        "label": "Requester",
+        "fetch_with": "get_user_by_id(requester_id>id)",
+        "join_point": true,
+        "properties": []
+       },
+       {
+        "control_type": "text",
+        "label": "Submitter ID",
+        "parse_output": "integer_conversion",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to user who submitted the ticket if left empty",
+        "foreign_key": "user",
+        "fetch_with": "get_user_by_id(id)",
+        "join_point_label": "Submitter",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Submitter name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to user who submitted the ticket if left empty",
+         "type": "string",
+         "name": "submitter_name"
+        },
+        "type": "integer",
+        "name": "submitter_id"
+       },
+       {
+        "name": "get_user_by_id+submitter_id",
+        "type": "object",
+        "label": "Submitter",
+        "fetch_with": "get_user_by_id(submitter_id>id)",
+        "join_point": true,
+        "properties": []
+       },
+       {
+        "control_type": "text",
+        "label": "Assignee ID",
+        "parse_output": "integer_conversion",
+        "extended": true,
+        "optional": true,
+        "foreign_key": "user",
+        "fetch_with": "get_user_by_id(id)",
+        "join_point_label": "Assignee",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Assignee name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "type": "string",
+         "name": "assignee_name"
+        },
+        "type": "integer",
+        "name": "assignee_id"
+       },
+       {
+        "name": "get_user_by_id+assignee_id",
+        "type": "object",
+        "label": "Assignee",
+        "fetch_with": "get_user_by_id(assignee_id>id)",
+        "join_point": true,
+        "properties": []
+       },
+       {
+        "control_type": "text",
+        "label": "Organization ID",
+        "parse_output": "integer_conversion",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to the organization requester belongs to if left empty",
+        "foreign_key": "organization",
+        "fetch_with": "get_organization_by_id(id)",
+        "join_point_label": "Organization",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Organization name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to the organization requester belongs to if left empty",
+         "type": "string",
+         "name": "organization_name"
+        },
+        "type": "integer",
+        "name": "organization_id"
+       },
+       {
+        "name": "get_organization_by_id+organization_id",
+        "type": "object",
+        "label": "Organization",
+        "fetch_with": "get_organization_by_id(organization_id>id)",
+        "join_point": true,
+        "properties": []
+       },
+       {
+        "control_type": "text",
+        "label": "Group ID",
+        "parse_output": "integer_conversion",
+        "extended": true,
+        "optional": true,
+        "hint": "Defaults to the group the ticket is assigned to if left empty",
+        "toggle_hint": "Set by ID",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Group name",
+         "toggle_hint": "Look up by name",
+         "toggle_to_secondary_hint": "Look up by name",
+         "toggle_to_primary_hint": "Set by ID",
+         "optional": true,
+         "hint": "Defaults to the group the ticket is assigned to if left empty",
+         "type": "string",
+         "name": "group_name"
+        },
+        "type": "integer",
+        "name": "group_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Forum topic ID",
+        "parse_output": "integer_conversion",
+        "extended": true,
+        "optional": true,
+        "hint": "Forum topic that ticket originated from, if any",
+        "type": "integer",
+        "name": "forum_topic_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Recipient email address",
+        "extended": true,
+        "optional": true,
+        "hint": "Email address that received the ticket, if any",
+        "type": "string",
+        "name": "recipient"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Has incidents",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Has incidents",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "extended": true,
+         "optional": true,
+         "hint": "Yes if ticket is marked as a problem, No if not. Defaults to No if left empty",
+         "type": "boolean",
+         "name": "has_incidents"
+        },
+        "extended": true,
+        "optional": true,
+        "hint": "Yes if ticket is marked as a problem, No if not. Defaults to No if left empty",
+        "type": "boolean",
+        "name": "has_incidents"
+       },
+       {
+        "control_type": "date",
+        "label": "Due at",
+        "render_input": "render_iso8601_date",
+        "parse_output": "parse_iso8601_date",
+        "extended": true,
+        "optional": true,
+        "hint": "Tickets of type Task will have a due date",
+        "type": "date_time",
+        "name": "due_at"
+       },
+       {
+        "control_type": "text",
+        "label": "Tags",
+        "hint": "Comma separated list of tags. For eg. enterprise, important",
+        "optional": true,
+        "type": "string",
+        "name": "tags_string"
+       },
+       {
+        "name": "tags",
+        "type": "array",
+        "of": "string",
+        "control_type": "text",
+        "label": "Tags list",
+        "optional": true
+       },
+       {
+        "control_type": "text",
+        "label": "Ticket form ID",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "ticket_form_id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Channel",
+          "type": "string",
+          "name": "channel"
+         },
+         {
+          "properties": [
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Address",
+              "type": "string",
+              "name": "address"
+             },
+             {
+              "control_type": "text",
+              "label": "Name",
+              "type": "string",
+              "name": "name"
+             },
+             {
+              "control_type": "text",
+              "label": "Ticket ID",
+              "type": "string",
+              "name": "ticket_id"
+             },
+             {
+              "control_type": "text",
+              "label": "Subject",
+              "type": "string",
+              "name": "subject"
+             },
+             {
+              "control_type": "text",
+              "label": "Title",
+              "type": "string",
+              "name": "title"
+             },
+             {
+              "control_type": "text",
+              "label": "Topic ID",
+              "type": "string",
+              "name": "topic_id"
+             },
+             {
+              "control_type": "text",
+              "label": "Topic name",
+              "type": "string",
+              "name": "topic_name"
+             },
+             {
+              "control_type": "text",
+              "label": "Profile URL",
+              "type": "string",
+              "name": "profile_url"
+             },
+             {
+              "control_type": "text",
+              "label": "Username",
+              "type": "string",
+              "name": "username"
+             },
+             {
+              "control_type": "text",
+              "label": "Phone",
+              "type": "string",
+              "name": "phone"
+             },
+             {
+              "control_type": "text",
+              "label": "Formatted phone",
+              "type": "string",
+              "name": "formatted_phone"
+             },
+             {
+              "control_type": "text",
+              "label": "Facebook ID",
+              "type": "string",
+              "name": "facebook_id"
+             }
+            ],
+            "label": "From",
+            "type": "object",
+            "name": "from"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Address",
+              "type": "string",
+              "name": "address"
+             },
+             {
+              "control_type": "text",
+              "label": "Name",
+              "type": "string",
+              "name": "name"
+             },
+             {
+              "control_type": "text",
+              "label": "Ticket ID",
+              "type": "string",
+              "name": "ticket_id"
+             },
+             {
+              "control_type": "text",
+              "label": "Subject",
+              "type": "string",
+              "name": "subject"
+             },
+             {
+              "control_type": "text",
+              "label": "Title",
+              "type": "string",
+              "name": "title"
+             },
+             {
+              "control_type": "text",
+              "label": "Topic ID",
+              "type": "string",
+              "name": "topic_id"
+             },
+             {
+              "control_type": "text",
+              "label": "Topic name",
+              "type": "string",
+              "name": "topic_name"
+             },
+             {
+              "control_type": "text",
+              "label": "Profile URL",
+              "type": "string",
+              "name": "profile_url"
+             },
+             {
+              "control_type": "text",
+              "label": "Username",
+              "type": "string",
+              "name": "username"
+             },
+             {
+              "control_type": "text",
+              "label": "Phone",
+              "type": "string",
+              "name": "phone"
+             },
+             {
+              "control_type": "text",
+              "label": "Formatted phone",
+              "type": "string",
+              "name": "formatted_phone"
+             },
+             {
+              "control_type": "text",
+              "label": "Facebook ID",
+              "type": "string",
+              "name": "facebook_id"
+             }
+            ],
+            "label": "To",
+            "type": "object",
+            "name": "to"
+           },
+           {
+            "control_type": "text",
+            "label": "Rel",
+            "type": "string",
+            "name": "rel"
+           }
+          ],
+          "label": "Source",
+          "type": "object",
+          "name": "source"
+         }
+        ],
+        "label": "Via",
+        "type": "object",
+        "name": "via"
+       },
+       {
+        "control_type": "text",
+        "label": "Description",
+        "optional": true,
+        "type": "string",
+        "name": "description"
+       },
+       {
+        "control_type": "url",
+        "label": "Ticket URL",
+        "optional": true,
+        "type": "string",
+        "name": "url"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date created",
+        "render_input": "convert_date_time",
+        "parse_output": "convert_date_time",
+        "optional": true,
+        "type": "date_time",
+        "name": "created_at"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date updated",
+        "render_input": "convert_date_time",
+        "parse_output": "convert_date_time",
+        "optional": true,
+        "type": "date_time",
+        "name": "updated_at"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Comment number",
+          "optional": true,
+          "custom_field_id": 24268793,
+          "custom": true,
+          "type": "string",
+          "name": "field_24268793"
+         },
+         {
+          "control_type": "select",
+          "label": "Salesforce source",
+          "optional": true,
+          "custom_field_id": 24367555,
+          "custom": true,
+          "pick_list": [
+           [
+            "Salesforce large account",
+            "salesforce_large_account"
+           ],
+           [
+            "Salesforce SMB account",
+            "salesforce_smb_account"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Salesforce source",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom_field_id": 24367555,
+           "custom": true,
+           "hint": "Enter the <b>tag value</b> of the option",
+           "type": "string",
+           "name": "field_24367555"
+          },
+          "type": "string",
+          "name": "field_24367555"
+         },
+         {
+          "control_type": "text",
+          "label": "Account priority",
+          "optional": true,
+          "custom_field_id": 24309109,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309109"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact title",
+          "optional": true,
+          "custom_field_id": 24367545,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367545"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact phone",
+          "optional": true,
+          "custom_field_id": 24309039,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309039"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity name",
+          "optional": true,
+          "custom_field_id": 24309829,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309829"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity stage",
+          "optional": true,
+          "custom_field_id": 24367575,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367575"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity close date",
+          "optional": true,
+          "custom_field_id": 24367595,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367595"
+         },
+         {
+          "control_type": "date",
+          "label": "L1 ETA",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400949,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400949"
+         },
+         {
+          "control_type": "date",
+          "label": "L2 provided",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24459575,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24459575"
+         },
+         {
+          "control_type": "date",
+          "label": "L1 provided",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400959,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400959"
+         },
+         {
+          "control_type": "date",
+          "label": "Merchant update",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24350019,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24350019"
+         },
+         {
+          "control_type": "date",
+          "label": "L2 ETA",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400979,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400979"
+         },
+         {
+          "control_type": "text",
+          "label": "Product area",
+          "optional": true,
+          "custom_field_id": 24400989,
+          "custom": true,
+          "type": "string",
+          "name": "field_24400989"
+         },
+         {
+          "control_type": "text",
+          "label": "Customers affected",
+          "optional": true,
+          "custom_field_id": 24401029,
+          "custom": true,
+          "type": "string",
+          "name": "field_24401029"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Issue ID",
+          "optional": true,
+          "custom_field_id": 25306126,
+          "custom": true,
+          "type": "string",
+          "name": "field_25306126"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Resolution status",
+          "optional": true,
+          "custom_field_id": 24459685,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459685"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Incident status",
+          "optional": true,
+          "custom_field_id": 24459695,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459695"
+         },
+         {
+          "control_type": "text",
+          "label": "Severity",
+          "optional": true,
+          "custom_field_id": 24459705,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459705"
+         },
+         {
+          "control_type": "text",
+          "label": "Industry name",
+          "optional": true,
+          "custom_field_id": 24321519,
+          "custom": true,
+          "type": "string",
+          "name": "field_24321519"
+         },
+         {
+          "control_type": "select",
+          "label": "Test dropdown",
+          "optional": true,
+          "custom_field_id": 24379396,
+          "custom": true,
+          "pick_list": [
+           [
+            "Test 2",
+            "test_2"
+           ],
+           [
+            "Test 3",
+            "test_3"
+           ],
+           [
+            "Test1",
+            "asda_aweqw"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Test dropdown",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom_field_id": 24379396,
+           "custom": true,
+           "hint": "Enter the <b>tag value</b> of the option",
+           "type": "string",
+           "name": "field_24379396"
+          },
+          "type": "string",
+          "name": "field_24379396"
+         },
+         {
+          "control_type": "number",
+          "label": "numerictest",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "custom_field_id": 24347436,
+          "custom": true,
+          "type": "integer",
+          "name": "field_24347436"
+         }
+        ],
+        "label": "Ticket custom fields",
+        "type": "object",
+        "name": "custom_fields"
+       }
+      ]
+     },
+     {
+      "type": "integer",
+      "name": "count",
+      "control_type": "text",
+      "label": "Total tickets",
+      "parse_output": "integer_conversion"
+     }
+    ],
+    "visible_config_fields": [
+     "subject"
+    ],
+    "hidden_config_fields": [
+     "status",
+     "ticket_type",
+     "priority",
+     "description",
+     "earliest_created_time",
+     "latest_created_time",
+     "earliest_modified_time",
+     "latest_modified_time",
+     "requester",
+     "submitter",
+     "assignee",
+     "organization",
+     "tags_string",
+     "via"
+    ],
+    "comment": "Search for ticket in Zendesk by NetSuite subject",
+    "uuid": "2287cf6e-7a67-4fbf-a3f9-745c8e4e2ed5"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.zendesk.search_ticket.tickets.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "zendesk",
+      "name": "create_ticket",
+      "as": "create_ticket",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "priority": false,
+       "status": false
+      },
+      "input": {
+       "comment": "#{_('data.netsuite.updated_object.title')}",
+       "subject": "#{_('data.netsuite.updated_object.title')}",
+       "priority": "=_('data.netsuite.updated_object.priority.name') == \"High\" ?  \"urgent\" : _('data.netsuite.updated_object.priority.name') == \"Medium\" ? \"normal\" : \"low\"",
+       "status": "=_('data.netsuite.updated_object.status.name')== \"In Progress\" ? \"pending\" :_('data.netsuite.updated_object.status.name') == \"On Hold\" ? \"hold\" : (_('data.netsuite.updated_object.status.name')==\"Closed\"  || _('data.netsuite.updated_object.status.name') == \"Escaleted\") ? \"closed\" : \"open\" ",
+       "due_at": "#{_('data.netsuite.updated_object.endDate')}"
+      },
+      "extended_output_schema": [
+       {
+        "type": "object",
+        "name": "custom_fields",
+        "label": "Ticket custom fields",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Comment number",
+          "optional": true,
+          "custom_field_id": 24268793,
+          "custom": true,
+          "type": "string",
+          "name": "field_24268793"
+         },
+         {
+          "control_type": "select",
+          "label": "Salesforce source",
+          "optional": true,
+          "custom_field_id": 24367555,
+          "custom": true,
+          "pick_list": [
+           [
+            "Salesforce large account",
+            "salesforce_large_account"
+           ],
+           [
+            "Salesforce SMB account",
+            "salesforce_smb_account"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Salesforce source",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom_field_id": 24367555,
+           "custom": true,
+           "hint": "Enter the <b>tag value</b> of the option",
+           "type": "string",
+           "name": "field_24367555"
+          },
+          "type": "string",
+          "name": "field_24367555"
+         },
+         {
+          "control_type": "text",
+          "label": "Account priority",
+          "optional": true,
+          "custom_field_id": 24309109,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309109"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact title",
+          "optional": true,
+          "custom_field_id": 24367545,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367545"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact phone",
+          "optional": true,
+          "custom_field_id": 24309039,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309039"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity name",
+          "optional": true,
+          "custom_field_id": 24309829,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309829"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity stage",
+          "optional": true,
+          "custom_field_id": 24367575,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367575"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity close date",
+          "optional": true,
+          "custom_field_id": 24367595,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367595"
+         },
+         {
+          "control_type": "date",
+          "label": "L1 ETA",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400949,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400949"
+         },
+         {
+          "control_type": "date",
+          "label": "L2 provided",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24459575,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24459575"
+         },
+         {
+          "control_type": "date",
+          "label": "L1 provided",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400959,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400959"
+         },
+         {
+          "control_type": "date",
+          "label": "Merchant update",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24350019,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24350019"
+         },
+         {
+          "control_type": "date",
+          "label": "L2 ETA",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400979,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400979"
+         },
+         {
+          "control_type": "text",
+          "label": "Product area",
+          "optional": true,
+          "custom_field_id": 24400989,
+          "custom": true,
+          "type": "string",
+          "name": "field_24400989"
+         },
+         {
+          "control_type": "text",
+          "label": "Customers affected",
+          "optional": true,
+          "custom_field_id": 24401029,
+          "custom": true,
+          "type": "string",
+          "name": "field_24401029"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Issue ID",
+          "optional": true,
+          "custom_field_id": 25306126,
+          "custom": true,
+          "type": "string",
+          "name": "field_25306126"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Resolution status",
+          "optional": true,
+          "custom_field_id": 24459685,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459685"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Incident status",
+          "optional": true,
+          "custom_field_id": 24459695,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459695"
+         },
+         {
+          "control_type": "text",
+          "label": "Severity",
+          "optional": true,
+          "custom_field_id": 24459705,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459705"
+         },
+         {
+          "control_type": "text",
+          "label": "Industry name",
+          "optional": true,
+          "custom_field_id": 24321519,
+          "custom": true,
+          "type": "string",
+          "name": "field_24321519"
+         },
+         {
+          "control_type": "select",
+          "label": "Test dropdown",
+          "optional": true,
+          "custom_field_id": 24379396,
+          "custom": true,
+          "pick_list": [
+           [
+            "Test 2",
+            "test_2"
+           ],
+           [
+            "Test 3",
+            "test_3"
+           ],
+           [
+            "Test1",
+            "asda_aweqw"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Test dropdown",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom_field_id": 24379396,
+           "custom": true,
+           "hint": "Enter the <b>tag value</b> of the option",
+           "type": "string",
+           "name": "field_24379396"
+          },
+          "type": "string",
+          "name": "field_24379396"
+         },
+         {
+          "control_type": "number",
+          "label": "numerictest",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "custom_field_id": 24347436,
+          "custom": true,
+          "type": "integer",
+          "name": "field_24347436"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "field_24268793",
+        "control_type": "text",
+        "label": "Comment number",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24268793
+       },
+       {
+        "type": "string",
+        "name": "field_24367555",
+        "control_type": "select",
+        "label": "Salesforce source",
+        "pick_list": [
+         [
+          "Salesforce large account",
+          "salesforce_large_account"
+         ],
+         [
+          "Salesforce SMB account",
+          "salesforce_smb_account"
+         ]
+        ],
+        "optional": true,
+        "custom": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Salesforce source",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 24367555,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_24367555"
+        },
+        "custom_field_id": 24367555
+       },
+       {
+        "type": "string",
+        "name": "field_24309109",
+        "control_type": "text",
+        "label": "Account priority",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24309109
+       },
+       {
+        "type": "string",
+        "name": "field_24367545",
+        "control_type": "text",
+        "label": "Contact title",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24367545
+       },
+       {
+        "type": "string",
+        "name": "field_24309039",
+        "control_type": "text",
+        "label": "Contact phone",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24309039
+       },
+       {
+        "type": "string",
+        "name": "field_24309829",
+        "control_type": "text",
+        "label": "Opportunity name",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24309829
+       },
+       {
+        "type": "string",
+        "name": "field_24367575",
+        "control_type": "text",
+        "label": "Opportunity stage",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24367575
+       },
+       {
+        "type": "string",
+        "name": "field_24367595",
+        "control_type": "text",
+        "label": "Opportunity close date",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24367595
+       },
+       {
+        "type": "date_time",
+        "name": "field_24400949",
+        "control_type": "date",
+        "label": "L1 ETA",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24400949
+       },
+       {
+        "type": "date_time",
+        "name": "field_24459575",
+        "control_type": "date",
+        "label": "L2 provided",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24459575
+       },
+       {
+        "type": "date_time",
+        "name": "field_24400959",
+        "control_type": "date",
+        "label": "L1 provided",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24400959
+       },
+       {
+        "type": "date_time",
+        "name": "field_24350019",
+        "control_type": "date",
+        "label": "Merchant update",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24350019
+       },
+       {
+        "type": "date_time",
+        "name": "field_24400979",
+        "control_type": "date",
+        "label": "L2 ETA",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24400979
+       },
+       {
+        "type": "string",
+        "name": "field_24400989",
+        "control_type": "text",
+        "label": "Product area",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24400989
+       },
+       {
+        "type": "string",
+        "name": "field_24401029",
+        "control_type": "text",
+        "label": "Customers affected",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24401029
+       },
+       {
+        "type": "string",
+        "name": "field_25306126",
+        "control_type": "text",
+        "label": "Jira Issue ID",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 25306126
+       },
+       {
+        "type": "string",
+        "name": "field_24459685",
+        "control_type": "text",
+        "label": "Jira Resolution status",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24459685
+       },
+       {
+        "type": "string",
+        "name": "field_24459695",
+        "control_type": "text",
+        "label": "Jira Incident status",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24459695
+       },
+       {
+        "type": "string",
+        "name": "field_24459705",
+        "control_type": "text",
+        "label": "Severity",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24459705
+       },
+       {
+        "type": "string",
+        "name": "field_24321519",
+        "control_type": "text",
+        "label": "Industry name",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24321519
+       },
+       {
+        "type": "string",
+        "name": "field_24379396",
+        "control_type": "select",
+        "label": "Test dropdown",
+        "pick_list": [
+         [
+          "Test 2",
+          "test_2"
+         ],
+         [
+          "Test 3",
+          "test_3"
+         ],
+         [
+          "Test1",
+          "asda_aweqw"
+         ]
+        ],
+        "optional": true,
+        "custom": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Test dropdown",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 24379396,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_24379396"
+        },
+        "custom_field_id": 24379396
+       },
+       {
+        "type": "integer",
+        "name": "field_24347436",
+        "control_type": "number",
+        "label": "numerictest",
+        "optional": true,
+        "custom": true,
+        "parse_output": "integer_conversion",
+        "custom_field_id": 24347436
+       }
+      ],
+      "visible_config_fields": [
+       "priority",
+       "status",
+       "due_at"
+      ],
+      "uuid": "a7a72f31-c018-41a1-8ce8-2a799affa221"
+     }
+    ],
+    "comment": "If ticket with NetSuite subject does not exist in Zendesk",
+    "uuid": "54767612-75d4-4b2d-807e-855918f6fe50"
+   },
+   {
+    "number": 4,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.zendesk.search_ticket.tickets.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 5,
+      "provider": "zendesk",
+      "name": "update_ticket",
+      "as": "update_ticket",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "priority": false,
+       "status": false
+      },
+      "input": {
+       "id": "#{_('data.zendesk.search_ticket.tickets.first.id')}",
+       "comment": "#{_('data.netsuite.updated_object.title')}",
+       "subject": "#{_('data.netsuite.updated_object.title')}",
+       "priority": "=_('data.netsuite.updated_object.priority.name') == \"High\" ?  \"urgent\" : _('data.netsuite.updated_object.priority.name') == \"Medium\" ? \"normal\" : \"low\"",
+       "status": "=_('data.netsuite.updated_object.status.name')== \"In Progress\" ? \"pending\" :_('data.netsuite.updated_object.status.name') == \"On Hold\" ? \"hold\" : (_('data.netsuite.updated_object.status.name')==\"Closed\"  || _('data.netsuite.updated_object.status.name') == \"Escaleted\") ? \"closed\" : \"open\" ",
+       "due_at": "#{_('data.netsuite.updated_object.endDate')}"
+      },
+      "extended_output_schema": [
+       {
+        "type": "object",
+        "name": "custom_fields",
+        "label": "Ticket custom fields",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Comment number",
+          "optional": true,
+          "custom_field_id": 24268793,
+          "custom": true,
+          "type": "string",
+          "name": "field_24268793"
+         },
+         {
+          "control_type": "select",
+          "label": "Salesforce source",
+          "optional": true,
+          "custom_field_id": 24367555,
+          "custom": true,
+          "pick_list": [
+           [
+            "Salesforce large account",
+            "salesforce_large_account"
+           ],
+           [
+            "Salesforce SMB account",
+            "salesforce_smb_account"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Salesforce source",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom_field_id": 24367555,
+           "custom": true,
+           "hint": "Enter the <b>tag value</b> of the option",
+           "type": "string",
+           "name": "field_24367555"
+          },
+          "type": "string",
+          "name": "field_24367555"
+         },
+         {
+          "control_type": "text",
+          "label": "Account priority",
+          "optional": true,
+          "custom_field_id": 24309109,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309109"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact title",
+          "optional": true,
+          "custom_field_id": 24367545,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367545"
+         },
+         {
+          "control_type": "text",
+          "label": "Contact phone",
+          "optional": true,
+          "custom_field_id": 24309039,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309039"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity name",
+          "optional": true,
+          "custom_field_id": 24309829,
+          "custom": true,
+          "type": "string",
+          "name": "field_24309829"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity stage",
+          "optional": true,
+          "custom_field_id": 24367575,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367575"
+         },
+         {
+          "control_type": "text",
+          "label": "Opportunity close date",
+          "optional": true,
+          "custom_field_id": 24367595,
+          "custom": true,
+          "type": "string",
+          "name": "field_24367595"
+         },
+         {
+          "control_type": "date",
+          "label": "L1 ETA",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400949,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400949"
+         },
+         {
+          "control_type": "date",
+          "label": "L2 provided",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24459575,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24459575"
+         },
+         {
+          "control_type": "date",
+          "label": "L1 provided",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400959,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400959"
+         },
+         {
+          "control_type": "date",
+          "label": "Merchant update",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24350019,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24350019"
+         },
+         {
+          "control_type": "date",
+          "label": "L2 ETA",
+          "render_input": "render_iso8601_date",
+          "parse_output": "ticket_custom_date_field",
+          "optional": true,
+          "custom_field_id": 24400979,
+          "custom": true,
+          "type": "date_time",
+          "name": "field_24400979"
+         },
+         {
+          "control_type": "text",
+          "label": "Product area",
+          "optional": true,
+          "custom_field_id": 24400989,
+          "custom": true,
+          "type": "string",
+          "name": "field_24400989"
+         },
+         {
+          "control_type": "text",
+          "label": "Customers affected",
+          "optional": true,
+          "custom_field_id": 24401029,
+          "custom": true,
+          "type": "string",
+          "name": "field_24401029"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Issue ID",
+          "optional": true,
+          "custom_field_id": 25306126,
+          "custom": true,
+          "type": "string",
+          "name": "field_25306126"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Resolution status",
+          "optional": true,
+          "custom_field_id": 24459685,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459685"
+         },
+         {
+          "control_type": "text",
+          "label": "Jira Incident status",
+          "optional": true,
+          "custom_field_id": 24459695,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459695"
+         },
+         {
+          "control_type": "text",
+          "label": "Severity",
+          "optional": true,
+          "custom_field_id": 24459705,
+          "custom": true,
+          "type": "string",
+          "name": "field_24459705"
+         },
+         {
+          "control_type": "text",
+          "label": "Industry name",
+          "optional": true,
+          "custom_field_id": 24321519,
+          "custom": true,
+          "type": "string",
+          "name": "field_24321519"
+         },
+         {
+          "control_type": "select",
+          "label": "Test dropdown",
+          "optional": true,
+          "custom_field_id": 24379396,
+          "custom": true,
+          "pick_list": [
+           [
+            "Test 2",
+            "test_2"
+           ],
+           [
+            "Test 3",
+            "test_3"
+           ],
+           [
+            "Test1",
+            "asda_aweqw"
+           ]
+          ],
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Test dropdown",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "custom_field_id": 24379396,
+           "custom": true,
+           "hint": "Enter the <b>tag value</b> of the option",
+           "type": "string",
+           "name": "field_24379396"
+          },
+          "type": "string",
+          "name": "field_24379396"
+         },
+         {
+          "control_type": "number",
+          "label": "numerictest",
+          "parse_output": "integer_conversion",
+          "optional": true,
+          "custom_field_id": 24347436,
+          "custom": true,
+          "type": "integer",
+          "name": "field_24347436"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "field_24268793",
+        "control_type": "text",
+        "label": "Comment number",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24268793
+       },
+       {
+        "type": "string",
+        "name": "field_24367555",
+        "control_type": "select",
+        "label": "Salesforce source",
+        "pick_list": [
+         [
+          "Salesforce large account",
+          "salesforce_large_account"
+         ],
+         [
+          "Salesforce SMB account",
+          "salesforce_smb_account"
+         ]
+        ],
+        "optional": true,
+        "custom": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Salesforce source",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 24367555,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_24367555"
+        },
+        "custom_field_id": 24367555
+       },
+       {
+        "type": "string",
+        "name": "field_24309109",
+        "control_type": "text",
+        "label": "Account priority",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24309109
+       },
+       {
+        "type": "string",
+        "name": "field_24367545",
+        "control_type": "text",
+        "label": "Contact title",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24367545
+       },
+       {
+        "type": "string",
+        "name": "field_24309039",
+        "control_type": "text",
+        "label": "Contact phone",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24309039
+       },
+       {
+        "type": "string",
+        "name": "field_24309829",
+        "control_type": "text",
+        "label": "Opportunity name",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24309829
+       },
+       {
+        "type": "string",
+        "name": "field_24367575",
+        "control_type": "text",
+        "label": "Opportunity stage",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24367575
+       },
+       {
+        "type": "string",
+        "name": "field_24367595",
+        "control_type": "text",
+        "label": "Opportunity close date",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24367595
+       },
+       {
+        "type": "date_time",
+        "name": "field_24400949",
+        "control_type": "date",
+        "label": "L1 ETA",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24400949
+       },
+       {
+        "type": "date_time",
+        "name": "field_24459575",
+        "control_type": "date",
+        "label": "L2 provided",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24459575
+       },
+       {
+        "type": "date_time",
+        "name": "field_24400959",
+        "control_type": "date",
+        "label": "L1 provided",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24400959
+       },
+       {
+        "type": "date_time",
+        "name": "field_24350019",
+        "control_type": "date",
+        "label": "Merchant update",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24350019
+       },
+       {
+        "type": "date_time",
+        "name": "field_24400979",
+        "control_type": "date",
+        "label": "L2 ETA",
+        "optional": true,
+        "custom": true,
+        "render_input": "render_iso8601_date",
+        "parse_output": "ticket_custom_date_field",
+        "custom_field_id": 24400979
+       },
+       {
+        "type": "string",
+        "name": "field_24400989",
+        "control_type": "text",
+        "label": "Product area",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24400989
+       },
+       {
+        "type": "string",
+        "name": "field_24401029",
+        "control_type": "text",
+        "label": "Customers affected",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24401029
+       },
+       {
+        "type": "string",
+        "name": "field_25306126",
+        "control_type": "text",
+        "label": "Jira Issue ID",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 25306126
+       },
+       {
+        "type": "string",
+        "name": "field_24459685",
+        "control_type": "text",
+        "label": "Jira Resolution status",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24459685
+       },
+       {
+        "type": "string",
+        "name": "field_24459695",
+        "control_type": "text",
+        "label": "Jira Incident status",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24459695
+       },
+       {
+        "type": "string",
+        "name": "field_24459705",
+        "control_type": "text",
+        "label": "Severity",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24459705
+       },
+       {
+        "type": "string",
+        "name": "field_24321519",
+        "control_type": "text",
+        "label": "Industry name",
+        "optional": true,
+        "custom": true,
+        "custom_field_id": 24321519
+       },
+       {
+        "type": "string",
+        "name": "field_24379396",
+        "control_type": "select",
+        "label": "Test dropdown",
+        "pick_list": [
+         [
+          "Test 2",
+          "test_2"
+         ],
+         [
+          "Test 3",
+          "test_3"
+         ],
+         [
+          "Test1",
+          "asda_aweqw"
+         ]
+        ],
+        "optional": true,
+        "custom": true,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Test dropdown",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom_field_id": 24379396,
+         "custom": true,
+         "hint": "Enter the <b>tag value</b> of the option",
+         "type": "string",
+         "name": "field_24379396"
+        },
+        "custom_field_id": 24379396
+       },
+       {
+        "type": "integer",
+        "name": "field_24347436",
+        "control_type": "number",
+        "label": "numerictest",
+        "optional": true,
+        "custom": true,
+        "parse_output": "integer_conversion",
+        "custom_field_id": 24347436
+       }
+      ],
+      "visible_config_fields": [
+       "subject",
+       "comment",
+       "priority",
+       "status",
+       "due_at"
+      ],
+      "uuid": "57377d48-f79e-4916-b06a-c5a1eca5e225"
+     }
+    ],
+    "comment": "If ticket with NetSuite subject exists in Zendesk",
+    "uuid": "5fd6344b-6341-49ba-bc9d-88ca8fcec18e"
+   }
+  ],
+  "uuid": "ee224f88-3444-4ff2-9058-753e3949ee74",
+  "param": {}
+ }
+}

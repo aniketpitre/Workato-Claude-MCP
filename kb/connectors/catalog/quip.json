@@ -1,0 +1,413 @@
+{
+ "name": "quip",
+ "title": "Quip",
+ "requires_connection": true,
+ "categories": [
+  "Collaboration"
+ ],
+ "aliases": [
+  "Quip",
+  "Salesforce",
+  "SFDC"
+ ],
+ "triggers": [
+  {
+   "name": "updated_inbox_item",
+   "title": "New/updated inbox item",
+   "description": "New/updated inbox item in Quip",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "thread",
+     "type": "object",
+     "label": "Thread",
+     "required": true,
+     "properties": [
+      {
+       "name": "link",
+       "type": "string",
+       "label": "Link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "thread_class",
+       "type": "string",
+       "label": "Thread class",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "updated_usec",
+       "type": "date_time",
+       "label": "Updated usec",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "created_usec",
+       "type": "date_time",
+       "label": "Created usec",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "html",
+     "type": "string",
+     "label": "Html",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "user_ids",
+     "type": "array",
+     "label": "User ids",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "user_id",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "shared_folder_ids",
+     "type": "array",
+     "label": "Shared folder ids",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "shared_folder_id",
+       "type": "string",
+       "label": "Shared folder ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "expanded_user_ids",
+     "type": "array",
+     "label": "Expanded user ids",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "expanded_user_id",
+       "type": "string",
+       "label": "Expanded user ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Quip (Custom)",
+   "help": "Build your own Quip action with a HTTP request. The request will be authorized with your Quip personal API key",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_messages",
+   "title": "Get messages by thread",
+   "description": "Get messages by thread in Quip",
+   "input": [
+    {
+     "name": "thread_id",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "messages",
+     "type": "array",
+     "label": "Messages",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "author_name",
+       "type": "string",
+       "label": "Author name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "author_id",
+       "type": "number",
+       "label": "Author ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "created_usec",
+       "type": "date_time",
+       "label": "Created usec",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_user_by_id",
+   "title": "Get user by ID",
+   "description": "Get user by ID in Quip",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "affinity",
+     "type": "number",
+     "label": "Affinity",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "chat_thread_id",
+     "type": "string",
+     "label": "Chat thread ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "desktop_folder_id",
+     "type": "string",
+     "label": "Desktop folder ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "archive_folder_id",
+     "type": "string",
+     "label": "Archive folder ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "disabled",
+     "type": "boolean",
+     "label": "Disabled",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "disabled",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "created_usec",
+     "type": "date_time",
+     "label": "Created usec",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "emails",
+     "type": "array",
+     "label": "Emails",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "send_message",
+   "title": "Send messages",
+   "description": "Send message in Quip",
+   "input": [
+    {
+     "name": "thread_id",
+     "type": "string",
+     "label": "Thread ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "Content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "silent",
+     "type": "boolean",
+     "label": "Silent",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "silent",
+      "type": "boolean"
+     },
+     "hint": "If \"Yes\", push notifications or emails for the message are not sent."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "author_id",
+     "type": "number",
+     "label": "Author ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "created_usec",
+     "type": "date_time",
+     "label": "Created usec",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

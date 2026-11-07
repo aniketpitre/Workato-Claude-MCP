@@ -1,0 +1,5454 @@
+{
+ "name": "salesforce",
+ "title": "Salesforce",
+ "requires_connection": true,
+ "categories": [
+  "CRM",
+  "Marketing"
+ ],
+ "aliases": [
+  "Salesforce",
+  "sfdc",
+  "apptus"
+ ],
+ "triggers": [
+  {
+   "name": "change_data_capture",
+   "title": "Monitor changes in a record",
+   "description": "Monitor changes in a record in Salesforce",
+   "help": "Monitor events specific to an object, eg. Fields in a Lead are changed. This trigger is based on events from Salesforce Change Data Capture. Note that the following operation specific fields will be returned in the body in addition to the selected \"Fields to retrieve\": Update - Only changed fields C…",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_cdc_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom salesforce object, e.g. Lead ."
+    },
+    {
+     "name": "trigger_operation",
+     "type": "string",
+     "label": "Monitor changes",
+     "control_type": "multiselect",
+     "required": true,
+     "default": "UPDATE",
+     "options": [
+      "CREATE",
+      "UPDATE",
+      "DELETE",
+      "UNDELETE"
+     ],
+     "extends_schema": true,
+     "hint": "Select the operations which would trigger this when a record is changed and the selected fields have a value. Defaults to Update ."
+    },
+    {
+     "name": "enriched_fields",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "enriched_field_list",
+     "extends_schema": true,
+     "hint": "Select up to 10 additional fields to be retrieved for an object. This limit is for an object enrichment per recipe. The fields that you select in the SOQL WHERE clause are automatically retrieved for …"
+    },
+    {
+     "name": "filter_query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the change notifications. e.g. Amount__c > 22.34 AND (City__c = 'San Francisco' OR City__c = 'New York') Learn more"
+    },
+    {
+     "name": "use_custom_channel",
+     "type": "boolean",
+     "label": "Use custom channel",
+     "control_type": "checkbox",
+     "visible_if": "false",
+     "default": "true",
+     "toggle_field": {
+      "name": "use_custom_channel",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "channel_id",
+     "type": "string",
+     "label": "Channel ID",
+     "control_type": "select",
+     "pick_list": "custom_channels",
+     "hint": "Populate this field if you wish to retreive events when recipe is down upon restarting."
+    }
+   ],
+   "output": [
+    {
+     "name": "ReplayId",
+     "type": "integer",
+     "label": "Replay ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "ChangeEventHeader",
+     "type": "object",
+     "label": "Change event header",
+     "required": true,
+     "properties": [
+      {
+       "name": "commitNumber",
+       "type": "integer",
+       "label": "Commit number",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "commitUser",
+       "type": "string",
+       "label": "Commit user",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sequenceNumber",
+       "type": "integer",
+       "label": "Sequence number",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "entityName",
+       "type": "string",
+       "label": "Entity name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "changeType",
+       "type": "string",
+       "label": "Change type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "changedFields",
+       "type": "array",
+       "label": "Changed fields",
+       "required": true,
+       "of": "string"
+      },
+      {
+       "name": "changeOrigin",
+       "type": "string",
+       "label": "Change origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "transactionKey",
+       "type": "string",
+       "label": "Transaction key",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "commitTimestamp",
+       "type": "date_time",
+       "label": "Commit timestamp",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "recordIds",
+       "type": "array",
+       "label": "Record ids",
+       "required": true,
+       "of": "string"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "new_custom_object",
+   "title": "New record",
+   "description": "New record in Salesforce",
+   "help": "Triggers when a record of the selected Salesforce object, e.g. lead, is created. Checks for created records every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, e.g. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL \""
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_custom_object_webhook",
+   "title": "New record",
+   "description": "New record in Salesforce",
+   "help": "Triggers immediately as soon as trigger events, e.g. new Lead created, occurs. This trigger fires when it receives an outbound message from a Salesforce flow configured to evaluate when a record is created. This trigger automatically retrieves jobs that have been missed if the recipe is stopped when…",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "First select any standard or custom Salesforce object, e.g. lead, then use above endpoint URL to set up flow."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, e.g. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL \""
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_outbound_message",
+   "title": "New Outbound message",
+   "description": "New Outbound message in Salesforce",
+   "help": "Triggers immediately as soon as a Salesforce Outbound message is received. This trigger requires flow and outbound message setup in Salesforce with the endpoint URL provided below. Backup polling is disabled on this trigger. Workato endpoint URL Connect to Salesforce to get endpoint URL for Salesfor…",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select the Salesforce object the flow applies to"
+    },
+    {
+     "name": "outbound_message_name",
+     "type": "string",
+     "label": "Outbound message name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter a unique outbound message name to generate the endpoint URL."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to send",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Add the fields specified in the ‘Fields to send’ configuration of the outbound message."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_platform_event",
+   "title": "New platform event",
+   "description": "New platform event in Salesforce",
+   "help": "Platform events created in the last 24 hours will be fetched when recipe is first started. Platform events are temporary - any platform event not picked up within 24 hours, i.e. if recipe was stopped for longer than 24 hours, will not be processed by the recipe.",
+   "input": [
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Platform event",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_events",
+     "extends_schema": true,
+     "hint": "Select Salesforce platform event to retrieve"
+    },
+    {
+     "name": "filter_query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the platform events. e.g. Amount__c > 22.34 AND (City__c = 'San Francisco' OR City__c = 'New York') Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_pushtopic_event",
+   "title": "New PushTopic event",
+   "description": "New PushTopic event in Salesforce",
+   "help": "This trigger subscribes to a PushTopic channel and receives events. Any PushTopic events not picked up within 24 hours, i.e. if the recipe was stopped for longer than 24 hours, will not be processed by the recipe.",
+   "input": [
+    {
+     "name": "pushtopics",
+     "type": "string",
+     "label": "Pushtopics",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_pushtopics",
+     "extends_schema": true,
+     "hint": "Select PushTopic to subscribe to."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output schema",
+     "control_type": "schema-designer",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "scheduled_sobject_bulk_v2_created",
+   "title": "Export new records",
+   "description": "Export new records in Salesforce",
+   "help": "Triggers when a record is created in Salesforce. There will be an expected delay in processing the trigger job. The trigger job will be processed once the query job is completed on Salesforce. You can't test the recipe using this trigger due to the processing delay. This trigger uses V2.0 of the Sal…",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sobject_with_cdate",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Select the fields that must be retrieved to improve performance. All fields are returned if left blank."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, i.e. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "When exporting records to form the CSV, fetch them in batches of",
+     "control_type": "number",
+     "default": 10000,
+     "hint": "This trigger pulls records in batches and streams them as a CSV. Use this input to control the number of records per batch. Defaults to 10000."
+    },
+    {
+     "name": "include_deleted_records",
+     "type": "boolean",
+     "label": "Include deleted records?",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "Select 'Yes' to include deleted records in the results. Defaults to 'No' ."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created one hour ago. Once recipe has been run or tested, value canno…"
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "string",
+     "label": "All records successfully processed?",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberRecordsProcessed",
+     "type": "integer",
+     "label": "Number of records processed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "numberRecordsFailed",
+     "type": "integer",
+     "label": "Number of records failed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "retryCount",
+     "type": "integer",
+     "label": "Number of retried records",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "results",
+     "type": "string",
+     "label": "CSV content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fields",
+     "type": "array",
+     "label": "Object schema",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "workato_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "custom",
+       "type": "boolean",
+       "label": "Custom field?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "custom",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "length",
+       "type": "integer",
+       "label": "Length",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "scale",
+       "type": "integer",
+       "label": "Scale",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "precision",
+       "type": "integer",
+       "label": "Precision",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "created_from",
+     "type": "date_time",
+     "label": "Created from",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "scheduled_sobject_bulk_v2_created_or_updated",
+   "title": "Export new/updated records",
+   "description": "Export new/updated records in Salesforce",
+   "help": "Triggers when a record is created or updated in Salesforce. There will be an expected delay in processing the trigger job. The trigger job will be processed once the query job is completed on Salesforce. You can't test the recipe using this trigger due to the processing delay. This trigger uses V2.0…",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sobject_with_mdate",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Select the fields that must be retrieved to improve performance. All fields are returned if left blank."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, i.e. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "When exporting records to form the CSV, fetch them in batches of",
+     "control_type": "number",
+     "default": 10000,
+     "hint": "This trigger pulls records in batches and streams them as a CSV. Use this input to control the number of records per batch. Defaults to 10000."
+    },
+    {
+     "name": "include_deleted_records",
+     "type": "boolean",
+     "label": "Include deleted records?",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "Select 'Yes' to include deleted records in the results. Defaults to 'No' ."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested, …"
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "string",
+     "label": "All records successfully processed?",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberRecordsProcessed",
+     "type": "integer",
+     "label": "Number of records processed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "numberRecordsFailed",
+     "type": "integer",
+     "label": "Number of records failed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "retryCount",
+     "type": "integer",
+     "label": "Number of retried records",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "results",
+     "type": "string",
+     "label": "CSV content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fields",
+     "type": "array",
+     "label": "Object schema",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "workato_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "custom",
+       "type": "boolean",
+       "label": "Custom field?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "custom",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "length",
+       "type": "integer",
+       "label": "Length",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "scale",
+       "type": "integer",
+       "label": "Scale",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "precision",
+       "type": "integer",
+       "label": "Precision",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "created_or_updated_from",
+     "type": "date_time",
+     "label": "Created or updated from",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "scheduled_sobject_soql_query",
+   "title": "Scheduled record search using SOQL query WHERE clause",
+   "description": "Scheduled record search using SOQL query WHERE clause in Salesforce",
+   "help": "Execute a simplified SOQL query on a specified schedule. Provide the SOQL WHERE clause only. Query results will be returned in batches of records. Maximum batch size is 2000 .",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "conditions",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, i.e. StageName = 'Closed Lost' AND IsClosed = true."
+    },
+    {
+     "name": "schedule",
+     "type": "string",
+     "label": "Schedule",
+     "control_type": "select",
+     "required": true,
+     "default": "monthly",
+     "options": [
+      "hourly",
+      "daily",
+      "monthly"
+     ]
+    },
+    {
+     "name": "time_zone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timezone_name_global_pick_list"
+    },
+    {
+     "name": "hour",
+     "type": "integer",
+     "label": "Hour",
+     "control_type": "number",
+     "visible_if": "input.schedule != \"hourly\" || input.schedule_settings?.schedule != \"hourly\"",
+     "default": 0,
+     "hint": "Hours in 24-hour format, i.e. 11 for 11am, 23 for 11pm. Defaults to 00 (12am) if left empty."
+    },
+    {
+     "name": "minute",
+     "type": "integer",
+     "label": "Minute",
+     "control_type": "number",
+     "required": true,
+     "default": 0,
+     "hint": "Minutes past the hour, i.e 00 for 0 minutes."
+    },
+    {
+     "name": "day_of_month",
+     "type": "integer",
+     "label": "Day of month",
+     "control_type": "number",
+     "visible_if": "input.schedule == \"monthly\" || input.schedule_settings?.schedule == \"monthly\"",
+     "default": 1,
+     "hint": "1 - 31 , will be rounded down to last day of month for shorter months. Defaults to first day of the month if left empty."
+    },
+    {
+     "name": "Sunday",
+     "type": "boolean",
+     "label": "Sunday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Sunday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Monday",
+     "type": "boolean",
+     "label": "Monday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Monday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Tuesday",
+     "type": "boolean",
+     "label": "Tuesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Tuesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Wednesday",
+     "type": "boolean",
+     "label": "Wednesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Wednesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Thursday",
+     "type": "boolean",
+     "label": "Thursday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Thursday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Friday",
+     "type": "boolean",
+     "label": "Friday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Friday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Saturday",
+     "type": "boolean",
+     "label": "Saturday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Saturday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Maximum number of records per trigger event. Minimum is 1, maximum is 2000 , default is 100. May be smaller if Salesforce record has many custom fields."
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "scheduled_time",
+     "type": "date_time",
+     "label": "Scheduled time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "total_number_of_objects",
+     "type": "integer",
+     "label": "Total number of objects",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_batch",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "starting_offset",
+     "type": "integer",
+     "label": "Starting offset",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "ending_offset",
+     "type": "integer",
+     "label": "Ending offset",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "scheduled_sobject_soql_query_v2",
+   "title": "Scheduled records search using SOQL query",
+   "description": "Scheduled records search using SOQL query in Salesforce",
+   "help": "Execute a full SOQL query on a specified schedule. Query results will be returned in batches of records. Maximum batch size is 2000 .",
+   "input": [
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL query",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SOQL query to be executed here. ID must be selected as part of the field list for the trigger to work."
+    },
+    {
+     "name": "schedule",
+     "type": "string",
+     "label": "Schedule",
+     "control_type": "select",
+     "required": true,
+     "default": "monthly",
+     "options": [
+      "hourly",
+      "daily",
+      "monthly"
+     ]
+    },
+    {
+     "name": "time_zone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timezone_name_global_pick_list"
+    },
+    {
+     "name": "hour",
+     "type": "integer",
+     "label": "Hour",
+     "control_type": "number",
+     "visible_if": "input.schedule != \"hourly\" || input.schedule_settings?.schedule != \"hourly\"",
+     "default": 0,
+     "hint": "Hours in 24-hour format, i.e. 11 for 11am, 23 for 11pm. Defaults to 00 (12am) if left empty."
+    },
+    {
+     "name": "minute",
+     "type": "integer",
+     "label": "Minute",
+     "control_type": "number",
+     "required": true,
+     "default": 0,
+     "hint": "Minutes past the hour, i.e 00 for 0 minutes."
+    },
+    {
+     "name": "day_of_month",
+     "type": "integer",
+     "label": "Day of month",
+     "control_type": "number",
+     "visible_if": "input.schedule == \"monthly\" || input.schedule_settings?.schedule == \"monthly\"",
+     "default": 1,
+     "hint": "1 - 31 , will be rounded down to last day of month for shorter months. Defaults to first day of the month if left empty."
+    },
+    {
+     "name": "Sunday",
+     "type": "boolean",
+     "label": "Sunday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Sunday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Monday",
+     "type": "boolean",
+     "label": "Monday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Monday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Tuesday",
+     "type": "boolean",
+     "label": "Tuesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Tuesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Wednesday",
+     "type": "boolean",
+     "label": "Wednesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Wednesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Thursday",
+     "type": "boolean",
+     "label": "Thursday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Thursday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Friday",
+     "type": "boolean",
+     "label": "Friday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Friday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Saturday",
+     "type": "boolean",
+     "label": "Saturday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Saturday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Maximum number of records per trigger event. Minimum is 1, maximum is 2000 , default is 100. May be smaller if Salesforce record has many custom fields."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output schema",
+     "control_type": "schema-designer",
+     "required": true,
+     "extends_schema": true
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    },
+    {
+     "name": "include_deleted_records",
+     "type": "boolean",
+     "label": "Include deleted records?",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "Select 'Yes' to include deleted records in the results. Defaults to 'No' ."
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "scheduled_time",
+     "type": "date_time",
+     "label": "Scheduled time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "total_number_of_objects",
+     "type": "integer",
+     "label": "Total number of objects",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_batch",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "starting_offset",
+     "type": "integer",
+     "label": "Starting offset",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "ending_offset",
+     "type": "integer",
+     "label": "Ending offset",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "sobject_batch_created",
+   "title": "New records",
+   "description": "New records in Salesforce",
+   "help": "Use this trigger to retrieve lists of object records in batches from a specified time. The trigger will retrieve a list of Salesforce records created since the last time the recipe was triggered. Maximum batch size is 2000 .",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sobject_with_cdate",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, i.e. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "required": true,
+     "default": 100,
+     "hint": "Maximum number of records per batch is 2000, but may be reduced depending on record size"
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Defaults to fetching all records if left blank. Once recipe has been run or tested, value cannot…"
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "sobject_batch_created_or_updated",
+   "title": "New/updated records",
+   "description": "New/updated records in Salesforce",
+   "help": "Use this trigger to retrieve lists of object records in batches from a specified time. The trigger will retrieve a list of Salesforce records created or updated since the last time the recipe was triggered. Maximum batch size is 2000 .",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sobject_with_mdate",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, i.e. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "required": true,
+     "default": 100,
+     "hint": "Maximum number of records per batch is 2000, but may be reduced depending on record size"
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Defaults to fetching all records if left blank. Once recipe has been run or tested, value cannot…"
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "sobject_created_bulk",
+   "title": "Threshold met for new records created",
+   "description": "Threshold met for new records created in Salesforce",
+   "help": "Triggers when the number of new records created in Salesforce meets the threshold number. These records are read in batches; each trigger event holds a list of records of defined batch size. Once records are processed, recipe will trigger only when threshold is met again.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sobject_with_cdate",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "record_threshold",
+     "type": "integer",
+     "label": "Threshold",
+     "control_type": "number",
+     "required": true,
+     "default": 100,
+     "hint": "When this threshold number of records is created, recipe triggers. Minimum is 1."
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "chunk_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "required": true,
+     "hint": "Number of records in a batch. Minimum is 1, maximum is 10000. May be smaller if Salesforce record has many custom fields."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "jobId",
+     "type": "string",
+     "label": "Job ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Batch ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "state",
+     "type": "string",
+     "label": "State",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdDate",
+     "type": "date_time",
+     "label": "Created date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "numberRecordsProcessed",
+     "type": "integer",
+     "label": "Number records processed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "numberRecordsFailed",
+     "type": "integer",
+     "label": "Number records failed",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "sobject_deleted",
+   "title": "Deleted record",
+   "description": "Record deleted in Salesforce",
+   "help": "Trigger fetches only soft-deleted records which are still stored in Salesforce (usually for 15 days) after deletion. Checks for deleted records every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_deletable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "When you start recipe for the first time, it picks up Salesforce records events from this specified date and time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_custom_object",
+   "title": "New/updated record",
+   "description": "New/updated record in Salesforce",
+   "help": "Triggers when a record of the selected Salesforce object, e.g. lead, is created/updated. Checks for created/updated records every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sobject_with_mdate",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, e.g. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL \""
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "include_automatic_changes",
+     "type": "boolean",
+     "label": "Include automatic changes",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "include_automatic_changes",
+      "type": "boolean"
+     },
+     "hint": "Enabling this will include changes made by automatic processes like workflows. Only has an effect if selected object has the SystemModstamp field."
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_custom_object_webhook",
+   "title": "New/updated record",
+   "description": "New/updated record in Salesforce",
+   "help": "Triggers immediately as soon as trigger events, e.g. new Lead created or updated, occurs. This trigger fires when it receives an outbound message from a Salesforce flow configured to evaluate when a record is created or updated. This trigger automatically retrieves jobs that have been missed if the …",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "sobject_with_mdate",
+     "extends_schema": true,
+     "hint": "First select any standard or custom Salesforce object, e.g. lead, then use above endpoint URL to set up flow."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, e.g. StageName = 'Closed Lost' AND IsClosed = false Learn more about SOQL \""
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "include_automatic_changes",
+     "type": "boolean",
+     "label": "Include automatic changes",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "include_automatic_changes",
+      "type": "boolean"
+     },
+     "hint": "Enabling this will include changes made by automatic processes like workflows. Only has an effect if selected object has the SystemModstamp field."
+    },
+    {
+     "name": "detect_schema_change",
+     "type": "boolean",
+     "label": "Detect new or updated custom data",
+     "control_type": "checkbox",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "detect_schema_change",
+      "type": "boolean"
+     },
+     "hint": "If Yes , the trigger output will include data of newly added or modified custom fields."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Salesforce (Custom)",
+   "help": "Build your own Salesforce action with a HTTP request. The request will be authorized with your Salesforce connection OAuth scopes.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "approve_process",
+   "title": "Approve record in approval process",
+   "description": "Approve a record in approval process in Salesforce",
+   "help": "Approve a record in an approval workflow. This action approves the record and triggers all approval steps defined in the approval process.",
+   "input": [
+    {
+     "name": "TargetObjectId",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "workitemId",
+      "type": "string"
+     },
+     "hint": "Pass in the Salesforce record ID to approve"
+    },
+    {
+     "name": "processDefinitionNameOrId",
+     "type": "string",
+     "label": "Approval process",
+     "control_type": "select",
+     "visible_if": "!!input.TargetObjectId",
+     "pick_list": "get_all_process_definition",
+     "toggle_field": {
+      "name": "processDefinitionNameOrId",
+      "type": "string"
+     },
+     "hint": "Select the approval process definition name"
+    },
+    {
+     "name": "comments",
+     "type": "string",
+     "label": "Comments",
+     "control_type": "text-area",
+     "hint": "Comments to include with the approval"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "entityId",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "instanceStatus",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "newWorkitemId",
+     "type": "string",
+     "label": "Approval request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "errors",
+     "type": "array",
+     "label": "Errors",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "error",
+       "type": "string",
+       "label": "Error",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "composite_create_sobject",
+   "title": "Create records in batches",
+   "description": "Create records in batches in Salesforce",
+   "help": "This action will create up to 2,000 records in a single job synchronously. It automatically sends a maximum of 10 batches of 200 records each. Provide a list of records to be created as the input.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "createable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to create in batches e.g. Contact"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": "200",
+     "hint": "Number of records to be processed in a batch. Minimum is 1, maximum is 200 and default is 200 ."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "composite_update_sobject",
+   "title": "Update records in batches",
+   "description": "Update records in batches in Salesforce",
+   "help": "This action will update up to 2,000 records in a single job synchronously. It automatically sends a maximum of 10 batches of 200 records each. Provide a list of records to be updated as the input.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "updateable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to update in batches e.g. Contact"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": "200",
+     "hint": "Number of records to be processed in a batch. Minimum is 1, maximum is 200 and default is 200 ."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_custom_object",
+   "title": "Create record",
+   "description": "Create record in Salesforce",
+   "help": "Create any standard or custom record, e.g. lead, in Salesforce. Select the object to create, then provide the data for creating the record.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "createable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Object ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_custom_platform_event",
+   "title": "Publish platform event",
+   "description": "Publish platform event in Salesforce",
+   "help": "Publish platform event message. First select a platform event, then provide the data for creating the message.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_events",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Object ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "deactivate_user",
+   "title": "Deactivate user",
+   "description": "Deactivate user in Salesforce",
+   "help": "Sets User.IsActive to false. Deactivation can fail when the user owns scheduled jobs, workflows, or queues.",
+   "input": [
+    {
+     "name": "user_id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Salesforce User ID (15 or 18 characters)."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "deactivated",
+     "type": "boolean",
+     "label": "Deactivated",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "deactivated",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "delete_sobject",
+   "title": "Delete record",
+   "description": "Delete record in Salesforce",
+   "help": "Delete any standard or custom record, e.g. lead, via its Salesforce ID. First select the object, then specify the Salesforce ID of the record to delete.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "freeze_user",
+   "title": "Freeze user",
+   "description": "Freeze user in Salesforce",
+   "help": "Sets UserLogin.IsFrozen for the given user. Does not deactivate the user.",
+   "input": [
+    {
+     "name": "user_id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Salesforce User ID (15 or 18 characters)."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "User login ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "user_id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "frozen",
+     "type": "boolean",
+     "label": "Frozen",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "frozen",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "get_attachment_body",
+   "title": "Download attachment",
+   "description": "Download attachment from Salesforce",
+   "help": "Maximum attachment size is 25MB. Attachment will be downloaded for use in subsequent steps of the recipe. Learn more",
+   "input": [
+    {
+     "name": "Id",
+     "type": "string",
+     "label": "Attachment ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "15 or 18 characters ID of attachment to download"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "body",
+     "type": "string",
+     "label": "Attachment",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_combined_attachment",
+   "title": "Download file",
+   "description": "Download file from Salesforce",
+   "input": [
+    {
+     "name": "Id",
+     "type": "string",
+     "label": "File ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "15 or 18 characters ID of file to download"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    },
+    {
+     "name": "versionNumber",
+     "type": "integer",
+     "label": "Version number",
+     "control_type": "number",
+     "hint": "Specify an existing version number for the file. If not specified, the latest version is returned."
+    }
+   ],
+   "output": [
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_custom_object",
+   "title": "Get record details by ID",
+   "description": "Get details of specific record in Salesforce",
+   "help": "Retrieve the details of any standard or custom record, e.g. lead, via its Salesforce ID.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Object ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Salesforce ID (15 or 18 characters) of object to get"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_related",
+   "title": "Get related list by parent record ID",
+   "description": "Get list of related records in Salesforce",
+   "help": "Get an object record's related list. A related list is usually a child object that has a Lookup or Master-Detail field to a parent record. To use this action, first specify the related list object you are trying to retrieve and then specify the parent object the list is related to. Eg. Retrieve a li…",
+   "input": [
+    {
+     "name": "child_sobject_name",
+     "type": "string",
+     "label": "Related list object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select Salesforce object to retrieve. Then, specify the relationship by using at least one of the fields below."
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_report_by_id",
+   "title": "Get report by ID",
+   "description": "Get report details in Salesforce",
+   "help": "Fetches columns and row values of a specified report. Use the dropdown to select a report or specify the report ID from the List reports action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Report",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "get_reports",
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     }
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "attributes",
+     "type": "object",
+     "label": "Attributes",
+     "required": true,
+     "properties": [
+      {
+       "name": "describeUrl",
+       "type": "string",
+       "label": "Describe URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "instancesUrl",
+       "type": "string",
+       "label": "Instances URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "reportId",
+       "type": "string",
+       "label": "Report ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "reportName",
+       "type": "string",
+       "label": "Report name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "columns",
+     "type": "array",
+     "label": "Columns",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "rows",
+     "type": "array",
+     "label": "Rows",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "columns",
+       "type": "array",
+       "label": "Columns",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "value",
+         "type": "string",
+         "label": "Value",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_sobject_schema",
+   "title": "Get object schema",
+   "description": "Get object schema in Salesforce",
+   "help": "Fetch the name and schema of all fields in a Salesforce object. Use this action to replicate schema to your data warehouse. This action supports both standard and custom objects.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "toggle_field": {
+      "name": "sobject_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "label",
+     "type": "string",
+     "label": "Object label",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "custom",
+     "type": "boolean",
+     "label": "Custom object?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "custom",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "fields",
+     "type": "array",
+     "label": "Fields",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "original_type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "workato_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "custom",
+       "type": "boolean",
+       "label": "Custom field?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "custom",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "length",
+       "type": "integer",
+       "label": "Length",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "scale",
+       "type": "integer",
+       "label": "Scale",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "precision",
+       "type": "integer",
+       "label": "Precision",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "insert_bulk_job",
+   "title": "Create records in bulk from CSV file",
+   "description": "Create records in bulk in Salesforce from CSV file",
+   "help": "This action will create records in Salesforce using the Salesforce bulk API. This action requires a CSV file as input. User will need to describe schema for CSV file. If the CSV file is greater than 100MB (Salesforce bulk job limit), this action will automatically create multiple Salesforce bulk job…",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Salesforce object to create",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "createable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to bulk create e.g. lead."
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id_precisely_naming",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the bulk create. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    },
+    {
+     "name": "csv_data",
+     "type": "object",
+     "label": "CSV file input",
+     "required": true,
+     "properties": [
+      {
+       "name": "csv",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true,
+       "hint": "CSV file contents used to bulk upload records in Salesforce"
+      },
+      {
+       "name": "col_sep",
+       "type": "string",
+       "label": "Column separator",
+       "control_type": "select",
+       "required": true,
+       "default": "comma",
+       "options": [
+        "comma",
+        "tab",
+        "semicolon",
+        "pipe"
+       ],
+       "hint": "Delimiter for file contents"
+      },
+      {
+       "name": "row_sep",
+       "type": "string",
+       "label": "Row separator",
+       "control_type": "select",
+       "options": [
+        "Auto",
+        "CRLF",
+        "LF"
+       ],
+       "hint": "Delimiter for rows. Default value is Auto"
+      },
+      {
+       "name": "quote_char",
+       "type": "string",
+       "label": "Quote character",
+       "control_type": "select",
+       "options": [
+        "\"",
+        "'",
+        "\u0000"
+       ],
+       "hint": "Character used to quote the CSV cell values. This is useful for application that use Single quote instead of the default Double quote"
+      },
+      {
+       "name": "skip_first_line",
+       "type": "boolean",
+       "label": "Contains header line?",
+       "control_type": "checkbox",
+       "required": true,
+       "visible_if": "input.auto_mapping == \"false\"",
+       "default": "true",
+       "toggle_field": {
+        "name": "skip_first_line",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if your CSV file contents has a header line, No otherwise."
+      },
+      {
+       "name": "csv_columns",
+       "type": "string",
+       "label": "Column names",
+       "control_type": "schema-designer",
+       "required": true,
+       "extends_schema": true
+      }
+     ],
+     "hint": "Describe your CSV file and column names"
+    },
+    {
+     "name": "auto_mapping",
+     "type": "boolean",
+     "label": "Use CSV column names as Salesforce field names",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "auto_mapping",
+      "type": "boolean"
+     },
+     "hint": "Select Yes to map CSV columns to Salesforce object fields automatically. The CSV file should have a header line with column names matching the object fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "insert_bulk_job_v1",
+   "title": "Create records in bulk from CSV file (API 1.0)",
+   "description": "Create records in bulk in Salesforce from CSV file",
+   "help": "This action will create records in Salesforce using the Salesforce bulk API 1.0. This action requires a CSV file as input. User will need to describe schema for CSV file. If the CSV file is greater than 20MB (Salesforce bulk job limit), this action will automatically create multiple Salesforce bulk …",
+   "input": [
+    {
+     "name": "csv_data",
+     "type": "object",
+     "label": "CSV file input",
+     "required": true,
+     "properties": [
+      {
+       "name": "csv",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true,
+       "hint": "CSV file contents used to bulk upload records in Salesforce"
+      },
+      {
+       "name": "col_sep",
+       "type": "string",
+       "label": "Column separator",
+       "control_type": "select",
+       "required": true,
+       "default": "comma",
+       "options": [
+        "comma"
+       ],
+       "hint": "Delimiter for file contents"
+      },
+      {
+       "name": "row_sep",
+       "type": "string",
+       "label": "Row separator",
+       "control_type": "select",
+       "options": [
+        "Auto",
+        "CRLF",
+        "LF"
+       ],
+       "hint": "Delimiter for rows. Default value is Auto"
+      },
+      {
+       "name": "quote_char",
+       "type": "string",
+       "label": "Quote character",
+       "control_type": "select",
+       "options": [
+        "\"",
+        "'",
+        "\u0000"
+       ],
+       "hint": "Character used to quote the CSV cell values. This is useful for application that use Single quote instead of the default Double quote"
+      },
+      {
+       "name": "skip_first_line",
+       "type": "boolean",
+       "label": "Contains header line?",
+       "control_type": "checkbox",
+       "required": true,
+       "default": "true",
+       "toggle_field": {
+        "name": "skip_first_line",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if your CSV file contents has a header line, No otherwise."
+      },
+      {
+       "name": "csv_columns",
+       "type": "string",
+       "label": "Column names",
+       "control_type": "schema-designer",
+       "required": true,
+       "extends_schema": true
+      }
+     ],
+     "hint": "Describe your CSV file and column names"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Salesforce object to create",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "createable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to bulk create e.g. lead."
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id_precisely_naming",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the bulk create. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_data_category_groups",
+   "title": "List data category groups",
+   "description": "Retrieve all data category groups in Salesforce",
+   "input": [
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "result",
+     "type": "array",
+     "label": "Result",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "fullName",
+       "type": "string",
+       "label": "Full name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdById",
+       "type": "string",
+       "label": "Created by ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdDate",
+       "type": "date_time",
+       "label": "Created date",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "createdByName",
+       "type": "string",
+       "label": "Created by name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fileName",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastModifiedById",
+       "type": "string",
+       "label": "Last modified by ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastModifiedDate",
+       "type": "date_time",
+       "label": "Last modified date",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "lastModifiedByName",
+       "type": "string",
+       "label": "Last modified by name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "read_data_category_group",
+   "title": "Retrieve data category group hierarchy",
+   "description": "Retrieve data category group hierarchy in Salesforce",
+   "input": [
+    {
+     "name": "full_names",
+     "type": "array",
+     "label": "Full names",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Full name",
+       "control_type": "text",
+       "required": true,
+       "hint": "Full name of the data category group to retrieve"
+      }
+     ]
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "result",
+     "type": "array",
+     "label": "Result",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "fullName",
+       "type": "string",
+       "label": "Full name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "active",
+       "type": "boolean",
+       "label": "Active?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "active",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "dataCategory",
+       "type": "array",
+       "label": "Data categories",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "label",
+         "type": "string",
+         "label": "Label",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "dataCategory",
+         "type": "array",
+         "label": "Child data categories",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "name",
+           "type": "string",
+           "label": "Name",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "label",
+           "type": "string",
+           "label": "Label",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "dataCategory",
+           "type": "array",
+           "label": "Child data categories",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "name",
+             "type": "string",
+             "label": "Name",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "label",
+             "type": "string",
+             "label": "Label",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "dataCategory",
+             "type": "array",
+             "label": "Child data categories",
+             "required": true,
+             "of": "object",
+             "properties": [
+              {
+               "name": "name",
+               "type": "string",
+               "label": "Name",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "label",
+               "type": "string",
+               "label": "Label",
+               "control_type": "text",
+               "required": true
+              },
+              {
+               "name": "dataCategory",
+               "type": "array",
+               "label": "Child data categories",
+               "required": true,
+               "of": "object",
+               "properties": [
+                {
+                 "name": "name",
+                 "type": "string",
+                 "label": "Name",
+                 "control_type": "text",
+                 "required": true
+                },
+                {
+                 "name": "label",
+                 "type": "string",
+                 "label": "Label",
+                 "control_type": "text",
+                 "required": true
+                },
+                {
+                 "name": "dataCategory",
+                 "type": "array",
+                 "label": "Child data categories",
+                 "required": true,
+                 "of": "object",
+                 "properties": [
+                  {
+                   "name": "name",
+                   "type": "string",
+                   "label": "Name",
+                   "control_type": "text",
+                   "required": true
+                  },
+                  {
+                   "name": "label",
+                   "type": "string",
+                   "label": "Label",
+                   "control_type": "text",
+                   "required": true
+                  }
+                 ]
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reject_process",
+   "title": "Reject record in approval process",
+   "description": "Reject a record in approval process in Salesforce",
+   "help": "Reject a record in an approval workflow. This action rejects the record and triggers all rejection steps defined in the approval process.",
+   "input": [
+    {
+     "name": "TargetObjectId",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "workitemId",
+      "type": "string"
+     },
+     "hint": "Pass in the Salesforce record ID to reject"
+    },
+    {
+     "name": "processDefinitionNameOrId",
+     "type": "string",
+     "label": "Approval process",
+     "control_type": "select",
+     "visible_if": "!!input.TargetObjectId",
+     "pick_list": "get_all_process_definition",
+     "toggle_field": {
+      "name": "processDefinitionNameOrId",
+      "type": "string"
+     },
+     "hint": "Select the approval process definition name"
+    },
+    {
+     "name": "comments",
+     "type": "string",
+     "label": "Comments",
+     "control_type": "text-area",
+     "hint": "Comments to include with the rejection"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "entityId",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "instanceStatus",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "newWorkitemId",
+     "type": "string",
+     "label": "Approval request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "errors",
+     "type": "array",
+     "label": "Errors",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "error",
+       "type": "string",
+       "label": "Error",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "retry_bulk_jobs",
+   "title": "Retry bulk job for failed records from CSV file",
+   "description": "Retry records bulk job in Salesforce from CSV file",
+   "help": "Action must be used after a Salesforce bulk action, e.g. Upsert records in bulk from CSV file , which is also synchronous i.e. waits for Salesforce to process all CSV rows. This action takes the specific output CSV contents with failed records from the Salesforce bulk action and resubmit these faile…",
+   "input": [
+    {
+     "name": "csv",
+     "type": "string",
+     "label": "CSV contents with failed records",
+     "control_type": "text",
+     "required": true,
+     "hint": "Input must be CSV contents with failed records from the original bulk job"
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "string",
+     "label": "All records successfully processed?",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberRecordsSucceeded",
+     "type": "integer",
+     "label": "Number of records succeeded",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberRecordsFailed",
+     "type": "string",
+     "label": "Number of records failed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "retryCount",
+     "type": "string",
+     "label": "Number of retried records",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberRecordsProcessed",
+     "type": "string",
+     "label": "Number of records processed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "job_info",
+     "type": "string",
+     "label": "CSV contents with failed records",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "success_rows",
+     "type": "string",
+     "label": "CSV content with success records",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "job_info_header",
+     "type": "string",
+     "label": "Failed records report header",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "success_rows_header",
+     "type": "string",
+     "label": "Success records report header",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "jobs",
+     "type": "array",
+     "label": "Salesforce bulk jobs",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "success",
+       "type": "string",
+       "label": "Records in job successfully processed?",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Job ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "numberRecordsSucceeded",
+       "type": "integer",
+       "label": "Number of records succeeded",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "numberRecordsFailed",
+       "type": "string",
+       "label": "Number of records failed",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "numberRecordsProcessed",
+       "type": "string",
+       "label": "Number of records processed",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "errorMessage",
+       "type": "string",
+       "label": "Error message",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "revoke_user_sessions",
+   "title": "Revoke user sessions",
+   "description": "Revoke user sessions in Salesforce",
+   "help": "Deletes AuthSession records for the user, up to 200 per run. Run again to revoke remaining sessions.",
+   "input": [
+    {
+     "name": "user_id",
+     "type": "string",
+     "label": "User ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Salesforce User ID (15 or 18 characters)."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "revoked",
+     "type": "integer",
+     "label": "Revoked",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "revoked_session_ids",
+     "type": "array",
+     "label": "Revoked session ids",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "failed_sessions",
+     "type": "array",
+     "label": "Failed sessions",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "errors",
+       "type": "array",
+       "label": "Errors",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "statusCode",
+         "type": "string",
+         "label": "Status code",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "message",
+         "type": "string",
+         "label": "Message",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "failed",
+     "type": "integer",
+     "label": "Failed",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "remaining",
+     "type": "integer",
+     "label": "Remaining",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_sobjects",
+   "title": "Search records",
+   "description": "Search for records in Salesforce",
+   "help": "The Search records action returns results that match all your search criteria. The number of returned records defaults to a limit of 150 and can be increased to a maximum of 2000 records. The action may fail due to a timeout if you only search by unindexed fields in Salesforce. Use the Search record…",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Search for",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select the Salesforce object to search for, then specify at least one field to match"
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 150,
+     "hint": "Enter the number of records to be returned with the matching search criteria. Maximum supported limit is 2000. Note: Salesforce might return less records than the limit specified."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_sobjects_soql",
+   "title": "Search records using SOQL query WHERE clause",
+   "description": "Search records using SOQL query WHERE clause in Salesforce",
+   "help": "Search for records in Salesforce with a SOQL query WHERE clause. The number of returned records defaults to a limit of 150 and can be increased to a maximum of 2000 records.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Search for",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select the Salesforce object to search for"
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "required": true,
+     "hint": "SOQL query to filter the records you want, i.e. StageName = 'Closed Lost' AND IsClosed = false."
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "pick_list": "sobject_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related objects. Then, select the fields you want to use in the recipe via the Fields input field."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Improve recipe performance by selecting only the fields that are relevant to the recipe. All selected object fields are returned in the data tree if left blank."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 150,
+     "hint": "Enter the number of records to be returned with the matching search criteria. Maximum supported limit is 2000. Note: Salesforce might return less records than the limit specified."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Skip the defined number of rows before starting to return results from the query. The maximum offset is 2,000 rows."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_sobjects_soql_bulk_csv",
+   "title": "Search records in bulk using SOQL query (API 1.0)",
+   "description": "Search records in bulk using SOQL query (API 1.0) in Salesforce",
+   "help": "Search for records in Salesforce with a SOQL query. This action uses V1.0 of the Salesforce Bulk API V1 . Search results are returned in full as a CSV stream. You can write the CSV stream to a file using a file connector, e.g. Box, SFTP. You can also parse it to use as a list of data in Workato usin…",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Search for",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "custom_object_name",
+      "type": "string"
+     },
+     "hint": "Select the Salesforce object to search for or toggle to enter the object name (eg. Status__c)."
+    },
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL WHERE clause",
+     "control_type": "code",
+     "hint": "SOQL query to filter the records you want, e.g. StageName = 'Closed Lost' AND IsClosed = false."
+    },
+    {
+     "name": "include_deleted_records",
+     "type": "boolean",
+     "label": "Include deleted records?",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "Select 'Yes' to include deleted records in the results. Defaults to 'No' ."
+    },
+    {
+     "name": "include_header",
+     "type": "boolean",
+     "label": "Include header line?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "hint": "Select Yes to include header line in the CSV results , No otherwise."
+    },
+    {
+     "name": "custom_select_clause",
+     "type": "boolean",
+     "label": "Enter custom SELECT clause?",
+     "control_type": "checkbox",
+     "visible_if": "!input.custom_object_name",
+     "default": "false",
+     "hint": "If No , select the objects & fields from the picklists below. If Yes , enter the field names yourself."
+    },
+    {
+     "name": "table_list",
+     "type": "string",
+     "label": "Related objects",
+     "control_type": "multiselect",
+     "visible_if": "input.custom_select_clause == \"false\" && !input.custom_object_name",
+     "pick_list": "sobject_parent_table_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table_list_custom",
+      "type": "string"
+     },
+     "hint": "Select related join objects. Then, select the fields you're interested in using in the recipe via the Fields input field."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Fields",
+     "control_type": "text",
+     "visible_if": "input.custom_select_clause == \"true\" || input.custom_object_name",
+     "hint": "Enter the fields you wish Salesforce to return in your query's CSV results . The fields should be separated by comma. E.g. LastName,Id,Account.Name,Account.Owner.Name Please enter only field names and…"
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Fields",
+     "control_type": "multiselect",
+     "visible_if": "input.custom_select_clause == \"false\" && !input.custom_object_name",
+     "pick_list": "sobject_field_list",
+     "extends_schema": true,
+     "hint": "Select the fields you wish Salesforce to return in your query's CSV results . All fields will be returned if left blank."
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "string",
+     "label": "Job ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "success",
+     "type": "string",
+     "label": "All records successfully processed?",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "results",
+     "type": "string",
+     "label": "CSV results",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberRecordsProcessed",
+     "type": "integer",
+     "label": "Number of records processed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "numberRecordsFailed",
+     "type": "integer",
+     "label": "Number of records failed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "retryCount",
+     "type": "integer",
+     "label": "Number of retried records",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "numberBatchesTotal",
+     "type": "integer",
+     "label": "Number of batches",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "totalProcessingTime",
+     "type": "string",
+     "label": "Processing time",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "errorMessage",
+     "type": "string",
+     "label": "Error message",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "batches",
+     "type": "array",
+     "label": "Batches",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Batch ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdDate",
+       "type": "date_time",
+       "label": "Created date",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "numberRecordsProcessed",
+       "type": "integer",
+       "label": "Number of records processed",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "numberRecordsFailed",
+       "type": "integer",
+       "label": "Number of records failed",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "stateMessage",
+       "type": "string",
+       "label": "State message",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_sobjects_soql_bulk_csv_v2",
+   "title": "Search records in bulk using SOQL query (API 2.0)",
+   "description": "Search records in bulk using SOQL query (API 2.0) in Salesforce",
+   "help": "Search for records in Salesforce with a SOQL query. This action uses V2.0 of the Salesforce Bulk API V2 . Search results are returned in full as a CSV stream. You can write the CSV stream to a file using a file connector, e.g. Box, SFTP. You can also parse it to use as a list of data in Workato usin…",
+   "input": [
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL query",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SOQL query excluding LIMIT param to be executed here. If using logical operators, enclose clauses with parentheses"
+    },
+    {
+     "name": "include_deleted_records",
+     "type": "boolean",
+     "label": "Include deleted records?",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "Select 'Yes' to include deleted records in the results. Defaults to 'No' ."
+    },
+    {
+     "name": "include_header",
+     "type": "boolean",
+     "label": "Include header line?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "hint": "Select Yes to include header line in the CSV results , No otherwise."
+    },
+    {
+     "name": "skip_delete_failed_job",
+     "type": "boolean",
+     "label": "Retain failed job logs on Salesforce interface?",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "Select 'Yes' to persist failed job logs on Salesforce interface. Defaults to 'No' ."
+    },
+    {
+     "name": "wait_for_job_completion",
+     "type": "boolean",
+     "label": "Wait for job completion?",
+     "control_type": "checkbox",
+     "default": "true",
+     "hint": "Select 'Yes' to wait for job completion. Defaults to 'Yes' ."
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "string",
+     "label": "Job ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "success",
+     "type": "string",
+     "label": "All records successfully processed?",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "results",
+     "type": "string",
+     "label": "CSV results",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "numberRecordsProcessed",
+     "type": "integer",
+     "label": "Number of records processed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "numberRecordsFailed",
+     "type": "integer",
+     "label": "Number of records failed",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "retryCount",
+     "type": "integer",
+     "label": "Number of retried records",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "totalProcessingTime",
+     "type": "string",
+     "label": "Processing time",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_sobjects_soql_v2",
+   "title": "Search records using SOQL query",
+   "description": "Search for records using SOQL query in Salesforce",
+   "help": "Search for records in Salesforce with a SOQL query. The number of returned records defaults to a limit of 150 and can be increased to a maximum of 2000 records. Maximum length of the SOQL query is 16,000 characters .",
+   "input": [
+    {
+     "name": "query",
+     "type": "string",
+     "label": "SOQL query",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SOQL query excluding LIMIT param to be executed here. If using logical operators, enclose clauses with parentheses. Note that the returned records include deleted records by default. U…"
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output schema",
+     "control_type": "schema-designer",
+     "required": true,
+     "extends_schema": true
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 150,
+     "hint": "Enter the number of records to be returned with the matching search criteria. Maximum supported limit is 2000. We omit the limit clause when aggregate functions are used. Note: Salesforce might return…"
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Skip the defined number of rows before starting to return results from the query. The maximum offset is 2,000 rows."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "submit_process",
+   "title": "Submit record for approval",
+   "description": "Submit a record for approval in Salesforce",
+   "help": "Submit a record in an approval workflow. This action does the equivalent of clicking on the ‘Submit for approval’ button on a Salesforce record. Doing this via a Workato recipe automates this manual click. Learn about approval workflows",
+   "input": [
+    {
+     "name": "processDefinitionNameOrId",
+     "type": "string",
+     "label": "Approval process",
+     "control_type": "select",
+     "pick_list": "get_all_process_definition",
+     "toggle_field": {
+      "name": "processDefinitionNameOrId",
+      "type": "string"
+     },
+     "hint": "Select the approval process definition name"
+    },
+    {
+     "name": "contextId",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the record submitted for approval"
+    },
+    {
+     "name": "nextApproverIds",
+     "type": "string",
+     "label": "Approver ID",
+     "control_type": "text",
+     "hint": "Required if process is not auto-approved"
+    },
+    {
+     "name": "contextActorId",
+     "type": "string",
+     "label": "Submitter ID",
+     "control_type": "text"
+    },
+    {
+     "name": "comments",
+     "type": "string",
+     "label": "Comments",
+     "control_type": "text-area",
+     "hint": "Comments to include with the submission"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "entityId",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "instanceStatus",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "newWorkitemId",
+     "type": "string",
+     "label": "Approval request ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "errors",
+     "type": "array",
+     "label": "Errors",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "error",
+       "type": "string",
+       "label": "Error",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_bulk_job",
+   "title": "Update records in bulk from CSV file",
+   "description": "Update records in bulk in Salesforce from CSV file",
+   "help": "This action will update records in Salesforce using the Salesforce bulk API. This action requires a CSV file as input. User will need to describe schema for CSV file. The CSV file should contain the Salesforce IDs for the records to be updated. If the CSV file is greater than 100MB (Salesforce bulk …",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Salesforce object to update",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "updateable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to bulk update e.g. lead."
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id_precisely_naming",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the bulk update. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    },
+    {
+     "name": "csv_data",
+     "type": "object",
+     "label": "CSV file input",
+     "required": true,
+     "properties": [
+      {
+       "name": "csv",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true,
+       "hint": "CSV file contents used to bulk upload records in Salesforce"
+      },
+      {
+       "name": "col_sep",
+       "type": "string",
+       "label": "Column separator",
+       "control_type": "select",
+       "required": true,
+       "default": "comma",
+       "options": [
+        "comma",
+        "tab",
+        "semicolon",
+        "pipe"
+       ],
+       "hint": "Delimiter for file contents"
+      },
+      {
+       "name": "row_sep",
+       "type": "string",
+       "label": "Row separator",
+       "control_type": "select",
+       "options": [
+        "Auto",
+        "CRLF",
+        "LF"
+       ],
+       "hint": "Delimiter for rows. Default value is Auto"
+      },
+      {
+       "name": "quote_char",
+       "type": "string",
+       "label": "Quote character",
+       "control_type": "select",
+       "options": [
+        "\"",
+        "'",
+        "\u0000"
+       ],
+       "hint": "Character used to quote the CSV cell values. This is useful for application that use Single quote instead of the default Double quote"
+      },
+      {
+       "name": "skip_first_line",
+       "type": "boolean",
+       "label": "Contains header line?",
+       "control_type": "checkbox",
+       "required": true,
+       "visible_if": "input.auto_mapping == \"false\"",
+       "default": "true",
+       "toggle_field": {
+        "name": "skip_first_line",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if your CSV file contents has a header line, No otherwise."
+      },
+      {
+       "name": "csv_columns",
+       "type": "string",
+       "label": "Column names",
+       "control_type": "schema-designer",
+       "required": true,
+       "extends_schema": true
+      }
+     ],
+     "hint": "Describe your CSV file and column names"
+    },
+    {
+     "name": "auto_mapping",
+     "type": "boolean",
+     "label": "Use CSV column names as Salesforce field names",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "auto_mapping",
+      "type": "boolean"
+     },
+     "hint": "Select Yes to map CSV columns to Salesforce object fields automatically. The CSV file should have a header line with column names matching the object fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_bulk_job_v1",
+   "title": "Update records in bulk from CSV file (API 1.0)",
+   "description": "Update records in bulk in Salesforce from CSV file",
+   "help": "This action will update records in Salesforce using the Salesforce bulk API 1.0. This action requires a CSV file as input. User will need to describe schema for CSV file. The CSV file should contain the Salesforce IDs for the records to be updated. If the CSV file is greater than 20MB (Salesforce bu…",
+   "input": [
+    {
+     "name": "csv_data",
+     "type": "object",
+     "label": "CSV file input",
+     "required": true,
+     "properties": [
+      {
+       "name": "csv",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true,
+       "hint": "CSV file contents used to bulk upload records in Salesforce"
+      },
+      {
+       "name": "col_sep",
+       "type": "string",
+       "label": "Column separator",
+       "control_type": "select",
+       "required": true,
+       "default": "comma",
+       "options": [
+        "comma"
+       ],
+       "hint": "Delimiter for file contents"
+      },
+      {
+       "name": "row_sep",
+       "type": "string",
+       "label": "Row separator",
+       "control_type": "select",
+       "options": [
+        "Auto",
+        "CRLF",
+        "LF"
+       ],
+       "hint": "Delimiter for rows. Default value is Auto"
+      },
+      {
+       "name": "quote_char",
+       "type": "string",
+       "label": "Quote character",
+       "control_type": "select",
+       "options": [
+        "\"",
+        "'",
+        "\u0000"
+       ],
+       "hint": "Character used to quote the CSV cell values. This is useful for application that use Single quote instead of the default Double quote"
+      },
+      {
+       "name": "skip_first_line",
+       "type": "boolean",
+       "label": "Contains header line?",
+       "control_type": "checkbox",
+       "required": true,
+       "default": "true",
+       "toggle_field": {
+        "name": "skip_first_line",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if your CSV file contents has a header line, No otherwise."
+      },
+      {
+       "name": "csv_columns",
+       "type": "string",
+       "label": "Column names",
+       "control_type": "schema-designer",
+       "required": true,
+       "extends_schema": true
+      }
+     ],
+     "hint": "Describe your CSV file and column names"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Salesforce object to update",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "updateable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to bulk update e.g. lead."
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id_precisely_naming",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the bulk update. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_sobject",
+   "title": "Update record",
+   "description": "Update record in Salesforce",
+   "help": "Update any standard or custom record, e.g. lead, via its Salesforce ID. First select the object, then specify the Salesforce ID of the record to update.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object, e.g. lead"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upload_file_content",
+   "title": "Upload file",
+   "description": "Upload file to Salesforce",
+   "input": [
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "file_url",
+      "type": "string"
+     },
+     "hint": "Binary file contents to be uploaded. If File contents is provided, either File name or Title must be specified."
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "hint": "Should include an extension, e.g. New file.csv"
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "hint": "If not provided, File name will be set as title. Should include an extension, e.g. New file.csv"
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "contentHubRepository",
+     "type": "string",
+     "label": "Content hub repository",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "moderationFlags",
+     "type": "string",
+     "label": "Moderation flags",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "motif",
+     "type": "object",
+     "label": "Motif",
+     "required": true,
+     "properties": [
+      {
+       "name": "color",
+       "type": "string",
+       "label": "Color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "largeIconUrl",
+       "type": "string",
+       "label": "Large icon URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mediumIconUrl",
+       "type": "string",
+       "label": "Medium icon URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "smallIconUrl",
+       "type": "string",
+       "label": "Small icon URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "svgIconUrl",
+       "type": "string",
+       "label": "Svg icon URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "topics",
+     "type": "object",
+     "label": "Topics",
+     "required": true,
+     "properties": [
+      {
+       "name": "currentPageUrl",
+       "type": "string",
+       "label": "Current page URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "nextPageUrl",
+       "type": "string",
+       "label": "Next page URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "topics",
+       "type": "string",
+       "label": "Topics",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "checksum",
+     "type": "string",
+     "label": "Checksum",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "contentModifiedDate",
+     "type": "date_time",
+     "label": "Content modified date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "contentSize",
+     "type": "number",
+     "label": "Content size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "contentUrl",
+     "type": "string",
+     "label": "Content URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text-area",
+     "required": true
+    },
+    {
+     "name": "downloadUrl",
+     "type": "string",
+     "label": "Download URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "externalDocumentUrl",
+     "type": "string",
+     "label": "External document URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "externalFilePermissionInformation",
+     "type": "string",
+     "label": "External file permission information",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fileAsset",
+     "type": "string",
+     "label": "File asset",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fileExtension",
+     "type": "string",
+     "label": "File extension",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fileType",
+     "type": "string",
+     "label": "File type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "flashRenditionStatus",
+     "type": "string",
+     "label": "Flash rendition status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isInMyFileSync",
+     "type": "boolean",
+     "label": "Is in my file sync",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isInMyFileSync",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "isMajorVersion",
+     "type": "boolean",
+     "label": "Is major version",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isMajorVersion",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "mimeType",
+     "type": "string",
+     "label": "Mime type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedDate",
+     "type": "date_time",
+     "label": "Modified date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "mySubscription",
+     "type": "string",
+     "label": "My subscription",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "origin",
+     "type": "string",
+     "label": "Origin",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "required": true,
+     "properties": [
+      {
+       "name": "additionalLabel",
+       "type": "string",
+       "label": "Additional label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "communityNickname",
+       "type": "string",
+       "label": "Community nickname",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "companyName",
+       "type": "string",
+       "label": "Company name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "firstName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isActive",
+       "type": "boolean",
+       "label": "Is active",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "isActive",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "isInThisCommunity",
+       "type": "boolean",
+       "label": "Is in this community",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "isInThisCommunity",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "lastName",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "motif",
+       "type": "object",
+       "label": "Motif",
+       "required": true,
+       "properties": [
+        {
+         "name": "color",
+         "type": "string",
+         "label": "Color",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "largeIconUrl",
+         "type": "string",
+         "label": "Large icon URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "mediumIconUrl",
+         "type": "string",
+         "label": "Medium icon URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "smallIconUrl",
+         "type": "string",
+         "label": "Small icon URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "svgIconUrl",
+         "type": "string",
+         "label": "Svg icon URL",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "mySubscription",
+       "type": "string",
+       "label": "My subscription",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "outOfOffice",
+       "type": "object",
+       "label": "Out of office",
+       "required": true,
+       "properties": [
+        {
+         "name": "message",
+         "type": "string",
+         "label": "Message",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "photo",
+       "type": "object",
+       "label": "Photo",
+       "required": true,
+       "properties": [
+        {
+         "name": "fullEmailPhotoUrl",
+         "type": "string",
+         "label": "Full email photo URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "largePhotoUrl",
+         "type": "string",
+         "label": "Large photo URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "mediumPhotoUrl",
+         "type": "string",
+         "label": "Medium photo URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "smallPhotoUrl",
+         "type": "string",
+         "label": "Small photo URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "photoVersionId",
+         "type": "string",
+         "label": "Photo version ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "standardEmailPhotoUrl",
+         "type": "string",
+         "label": "Standard email photo URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "url",
+         "type": "string",
+         "label": "URL",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "reputation",
+       "type": "string",
+       "label": "Reputation",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "stamps",
+       "type": "string",
+       "label": "Stamps",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "userType",
+       "type": "string",
+       "label": "User type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "pageCount",
+     "type": "number",
+     "label": "Page count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "parentFolder",
+     "type": "object",
+     "label": "Parent folder",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "pdfRenditionStatus",
+     "type": "string",
+     "label": "Pdf rendition status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "publishStatus",
+     "type": "string",
+     "label": "Publish status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "renditionUrl",
+     "type": "string",
+     "label": "Rendition URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "renditionUrl240By180",
+     "type": "string",
+     "label": "Rendition URL 240 by 180",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "renditionUrl720By480",
+     "type": "string",
+     "label": "Rendition URL 720 by 480",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "repositoryFileId",
+     "type": "string",
+     "label": "Repository file ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "repositoryFileUrl",
+     "type": "string",
+     "label": "Repository file URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sharingOption",
+     "type": "string",
+     "label": "Sharing option",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "sharingRole",
+     "type": "string",
+     "label": "Sharing role",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "textPreview",
+     "type": "string",
+     "label": "Text preview",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "thumb120By90RenditionStatus",
+     "type": "string",
+     "label": "Thumb 120 by 90 rendition status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "thumb240By180RenditionStatus",
+     "type": "string",
+     "label": "Thumb 240 by 180 rendition status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "thumb720By480RenditionStatus",
+     "type": "string",
+     "label": "Thumb 720 by 480 rendition status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "versionNumber",
+     "type": "string",
+     "label": "Version number",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upsert_bulk_job",
+   "title": "Upsert records in bulk from CSV file",
+   "description": "Upsert records in bulk in Salesforce from CSV file",
+   "help": "This action will upsert records in Salesforce using the Salesforce bulk API. This action requires a CSV file as input. User will need to describe schema for CSV file. The primary key used for upsert can be an indexed field (eg. Record ID) or an external ID . If the CSV file is greater than 100MB (Sa…",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Salesforce object to upsert",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "upsertable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to bulk upsert e.g. lead. Object should have an external ID ."
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id_precisely_naming",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the bulk upsert. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Primary key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "external_fields_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "key",
+      "type": "string"
+     },
+     "hint": "Select an external ID or toggle to type in an indexed field (eg. Record ID). Learn more"
+    },
+    {
+     "name": "csv_data",
+     "type": "object",
+     "label": "CSV file input",
+     "required": true,
+     "properties": [
+      {
+       "name": "csv",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true,
+       "hint": "CSV file contents used to bulk upload records in Salesforce"
+      },
+      {
+       "name": "col_sep",
+       "type": "string",
+       "label": "Column separator",
+       "control_type": "select",
+       "required": true,
+       "default": "comma",
+       "options": [
+        "comma",
+        "tab",
+        "semicolon",
+        "pipe"
+       ],
+       "hint": "Delimiter for file contents"
+      },
+      {
+       "name": "row_sep",
+       "type": "string",
+       "label": "Row separator",
+       "control_type": "select",
+       "options": [
+        "Auto",
+        "CRLF",
+        "LF"
+       ],
+       "hint": "Delimiter for rows. Default value is Auto"
+      },
+      {
+       "name": "quote_char",
+       "type": "string",
+       "label": "Quote character",
+       "control_type": "select",
+       "options": [
+        "\"",
+        "'",
+        "\u0000"
+       ],
+       "hint": "Character used to quote the CSV cell values. This is useful for application that use Single quote instead of the default Double quote"
+      },
+      {
+       "name": "skip_first_line",
+       "type": "boolean",
+       "label": "Contains header line?",
+       "control_type": "checkbox",
+       "required": true,
+       "visible_if": "input.auto_mapping == \"false\"",
+       "default": "true",
+       "toggle_field": {
+        "name": "skip_first_line",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if your CSV file contents has a header line, No otherwise."
+      },
+      {
+       "name": "csv_columns",
+       "type": "string",
+       "label": "Column names",
+       "control_type": "schema-designer",
+       "required": true,
+       "extends_schema": true
+      }
+     ],
+     "hint": "Describe your CSV file and column names"
+    },
+    {
+     "name": "auto_mapping",
+     "type": "boolean",
+     "label": "Use CSV column names as Salesforce field names",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "auto_mapping",
+      "type": "boolean"
+     },
+     "hint": "Select Yes to map CSV columns to Salesforce object fields automatically. The CSV file should have a header line with column names matching the object fields."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upsert_bulk_job_v1",
+   "title": "Upsert records in bulk from CSV file (API 1.0)",
+   "description": "Upsert records in bulk in Salesforce from CSV file",
+   "help": "This action will upsert records in Salesforce using the Salesforce bulk API 1.0. This action requires a CSV file as input. User will need to describe schema for CSV file. The primary key used for upsert can be an indexed field (eg. Record ID) or an external ID . If the CSV file is greater than 20MB …",
+   "input": [
+    {
+     "name": "csv_data",
+     "type": "object",
+     "label": "CSV file input",
+     "required": true,
+     "properties": [
+      {
+       "name": "csv",
+       "type": "string",
+       "label": "File contents",
+       "control_type": "text",
+       "required": true,
+       "hint": "CSV file contents used to bulk upload records in Salesforce"
+      },
+      {
+       "name": "col_sep",
+       "type": "string",
+       "label": "Column separator",
+       "control_type": "select",
+       "required": true,
+       "default": "comma",
+       "options": [
+        "comma"
+       ],
+       "hint": "Delimiter for file contents"
+      },
+      {
+       "name": "row_sep",
+       "type": "string",
+       "label": "Row separator",
+       "control_type": "select",
+       "options": [
+        "Auto",
+        "CRLF",
+        "LF"
+       ],
+       "hint": "Delimiter for rows. Default value is Auto"
+      },
+      {
+       "name": "quote_char",
+       "type": "string",
+       "label": "Quote character",
+       "control_type": "select",
+       "options": [
+        "\"",
+        "'",
+        "\u0000"
+       ],
+       "hint": "Character used to quote the CSV cell values. This is useful for application that use Single quote instead of the default Double quote"
+      },
+      {
+       "name": "skip_first_line",
+       "type": "boolean",
+       "label": "Contains header line?",
+       "control_type": "checkbox",
+       "required": true,
+       "default": "true",
+       "toggle_field": {
+        "name": "skip_first_line",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if your CSV file contents has a header line, No otherwise."
+      },
+      {
+       "name": "csv_columns",
+       "type": "string",
+       "label": "Column names",
+       "control_type": "schema-designer",
+       "required": true,
+       "extends_schema": true
+      }
+     ],
+     "hint": "Describe your CSV file and column names"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Salesforce object to upsert",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "upsertable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Salesforce object to bulk upsert e.g. lead. Object should have an external ID ."
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id_precisely_naming",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the bulk upsert. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Primary key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "external_fields_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "key",
+      "type": "string"
+     },
+     "hint": "Select an external ID or toggle to type in an indexed field (eg. Record ID). Learn more"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upsert_composite_sobject",
+   "title": "Upsert records in batches",
+   "description": "Upsert records in batches in Salesforce",
+   "help": "This action will upsert upto 2,000 records in a single job synchronously. It automatically sends a maximum of 10 batches of 200 records each. Provide a list of records as the input.",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "upsertable_sobjects",
+     "extends_schema": true,
+     "hint": "Select any standard Salesforce object, e.g. Contact , to create or update."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 200,
+     "hint": "Number of records to be processed in a batch. Minimum is 1, maximum is 200 and default is 200 ."
+    },
+    {
+     "name": "key",
+     "type": "string",
+     "label": "Primary key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "external_fields_list",
+     "extends_schema": true,
+     "hint": "Select an external unique identifier to upsert your record"
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the upsert. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upsert_sobject",
+   "title": "Upsert record",
+   "description": "Upsert record in Salesforce",
+   "help": "This action first searches for the record in Salesforce by a specified field (primary key). If found, it will update it with the data being provided to the action. If not found, it is created with the field values provided to the action. Learn how to use this action",
+   "input": [
+    {
+     "name": "sobject_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "all_sobjects",
+     "hint": "Select any standard or custom Salesforce object, e.g. lead, to create or update"
+    },
+    {
+     "name": "query_field",
+     "type": "object",
+     "label": "Query field",
+     "required": true,
+     "extends_schema": true,
+     "properties": [
+      {
+       "name": "primary_key",
+       "type": "string",
+       "label": "Primary key",
+       "control_type": "multiselect",
+       "required": true,
+       "pick_list": "upsert_sobject_fields",
+       "extends_schema": true,
+       "hint": "Select field to search for record by. This field should uniquely identify records, e.g. Salesforce 15 or 18 characters ID. If record is found, it is updated. If record isn't found, it is created."
+      }
+     ]
+    },
+    {
+     "name": "relationship_fields",
+     "type": "string",
+     "label": "Relationship fields",
+     "control_type": "multiselect",
+     "pick_list": "sobject_relationship_ext_id",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "relationship_fields",
+      "type": "string"
+     },
+     "hint": "List of relationship fields to include in the upsert. Note that this is also used to specify polymorphic fields . Learn more about relationship fields."
+    },
+    {
+     "name": "requester_email",
+     "type": "string",
+     "label": "On-behalf-of user email",
+     "control_type": "email",
+     "visible_if": "authUser.feature_flags.salesforce_jwt_on_behalf_user",
+     "hint": "Email of the Salesforce user to execute this action on behalf of. If not provided, uses the connection-level user. Note: This feature is only available for JWT connections. This field won't work with …"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

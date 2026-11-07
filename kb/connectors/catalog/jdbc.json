@@ -1,0 +1,659 @@
+{
+ "name": "jdbc",
+ "title": "JDBC",
+ "requires_connection": true,
+ "categories": [
+  "database"
+ ],
+ "aliases": [
+  "JDBC",
+  "db2",
+  "hadoop"
+ ],
+ "triggers": [
+  {
+   "name": "new_row",
+   "title": "New row",
+   "description": "New row in a table in JDBC source",
+   "help": "Triggers when a row is inserted in the selected table. Checks for new rows every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "primary_key",
+     "type": "string",
+     "label": "Unique key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Select a unique key column to deduplicate rows. Performance can be improved if the selected unique key is indexed."
+    },
+    {
+     "name": "output_columns",
+     "type": "string",
+     "label": "Output columns",
+     "control_type": "multiselect",
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Choose columns to be returned from the selected table. Leave blank to return all columns."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be processed, e.g. currency = 'USD' (enclose strings in single quotes)"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_rows_batch",
+   "title": "New rows",
+   "description": "New batch of rows in a table in JDBC source",
+   "help": "Triggers when rows are inserted in the selected table. These rows will be processed in batches. If less rows are available, trigger will deliver as a smaller batch. You can configure the batch size to be any number between 1 and 1000. Default batch size is 100.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_rows_sql_batch",
+   "title": "New rows via custom SQL",
+   "description": "New batch of rows via custom SQL in JDBC source",
+   "help": "Triggers when rows matching SQL query are inserted. These rows will be processed in batches. If less rows are available, trigger will deliver as a smaller batch. You can configure the batch size to be any number between 1 and 1000. Default batch size is 100. This trigger does not support SQL Server …",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Put your native SQL query here. Avoid using any restrictive clauses like TOP(N) or LIMIT N ."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to manually define the columns returned in your query. Only needed when queries take too long."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "scheduled_select",
+   "title": "Scheduled query",
+   "description": "Scheduled query using custom SQL in JDBC source",
+   "help": "Execute SQL query on specified schedule. Rows matching the SQL query will be processed in batches. If less rows are available, trigger will deliver as a smaller batch. You can configure the batch size to be any number between 1 and 1000. Default batch size is 100.",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide a valid SQL string to be executed on each scheduled time. Use meaningful column aliases. If an indexed unique key of query execution result is not provided you are required to have an ‘ORDER B…"
+    },
+    {
+     "name": "unique_key",
+     "type": "string",
+     "label": "Indexed unique key",
+     "control_type": "select",
+     "pick_list": "sql_columns_list",
+     "hint": "Provide an indexed unique key of query execution result to make execution more efficient. For queries that return more than 1000 rows, this is highly recommended to reduce load on your database"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Minimum is 1, maximum is 20000, default is 100"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Trigger on",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "interval",
+      "schedule"
+     ],
+     "extends_schema": true
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to manually define the columns returned in your query. Only needed when queries take too long."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_rows_sql_batch",
+   "title": "New/updated rows via custom SQL",
+   "description": "New/updated batch of rows via custom SQL in JDBC source",
+   "help": "Triggers when rows matching SQL query are inserted/updated. These rows will be processed in batches. If less rows are available, trigger will deliver as a smaller batch. You can configure the batch size to be any number between 1 and 1000. Default batch size is 100. This trigger does not support SQL…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Put your native SQL query here. Avoid using any restrictive clauses like TOP(N) or LIMIT N ."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to manually define the columns returned in your query. Only needed when queries take too long."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "export_csv_v2",
+   "title": "Export query result",
+   "description": "Export query result as a CSV file in JDBC source",
+   "help": "This action executes a SQL query and exports the result into a CSV file. This action is intended to write SQL(SELECT) queries.",
+   "input": [
+    {
+     "name": "_action_version",
+     "type": "string",
+     "label": "Action version",
+     "control_type": "text",
+     "visible_if": "false",
+     "default": "2"
+    },
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Export the results of this SQL (SELECT) query."
+    },
+    {
+     "name": "delimiter",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "comma",
+      "space",
+      "tab",
+      "colon",
+      "semicolon",
+      "pipe"
+     ],
+     "hint": "The delimiter character that separates each column in the CSV file. CSV files typically use comma ."
+    },
+    {
+     "name": "target_url",
+     "type": "string",
+     "label": "Upload URL",
+     "control_type": "text",
+     "visible_if": "input._action_version != '2'",
+     "hint": "Export the CSV file to this URL. Use the output of Generate on-prem file URL or an S3 presigned URL (with PUT method)."
+    }
+   ],
+   "output": [
+    {
+     "name": "row_count",
+     "type": "integer",
+     "label": "Number of rows exported",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "names",
+     "type": "array",
+     "label": "Column names",
+     "required": true,
+     "of": "string"
+    }
+   ]
+  },
+  {
+   "name": "insert_rows_batch",
+   "title": "Insert rows",
+   "description": "Insert batch of rows in a table in JDBC source",
+   "help": "Inserts a batch of rows in the selected table. Select the table, then provide data for the rows. Note: This action requires OPA version 31.0 or higher.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "return_pk",
+     "type": "boolean",
+     "label": "Return primary keys?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "return_pk",
+      "type": "boolean"
+     },
+     "hint": "Specify whether to return primary keys of inserted rows in the action output. Not returning primary keys can improve performance. Defaults to Yes ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "run_custom_sql",
+   "title": "Run custom SQL",
+   "description": "Run custom SQL in JDBC source",
+   "help": "Execute a SQL in JDBC source. Provide a valid SQL string and define the expected output fields. This action is intended for write SQL (INSERT and UPDATE) and DDL (CREATE, ALTER and DROP). Maximum number of rows returned in this action is 50000. For SELECT queries, you may use Select rows using custo…",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SQL string to be executed here. Use bind variables, e.g. id = :id , and the parameter field to parameterize inputs."
+    },
+    {
+     "name": "update_only",
+     "type": "boolean",
+     "label": "Execute update only SQL statement without row limit",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "update_only",
+      "type": "boolean"
+     },
+     "hint": "Defaults to No. When Yes, this action imposes no row limits on SQL statements but returns no rows. Use this to do bulk transformations of data."
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "visible_if": "input.update_only != \"true\"",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "run_custom_sql_async_v2",
+   "title": "Run long query using custom SQL",
+   "description": "Run long query using custom SQL in JDBC source",
+   "help": "Execute a SQL in JDBC source asynchronously. Provide a valid SQL string and define the expected output fields. This action is intended to write DML statements (INSERT, UPDATE and DELETE) and DDL statements (CREATE, ALTER and DROP). Query size limit excluding parameters is 1MB. ** For SELECT statemen…",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid SQL string to be executed here."
+    },
+    {
+     "name": "update_only",
+     "type": "boolean",
+     "label": "Update only query?",
+     "control_type": "checkbox",
+     "visible_if": "false",
+     "toggle_field": {
+      "name": "update_only",
+      "type": "boolean"
+     },
+     "hint": "When Yes, this action will execute the query without returning any rows. Use this to do bulk transformations of data."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true
+    },
+    {
+     "name": "timeout",
+     "type": "integer",
+     "label": "Timeout limit (minutes)",
+     "control_type": "integer",
+     "visible_if": "false",
+     "default": "120",
+     "hint": "Set an upper limit for this wait action. If one or more of the async jobs take longer than this, proceed to the next step without waiting. Maximum is 1440 minutes (24 hours)."
+    }
+   ],
+   "output": [
+    {
+     "name": "rows_affected",
+     "type": "integer",
+     "label": "Rows affected",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_rows",
+   "title": "Select rows",
+   "description": "Select rows in a table in JDBC source",
+   "help": "Select rows from the selected table/view that match your WHERE condition. Result is limited to 50000 rows.",
+   "input": [
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "tables_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "table",
+      "type": "string"
+     },
+     "hint": "Only the first 1000 are displayed. Enter name if table is not shown."
+    },
+    {
+     "name": "output_columns",
+     "type": "string",
+     "label": "Output columns",
+     "control_type": "multiselect",
+     "pick_list": "columns_list",
+     "extends_schema": true,
+     "hint": "Choose columns to be selected from the table. Default is to return all columns."
+    },
+    {
+     "name": "where",
+     "type": "string",
+     "label": "WHERE condition",
+     "control_type": "code",
+     "hint": "Rows matching this condition will be selected, e.g. currency = 'USD' (enclose strings in single quotes). Use bind variables, e.g. id = :id , and the parameter field to parameterize inputs."
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "orderby",
+     "type": "string",
+     "label": "Order by",
+     "control_type": "text",
+     "hint": "Order of rows to return. e.g. updated_at DESC"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Max number of rows to return. Limit is 50000 and default is 100."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "number",
+     "default": 0,
+     "hint": "Number of rows to skip. e.g. 100 ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_rows_sql",
+   "title": "Select rows using custom SQL",
+   "description": "Select rows using custom SQL in JDBC source",
+   "help": "Select rows in JDBC source with a custom SQL query.",
+   "input": [
+    {
+     "name": "sql",
+     "type": "string",
+     "label": "SQL",
+     "control_type": "code",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Put your native SQL query here with meaningful column aliases. Any ORDER BY clauses should be removed from the query and placed in the Order by input field below. Avoid using any restrictive clauses l…"
+    },
+    {
+     "name": "parameters",
+     "type": "object",
+     "label": "Parameters",
+     "control_type": "form-schema-builder",
+     "properties": [
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Schema",
+       "control_type": "text",
+       "required": true,
+       "extends_schema": true
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data"
+      }
+     ],
+     "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. id Second, provide the actual parameter value. Parameter values can be static or datapills. Select the closest c…"
+    },
+    {
+     "name": "orderby",
+     "type": "string",
+     "label": "Order by",
+     "control_type": "text",
+     "hint": "Order of rows to return. e.g. updated_at DESC"
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Limit number of rows (default is 100)"
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Use this to define the columns returned in your query. We try to do this for you dynamically but this can be used to override any columns in case of errors. The name of fields defined should match the…"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

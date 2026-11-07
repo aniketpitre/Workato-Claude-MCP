@@ -1,0 +1,198 @@
+{
+ "name": "workato_json_transformations",
+ "title": "JSON Transformations by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Workato"
+ ],
+ "aliases": [
+  "JSON Transformations by Workato",
+  "utility",
+  "utilities",
+  "workato",
+  "JSON",
+  "transform",
+  "transformation",
+  "ETL",
+  "ELT",
+  "jq"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "jq_transform",
+   "title": "JSON transformation",
+   "description": "Transform JSON data",
+   "help": "This action allows users to choose JSON data source and perform transformation using jq query language.",
+   "input": [
+    {
+     "name": "sources",
+     "type": "array",
+     "label": "Data Sources",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Data source name",
+       "control_type": "text",
+       "required_when_visible": true,
+       "hint": "Provide an alias name for the data source. E.g: contacts, orders. This name might be used to identify the source."
+      },
+      {
+       "name": "handling",
+       "type": "string",
+       "label": "Input format",
+       "control_type": "select",
+       "default": "input",
+       "options": [
+        "input",
+        "rawfile",
+        "slurpfile"
+       ],
+       "extends_schema": true,
+       "hint": "Choose how this data is passed to jq: Input for standard JSON input (`.`), Raw file for plain text, or Slurp file to load multiple JSON values as an array."
+      },
+      {
+       "name": "data_source_type",
+       "type": "string",
+       "label": "Data source type",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "wjt_data_sources_list",
+       "extends_schema": true,
+       "hint": "Provide the data source type. To pass file content or object directly from upstream action/trigger chooser Content Stream. You can also refer to a file in Workato FileStorage."
+      },
+      {
+       "name": "source_stream",
+       "type": "string",
+       "label": "Content input stream",
+       "control_type": "text-area",
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type === 'content_stream'",
+       "hint": "Pass the contents or file contents reference pill here from an upstream action or trigger."
+      },
+      {
+       "name": "wf_file_path",
+       "type": "string",
+       "label": "FileStorage file",
+       "control_type": "text",
+       "required_when_visible": true,
+       "visible_if": "parentInput.data_source_type && parentInput.data_source_type === 'wf_file'",
+       "extends_schema": true,
+       "toggle_field": {
+        "name": "wf_file_path",
+        "type": "string"
+       },
+       "hint": "Provide the FileStorage file full path here to fetch the data. For example, “samplepath/filename.json”."
+      }
+     ],
+     "hint": "Specify data-sources to perform transformation over them"
+    },
+    {
+     "name": "jq_expression",
+     "type": "string",
+     "label": "jq expression",
+     "control_type": "code",
+     "required": true,
+     "required_when_visible": true,
+     "hint": "Provide a jq expression to convert your JSON data into JSON format. For example, .items[] | [ keys[] as $k | .[$k] ] | @csv ."
+    },
+    {
+     "name": "slurp",
+     "type": "boolean",
+     "label": "Process inputs together",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "slurp",
+      "type": "boolean"
+     },
+     "hint": "Enable this to pass all inputs to jq as a single array ( slurp mode, like `jq -s`) instead of processing them individually. Applies to all sources marked Input ."
+    },
+    {
+     "name": "output",
+     "type": "object",
+     "label": "Output",
+     "required": true,
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Output type",
+       "control_type": "select",
+       "required": true,
+       "default": "content_stream",
+       "options": [
+        "content_stream",
+        "wf_file",
+        "json_document"
+       ],
+       "extends_schema": true,
+       "hint": "Select the type of the output. Use “Content stream” to share the contents as a streamable data pill to downstream actions. Use FileStorage file option to save output as a file in FileStorage system. U…"
+      },
+      {
+       "name": "wf_file_path",
+       "type": "string",
+       "label": "FileStorage output folder",
+       "control_type": "tree",
+       "required_when_visible": true,
+       "visible_if": "input.output.type && input.output.type === 'wf_file'",
+       "pick_list": "wjt_folders_list",
+       "toggle_field": {
+        "name": "wf_file_path",
+        "type": "string"
+       },
+       "hint": "Choose or enter the path where the output file needs to be stored in Workato FileStorage. For example, “samplepath/path1/”"
+      },
+      {
+       "name": "wf_file_name",
+       "type": "string",
+       "label": "FileStorage output file name",
+       "control_type": "text",
+       "visible_if": "input.output.type && input.output.type === 'wf_file'",
+       "hint": "Define the name of the output file that needs to be stored in Workato FileStorage."
+      },
+      {
+       "name": "mode",
+       "type": "string",
+       "label": "File action",
+       "control_type": "select",
+       "visible_if": "input.output.type && input.output.type === 'wf_file'",
+       "default": "create",
+       "options": [
+        "create",
+        "append_or_create",
+        "create_or_overwrite"
+       ],
+       "hint": "Choose how the destination file in FileStorage should be handled when the transformation runs. Create fails if the file already exists. Append and Overwrite create the file if it does not exist, or ap…"
+      },
+      {
+       "name": "sample_document",
+       "type": "string",
+       "label": "Sample document",
+       "control_type": "code",
+       "visible_if": "input.output.type && input.output.type === 'json_document'",
+       "extends_schema": true,
+       "hint": "Provide a sample JSON document to generate the output schema for mapping fields."
+      },
+      {
+       "name": "raw_output",
+       "type": "boolean",
+       "label": "Raw output",
+       "control_type": "checkbox",
+       "default": "false",
+       "toggle_field": {
+        "name": "raw_output",
+        "type": "boolean"
+       },
+       "hint": "Select Yes if the output should be in raw string format without escapes and quotes"
+      }
+     ]
+    }
+   ],
+   "output": []
+  }
+ ]
+}

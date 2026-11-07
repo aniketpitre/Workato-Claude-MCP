@@ -1,0 +1,930 @@
+{
+ "name": "sftp_secondary",
+ "title": "SFTP secondary",
+ "requires_connection": true,
+ "categories": [
+  "File Transfer"
+ ],
+ "aliases": [
+  "SFTP"
+ ],
+ "triggers": [
+  {
+   "name": "new_csv_file",
+   "title": "New/updated CSV file in directory",
+   "description": "New/updated CSV file in directory on SFTP secondary server",
+   "help": "Triggers when a CSV file is added or updated in a specified directory. This trigger will batch CSV lines according to the user-specified batch size. Each batch will be processed as a job. The max batch size is 1000.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "directories",
+     "toggle_field": {
+      "name": "directory",
+      "type": "string"
+     },
+     "hint": "Files in this directory will be processed, ordered by ascending modification time."
+    },
+    {
+     "name": "columns",
+     "type": "string",
+     "label": "Column names",
+     "control_type": "schema-designer",
+     "required": true,
+     "extends_schema": true
+    },
+    {
+     "name": "separator",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "default": "comma",
+     "options": [
+      "comma",
+      "space",
+      "tab",
+      "colon",
+      "semicolon",
+      "pipe"
+     ],
+     "hint": "The character used to separate column values within each CSV row."
+    },
+    {
+     "name": "skip_header_line",
+     "type": "boolean",
+     "label": "Contains header row?",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "true",
+     "toggle_field": {
+      "name": "skip_header_line",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes if the first CSV row is a header row, containing column names."
+    },
+    {
+     "name": "max_batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "required": true,
+     "default": 100,
+     "hint": "Number of CSV rows per batch. Instead of reading rows one by one, Workato reads a batch of CSV rows at a time to increase throughput. Learn more"
+    },
+    {
+     "name": "expected_encoding",
+     "type": "string",
+     "label": "Expected encoding",
+     "control_type": "select",
+     "default": "UTF-8",
+     "pick_list": "supported_encodings",
+     "toggle_field": {
+      "name": "expected_encoding",
+      "type": "string"
+     },
+     "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed."
+    },
+    {
+     "name": "ignore_missing_files",
+     "type": "boolean",
+     "label": "Ignore missing files?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "ignore_missing_files",
+      "type": "boolean"
+     },
+     "hint": "Set to Yes to ignore or skip files that are not available currently. This is useful if your recipe involves moving files to a different location after they are processed."
+    },
+    {
+     "name": "column_value_by",
+     "type": "string",
+     "label": "Keep track of columns by",
+     "control_type": "select",
+     "visible_if": "input.skip_header_line == 'true'",
+     "default": "index",
+     "options": [
+      "index",
+      "name"
+     ],
+     "extends_schema": true,
+     "hint": "Configure this if your expected CSV file will not have fixed column order or column names: - If Column order is set: Your CSV file must have fixed column order for recipe to work. Column names don't n…"
+    },
+    {
+     "name": "quote_char",
+     "type": "string",
+     "label": "Quote character",
+     "control_type": "select",
+     "default": "\"",
+     "options": [
+      "\"",
+      "'",
+      "\u0000"
+     ],
+     "hint": "Character used to quote the CSV cell values. Select None if no quote character is used."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_file_in_dir",
+   "title": "New/updated file in directory",
+   "description": "New/updated file in directory on SFTP secondary server",
+   "help": "Triggers when a file is created or updated in specified directory. Watches first-level directory only. Use the Download file action to fetch contents of file.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Directory",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "directories",
+     "toggle_field": {
+      "name": "directory",
+      "type": "string"
+     },
+     "hint": "Files in this directory will be processed, ordered by ascending modification time."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get file created/updated since the given date/time.Leave empty to get files created/updated 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "symlink",
+     "type": "boolean",
+     "label": "Symlink",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "symlink",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "owner",
+     "type": "string",
+     "label": "Owner",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "group",
+     "type": "string",
+     "label": "Group",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "permissions",
+     "type": "integer",
+     "label": "Permissions",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "atime",
+     "type": "date_time",
+     "label": "Last accessed time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "mtime",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "dir",
+   "title": "List folder",
+   "description": "List folder in SFTP secondary server",
+   "help": "Use this action to list contents of a folder/directory in SFTP server.",
+   "input": [
+    {
+     "name": "directory",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the full path of the folder in the SFTP server to list the contents. Example: /folder1/folder2"
+    }
+   ],
+   "output": [
+    {
+     "name": "entries",
+     "type": "array",
+     "label": "Entries",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "symlink",
+       "type": "boolean",
+       "label": "Symlink",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "symlink",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "owner",
+       "type": "string",
+       "label": "Owner",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "group",
+       "type": "string",
+       "label": "Group",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "permissions",
+       "type": "integer",
+       "label": "Permissions",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "atime",
+       "type": "date_time",
+       "label": "Last accessed time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "mtime",
+       "type": "date_time",
+       "label": "Last modified time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "directory",
+       "type": "boolean",
+       "label": "Directory",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "directory",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "mkdir",
+   "title": "Create folder",
+   "description": "Create folder in SFTP secondary server",
+   "help": "This action allows you to create a folder in the SFTP server. This action will fail if a folder already exists in the given path.",
+   "input": [
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the complete path of the folder to be created. Example: /folder1/folder2/new_folder_name"
+    }
+   ],
+   "output": [
+    {
+     "name": "folder_name",
+     "type": "string",
+     "label": "Folder name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "remove",
+   "title": "Delete file",
+   "description": "Delete file in SFTP secondary server",
+   "help": "Deletes a file from your SFTP server. This action will fail if the specified file is not found.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the complete path of the file to be deleted. Example: /folder1/filename.csv"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "Deleted file path",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "remove_folder",
+   "title": "Delete folder",
+   "description": "Delete folder in SFTP secondary server",
+   "help": "This action allows you to delete an entire folder from SFTP server. It will fail if the folder is not found in the specified path provided or if the folder is not empty.",
+   "input": [
+    {
+     "name": "foldername",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the full path of the folder to delete. Example: /folder1/folder2"
+    }
+   ],
+   "output": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Deleted folder path",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "rename",
+   "title": "Rename/move file",
+   "description": "Rename/move file in SFTP secondary server",
+   "help": "Use this action to rename a file or move a file to a new destination in SFTP server.",
+   "input": [
+    {
+     "name": "from",
+     "type": "string",
+     "label": "Source path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the full path of the file including the file name. Example: /folder1/folder2/filename.csv"
+    },
+    {
+     "name": "to",
+     "type": "string",
+     "label": "Destination path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the new full path of the file including the file name. To rename a file provide the same path as above with a new file name. To move a file, make sure the folders in the new path exists. Examp…"
+    }
+   ],
+   "output": [
+    {
+     "name": "from",
+     "type": "string",
+     "label": "Source path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "to",
+     "type": "string",
+     "label": "Destination path",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_files_folders",
+   "title": "Search files/folders",
+   "description": "Search files or folders in SFTP secondary server",
+   "help": "Search for files, folders or both within a given folder path in your SFTP server. This action will fail if the provided path is not found.",
+   "input": [
+    {
+     "name": "foldername",
+     "type": "string",
+     "label": "Parent folder path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the path of the parent folder. All files/folders under this folder will be searched. Search does not include contents of the subfolders. Example: /folder1/folder2"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Entity",
+     "control_type": "select",
+     "required": true,
+     "default": "File",
+     "options": [
+      "File",
+      "Folder",
+      "Both"
+     ],
+     "hint": "Select whether to search for files, folders or both."
+    },
+    {
+     "name": "search",
+     "type": "string",
+     "label": "Search term",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the search term. Supports filename globbing based search terms. For example, to search for all csv files in the folder, use *.csv . Learn more about using filename glob expressions."
+    }
+   ],
+   "output": [
+    {
+     "name": "entries",
+     "type": "array",
+     "label": "Entries",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "symlink",
+       "type": "boolean",
+       "label": "Symlink",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "symlink",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "owner",
+       "type": "string",
+       "label": "Owner",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "group",
+       "type": "string",
+       "label": "Group",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "permissions",
+       "type": "integer",
+       "label": "Permissions",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "atime",
+       "type": "date_time",
+       "label": "Last accessed time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "mtime",
+       "type": "date_time",
+       "label": "Last modified time",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "directory",
+       "type": "boolean",
+       "label": "Folder?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "directory",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "set_permissions",
+   "title": "Change permission of a file or a folder",
+   "description": "Change permission of a file or a folder in SFTP secondary Server",
+   "help": "This action changes permission to a particular file or folder in SFTP Server. This replaces any existing permission with the specified values.",
+   "input": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the full path of the file including the file name. Example: /folder1/folder2/filename.csv"
+    },
+    {
+     "name": "apply_permissions_method",
+     "type": "string",
+     "label": "Apply permissions method",
+     "control_type": "select",
+     "required": true,
+     "default": "select_permission",
+     "options": [
+      "custom_permission",
+      "select_permission"
+     ],
+     "hint": "Choose a method to apply file permission"
+    },
+    {
+     "name": "permission_owner",
+     "type": "string",
+     "label": "Permission for owner",
+     "control_type": "select",
+     "visible_if": "input.apply_permissions_method == \"select_permission\"",
+     "default": "6",
+     "options": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1",
+      "0"
+     ],
+     "hint": "Select permissions for file owner"
+    },
+    {
+     "name": "permission_group",
+     "type": "string",
+     "label": "Permission for group",
+     "control_type": "select",
+     "visible_if": "input.apply_permissions_method == \"select_permission\"",
+     "default": "4",
+     "options": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1",
+      "0"
+     ],
+     "hint": "Select permissions for group members"
+    },
+    {
+     "name": "permission_others",
+     "type": "string",
+     "label": "Permission for others",
+     "control_type": "select",
+     "visible_if": "input.apply_permissions_method == \"select_permission\"",
+     "default": "4",
+     "options": [
+      "7",
+      "6",
+      "5",
+      "4",
+      "3",
+      "2",
+      "1",
+      "0"
+     ],
+     "hint": "Select permissions for all other users"
+    },
+    {
+     "name": "permission_code",
+     "type": "integer",
+     "label": "Permission code",
+     "control_type": "number",
+     "visible_if": "input.apply_permissions_method == \"custom_permission\"",
+     "default": 644,
+     "hint": "Enter 3-digit code"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "permission_code",
+     "type": "integer",
+     "label": "Updated permission code",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "stat",
+   "title": "Get file information",
+   "description": "Get file information from SFTP secondary server",
+   "help": "This action allows you to get basic information about a file in the SFTP server such as size, created and modified timestamp, etc.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the full path of the file including the file name. Example: /folder1/folder2/filename.csv"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "permissions",
+     "type": "integer",
+     "label": "Permissions",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "atime",
+     "type": "date_time",
+     "label": "Last accessed",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "mtime",
+     "type": "date_time",
+     "label": "Last modified",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "streamable_download",
+   "title": "Download file",
+   "description": "Download file from SFTP secondary server",
+   "help": "Download file contents from SFTP server. File will be downloaded in binary mode.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the full path of the file including the file name. Example: /folder1/folder2/filename.csv"
+    },
+    {
+     "name": "expected_encoding",
+     "type": "string",
+     "label": "Encoding",
+     "control_type": "select",
+     "pick_list": "supported_encodings",
+     "hint": "Choose the encoding to set it explicitly."
+    },
+    {
+     "name": "download_in_one_go",
+     "type": "boolean",
+     "label": "Download file in one go",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "download_in_one_go",
+      "type": "boolean"
+     },
+     "hint": "Allows the file to be fetched completely in one go if your SFTP server does not support multipart downloads. Maximum size supported is 310 MB. For larger file downloads do not select this option. Defa…"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "size",
+     "type": "number",
+     "label": "File size",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "contents",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "detected_encoding",
+     "type": "string",
+     "label": "File encoding",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "upload",
+   "title": "Upload file",
+   "description": "Upload file to SFTP secondary server",
+   "help": "Upload a file to a specific path in your SFTP server. If the file already exists, this action will append or overwrite the file, depending on the option provided. Otherwise, it will create a new file.",
+   "input": [
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the full path of the file including the file name. The folders provided in the path must exist before adding a file in it. Example: /folder1/folder2/filename.csv"
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text-area",
+     "required_when_visible": true,
+     "hint": "Add file contents here. Empty file contents are allowed."
+    },
+    {
+     "name": "append",
+     "type": "boolean",
+     "label": "Append",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "append",
+      "type": "boolean"
+     },
+     "hint": "Select Yes to append the contents to an already existing file.If option No is selected, the existing file will be overwritten."
+    },
+    {
+     "name": "expected_size",
+     "type": "integer",
+     "label": "Expected size",
+     "control_type": "number",
+     "visible_if": "input.append == \"true\"",
+     "hint": "Expected size of existing file in bytes when appending. Helps ensure integrity of multiple-step uploads"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

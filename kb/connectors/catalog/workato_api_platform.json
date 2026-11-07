@@ -1,0 +1,316 @@
+{
+ "name": "workato_api_platform",
+ "title": "API platform by Workato",
+ "requires_connection": false,
+ "categories": [
+  "API tool",
+  "Workato"
+ ],
+ "aliases": [
+  "API platform by Workato",
+  "endpoint",
+  "api",
+  "service"
+ ],
+ "triggers": [
+  {
+   "name": "receive_request",
+   "title": "New API request",
+   "description": "New API request",
+   "help": "This trigger processes requests from API Platform. Define the request and response definition for the API endpoint.",
+   "input": [
+    {
+     "name": "request",
+     "type": "object",
+     "label": "Request",
+     "required": true,
+     "properties": [
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Content type",
+       "control_type": "select",
+       "required": true,
+       "default": "json",
+       "pick_list": "request_content_type_list",
+       "extends_schema": true
+      },
+      {
+       "name": "headers",
+       "type": "string",
+       "label": "Request headers",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "path_params",
+       "type": "string",
+       "label": "Path parameters",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "query_params",
+       "type": "string",
+       "label": "Query parameters",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "schema_root_type",
+       "type": "string",
+       "label": "Request structure",
+       "control_type": "select",
+       "visible_if": "input.request.content_type === 'json'",
+       "default": "object",
+       "pick_list": "schema_root_type",
+       "extends_schema": true,
+       "hint": "The outermost structure of the request body this endpoint accepts — an object { } or an array [ ... ]."
+      },
+      {
+       "name": "body",
+       "type": "string",
+       "label": "Request body",
+       "control_type": "schema-designer",
+       "visible_if": "(input.request.content_type === 'json') && input.request.schema_root_type !== 'array_of_strings' && input.request.schema_root_type !== 'array_of_integers' && input.request.schema_root_type !== 'array_of_numbers' && input.request.schema_root_type !== 'array_of_booleans' && input.request.schema_root_type !== 'array_of_dates' && input.request.schema_root_type !== 'array_of_date_times' && (input.request.body || !input.request.schema || input.request.schema === '[]')",
+       "extends_schema": true
+      },
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Request schema",
+       "control_type": "schema-designer",
+       "visible_if": "(input.request.content_type === 'json') && input.request.schema_root_type !== 'array_of_strings' && input.request.schema_root_type !== 'array_of_integers' && input.request.schema_root_type !== 'array_of_numbers' && input.request.schema_root_type !== 'array_of_booleans' && input.request.schema_root_type !== 'array_of_dates' && input.request.schema_root_type !== 'array_of_date_times' && (!(input.request.body || !input.request.schema || input.request.schema === '[]'))",
+       "extends_schema": true,
+       "hint": "This legacy field is deprecated. Use Request body for new configurations."
+      }
+     ]
+    },
+    {
+     "name": "response",
+     "type": "object",
+     "label": "Response",
+     "required": true,
+     "properties": [
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Content type",
+       "control_type": "select",
+       "required": true,
+       "default": "json",
+       "pick_list": "response_content_type_list",
+       "extends_schema": true
+      },
+      {
+       "name": "headers",
+       "type": "string",
+       "label": "Response headers",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "responses",
+       "type": "array",
+       "label": "Responses",
+       "required": true,
+       "extends_schema": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "http_status_code",
+         "type": "integer",
+         "label": "HTTP status code",
+         "control_type": "select",
+         "required": true,
+         "pick_list": "http_response_statuses",
+         "extends_schema": true,
+         "toggle_field": {
+          "name": "http_status_code",
+          "type": "integer"
+         }
+        },
+        {
+         "name": "body_schema_root_type",
+         "type": "string",
+         "label": "Response structure",
+         "control_type": "select",
+         "visible_if": "input.response.content_type === 'json'",
+         "default": "object",
+         "pick_list": "schema_root_type",
+         "extends_schema": true,
+         "hint": "The outermost structure of the payload this endpoint returns — an object { } or an array [ ... ]."
+        },
+        {
+         "name": "body_schema",
+         "type": "string",
+         "label": "Response schema",
+         "control_type": "schema-designer",
+         "visible_if": "(input.response.content_type === 'json') && parentInput.body_schema_root_type !== 'array_of_strings' && parentInput.body_schema_root_type !== 'array_of_integers' && parentInput.body_schema_root_type !== 'array_of_numbers' && parentInput.body_schema_root_type !== 'array_of_booleans' && parentInput.body_schema_root_type !== 'array_of_dates' && parentInput.body_schema_root_type !== 'array_of_date_times'",
+         "extends_schema": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "receive_soap_request",
+   "title": "New SOAP request",
+   "description": "New SOAP API request",
+   "help": "To use this trigger, import a WSDL. SOAP endpoints can't be built from scratch. Workato generates the request and response schema from the WSDL and processes incoming SOAP requests from API Platform.",
+   "input": [
+    {
+     "name": "request",
+     "type": "object",
+     "label": "Request",
+     "required": true,
+     "properties": [
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Content type",
+       "control_type": "select",
+       "required": true,
+       "default": "soap",
+       "options": [
+        "soap"
+       ]
+      },
+      {
+       "name": "soap_version",
+       "type": "string",
+       "label": "SOAP Version",
+       "control_type": "text",
+       "visible_if": "false"
+      },
+      {
+       "name": "wsdl_document_static_asset",
+       "type": "string",
+       "label": "WSDL specification",
+       "control_type": "tree",
+       "required": true,
+       "pick_list": "wsdl_static_assets"
+      },
+      {
+       "name": "operation_name",
+       "type": "string",
+       "label": "Operation name",
+       "control_type": "text"
+      },
+      {
+       "name": "headers",
+       "type": "string",
+       "label": "Request headers",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "schema",
+       "type": "string",
+       "label": "Request schema",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      }
+     ]
+    },
+    {
+     "name": "response",
+     "type": "object",
+     "label": "Response",
+     "required": true,
+     "properties": [
+      {
+       "name": "content_type",
+       "type": "string",
+       "label": "Content type",
+       "control_type": "select",
+       "required": true,
+       "default": "soap",
+       "options": [
+        "soap"
+       ]
+      },
+      {
+       "name": "headers",
+       "type": "string",
+       "label": "Response headers",
+       "control_type": "schema-designer",
+       "extends_schema": true
+      },
+      {
+       "name": "responses",
+       "type": "array",
+       "label": "Responses",
+       "required": true,
+       "extends_schema": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text"
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "select",
+         "required": true,
+         "default": "standard",
+         "options": [
+          "standard",
+          "error"
+         ]
+        },
+        {
+         "name": "wsdl_document_static_asset",
+         "type": "string",
+         "label": "WSDL specification",
+         "control_type": "tree",
+         "required": true,
+         "pick_list": "wsdl_static_assets"
+        },
+        {
+         "name": "body_schema",
+         "type": "string",
+         "label": "Response schema",
+         "control_type": "schema-designer",
+         "extends_schema": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "return_response",
+   "title": "Respond to API request",
+   "description": "Return API response",
+   "help": "Return data to the API client. Select a response code defined in the trigger and provide data for the relevant fields. A job will stop immediately after this action.",
+   "input": [],
+   "output": []
+  },
+  {
+   "name": "return_soap_response",
+   "title": "Respond to SOAP API request",
+   "description": "Return API response",
+   "help": "Return SOAP data to the API client. Select a response code defined in the trigger and provide data for the relevant fields. A job will stop immediately after this action.",
+   "input": [],
+   "output": []
+  }
+ ]
+}

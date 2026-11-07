@@ -1,0 +1,2035 @@
+{
+ "id": 820868,
+ "name": "Create Box folders for NetSuite cases",
+ "description": "1. A new support case is created in NetSuite.\n2. Workato creates a folder in Box with the **NetSuite case number** as the folder name, if it doesn't already exist.\n3.  Workato creates a shared link to the Box folder.",
+ "applications": [
+  "netsuite",
+  "box"
+ ],
+ "action_applications": [
+  "box"
+ ],
+ "trigger_application": "netsuite",
+ "business_objects": [
+  "support case",
+  "file",
+  "folder"
+ ],
+ "categories": [
+  "Accounting",
+  "ERP",
+  "CRM",
+  "Ecommerce",
+  "Financial Management",
+  "HR management",
+  "Document/File"
+ ],
+ "copy_count": 608,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2018-08-31T17:15:50.987-07:00",
+ "source_url": "https://app.workato.com/recipes/820868?community=us",
+ "steps": [
+  "netsuite.new_object",
+  "box.search_files",
+  "box.create_folder",
+  "box.create_folder_shared_link"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "netsuite",
+  "name": "new_object",
+  "as": "new_object",
+  "title": "New Support  case",
+  "description": "New <span class=\"provider\">Support  case</span> in <span class=\"provider\">NetSuite</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "netsuite_object": "Support Case"
+  },
+  "toggleCfg": {},
+  "input": {
+   "since": "=1.days.ago",
+   "netsuite_object": "SupportCase"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "internal_id",
+    "control_type": "text",
+    "label": "Internal ID",
+    "optional": true,
+    "ns_content_type": "attribute",
+    "ns_tag": ""
+   },
+   {
+    "type": "string",
+    "name": "external_id",
+    "control_type": "text",
+    "label": "External ID",
+    "optional": true,
+    "ns_content_type": "attribute",
+    "ns_tag": ""
+   },
+   {
+    "type": "string",
+    "name": "escalationMessage",
+    "control_type": "text",
+    "label": "Escalation message",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "lastReopenedDate",
+    "control_type": "date_time",
+    "label": "Last reopened date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "endDate",
+    "control_type": "date_time",
+    "label": "End date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "incomingMessage",
+    "control_type": "text",
+    "label": "Incoming message",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "insertSolution",
+    "label": "Insert solution",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "outgoingMessage",
+    "control_type": "text",
+    "label": "Outgoing message",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "searchSolution",
+    "control_type": "text",
+    "label": "Search solution",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "emailForm",
+    "control_type": "checkbox",
+    "label": "Email form",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Email form",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "emailForm"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "newSolutionFromMsg",
+    "control_type": "text",
+    "label": "New solution from msg",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "internalOnly",
+    "control_type": "checkbox",
+    "label": "Internal only",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Internal only",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "internalOnly"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "customForm",
+    "label": "Custom form",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "title",
+    "control_type": "text",
+    "label": "Title",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "caseNumber",
+    "control_type": "text",
+    "label": "Case number",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "startDate",
+    "control_type": "date_time",
+    "label": "Start date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "createdDate",
+    "control_type": "date_time",
+    "label": "Created date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "lastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last modified date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "date_time",
+    "name": "lastMessageDate",
+    "control_type": "date_time",
+    "label": "Last message date",
+    "optional": true,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "company",
+    "label": "Company",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "profile",
+    "label": "Profile",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "subsidiary",
+    "label": "Subsidiary",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "contact",
+    "label": "Contact",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "email",
+    "control_type": "text",
+    "label": "Email",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "phone",
+    "control_type": "text",
+    "label": "Phone",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "product",
+    "label": "Product",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "module",
+    "label": "Module",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "item",
+    "label": "Item",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "serialNumber",
+    "label": "Serial number",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "string",
+    "name": "inboundEmail",
+    "control_type": "text",
+    "label": "Inbound email",
+    "optional": true,
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "issue",
+    "label": "Issue",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "status",
+    "label": "Status",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "isInactive",
+    "control_type": "checkbox",
+    "label": "Is inactive",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Is inactive",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "isInactive"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "priority",
+    "label": "Priority",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "origin",
+    "label": "Origin",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "category",
+    "label": "Category",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "assigned",
+    "label": "Assigned",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Internal ID",
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "string",
+      "name": "internal_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Name",
+      "optional": true,
+      "ns_content_type": "element",
+      "ns_tag": "platformCore",
+      "type": "string",
+      "name": "name"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "boolean",
+    "name": "helpDesk",
+    "control_type": "checkbox",
+    "label": "Help desk",
+    "optional": true,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Help desk",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "ns_content_type": "element",
+     "ns_tag": "listsSupport",
+     "type": "boolean",
+     "name": "helpDesk"
+    },
+    "render_input": "render_boolean",
+    "parse_output": "parse_boolean",
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "emailEmployeesList",
+    "label": "Email employees list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "emailEmployees",
+      "type": "array",
+      "of": "object",
+      "label": "Email employees",
+      "optional": true,
+      "ns_ref_type": "RecordRef",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Internal ID",
+        "optional": true,
+        "ns_content_type": "attribute",
+        "ns_tag": "",
+        "type": "string",
+        "name": "internal_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCore",
+        "type": "string",
+        "name": "name"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "escalateToList",
+    "label": "Escalate to list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "escalateTo",
+      "type": "array",
+      "of": "object",
+      "label": "Escalate to",
+      "optional": true,
+      "ns_ref_type": "SupportCaseEscalateTo",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Escalatee",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "object",
+        "name": "escalatee"
+       },
+       {
+        "control_type": "text",
+        "label": "Email",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "string",
+        "name": "email"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "string",
+        "name": "phone"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "timeItemList",
+    "label": "Time item list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "timeItem",
+      "type": "array",
+      "of": "object",
+      "label": "Time item",
+      "optional": true,
+      "ns_ref_type": "TimeItem",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "ID",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "number",
+        "name": "id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Employee",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "employee"
+       },
+       {
+        "control_type": "select",
+        "label": "Time type",
+        "pick_list": [
+         [
+          "Actual Time",
+          "_actualTime"
+         ],
+         [
+          "Planned Time",
+          "_plannedTime"
+         ]
+        ],
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Time type",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "toggle_to_primary_hint": "Select from list",
+         "toggle_to_secondary_hint": "Enter custom value",
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "string",
+         "name": "timeType"
+        },
+        "type": "string",
+        "name": "timeType"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Tran date",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "date_time",
+        "name": "tranDate",
+        "parse_output": "parse_iso8601_timestamp",
+        "render_input": "render_iso8601_timestamp"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Customer",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "customer"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is billable",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is billable",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isBillable"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isBillable"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Payroll item",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "payrollItem"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Item",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "item"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Temporary local jurisdiction",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "temporaryLocalJurisdiction"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Temporary state jurisdiction",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "temporaryStateJurisdiction"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Department",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "department"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Class",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "class"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Location",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "location"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Time span",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "number",
+          "name": "timeSpan"
+         },
+         {
+          "control_type": "select",
+          "label": "Unit",
+          "pick_list": [
+           [
+            "Hour",
+            "hour"
+           ]
+          ],
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Unit",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "toggle_to_primary_hint": "Select from list",
+           "toggle_to_secondary_hint": "Enter custom value",
+           "ns_content_type": "element",
+           "ns_tag": "platformCore",
+           "type": "string",
+           "name": "unit"
+          },
+          "type": "string",
+          "name": "unit"
+         }
+        ],
+        "label": "Hours",
+        "optional": true,
+        "ns_ref_type": "Duration",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "hours"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Price",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "price"
+       },
+       {
+        "control_type": "text",
+        "label": "Rate",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "number",
+        "name": "rate"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Override rate",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Override rate",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "overrideRate"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "overrideRate"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Time span",
+          "parse_output": "float_conversion",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "number",
+          "name": "timeSpan"
+         },
+         {
+          "control_type": "select",
+          "label": "Unit",
+          "pick_list": [
+           [
+            "Hour",
+            "hour"
+           ]
+          ],
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "toggle_hint": "Select from list",
+          "toggle_field": {
+           "control_type": "text",
+           "label": "Unit",
+           "toggle_hint": "Enter custom value",
+           "optional": true,
+           "toggle_to_primary_hint": "Select from list",
+           "toggle_to_secondary_hint": "Enter custom value",
+           "ns_content_type": "element",
+           "ns_tag": "platformCore",
+           "type": "string",
+           "name": "unit"
+          },
+          "type": "string",
+          "name": "unit"
+         }
+        ],
+        "label": "Hours total",
+        "optional": true,
+        "ns_ref_type": "Duration",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "hoursTotal"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Case task event",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "object",
+        "name": "caseTaskEvent"
+       },
+       {
+        "control_type": "text",
+        "label": "Memo",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "string",
+        "name": "memo"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is utilized",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is utilized",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isUtilized"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isUtilized"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is productive",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is productive",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isProductive"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isProductive"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Is exempt",
+        "render_input": "render_boolean",
+        "parse_output": "parse_boolean",
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is exempt",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "ns_content_type": "element",
+         "ns_tag": "platformCommon",
+         "type": "boolean",
+         "name": "isExempt"
+        },
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "platformCommon",
+        "type": "boolean",
+        "name": "isExempt"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "solutionsList",
+    "label": "Solutions list",
+    "optional": true,
+    "properties": [
+     {
+      "name": "solutions",
+      "type": "array",
+      "of": "object",
+      "label": "Solutions",
+      "optional": true,
+      "ns_ref_type": "SupportCaseSolutions",
+      "ns_content_type": "element",
+      "ns_tag": "listsSupport",
+      "properties": [
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Internal ID",
+          "optional": true,
+          "ns_content_type": "attribute",
+          "ns_tag": "",
+          "type": "string",
+          "name": "internal_id"
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "optional": true,
+          "ns_content_type": "element",
+          "ns_tag": "platformCore",
+          "type": "string",
+          "name": "name"
+         }
+        ],
+        "label": "Solution",
+        "optional": true,
+        "ns_ref_type": "RecordRef",
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "object",
+        "name": "solution"
+       },
+       {
+        "control_type": "text",
+        "label": "Message",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "string",
+        "name": "message"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date applied",
+        "optional": true,
+        "ns_content_type": "element",
+        "ns_tag": "listsSupport",
+        "type": "date_time",
+        "name": "dateApplied",
+        "parse_output": "parse_iso8601_timestamp",
+        "render_input": "render_iso8601_timestamp"
+       }
+      ],
+      "parse_output": "netsuite_item_array_wrap"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Replace all",
+      "render_input": "render_boolean",
+      "parse_output": "parse_boolean",
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Replace all",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "ns_content_type": "attribute",
+       "ns_tag": "",
+       "type": "boolean",
+       "name": "replace_all"
+      },
+      "optional": true,
+      "ns_content_type": "attribute",
+      "ns_tag": "",
+      "type": "boolean",
+      "name": "replace_all"
+     }
+    ],
+    "ns_content_type": "element",
+    "ns_tag": "listsSupport"
+   },
+   {
+    "type": "object",
+    "name": "custom_fields",
+    "label": "Custom fields",
+    "optional": true,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Help Desk Case Type",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Help Desk Case Type",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_42_custevent_ishdcasetype",
+       "pick_list": [
+        [
+         "Application Issue",
+         "4"
+        ],
+        [
+         "Computer Equipment",
+         "2"
+        ],
+        [
+         "Connection to Internet",
+         "3"
+        ],
+        [
+         "Telephone Issue",
+         "1"
+        ]
+       ]
+      },
+      "type": "string",
+      "name": "f_42_custevent_ishdcasetype"
+     },
+     {
+      "control_type": "text",
+      "label": "Help Desk Case Type ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_42_custevent_ishdcasetype_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case Link Type",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Related Case Link Type",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3053_custevent_relatedcaselinktype",
+       "pick_list": [
+        [
+         "Same As",
+         "1"
+        ],
+        [
+         "Reference",
+         "2"
+        ],
+        [
+         "Same Issue - Different Customer",
+         "3"
+        ]
+       ]
+      },
+      "type": "string",
+      "name": "f_3053_custevent_relatedcaselinktype"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case Link Type ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3053_custevent_relatedcaselinktype_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Related Case",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3054_custevent_relatedcase"
+      },
+      "type": "string",
+      "name": "f_3054_custevent_relatedcase"
+     },
+     {
+      "control_type": "text",
+      "label": "Related Case ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3054_custevent_relatedcase_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Close Reason",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Close Reason",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3055_custevent_closereason",
+       "pick_list": [
+        [
+         "100% Answered",
+         "5"
+        ],
+        [
+         "Led Way to Answering",
+         "6"
+        ],
+        [
+         "Answered but need to update doc.",
+         "7"
+        ],
+        [
+         "New Doc From Case",
+         "8"
+        ],
+        [
+         "Duplicate Case/Call",
+         "2"
+        ],
+        [
+         "Spam/Ignore",
+         "4"
+        ]
+       ]
+      },
+      "type": "string",
+      "name": "f_3055_custevent_closereason"
+     },
+     {
+      "control_type": "text",
+      "label": "Close Reason ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3055_custevent_closereason_id"
+     },
+     {
+      "control_type": "text",
+      "label": "From KB Solution",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "From KB Solution",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_3056_custevent_pf_zms_solution"
+      },
+      "type": "string",
+      "name": "f_3056_custevent_pf_zms_solution"
+     },
+     {
+      "control_type": "text",
+      "label": "From KB Solution ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_3056_custevent_pf_zms_solution_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Last Updated by Workato",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_4986_custevent107"
+     },
+     {
+      "control_type": "text",
+      "label": "Google Calendar Event ID",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_4987_custevent108"
+     },
+     {
+      "control_type": "text",
+      "label": "Sales Associate",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "optional": true,
+      "custom": true,
+      "toggle_hint": "Enter custom value",
+      "toggle_field": {
+       "control_type": "select",
+       "label": "Sales Associate",
+       "toggle_hint": "Select from list",
+       "optional": true,
+       "custom": true,
+       "type": "string",
+       "name": "f_40_custevent1"
+      },
+      "type": "string",
+      "name": "f_40_custevent1"
+     },
+     {
+      "control_type": "text",
+      "label": "Sales Associate ID",
+      "ns_custom_type": "SelectCustomFieldRef",
+      "ns_search_type": "SearchSelectCustomField",
+      "custom": true,
+      "type": "string",
+      "name": "f_40_custevent1_id"
+     },
+     {
+      "control_type": "text",
+      "label": "Sales Associate Phone",
+      "ns_custom_type": "StringCustomFieldRef",
+      "ns_search_type": "SearchStringCustomField",
+      "optional": true,
+      "custom": true,
+      "type": "string",
+      "name": "f_41_custevent2"
+     }
+    ]
+   }
+  ],
+  "visible_config_fields": [
+   "since",
+   "netsuite_object",
+   "custom_list",
+   "custom_column_list"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "box",
+    "name": "search_files",
+    "as": "339cc48e",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "ancestor_folder_ids": {
+      "ids": [
+       "0"
+      ],
+      "titles": [
+       "Home folder"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "type": true,
+     "exact_match": true
+    },
+    "input": {
+     "type": "folder",
+     "exact_match": "true",
+     "query": "#{_('data.netsuite.new_object.caseNumber')}",
+     "ancestor_folder_ids": "0"
+    },
+    "comment": "Search for a folder in Box by NetSuite case number",
+    "uuid": "c2d03b86-f390-447d-a27e-d1243cfecf77",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.box.339cc48e.files.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "box",
+      "name": "create_folder",
+      "as": "create_folder",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "parent_id": {
+        "ids": [
+         "0"
+        ],
+        "titles": [
+         "Home folder"
+        ]
+       }
+      },
+      "toggleCfg": {
+       "parent_id": true
+      },
+      "input": {
+       "folder_name": "#{_('data.netsuite.new_object.caseNumber')}",
+       "parent_id": "0"
+      },
+      "uuid": "c47c2587-1215-44c0-a3d5-7178682a2e78",
+      "title": null,
+      "description": null
+     }
+    ],
+    "comment": "If folder with NetSuite case number does not exist in Box",
+    "uuid": "762bd856-9203-4bf1-8dba-3f4be5a0826c"
+   },
+   {
+    "number": 4,
+    "provider": "box",
+    "name": "create_folder_shared_link",
+    "as": "create_folder_shared_link",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "access": "open",
+     "folder_id": "=_('data.box.339cc48e.files.first.id') or _('data.box.create_folder.id')"
+    },
+    "uuid": "88cc12a4-e233-4875-a829-73a8242c5124",
+    "title": null,
+    "description": null
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Case number/folder name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Case title"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Company name"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.netsuite.new_object.caseNumber')}",
+   "custom_column_2": "#{_('data.netsuite.new_object.title')}",
+   "custom_column_3": "#{_('data.netsuite.new_object.company.name')}"
+  },
+  "uuid": "2c3aaf18-53b1-4c60-b4ee-bc31d8f6ba47",
+  "param": {}
+ }
+}

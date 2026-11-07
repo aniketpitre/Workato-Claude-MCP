@@ -1,0 +1,1334 @@
+{
+ "id": 281543,
+ "name": "New Infusionsoft Order to Xero Invoice",
+ "description": "Recipe Title : **Sync new Infusionsoft invoices and lines with Xero**\n\n\n---------------------------------------\n**Important Notes : **  \n\n### Please Read through this Description before starting the recipe. \n---------------------------------------\n\n\n### What this recipe Does :\n\nAdvanced recipe: Creates a new Xero Invoice for any new Infusionsoft Order Created.\n\n- There is an additional wait time of 5 minutes (excluding polling cycle) to allow for your Order Line Items to be created when the order is created.\n- If the Infusionsoft Order has no Line Items, it will not create any Invoice in Xero\n- No duplicates are created, and no updates are made to existing invoice.\n- Voided Xero Invoice that were synced from Infusionsoft will not be picked up.\n- The Infusionsoft Invoice Number will be stored in the Xero Reference field\n\n_Contact Syncing_\nContact is created if it does not exist in your Xero.\n- Contact is created based on the provided format that you'd prefer for First Name, Last Name, and Company Name. Please see Configuration Parameter for more details.\n- If the Order's Contact DOES NOT have EITHER First Name, Last Name, AND Company Name, The Order will not be synced, and you will be notified on your Job Report as well as Email Notification.\n\n_Item Syncing_\nItems are created based on the products associated with each Order Line Items.\n- If the Item does not exist in your QuickBooks, one will be created.\n- Items are matched based on Product Name as the Item Name.\n- Taxes are computed by Xero based on the Item tax codes. \n\n\n\n-----------------------------------\n### Parameters\n\n\t- Parameters are configurations available to provide a level of customisations for essential components such as Taxes and Currencies.\n\t        Note : Make sure that all parameters are set correctly BEFORE starting the recipe. It will affect the behaviour of your recipes. \n\n- Currency code: Currency code to assign to the Xero Invoice\n- Invoice Status: Status the created Xero invoice will be set to\n- Account Code: Default Account code to be assigned to items created in Xero\n- Item Code Choice : Choose how would you like to represent your Xero Item when created. Note that Item Codes in Xero is limited to 30 characters only.\n- Client name format : Allows you to display your invoice in Xero in the specified format. You can choose permutations for combinations of First Name, Last Name, and Company.\n- Additional Wait Time : Additional Wait time allows you to hold on to your orders to give you extra time to add in your order items before it is being processed by Workato. \n- Invoice Amounts are : Specify if your Xero invoices line amount are tax inclusive, tax exclusive, or tax should not be applied at all. Note that this parameter will affect how Xero calculates your invoice line item amounts\n- Tax Types : Specify the tax that you would want to apply to items in your Xero invoice.\n\n----------------------------------\nSupport\nFor all enquiries, troubleshooting, and recipe behaviour related questions, please post them here : https://support.workato.com/support/discussions\n\nLearn more about Workato \nhttps://support.workato.com/support/solutions\n\nChange Log : \n16 Aug 2016  \n- DELETED invoices in Xero will now not be synced.\n- Added new parameters for Tax inclusivity and Choose Tax Types. For taxable invoices, please notify if line amounts are tax inclusive, exclusive, or no tax. Xero will then calculate them.\n   - Non taxable items will not be affected by your choice in Tax Types, but taxable items will apply the specified tax\n\n11 Oct 2016\n  - Added SKU fail safe. If products do not have SKU the job should not fail.\n\n6 Sept 2016\n - Fixed Invoice Dates to use Due date when Date created is not present\n - Tax type parameter can now be specified on your own. Please make sure that the specified tax type name exist in your Xero system.\n - Added Email notifications when creating new item in Xero\n - Fixed Item code issue when creating invoice in Xero.\n\n28 Sept 2016\n - Allow Authorized invoice creation to be added with line items. \n- Fix invoice creation where account code was using the default account code and not item account code.",
+ "applications": [
+  "infusionsoft",
+  "clock",
+  "infusionsoft",
+  "xero",
+  "email",
+  "utility"
+ ],
+ "action_applications": [
+  "clock",
+  "infusionsoft",
+  "xero",
+  "email",
+  "utility"
+ ],
+ "trigger_application": "infusionsoft",
+ "business_objects": [
+  "invoice",
+  "item",
+  "contact",
+  "email",
+  "product",
+  "order"
+ ],
+ "categories": [
+  "CRM",
+  "Marketing",
+  "Utilities",
+  "Accounting"
+ ],
+ "copy_count": 291,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2016-10-11T02:40:09.241-07:00",
+ "source_url": "https://app.workato.com/recipes/281543?community=us",
+ "steps": [
+  "infusionsoft.new_invoice",
+  "clock.pause",
+  "infusionsoft.search_orders",
+  "infusionsoft.search_order_items",
+  "infusionsoft.get_contact",
+  "xero.search_invoices",
+  "email.send_mail",
+  "utility.format_name",
+  "utility.format_name",
+  "utility.format_name",
+  "xero.search_contacts",
+  "infusionsoft.get_contact",
+  "xero.create_contact",
+  "infusionsoft.get_product",
+  "email.send_mail",
+  "xero.search_item",
+  "email.send_mail",
+  "xero.create_item",
+  "infusionsoft.get_product",
+  "xero.search_item",
+  "xero.create_invoice",
+  "xero.create_invoice",
+  "infusionsoft.update_order",
+  "infusionsoft.search_orders",
+  "infusionsoft.get_product",
+  "xero.search_item",
+  "xero.add_invoice_line_item",
+  "xero.add_invoice_line_item",
+  "xero.update_invoice"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "infusionsoft",
+  "name": "new_invoice",
+  "as": "new_invoice",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "=now"
+  },
+  "parameters_schema": "[\n{\n    \"label\": \"Currency Code\",\n    \"name\": \"CurrencyCode\",\n    \"type\": \"pick_list_provider\",\n    \"pick_list_provider\":\"xero\",\n    \"pick_list\":\"currencies\",\n    \"control_type\": \"select\",\n    \"hint\": \"Currency Code to be used for the Invoice. For example - USD, GBP, AUD, NZD\"\n  },\n  {\n    \"label\": \"Tax Type Name\",\n    \"name\": \"taxtype\",\n    \"type\": \"string\",\n    \"control_type\": \"text\",\n    \"hint\": \"Type in a tax that will be applicable to your invoice when taxable. It must be the exact name of your tax code name in Xero\"\n  },\n    {\n    \"label\": \"Additional wait time\",\n    \"name\":\"additional_wait_time\",\n    \"hint\":\"Choose yes if you do take time to add your order items. Ideally to choose additional wait times(+5mins) if you manually enter your orders and usually takes more than 3 minutes to add them in\",\n    \"type\": \"text\",\n    \"control_type\":\"select\",\n    \"pick_list\":[[\"Yes\",\"true\"],[\"No\", \"false\"]],\n    \"optional\":\"false\"\n  },\n  {\n    \"label\": \"Invoice Status\",\n    \"name\": \"InvoiceStatus\",\n    \"type\": \"string\",\n   \"control_type\": \"select\",\n    \"pick_list\":  [\n      [ \"Approved\", \"AUTHORISED\" ],\n      [ \"Draft\", \"DRAFT\" ]\n      ],\n    \"hint\": \"Status the Invoice will be set to, for example Approved or Draft\"\n  },\n  {\n    \"label\": \"Account Code\",\n    \"name\": \"AccountCode\",\n    \"type\": \"pick_list_provider\",\n    \"pick_list_provider\":\"xero\",\n    \"pick_list\":\"get_accounts_for_picklist\",\n    \"control_type\": \"select\",\n    \"hint\": \"Sales Account Code to be assigned to new Items (products) that are created. For example 4000\"\n  },\n    {\n    \"label\": \"Item Code Sync\",\n    \"name\": \"itemcodesyncs\",\n    \"type\": \"string\",\n   \"control_type\": \"select\",\n    \"pick_list\":  [\n      [ \"Product Name as Item Code\", \"productname\" ],\n      [ \"SKU as Item Code\", \"sku\" ]\n      ],\n    \"hint\": \"Specify if you would like to sync Product Name or SKU from Infusionsoft as the Item Code of the Item in Xero. <br ><br > <font color=red>Note that Item Codes in Xero has a character limit of 30 characters. If it is exceeded, the record will fail to sync</font>\"\n  },\n  {\n     \"label\": \"Invoices Amounts are :\",\n     \"name\": \"InvoiceTaxAmount\",\n     \"type\": \"string\",\n     \"control_type\":\"select\",\n     \"pick_list\":[\n        [\"Tax Exclusive\", \"Exclusive\"],\n        [\"Tax Inclusive\", \"Inclusive\"],\n        [\"No Tax\", \"NoTax\"]\n     ],\n     \"hint\":\"Specify if your Xero invoices line amount are tax inclusive, tax exclusive, or tax should not be applied at all. <font color=red> Note that this parameter will affect how Xero calculates your invoice line item amounts</font>\"\n  },\n    {\n    \"label\": \"Customer/Client name format\",\n    \"name\":\"full_customer_format\",\n    \"hint\": \"How are your customers/clients display names formatted in QuickBooks?<br>First name = John<br>Last name = Smith<br>Company = Acme Corp\",\n    \"type\": \"string\",\n    \"control_type\": \"select\",\n    \"pick_list\": [\n      [\"John Smith (ACME Corp if blank)\", \"f,l=*1\"],\n      [\"Smith John (ACME Corp if blank)\", \"l,f=*1\"],\n      [\"Smith,  John (ACME Corp if blank)\", \"l,f=, *1\"],\n      [\"ACME Corp (John Smith if blank)\", \"f,l=*2\"],\n      [\"ACME Corp (Smith John if blank)\", \"l,f=*2\"],\n      [\"ACME Corp (Smith,  John if blank)\", \"l,f=, *2\"],\n      [\"John Smith,  ACME Corp\", \"f,l=*3\"],\n      [\"Smith John,  ACME Corp\", \"l,f=*3\"],\n      [\"John Smith ACME Corp\", \"f,l=*4\"],\n      [\"Smith John ACME Corp\", \"l,f=*4\"],\n      [\"Smith, John ACME Corp\", \"l,f=, *4\"],\n      [\"ACME Corp John Smith\", \"f,l=*5\"],\n      [\"ACME Corp Smith John\", \"l,f=*5\"],\n      [\"ACME Corp,  John Smith\", \"f,l=*6\"],\n      [\"ACME Corp,  Smith John\", \"l,f=*6\"]]\n  }\n  ]",
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_('data.workato.job_context.parameters.additional_wait_time')}",
+       "rhs": "true"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "clock",
+      "name": "pause",
+      "as": "pause",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "minutes": "5"
+      }
+     }
+    ]
+   },
+   {
+    "number": 3,
+    "provider": "infusionsoft",
+    "name": "search_orders",
+    "as": "search_orders1",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Id": "#{_('data.infusionsoft.new_invoice.JobId')}"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "orders",
+      "label": "Orders",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Contact ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "ContactId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date created",
+        "parse_output": {},
+        "type": "date_time",
+        "name": "DateCreated"
+       },
+       {
+        "control_type": "date",
+        "label": "Due date",
+        "parse_output": "parse_date_output",
+        "render_input": "render_date_input",
+        "type": "date_time",
+        "name": "DueDate"
+       },
+       {
+        "control_type": "number",
+        "label": "Order ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "Id"
+       },
+       {
+        "control_type": "text",
+        "label": "Job notes",
+        "type": "string",
+        "name": "JobNotes"
+       },
+       {
+        "control_type": "number",
+        "label": "Job recurring ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "JobRecurringId"
+       },
+       {
+        "control_type": "text",
+        "label": "Job status",
+        "type": "string",
+        "name": "JobStatus"
+       },
+       {
+        "control_type": "text",
+        "label": "Job title",
+        "event_title": true,
+        "type": "string",
+        "name": "JobTitle"
+       },
+       {
+        "control_type": "number",
+        "label": "Order status",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "OrderStatus"
+       },
+       {
+        "control_type": "text",
+        "label": "Order type",
+        "type": "string",
+        "name": "OrderType"
+       },
+       {
+        "control_type": "number",
+        "label": "Product ID",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "ProductId"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship city",
+        "type": "string",
+        "name": "ShipCity"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship company",
+        "type": "string",
+        "name": "ShipCompany"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship country",
+        "type": "string",
+        "name": "ShipCountry"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship first name",
+        "type": "string",
+        "name": "ShipFirstName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship last name",
+        "type": "string",
+        "name": "ShipLastName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship middle name",
+        "type": "string",
+        "name": "ShipMiddleName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship phone",
+        "type": "string",
+        "name": "ShipPhone"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship state",
+        "type": "string",
+        "name": "ShipState"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship street 1",
+        "type": "string",
+        "name": "ShipStreet1"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship street 2",
+        "type": "string",
+        "name": "ShipStreet2"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship zip",
+        "type": "string",
+        "name": "ShipZip"
+       },
+       {
+        "control_type": "date",
+        "label": "Start date",
+        "parse_output": "parse_date_output",
+        "render_input": "render_date_input",
+        "type": "date_time",
+        "name": "StartDate"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "number": 4,
+    "provider": "infusionsoft",
+    "name": "search_order_items",
+    "as": "search_order_items",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "OrderId": "#{_('data.infusionsoft.search_orders1.orders.first.Id')}"
+    }
+   },
+   {
+    "number": 5,
+    "provider": "infusionsoft",
+    "name": "get_contact",
+    "as": "get_contact1",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Id": "#{_('data.infusionsoft.search_orders1.orders.first.ContactId')}"
+    }
+   },
+   {
+    "number": 6,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.infusionsoft.search_orders1.orders.first.JobTitle')}",
+       "rhs": "Xero Invoice"
+      }
+     ]
+    },
+    "comment": "Stop if the invoice came from xero"
+   },
+   {
+    "number": 7,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_('data.infusionsoft.search_order_items.order_items.first.____Size', 'list_meta', '____Size', 'data.infusionsoft.search_order_items.order_items')}",
+       "rhs": "0"
+      }
+     ]
+    },
+    "comment": "If the order has no lines, skip it"
+   },
+   {
+    "number": 8,
+    "provider": "xero",
+    "name": "search_invoices",
+    "as": "search_invoices",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Reference": "=\"Infusionsoft Invoice ID: \" + _('data.infusionsoft.new_invoice.Id')"
+    },
+    "comment": "Check to see if the Invoice was already moved to Xero from IS"
+   },
+   {
+    "number": 9,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.xero.search_invoices.Invoices.first.InvoiceID')}",
+       "rhs": null
+      },
+      {
+       "operand": "not_equals_to",
+       "lhs": "#{_('data.xero.search_invoices.Invoices.first.Status')}",
+       "rhs": "VOIDED"
+      },
+      {
+       "operand": "not_equals_to",
+       "lhs": "#{_('data.xero.search_invoices.Invoices.first.Status')}",
+       "rhs": "DELETED"
+      }
+     ]
+    },
+    "comment": "If present and the invoice is not voided, stop"
+   },
+   {
+    "number": 10,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "=_('data.infusionsoft.get_contact1.FirstName') or _('data.infusionsoft.get_contact1.LastName') or _('data.infusionsoft.get_contact1.Company')",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 11,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "send_mail",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "subject": "Error | Infusionsoft Invoice has customer with no First name, Last name and Company | #{_('data.infusionsoft.new_invoice.JobId')}",
+       "to": "#{_('data.workato.job_context.user_email')}",
+       "body": "The customer associated with an Infusionsoft Order has no First name, Last name and Company, and cannot be sync over successfully.\n\nThis Order will not be transferred.\nOrder ID : #{_('data.infusionsoft.new_invoice.JobId')}\nOrder Title : #{_('data.infusionsoft.search_orders1.orders.first.JobTitle')}\n\n\n--------------------------------------------------------\nUnable to look up the customer in QuickBooks with neither First Name, Last Name, or Company Name not being present in Infusionsoft Contact.\n\nFirst Name : #{_('data.infusionsoft.get_contact1.FirstName')}\nLast Name : #{_('data.infusionsoft.get_contact1.LastName')}\nCompany Name : #{_('data.infusionsoft.get_contact1.Company')}\nEmail : #{_('data.infusionsoft.get_contact1.Email')}\n\nPlease check on this record and edit accordingly. Then, re-run the job if you wish to try again.\n---------------------------------------------------------\nThis is an automated notification email sent by Workato Integration App recipe. To stop receiving emails like this, please log in to your Workato account and turn Email notifications off on your recipe.\n\nJob ID : #{_('data.workato.job_context.job_id')}\nJob URL : #{_('data.workato.job_context.job_url')}\nRecipe URL : #{_('data.workato.job_context.recipe_url')}\nJob Created At : #{_('data.workato.job_context.job_created_at')}"
+      }
+     },
+     {
+      "number": 12,
+      "keyword": "stop",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "stop_with_error": "true",
+       "stop_reason": "Contact does not contain either First Name, Last Name, Company Name"
+      }
+     }
+    ]
+   },
+   {
+    "number": 13,
+    "provider": "utility",
+    "name": "format_name",
+    "as": "format_name",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "orderSource2": true
+    },
+    "input": {
+     "order": "=_('data.workato.job_context.parameters.full_customer_format').split(\"=\").first",
+     "separator": "=_('data.workato.job_context.parameters.full_customer_format').split(\"=\").last.split(\"*\").first",
+     "first_name": "#{_('data.infusionsoft.get_contact1.FirstName')}",
+     "last_name": "#{_('data.infusionsoft.get_contact1.LastName')}"
+    }
+   },
+   {
+    "number": 14,
+    "provider": "utility",
+    "name": "format_name",
+    "as": "format_name1",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "orderSource2": true
+    },
+    "input": {
+     "order": "={\n  \"3\" => \"f,l\",\n  \"4\" => \"f,l\",\n  \"5\" => \"l,f\",\n  \"6\" => \"l,f\"\n}[_('data.workato.job_context.parameters.full_customer_format').split(\"*\").last] || \"f,l\"",
+     "separator": "={\n  \"3\" => \", \",\n  \"6\" => \", \"\n}[_('data.workato.job_context.parameters.full_customer_format').split(\"*\").last] || \" \"",
+     "first_name": "#{_('data.utility.format_name.formatted_name')}",
+     "last_name": "#{_('data.infusionsoft.get_contact1.Company')}"
+    }
+   },
+   {
+    "number": 15,
+    "provider": "utility",
+    "name": "format_name",
+    "as": "format_name2",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "orderSource2": true
+    },
+    "input": {
+     "order": "f",
+     "first_name": "={\n  \"1\" => (_('data.utility.format_name.formatted_name') || _('data.infusionsoft.get_contact.Company')),\n  \"2\" => (_('data.infusionsoft.get_contact.Company') || _('data.utility.format_name.formatted_name'))\n}[_('data.workato.job_context.parameters.full_customer_format').split(\"*\").last] || _('data.utility.format_name1.formatted_name')"
+    }
+   },
+   {
+    "number": 16,
+    "provider": "xero",
+    "name": "search_contacts",
+    "as": "search_contacts",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Name": "#{_('data.utility.format_name2.formatted_name')}"
+    },
+    "comment": "Search using email, if not present then proceed."
+   },
+   {
+    "number": 17,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "lhs": "#{_('data.xero.search_contacts.contacts.first.ContactID')}",
+       "rhs": null,
+       "operand": "blank"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 18,
+      "provider": "infusionsoft",
+      "name": "get_contact",
+      "as": "get_contact",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "Id": "#{_('data.infusionsoft.new_invoice.ContactId')}"
+      }
+     },
+     {
+      "number": 19,
+      "provider": "xero",
+      "name": "create_contact",
+      "as": "create_contact",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "ContactStatus": "ACTIVE",
+       "Name": "=_('data.utility.format_name2.formatted_name')",
+       "FirstName": "#{_('data.infusionsoft.get_contact.FirstName')}",
+       "LastName": "#{_('data.infusionsoft.get_contact.LastName')}",
+       "EmailAddress": "#{_('data.infusionsoft.get_contact.Email')}",
+       "POBOXAddressLine1": "#{_('data.infusionsoft.get_contact.StreetAddress1')}",
+       "POBOXCity": "#{_('data.infusionsoft.get_contact.City')}",
+       "POBOXRegion": "#{_('data.infusionsoft.get_contact.State')}",
+       "POBOXPostalCode": "#{_('data.infusionsoft.get_contact.PostalCode')}",
+       "POBOXCountry": "#{_('data.infusionsoft.get_contact.Country')}",
+       "POBOXAddressLine2": "#{_('data.infusionsoft.get_contact.StreetAddress2')}",
+       "STREETAddressLine1": "#{_('data.infusionsoft.get_contact.Address2Street1')}",
+       "STREETAddressLine2": "#{_('data.infusionsoft.get_contact.Address2Street2')}",
+       "STREETCity": "#{_('data.infusionsoft.get_contact.City2')}",
+       "STREETRegion": "#{_('data.infusionsoft.get_contact.State2')}",
+       "STREETPostalCode": "#{_('data.infusionsoft.get_contact.PostalCode2')}",
+       "STREETCountry": "#{_('data.infusionsoft.get_contact.Country2')}",
+       "DEFAULTPhoneNumber": "#{_('data.infusionsoft.get_contact.Phone1')}"
+      }
+     }
+    ]
+   },
+   {
+    "number": 20,
+    "as": "foreach2",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 21,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "greater_than",
+         "lhs": "#{_('data.foreach.foreach2.ProductId')}",
+         "rhs": "0"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 22,
+        "provider": "infusionsoft",
+        "name": "get_product",
+        "as": "get_product",
+        "title": null,
+        "description": null,
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "Id": "#{_('data.foreach.foreach2.ProductId')}"
+        },
+        "comment": "Check to if it is in Infusionsoft as a product"
+       },
+       {
+        "number": 23,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "or",
+         "conditions": [
+          {
+           "operand": "is_true",
+           "lhs": "=(_('data.infusionsoft.get_product.ProductName').present? ? (_('data.infusionsoft.get_product.ProductName').length > 29 and _('data.workato.job_context.parameters.itemcodesyncs').include?(\"productname\") ) : false) or (_('data.infusionsoft.get_product.Sku').present? ? (_('data.infusionsoft.get_product.Sku').length > 29 and _('data.workato.job_context.parameters.itemcodesyncs').include?(\"sku\")) : false)",
+           "rhs": "29"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 24,
+          "provider": "email",
+          "name": "send_mail",
+          "as": "send_mail1",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "to": "#{_('data.workato.job_context.user_email')}",
+           "subject": "Item in Infusionsoft failed to Sync to Xero",
+           "body": "=\"An Item cannot be synced because the given Product Name and SKU will exceed Xero's Character limit for Item Code or Item Name.\\n\\nXero Item Code limit : 30 \\nXero Item Name limit : 50 \\n\\nYou have chosen to Sync\" + _('data.workato.job_context.parameters.itemcodesyncs') + \" as Item Code\" +\n\"Item Code length :\" + {\"productname\"=>(_('data.infusionsoft.get_product.ProductName').present? ? _('data.infusionsoft.get_product.ProductName').length.to_s : \"\"), \"sku\" => (_('data.infusionsoft.get_product.Sku').present? ? _('data.infusionsoft.get_product.Sku').length.to_s : \"\")}[_('data.workato.job_context.parameters.itemcodesyncs')] + \"--------------------------------------------------------\\n\\n\" + \"Please check on this record and edit accordingly. Then, re-run the job if you wish to try again.\\n\" + \"---------------------------------------------------------\\n\" + \"This is an automated notification email sent by Workato Integration App recipe. To stop receiving emails like this, please log in to your Workato account and turn Email notifications off on your recipe.\\n\" + \"Job ID : \" +_('data.workato.job_context.job_id') +\"\\n\" + \"Job URL : \" +_('data.workato.job_context.job_url') + \"\\n\" +\"Recipe URL :\" + _('data.workato.job_context.recipe_url') + \"\\n\"+\"Job Created At : \" +_('data.workato.job_context.job_created_at')"
+          }
+         },
+         {
+          "number": 25,
+          "keyword": "stop",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "stop_with_error": "true",
+           "stop_reason": "\"Item Name or Product Name exceeded Xero's character limit for Xero Item Code"
+          }
+         }
+        ]
+       },
+       {
+        "number": 26,
+        "provider": "xero",
+        "name": "search_item",
+        "as": "search_item",
+        "title": null,
+        "description": null,
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "Code": "=_('data.workato.job_context.parameters.itemcodesyncs').include?(\"productname\") ? \n_('data.infusionsoft.get_product.ProductName')[0..29].strip : \n(\n   _('data.workato.job_context.parameters.itemcodesyncs').include?(\"sku\") ? \n   _('data.infusionsoft.get_product.Sku')[0..29].strip : \n   _('data.infusionsoft.get_product.ProductName')[0..29].strip\n)"
+        },
+        "comment": "Search for the item in Xero"
+       },
+       {
+        "number": 27,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "lhs": "#{_('data.xero.search_item.ItemID')}",
+           "rhs": null,
+           "operand": "blank"
+          },
+          {
+           "operand": "not_equals_to",
+           "lhs": "#{_('data.foreach.foreach2.ItemType')}",
+           "rhs": "2"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 28,
+          "provider": "email",
+          "name": "send_mail",
+          "as": "send_mail2",
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "to": "#{_('data.workato.job_context.user_email')}",
+           "subject": "New Item created in Xero from Infusionsoft",
+           "body": "A new item has been created in Xero while importing invoices from Infusionsoft.\n\nPlease note that the newly created item do not possess the tax characteristics from Infusionsoft. Please ensure that you set the Tax type for the following item : \n\nItem ID : #{_('data.xero.search_item.ItemID')}\nItem Code : #{_('data.xero.search_item.Code')}\nItem Name : #{_('data.xero.search_item.Name')}\nItem price : #{_('data.xero.search_item.SalesDetails.UnitPrice')}\n\n---------------------------------------------------------\nThis is an automated notification email sent by Workato Integration App recipe. To stop receiving emails like this, please log in to your Workato account and turn Email notifications off on your recipe.\n\nJob ID : #{_('data.workato.job_context.job_id')}\nJob URL : #{_('data.workato.job_context.job_url')}\nRecipe URL : #{_('data.workato.job_context.recipe_url')}\nJob Created At : #{_('data.workato.job_context.job_created_at')}"
+          },
+          "comment": "Sends an email to notify of newly created Item",
+          "title": null,
+          "description": null
+         },
+         {
+          "number": 29,
+          "provider": "xero",
+          "name": "create_item",
+          "as": "create_item1",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "SalesAccountCode": "#{_('data.workato.job_context.parameters.AccountCode')}"
+          },
+          "toggleCfg": {
+           "SalesAccountCode": false
+          },
+          "input": {
+           "Description": "= _('data.infusionsoft.get_product.Description').present? ? \n_('data.infusionsoft.get_product.Description').strip_tags.strip : \n(_('data.infusionsoft.get_product.ShortDescription') || _('data.foreach.foreach2.ItemDescription') || _('data.foreach.foreach2.ItemName'))",
+           "Code": "=_('data.workato.job_context.parameters.itemcodesyncs').include?(\"productname\") ? \n_('data.infusionsoft.get_product.ProductName')[0..29].strip : \n(\n   _('data.workato.job_context.parameters.itemcodesyncs').include?(\"sku\") ? \n   _('data.infusionsoft.get_product.Sku')[0..29].strip : \n   _('data.infusionsoft.get_product.ProductName')[0..29].strip\n)",
+           "SalesUnitPrice": "=_('data.infusionsoft.get_product.ProductPrice') or _('data.foreach.foreach2.PPU')",
+           "SalesAccountCode": "#{_('data.workato.job_context.parameters.AccountCode')}",
+           "Name": "=(\n  _('data.foreach.foreach2.ItemName') or\n  _('data.infusionsoft.get_product.ProductName') or\n  _('data.foreach.foreach2.ItemDescription') or\n  _('data.infusionsoft.get_product.ShortDescription') \n  )[0..49]"
+          },
+          "comment": "If the item is not in Xero, create it"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "source": "#{_('data.infusionsoft.search_order_items.order_items')}",
+    "comment": "Process each item on the order"
+   },
+   {
+    "number": 30,
+    "as": "foreach1",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 31,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "lhs": "#{_('data.foreach.foreach1.index', 'foreach_meta')}",
+         "rhs": "0",
+         "operand": "equals_to"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 32,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "greater_than",
+           "lhs": "#{_('data.foreach.foreach1.ProductId')}",
+           "rhs": "0"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 33,
+          "provider": "infusionsoft",
+          "name": "get_product",
+          "as": "get_product1",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "Id": "#{_('data.foreach.foreach1.ProductId')}"
+          }
+         },
+         {
+          "number": 34,
+          "provider": "xero",
+          "name": "search_item",
+          "as": "search_item1",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "Code": "=_('data.workato.job_context.parameters.itemcodesyncs').include?(\"productname\") ? \n_('data.infusionsoft.get_product1.ProductName')[0..29].strip : \n(\n   _('data.workato.job_context.parameters.itemcodesyncs').include?(\"sku\") ? \n   _('data.infusionsoft.get_product1.Sku')[0..29].strip : \n   _('data.infusionsoft.get_product1.ProductName')[0..29].strip\n)"
+          }
+         },
+         {
+          "number": 35,
+          "provider": "xero",
+          "name": "create_invoice",
+          "as": "create_invoice",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {
+           "CurrencyCode": false,
+           "Status": true,
+           "LineAmountTypes": false,
+           "AccountCode": false
+          },
+          "input": {
+           "Reference": "=\"Infusionsoft Invoice ID: \" + _('data.infusionsoft.new_invoice.Id')",
+           "CurrencyCode": "#{_('data.workato.job_context.parameters.CurrencyCode')}",
+           "Description": "=(_('data.foreach.foreach1.ItemName') or \"\") + \" | \" + (_('data.infusionsoft.get_product1.ShortDescription') or \"None\")",
+           "Quantity": "#{_('data.foreach.foreach1.Qty')}",
+           "UnitAmount": "#{_('data.foreach.foreach1.PPU')}",
+           "customer_id": "=_('data.xero.search_contacts.contacts.first.ContactID') || _('data.xero.create_contact.ContactID')",
+           "LineAmountTypes": "#{_('data.workato.job_context.parameters.InvoiceTaxAmount')}",
+           "first_name": "#{_('data.infusionsoft.new_invoice.get_contact(ContactId>Id).FirstName')}",
+           "last_name": "#{_('data.infusionsoft.new_invoice.get_contact(ContactId>Id).LastName')}",
+           "Date": "=_('data.infusionsoft.search_orders1.orders.first.DateCreated').present? ? _('data.infusionsoft.search_orders1.orders.first.DateCreated').to_date : _('data.infusionsoft.search_orders1.orders.first.DueDate').to_date",
+           "DueDate": "=_('data.infusionsoft.search_orders1.orders.first.DateCreated').present? ? _('data.infusionsoft.search_orders1.orders.first.DateCreated').to_date : _('data.infusionsoft.search_orders1.orders.first.DueDate').to_date",
+           "AccountCode": "#{_('data.xero.search_item1.SalesDetails.AccountCode')}",
+           "email": "#{_('data.infusionsoft.new_invoice.get_contact(ContactId>Id).Email')}",
+           "tax_type_name": "#{_('data.workato.job_context.parameters.taxtype')}",
+           "item_name": "#{_('data.xero.search_item1.Code')}",
+           "Status": "DRAFT"
+          },
+          "visible_config_fields": [
+           "name",
+           "first_name",
+           "last_name",
+           "email",
+           "Date",
+           "DueDate",
+           "CurrencyCode",
+           "Status",
+           "LineAmountTypes",
+           "Reference",
+           "Description",
+           "ItemCode",
+           "Quantity",
+           "UnitAmount",
+           "AccountCode",
+           "TaxType"
+          ],
+          "comment": "Create the invoice in Xero and add the first line"
+         }
+        ]
+       },
+       {
+        "number": 36,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "equals_to",
+           "lhs": "#{_('data.foreach.foreach1.ProductId')}",
+           "rhs": "0"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 37,
+          "provider": "xero",
+          "name": "create_invoice",
+          "as": "create_invoice2",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "CurrencyCode": "#{_('data.workato.job_context.parameters.CurrencyCode')}",
+           "AccountCode": "#{_('data.workato.job_context.parameters.AccountCode')}"
+          },
+          "toggleCfg": {
+           "CurrencyCode": false,
+           "Status": true,
+           "LineAmountTypes": false,
+           "AccountCode": false
+          },
+          "input": {
+           "LineAmountTypes": "#{_('data.workato.job_context.parameters.InvoiceTaxAmount')}",
+           "AccountCode": "#{_('data.workato.job_context.parameters.AccountCode')}",
+           "customer_id": "=_('data.xero.search_contacts.contacts.first.ContactID') || _('data.xero.create_contact.ContactID')",
+           "first_name": "#{_('data.infusionsoft.new_invoice.get_contact(ContactId>Id).FirstName')}",
+           "last_name": "#{_('data.infusionsoft.new_invoice.get_contact(ContactId>Id).LastName')}",
+           "Date": "=_('data.infusionsoft.search_orders1.orders.first.DateCreated').to_date",
+           "DueDate": "=_('data.infusionsoft.search_orders1.orders.first.DateCreated').to_date",
+           "CurrencyCode": "#{_('data.workato.job_context.parameters.CurrencyCode')}",
+           "Reference": "=\"Infusionsoft Invoice ID: \" + _('data.infusionsoft.new_invoice.Id')",
+           "Description": "=(_('data.foreach.foreach1.ItemName') or \"*\") + \" | \" + (_('data.infusionsoft.get_product1.ShortDescription') or \"None\")",
+           "Quantity": "#{_('data.foreach.foreach1.Qty')}",
+           "UnitAmount": "#{_('data.foreach.foreach1.PPU')}",
+           "tax_type_name": "Tax Exempt",
+           "Status": "DRAFT"
+          },
+          "visible_config_fields": [
+           "name",
+           "first_name",
+           "last_name",
+           "Date",
+           "DueDate",
+           "CurrencyCode",
+           "Status",
+           "LineAmountTypes",
+           "Reference",
+           "Description",
+           "Quantity",
+           "UnitAmount",
+           "AccountCode",
+           "TaxType",
+           "ItemCode"
+          ],
+          "comment": "Create the invoice in Xero and add the first line (if it is Ad-hoc)"
+         }
+        ]
+       }
+      ],
+      "comment": "0 index is the first line, we create the invoice and the first line in xero"
+     },
+     {
+      "number": 38,
+      "provider": "infusionsoft",
+      "name": "update_order",
+      "as": "update_order",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "JobTitle": "=(_('data.infusionsoft.search_orders1.orders.first.JobTitle') or \"\") + \" | Xero Invoice: \" + (_('data.xero.create_invoice.InvoiceNumber') or _('data.xero.create_invoice2.InvoiceNumber'))",
+       "Id": "#{_('data.infusionsoft.search_orders1.orders.first.Id')}"
+      }
+     },
+     {
+      "number": 39,
+      "provider": "infusionsoft",
+      "name": "search_orders",
+      "as": "search_orders2",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "Id": "#{_('data.infusionsoft.update_order.id')}"
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "orders",
+        "label": "Orders",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Contact ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "ContactId"
+         },
+         {
+          "control_type": "date_time",
+          "label": "Date created",
+          "parse_output": {},
+          "type": "date_time",
+          "name": "DateCreated"
+         },
+         {
+          "control_type": "date",
+          "label": "Due date",
+          "parse_output": "parse_date_output",
+          "render_input": "render_date_input",
+          "type": "date_time",
+          "name": "DueDate"
+         },
+         {
+          "control_type": "number",
+          "label": "Order ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "Id"
+         },
+         {
+          "control_type": "text",
+          "label": "Job notes",
+          "type": "string",
+          "name": "JobNotes"
+         },
+         {
+          "control_type": "number",
+          "label": "Job recurring ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "JobRecurringId"
+         },
+         {
+          "control_type": "text",
+          "label": "Job status",
+          "type": "string",
+          "name": "JobStatus"
+         },
+         {
+          "control_type": "text",
+          "label": "Job title",
+          "event_title": true,
+          "type": "string",
+          "name": "JobTitle"
+         },
+         {
+          "control_type": "number",
+          "label": "Order status",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "OrderStatus"
+         },
+         {
+          "control_type": "text",
+          "label": "Order type",
+          "type": "string",
+          "name": "OrderType"
+         },
+         {
+          "control_type": "number",
+          "label": "Product ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "ProductId"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship city",
+          "type": "string",
+          "name": "ShipCity"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship company",
+          "type": "string",
+          "name": "ShipCompany"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship country",
+          "type": "string",
+          "name": "ShipCountry"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship first name",
+          "type": "string",
+          "name": "ShipFirstName"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship last name",
+          "type": "string",
+          "name": "ShipLastName"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship middle name",
+          "type": "string",
+          "name": "ShipMiddleName"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship phone",
+          "type": "string",
+          "name": "ShipPhone"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship state",
+          "type": "string",
+          "name": "ShipState"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship street 1",
+          "type": "string",
+          "name": "ShipStreet1"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship street 2",
+          "type": "string",
+          "name": "ShipStreet2"
+         },
+         {
+          "control_type": "text",
+          "label": "Ship zip",
+          "type": "string",
+          "name": "ShipZip"
+         },
+         {
+          "control_type": "date",
+          "label": "Start date",
+          "parse_output": "parse_date_output",
+          "render_input": "render_date_input",
+          "type": "date_time",
+          "name": "StartDate"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "number": 40,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "lhs": "#{_('data.foreach.foreach1.index', 'foreach_meta')}",
+         "rhs": "0",
+         "operand": "greater_than"
+        },
+        {
+         "operand": "not_equals_to",
+         "lhs": "#{_('data.foreach.foreach1.ItemType')}",
+         "rhs": "2"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 41,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "greater_than",
+           "lhs": "#{_('data.foreach.foreach1.ProductId')}",
+           "rhs": "0"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 42,
+          "provider": "infusionsoft",
+          "name": "get_product",
+          "as": "get_product2",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "Id": "#{_('data.foreach.foreach1.ProductId')}"
+          }
+         },
+         {
+          "number": 43,
+          "provider": "xero",
+          "name": "search_item",
+          "as": "search_item2",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "Code": "=_('data.workato.job_context.parameters.itemcodesyncs').include?(\"productname\") ? \n_('data.infusionsoft.get_product2.ProductName')[0..29].strip : \n(\n   _('data.workato.job_context.parameters.itemcodesyncs').include?(\"sku\") ? \n   _('data.infusionsoft.get_product2.Sku')[0..29].strip : \n   _('data.infusionsoft.get_product2.ProductName')[0..29].strip\n)"
+          }
+         },
+         {
+          "number": 44,
+          "provider": "xero",
+          "name": "add_invoice_line_item",
+          "as": "add_invoice_line_item1",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {},
+          "toggleCfg": {},
+          "input": {
+           "Quantity": "#{_('data.foreach.foreach1.Qty')}",
+           "UnitAmount": "#{_('data.foreach.foreach1.PPU')}",
+           "Description": "=(_('data.foreach.foreach1.ItemName') or \"\") + \" | \" + (_('data.infusionsoft.get_product2.ShortDescription') or \"None\")",
+           "InvoiceID": "=_('data.xero.create_invoice.InvoiceID') || _('data.xero.create_invoice2.InvoiceID')",
+           "item_name": "#{_('data.xero.search_item2.Code')}"
+          },
+          "visible_config_fields": [
+           "InvoiceNumber",
+           "Description",
+           "ItemCode",
+           "Quantity",
+           "UnitAmount"
+          ],
+          "comment": "Add the other lines to the invoice"
+         }
+        ]
+       },
+       {
+        "number": 45,
+        "keyword": "if",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "equals_to",
+           "lhs": "#{_('data.foreach.foreach1.ProductId')}",
+           "rhs": "0"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 46,
+          "provider": "xero",
+          "name": "add_invoice_line_item",
+          "as": "add_invoice_line_item3",
+          "title": null,
+          "description": null,
+          "keyword": "action",
+          "dynamicPickListSelection": {
+           "AccountCode": "#{_('data.workato.job_context.parameters.AccountCode')}"
+          },
+          "toggleCfg": {
+           "AccountCodeSource2": true
+          },
+          "input": {
+           "AccountCode": "#{_('data.workato.job_context.parameters.AccountCode')}",
+           "Description": "=(_('data.foreach.foreach1.ItemName') or \"\") + \" | \" + (_('data.infusionsoft.get_product2.ShortDescription') or \"None\")",
+           "Quantity": "#{_('data.foreach.foreach1.Qty')}",
+           "UnitAmount": "#{_('data.foreach.foreach1.PPU')}",
+           "tax_type_name": "Tax Exempt",
+           "InvoiceID": "=_('data.xero.create_invoice.InvoiceID') or _('data.xero.create_invoice2.InvoiceID')",
+           "item_name": "="
+          },
+          "visible_config_fields": [
+           "InvoiceNumber",
+           "Description",
+           "Quantity",
+           "UnitAmount",
+           "AccountCode",
+           "ItemCode"
+          ],
+          "comment": "Add the other ad-hoc lines to the invoice"
+         }
+        ]
+       }
+      ],
+      "comment": "Ignore tax lines"
+     },
+     {
+      "number": 47,
+      "provider": "xero",
+      "name": "update_invoice",
+      "as": "update_invoice",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "Status": false
+      },
+      "input": {
+       "Status": "#{_('data.workato.job_context.parameters.InvoiceStatus')}",
+       "InvoiceNumber": "=_('data.xero.create_invoice.InvoiceNumber') or _('data.xero.create_invoice2.InvoiceNumber')"
+      },
+      "comment": "Change invoice status to desired status specified in parameter",
+      "title": null,
+      "description": null
+     }
+    ],
+    "source": "#{_('data.infusionsoft.search_order_items.order_items')}",
+    "comment": "Create the Invoice and the line items"
+   }
+  ],
+  "comment": "Watch for updated Invoices in Infusionsoft",
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "IFS Order"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Title"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Xero Invoice Created?"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "=_('data.infusionsoft.search_orders1.orders.first.Id')",
+   "custom_column_2": "=_('data.infusionsoft.search_orders2.orders.first.JobTitle') or _('data.infusionsoft.search_orders1.orders.first.JobTitle') or \"Not exist\"",
+   "custom_column_3": "=((_('data.xero.search_invoices.Invoices.first.InvoiceNumber') or _('data.xero.create_invoice.InvoiceNumber') or _('data.xero.create_invoice2.InvoiceNumber')).present? ? \"Yes\" : \"No\") + \" | \" + (_('data.xero.search_invoices.Invoices.first.InvoiceNumber') or _('data.xero.create_invoice.InvoiceNumber') or _('data.xero.create_invoice2.InvoiceNumber'))"
+  },
+  "param": {}
+ }
+}

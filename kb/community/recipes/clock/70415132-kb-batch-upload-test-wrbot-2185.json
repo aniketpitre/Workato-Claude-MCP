@@ -1,0 +1,501 @@
+{
+ "id": 70415132,
+ "name": "KB Batch Upload Test - WRBOT-2185",
+ "description": "Tests batch upload behavior when one document exceeds 16MB limit",
+ "applications": [
+  "clock",
+  "google_drive",
+  "workato_variable",
+  "workato_custom_code",
+  "workato_genie"
+ ],
+ "action_applications": [
+  "google_drive",
+  "workato_variable",
+  "workato_custom_code",
+  "workato_genie"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [],
+ "categories": [
+  "Recipe Tools",
+  "Marketing",
+  "Workato",
+  "Document/File",
+  "Sales Enablement",
+  "Developer Tool",
+  "Artificial Intelligence"
+ ],
+ "copy_count": 4,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2026-02-17T23:13:49.271-08:00",
+ "source_url": "https://app.workato.com/recipes/70415132?community=us",
+ "steps": [
+  "clock.scheduled_event",
+  "google_drive.search_file_or_folder",
+  "workato_variable.declare_variable",
+  "workato_variable.declare_list",
+  "workato_variable.declare_list",
+  "google_drive.download_file_contents",
+  "workato_custom_code.invoke_custom_ruby_code",
+  "workato_variable.insert_to_list",
+  "workato_variable.add_item_to_list",
+  "workato_genie.upsert_knowledge"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "scheduled_event",
+  "as": "49eb59c5",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "time_unit": "Weeks",
+   "days_of_week": [
+    {
+     "label": "Wednesday",
+     "value": "3"
+    }
+   ]
+  },
+  "input": {
+   "time_unit": "weeks"
+  },
+  "block": [
+   {
+    "number": 1,
+    "provider": "google_drive",
+    "name": "search_file_or_folder",
+    "as": "3ba86643",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "folderId": {
+      "ids": [
+       "0AF5504Wyp5DrUk9PVA",
+       "144gi8VpbReERd9fq_xOml6Y4kpvjcpQ7",
+       "1CL2PYFY-i3Ao8s5L7-PYlSqpz5dDJY11"
+      ],
+      "titles": [
+       "My Drive",
+       "TestData",
+       "4toPass1not"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "folderId": true
+    },
+    "input": {
+     "kind": "Files",
+     "folderId": "1CL2PYFY-i3Ao8s5L7-PYlSqpz5dDJY11"
+    },
+    "uuid": "98c35c8e-71a8-42d5-99c5-cf1d316e0369",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "8e377d50",
+    "keyword": "action",
+    "input": {
+     "variables": {
+      "schema": "[{\"name\":\"next_page_token\",\"type\":\"string\",\"optional\":true,\"label\":\"next_page_token\",\"details\":{\"real_name\":\"next_page_token\"},\"control_type\":\"text\",\"parent\":[\"variables\",\"data\"]}]",
+      "data": {
+       "next_page_token": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_drive\",\"line\":\"3ba86643\",\"path\":[\"nextPageToken\"]}')}"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "label": "next_page_token",
+      "name": "next_page_token",
+      "optional": true,
+      "type": "string",
+      "details": {
+       "real_name": "next_page_token"
+      }
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "add_field_label": "Add a variable",
+      "control_type": "form-schema-builder",
+      "empty_schema_title": "Add variables by giving them a name, type and default value",
+      "exclude_fields": [
+       "hint"
+      ],
+      "item_label": "variable",
+      "label": "Variables",
+      "mark_as_required": true,
+      "name": "variables",
+      "ngIf": "!input.name",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "next_page_token",
+          "name": "next_page_token",
+          "type": "string",
+          "optional": true,
+          "details": {
+           "real_name": "next_page_token"
+          },
+          "parent": [
+           "variables",
+           "data"
+          ],
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.next_page_token"
+    ],
+    "uuid": "d8c67e27-ac70-4516-8abb-3499460dc9ef",
+    "skip": false,
+    "title": "  Create variable next_page_token",
+    "description": "Create variable <span class=\"provider\">next_page_token</span>"
+   },
+   {
+    "number": 3,
+    "provider": "workato_variable",
+    "name": "declare_list",
+    "as": "3218c0f2",
+    "keyword": "action",
+    "input": {
+     "name": "files_ids",
+     "list_item_schema_json": "[{\"name\":\"doc_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Doc ID\"}]",
+     "list_items": {
+      "doc_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"google_drive\",\"line\":\"3ba86643\",\"path\":[\"files\",{\"path_element_type\":\"current_item\"},\"webContentLink\"]}').split(\"id=\")[1].split(\"&\")[0]"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "hint": "",
+      "label": "files_ids",
+      "name": "list_items",
+      "of": "object",
+      "optional": false,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Doc ID",
+        "name": "doc_id",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+      "label": "Items",
+      "name": "list_items",
+      "of": "object",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Doc ID",
+        "name": "doc_id",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "uuid": "eeeaeb46-6e0c-47ef-8b8f-a5a3ce0bd932",
+    "title": " Create files_ids list",
+    "description": "Create <span class=\"provider\">files_ids</span> list"
+   },
+   {
+    "number": 4,
+    "provider": "workato_variable",
+    "name": "declare_list",
+    "as": "all_docs_list",
+    "keyword": "action",
+    "input": {
+     "name": "all_documents",
+     "list_item_schema_json": "[{\"name\":\"doc_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Doc ID\"},{\"name\":\"title\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Title\"},{\"name\":\"body\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Body\"}]"
+    },
+    "extended_output_schema": [
+     {
+      "hint": "",
+      "label": "all_documents",
+      "name": "list_items",
+      "of": "object",
+      "optional": false,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Doc ID",
+        "name": "doc_id",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "Title",
+        "name": "title",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "Body",
+        "name": "body",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+      "label": "Items",
+      "name": "list_items",
+      "of": "object",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Doc ID",
+        "name": "doc_id",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "Title",
+        "name": "title",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "Body",
+        "name": "body",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "array"
+     }
+    ],
+    "uuid": "new-list-uuid-001",
+    "title": " Create all_documents list",
+    "description": "Create <span class=\"provider\">all_documents</span> list"
+   },
+   {
+    "number": 5,
+    "as": "3dbbb055",
+    "keyword": "foreach",
+    "repeat_mode": "simple",
+    "batch_size": "",
+    "clear_scope": "false",
+    "input": {},
+    "block": [
+     {
+      "number": 6,
+      "provider": "google_drive",
+      "name": "download_file_contents",
+      "as": "c09a3020",
+      "keyword": "action",
+      "toggleCfg": {
+       "fileId": true
+      },
+      "input": {
+       "fileId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"3dbbb055\",\"path\":[\"id\"]}')}"
+      },
+      "uuid": "7a851e42-1647-4fce-8600-1526e3742c88",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 7,
+      "provider": "workato_custom_code",
+      "name": "invoke_custom_ruby_code",
+      "as": "3ac69da6",
+      "keyword": "action",
+      "input": {
+       "code": "require 'digest'\n\n# Get file content\nraw_content = input['file_content'] || input.dig('Input', 'Data', 'file_content') || input.dig('input', 'file_content')\n\nraise \"Missing content input\" if raw_content.to_s.strip.empty?\n\n# Parse header + body\nlines = raw_content.split(/\\r?\\n/)\ntitle      = lines[0].to_s.split(\": \", 2)[1].to_s.strip rescue \"Untitled\"\nurl        = lines[1].to_s.split(\": \", 2)[1].to_s.strip rescue nil\ntags_str   = lines[2].to_s.split(\": \", 2)[1].to_s.strip rescue nil\nupdated_at = lines[3].to_s.split(\": \", 2)[1].to_s.strip rescue nil\n\n# Body = everything after metadata lines\nbody = lines[4..]&.join(\"\\n\").to_s.strip\n\n# Extract doc_id from URL\ndoc_id = url.to_s.split('/doc/')[1] || \"doc_#{Time.now.to_i}\"\n\n# Return structured result\n{\n  doc_id: doc_id,\n  title: title,\n  url: url,\n  tags: (tags_str || \"\").split(\",\").map(&:strip).reject(&:empty?),\n  updated_at: updated_at,\n  body: body,\n  body_length: body.length\n}\n",
+       "name": "split file content",
+       "code_input": {
+        "schema": "[{\"name\":\"file_content\",\"type\":\"string\",\"optional\":true,\"label\":\"file_content\",\"details\":{\"real_name\":\"file_content\"},\"control_type\":\"text\",\"parent\":[\"code_input\",\"data\"]}]"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "label": "Output",
+        "name": "output",
+        "properties": [],
+        "type": "object"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "control_type": "form-schema-builder",
+        "label": "Input",
+        "name": "code_input",
+        "optional": true,
+        "override": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "file_content",
+            "name": "file_content",
+            "type": "string",
+            "optional": true,
+            "details": {
+             "real_name": "file_content"
+            },
+            "parent": [
+             "code_input",
+             "data"
+            ]
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "sticky": true,
+        "type": "object"
+       }
+      ],
+      "uuid": "5db60a79-045f-4d99-9bd3-ec36a0da5a36",
+      "title": null,
+      "description": "Execute <span class=\"provider\">ruby</span> code: <span class=\"provider\">split file content</span>"
+     },
+     {
+      "number": 8,
+      "provider": "workato_variable",
+      "name": "insert_to_list",
+      "as": "b8c36334",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "name": "all_documents (step 5)"
+      },
+      "input": {
+       "location": "end",
+       "name": "new-list-uuid-001:all_docs_list",
+       "list_item": {
+        "doc_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"3ac69da6\",\"path\":[]}')['output']['url'].split('/doc/')[1]",
+        "title": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"3ac69da6\",\"path\":[]}')['output']['title']",
+        "body": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"3ac69da6\",\"path\":[]}')['output']['body']"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "hint": "",
+        "label": "List item",
+        "name": "list_item",
+        "optional": false,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Doc ID",
+          "name": "doc_id",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Title",
+          "name": "title",
+          "type": "string",
+          "optional": false
+         },
+         {
+          "control_type": "text",
+          "label": "Body",
+          "name": "body",
+          "type": "string",
+          "optional": false
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "uuid": "e434c484-8058-40b6-8e26-0a70d6b9482c",
+      "title": "Add items to all_documents list",
+      "description": "Add <span class=\"provider\">items</span> to <span class=\"provider\">all_documents</span> list"
+     },
+     {
+      "number": 9,
+      "provider": "workato_variable",
+      "name": "add_item_to_list",
+      "as": "add_to_batch",
+      "keyword": "action",
+      "input": {},
+      "uuid": "new-add-item-uuid",
+      "skip": true
+     }
+    ],
+    "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_drive\",\"line\":\"3ba86643\",\"path\":[\"files\"]}')}",
+    "uuid": "e0c51ab2-83ec-4bf1-b8da-b38a5c0eee4c"
+   },
+   {
+    "number": 10,
+    "provider": "workato_genie",
+    "name": "upsert_knowledge",
+    "as": "batch_upload",
+    "keyword": "action",
+    "input": {
+     "knowledge_base_id": "kb-AY64Nann-xsfrRw-CD",
+     "documents": {
+      "doc_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"all_docs_list\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"doc_id\"]}')}",
+      "title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"all_docs_list\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
+      "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"all_docs_list\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"body\"]}')}"
+     }
+    },
+    "uuid": "batch-upload-uuid-001",
+    "title": null,
+    "description": null
+   }
+  ],
+  "uuid": "a1616f4a-e0ac-452b-8821-246f783a8709",
+  "title": null,
+  "description": "<span class=\"provider\">Trigger</span> on a <span class=\"provider\">specified schedule</span>",
+  "param": {}
+ }
+}

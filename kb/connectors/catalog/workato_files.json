@@ -1,0 +1,1208 @@
+{
+ "name": "workato_files",
+ "title": "Workato FileStorage",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Workato"
+ ],
+ "aliases": [
+  "Workato FileStorage",
+  "utility",
+  "utilities",
+  "workato",
+  "files",
+  "storage",
+  "ETL",
+  "ELT"
+ ],
+ "triggers": [
+  {
+   "name": "new_csv_file",
+   "title": "New CSV file",
+   "description": "New CSV file in Workato FileStorage",
+   "help": "Triggers as soon as a new CSV file with column schema is uploaded to the directory that is being monitored. Returns the rows from the CSV file in batches. To return the whole CSV content as a stream use the \"New file\" trigger. Use trigger conditions to filter events based on file metadata such as na…",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Trigger will pick all events since the mentioned timestamp. Events older than a week cannot be picked up. If left blank, events since an hour ago will be picked up. Once recipe has been run or tested,…"
+    },
+    {
+     "name": "dir_path",
+     "type": "string",
+     "label": "Directory path to monitor",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "toggle_field": {
+      "name": "dir_path",
+      "type": "string"
+     },
+     "hint": "Choose or enter the directory path to monitor for new CSV files. For example, 'dir1/dir2'."
+    },
+    {
+     "name": "include_subdirs",
+     "type": "boolean",
+     "label": "Include sub-directories?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "include_subdirs",
+      "type": "boolean"
+     },
+     "hint": "Choose whether to monitor the sub-directories as well within the provided directory or path. By default only the provided directory or path is monitored."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 1000,
+     "hint": "Enter the batch size, which is the number of records to retrieve per job. Maximum limit is 50000 and default is set to 1000. If the records are bulky, the number of records retrieved will be auto adju…"
+    },
+    {
+     "name": "schema_type",
+     "type": "string",
+     "label": "CSV column schema",
+     "control_type": "select",
+     "required": true,
+     "default": "sample_file",
+     "options": [
+      "sample_file",
+      "manual"
+     ],
+     "extends_schema": true,
+     "hint": "Template column schema is required to match and retrieve records from new files in batches. If you have a sample CSV file in a directory, choose the Provide with sample file option."
+    },
+    {
+     "name": "schema",
+     "type": "string",
+     "label": "Column schema",
+     "control_type": "schema-designer",
+     "visible_if": "input.schema_type == 'manual'",
+     "extends_schema": true,
+     "hint": "Describe the schema of the columns in the CSV files that will be processed with this trigger. Only CSV files matching with the provided schema will be processed in the recipe, with permitted relaxatio…"
+    },
+    {
+     "name": "sample_csv_file",
+     "type": "string",
+     "label": "Sample CSV file",
+     "control_type": "tree",
+     "visible_if": "input.schema_type == 'sample_file'",
+     "pick_list": "csv_files_list",
+     "extends_schema": true,
+     "hint": "Select a sample CSV file to understand the column schema of the CSV files that will be processed with this trigger. Only CSV files matching with the provided schema will be processed in the recipe, wi…"
+    },
+    {
+     "name": "selected_fields",
+     "type": "string",
+     "label": "Columns to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "csv_schema_fields",
+     "extends_schema": true,
+     "hint": "Select the subset of CSV columns to retrieve that you will be using in your recipe. If left blank all columns will be retrieved."
+    },
+    {
+     "name": "ignore_schema_mismatch",
+     "type": "boolean",
+     "label": "Skip files with schema mismatches",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "ignore_schema_mismatch",
+      "type": "boolean"
+     },
+     "hint": "Choose the behavior when the trigger encounters CSV files with mismatched schema. Choose \"Yes\" to skip such files and only process files with matching schema. Choose \"No\" to explicitly throw error whe…"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the requested file"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "required": true,
+     "hint": "Batch size"
+    },
+    {
+     "name": "batch_number",
+     "type": "integer",
+     "label": "Batch number",
+     "control_type": "number",
+     "required": true,
+     "hint": "Batch number"
+    },
+    {
+     "name": "file_size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "number",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_batch",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last_batch",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "new_file",
+   "title": "New File",
+   "description": "New file in Workato FileStorage",
+   "help": "Used to trigger real-time when a new file is created/uploaded to a chosen directory in Workato FileStorage. This trigger is streaming compatible and can be paired up with both streaming and non-streaming actions (for small volume data).",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Leave empty to get new rows since one hour ago. Events older than a week are not picked up . Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "dir_path",
+     "type": "string",
+     "label": "Directory path to monitor",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "dir_path",
+      "type": "string"
+     },
+     "hint": "Choose or enter the directory path to monitor. For example, “directory1/directory2/”."
+    },
+    {
+     "name": "include_subdirs",
+     "type": "boolean",
+     "label": "Include sub-directories?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "include_subdirs",
+      "type": "boolean"
+     },
+     "hint": "Choose whether to monitor sub-directories as well within the chosen directory path. By default only the given directory will be monitored"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the requested file"
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "File contents"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "number",
+     "required": true,
+     "hint": "File size in bytes"
+    }
+   ]
+  },
+  {
+   "name": "new_lines_in_csv_file",
+   "title": "New lines in CSV file",
+   "description": "New CSV lines in file in Workato FileStorage",
+   "help": "Monitors an existing CSV file and fetches new lines added to the file in batches as soon as they are appended. Existing lines in the recipe will be fetched at the recipe start.",
+   "input": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File to monitor",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "csv_files_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Choose or enter the complete path of the CSV file to monitor for new lines. Only files stored with CSV column schema can be monitored."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 1000,
+     "hint": "Enter the batch size, which is the number of records to retrieve per job. Maximum limit is 50000 and default is set to 1000. If the records are bulky, the number of records retrieved will be auto adju…"
+    },
+    {
+     "name": "selected_fields",
+     "type": "string",
+     "label": "Columns to retrieve",
+     "control_type": "multiselect",
+     "pick_list": "csv_schema_fields",
+     "extends_schema": true,
+     "hint": "Select the subset of CSV columns to retrieve that you will be using in your recipe. If left blank all columns will be retrieved"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the requested file"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "required": true,
+     "hint": "Batch size"
+    },
+    {
+     "name": "batch_number",
+     "type": "integer",
+     "label": "Batch number",
+     "control_type": "number",
+     "required": true,
+     "hint": "Batch number"
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "append_to_file",
+   "title": "Append to file",
+   "description": "Append to file in Workato FileStorage",
+   "help": "Appends content to an existing file in the Workato FileStorage. If the file does not exist in the provided path, a new file is created and the content will be added to the new file.",
+   "input": [
+    {
+     "name": "is_csv_file",
+     "type": "boolean",
+     "label": "Append CSV content",
+     "control_type": "checkbox",
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "is_csv_file",
+      "type": "boolean"
+     },
+     "hint": "Choose Yes to create/append CSV content to new/existing CSV file with column schema in FileStorage. Defaults to No ."
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "Select file",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "files_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Choose the file to append content to it. If the file does not exist, new file will be created. Only existing CSV files stored with column schema are shown in the dropdown if 'Append CSV content' is se…"
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "Content to append",
+     "control_type": "text-area",
+     "hint": "The content to be appended to the file."
+    },
+    {
+     "name": "schema_type",
+     "type": "string",
+     "label": "CSV column schema setup",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "auto",
+     "options": [
+      "auto",
+      "force"
+     ],
+     "hint": "Choose whether to automatically infer data types for CSV columns from the append data or to set it manually. FileStorage can automatically set the best possible data type matches for the columns in th…"
+    },
+    {
+     "name": "schema",
+     "type": "string",
+     "label": "Column schema",
+     "control_type": "schema-designer",
+     "visible_if": "input.is_csv_file == 'true' && parentInput.schema_type == 'force'",
+     "hint": "Describe the schema of the columns in your CSV data. If the provided column data types do not match with the existing file, error is returned."
+    },
+    {
+     "name": "csv_has_header",
+     "type": "boolean",
+     "label": "Contains header row",
+     "control_type": "checkbox",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "false",
+     "toggle_field": {
+      "name": "csv_has_header",
+      "type": "boolean"
+     },
+     "hint": "Select Yes if the CSV content to be appended has header row. Defaults to No . On appends, header row will always be trimmed."
+    },
+    {
+     "name": "csv_preserve_header",
+     "type": "boolean",
+     "label": "Add header at file creation",
+     "control_type": "checkbox",
+     "visible_if": "input.is_csv_file == 'true' && input.csv_has_header == 'true'",
+     "default": "false",
+     "toggle_field": {
+      "name": "csv_preserve_header",
+      "type": "boolean"
+     },
+     "hint": "Choose Yes to add header to the CSV file only when the first append is creating the file. Defaults to No, which trims header always, both at file creation and at subsequent appends."
+    },
+    {
+     "name": "csv_delimiter",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "comma",
+     "pick_list": "csv_delimiters",
+     "hint": "Choose the character that separates column values in the CSV content. Defaults is set to 'comma'."
+    },
+    {
+     "name": "csv_quote",
+     "type": "string",
+     "label": "Quote character",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "double",
+     "options": [
+      "double",
+      "single"
+     ],
+     "hint": "Choose the quotation marks used as escape characters in the CSV content. Defaults is set to 'Double'."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "File encoding",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "UTF-8",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "hint": "Set the encoding of the source file contents. Default is set to 'UTF-8'"
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the file"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Appended size",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Appended content size"
+    }
+   ]
+  },
+  {
+   "name": "create_shareable_link",
+   "title": "Generate shareable file link",
+   "description": "Generate shareable file link in Workato FileStorage",
+   "help": "Allows users to create a temporary authenticated URL for a file in Workato FileStorage that can be shared externally. With this URL, a third party can download, upload or append contents to this file for the specified duration.",
+   "input": [
+    {
+     "name": "scope",
+     "type": "string",
+     "label": "Scope",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "upload",
+      "download",
+      "append"
+     ],
+     "hint": "Choose the scope possible in the file. For example, “Upload” allows users to create new file and upload contents to it. “Upload” does not work on an existing file."
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "visible_if": "input.scope && (input.scope === 'download' || input.scope === 'append')",
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Choose or enter the complete path of the file. For example, “directory1/directory2/filename”."
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "visible_if": "input.scope && input.scope === 'upload'",
+     "hint": "The name of the file to be created."
+    },
+    {
+     "name": "file_dir",
+     "type": "string",
+     "label": "File path",
+     "control_type": "tree",
+     "visible_if": "input.scope && input.scope === 'upload'",
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file_dir",
+      "type": "string"
+     },
+     "hint": "Select or enter a path where file needs to be created. If the path does not exist then error is returned. For example, “samplepath/path1/”."
+    },
+    {
+     "name": "expires_in",
+     "type": "integer",
+     "label": "Expires in",
+     "control_type": "integer",
+     "hint": "Denote duration for expiration of this shareable link in seconds. Defaults to 900 seconds, maximum is 604800 (7 days)."
+    }
+   ],
+   "output": [
+    {
+     "name": "link",
+     "type": "string",
+     "label": "Shareable link",
+     "control_type": "text",
+     "required": true,
+     "hint": "Shareable link"
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "expires_in",
+     "type": "integer",
+     "label": "Expires in (Seconds)",
+     "control_type": "number",
+     "required": true,
+     "hint": "The link expires in (Seconds)"
+    }
+   ]
+  },
+  {
+   "name": "delete_directory",
+   "title": "Delete directory",
+   "description": "Delete directory in Workato FileStorage",
+   "help": "Use this action to delete a directory in Workato FileStorage.",
+   "input": [
+    {
+     "name": "directory_path",
+     "type": "string",
+     "label": "Directory path",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "directory_path",
+      "type": "string"
+     },
+     "hint": "Enter the full path of the directory to be deleted. For example, \"samplepath/dirname.\" You can use the select toggle to choose the file instead."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Directory path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the deleted directory"
+    }
+   ]
+  },
+  {
+   "name": "delete_file",
+   "title": "Delete file",
+   "description": "Delete file in Workato FileStorage",
+   "help": "Deletes the selected file in Workato FileStorage.",
+   "input": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Enter the full path of the file to be deleted. For example, “samplepath/filename.csv.” You can use the select toggle toc choose the file instead."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the deleted file"
+    }
+   ]
+  },
+  {
+   "name": "ensure_dir_exists",
+   "title": "Create directory",
+   "description": "Create directory in Workato FileStorage",
+   "help": "Create a directory in Workato FileStorage system by specifying the name and the path.",
+   "input": [
+    {
+     "name": "directory_name",
+     "type": "string",
+     "label": "Directory name",
+     "control_type": "text",
+     "required": true,
+     "hint": "The name of the directory to be created."
+    },
+    {
+     "name": "directory_path",
+     "type": "string",
+     "label": "Directory path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "directory_path",
+      "type": "string"
+     },
+     "hint": "Choose or enter the complete path of the directory to be created. Creates the complete path if not present already. For example, “samplepath/path1”"
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Directory path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the directory"
+    }
+   ]
+  },
+  {
+   "name": "get_csv_file_contents",
+   "title": "Get lines from CSV file",
+   "description": "Get lines from CSV file in Workato FileStorage",
+   "help": "Returns a batch of lines from CSV file. The number of returned csv lines defaults to 1000 and can be increased to maximum of 50000 records. Only files stored as CSV files with schema can be fetched.",
+   "input": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Specify the path of the csv file to fetch lines from. For example, “samplepath/path1/file1”. The file needs to exist before fetching the contents. Only files stored with CSV column schema can be fetch…"
+    },
+    {
+     "name": "schema_type",
+     "type": "string",
+     "label": "CSV column schema",
+     "control_type": "select",
+     "required_when_visible": true,
+     "visible_if": "input.file_path && input.schema_type && input.schema_type != 'origin_file'",
+     "options": [
+      "sample_file",
+      "manual"
+     ],
+     "extends_schema": true,
+     "hint": "Select the schema template of the file that is to be retrieved in batches. If you have a sample CSV file in the directory, choose “Provide with sample file” option. If not, select “Provide manually” t…"
+    },
+    {
+     "name": "schema",
+     "type": "string",
+     "label": "Column schema",
+     "control_type": "schema-designer",
+     "required_when_visible": true,
+     "visible_if": "input.file_path && input.schema_type == 'manual'",
+     "extends_schema": true,
+     "hint": "Describe the schema of the columns in the CSV files that needs to be fetched. Only records from the CSV files matching with the provided schema can be fetched, with permitted relaxations. To learn mor…"
+    },
+    {
+     "name": "sample_csv_file",
+     "type": "string",
+     "label": "Sample CSV file",
+     "control_type": "tree",
+     "visible_if": "input.file_path && input.schema_type == 'sample_file'",
+     "pick_list": "csv_files_list",
+     "extends_schema": true,
+     "hint": "Choose a sample CSV file that has the same column schema as the incoming file. Only records from CSV files matching the provided schema can be fetched, with permitted relaxations. To learn more, click…"
+    },
+    {
+     "name": "selected_fields",
+     "type": "string",
+     "label": "Columns to retrieve",
+     "control_type": "multiselect",
+     "visible_if": "input.file_path && input.schema_type != 'manual'",
+     "pick_list": "csv_schema_fields",
+     "extends_schema": true,
+     "hint": "Select the columns to be returned in the output datatree. If left blank, all columns will be retrieved."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "default": 1000,
+     "hint": "Enter the batch size, which is the number of records to retrieve in a single fetch. Maximum is 50000 and default is set to 1000. If the records are bulky, the number of records retrieved will be auto …"
+    },
+    {
+     "name": "batch_offset",
+     "type": "integer",
+     "label": "Batch offset",
+     "control_type": "integer",
+     "default": 0,
+     "hint": "Skip and fetch records from the defined offset. By default offset is set to 0. By looping through offsets iteratively, all records can be fetched easily."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the requested file"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "required": true,
+     "hint": "Batch size"
+    },
+    {
+     "name": "batch_offset",
+     "type": "integer",
+     "label": "Batch offset",
+     "control_type": "number",
+     "required": true,
+     "hint": "Batch offset"
+    }
+   ]
+  },
+  {
+   "name": "get_file_contents",
+   "title": "Get file contents",
+   "description": "Get file contents in Workato FileStorage",
+   "help": "Returns the contents of a file stored in Workato FileStorage. This action is streaming compatible and can be paired up with both streaming and non-streaming actions.",
+   "input": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Enter the file path to get the file contents. The action will throw an error if the file or the path does not exist. For example, “samplepath/filename.csv”. You can use the select toggle to choose the…"
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the requested file"
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "File contents"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "number",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "File creation time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The file creation time"
+    },
+    {
+     "name": "modified_at",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    }
+   ]
+  },
+  {
+   "name": "move_file",
+   "title": "Rename/move file",
+   "description": "Rename/move file in Workato FileStorage",
+   "help": "Use this action to rename a file or move a file to a new destination in Workato FileStorage.",
+   "input": [
+    {
+     "name": "source_file_path",
+     "type": "string",
+     "label": "Source file path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "files_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "source_file_path",
+      "type": "string"
+     },
+     "hint": "Choose or enter the path of the source file that needs to be moved or renamed. For example, “directory1/directory2/filename”. Note - the file must exist in the path or the action returns error."
+    },
+    {
+     "name": "destination_dir_path",
+     "type": "string",
+     "label": "Destination directory path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "destination_dir_path",
+      "type": "string"
+     },
+     "hint": "Choose or enter the directory path where the file needs to be moved to. For renaming, provide the same directory path as source. For example, “directory1/directory2”."
+    },
+    {
+     "name": "destination_file_name",
+     "type": "string",
+     "label": "Destination file name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the destination file name. For file moving, you can provide either the same name or a different name for the destination file."
+    }
+   ],
+   "output": [
+    {
+     "name": "source_file_path",
+     "type": "string",
+     "label": "Source file path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Source path of the file"
+    },
+    {
+     "name": "destination_file_path",
+     "type": "string",
+     "label": "Destination file path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Destination path of the file"
+    }
+   ]
+  },
+  {
+   "name": "search_files",
+   "title": "Search files",
+   "description": "Search files in Workato FileStorage",
+   "help": "Searches and returns the files that match the file name and condition provided in Workato FileStorage. Files under sub-directories are also included in the search. Make use of pagination to fetch larger lists of files. Not providing any input values will return all files available under a directory …",
+   "input": [
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "Directory path",
+     "control_type": "tree",
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Choose the directory path under which to search for matching files."
+    },
+    {
+     "name": "file_name_filter",
+     "type": "object",
+     "label": "File name",
+     "properties": [
+      {
+       "name": "condition",
+       "type": "string",
+       "label": "Condition",
+       "control_type": "select",
+       "default": "equals",
+       "options": [
+        "contains",
+        "starts_with",
+        "ends_with",
+        "equals",
+        "not_contains",
+        "not_starts_with",
+        "not_ends_with",
+        "not_equals"
+       ]
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ],
+     "hint": "Fetches files that match the given value of file name and according to the condition specified"
+    },
+    {
+     "name": "page_size",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "hint": "Page size defines the number of file records to be fetched in a single set. Default is 50. A maximum of 100 records can be returned."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page offset",
+     "control_type": "integer",
+     "hint": "Page offset denotes the specific page number to fetch the associated file records of that page. Default offset is 0, denoting the first page."
+    }
+   ],
+   "output": [
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page offset",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "page_size",
+     "type": "integer",
+     "label": "Size of the page",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "required": true,
+       "hint": "File name"
+      },
+      {
+       "name": "full_path",
+       "type": "string",
+       "label": "File path",
+       "control_type": "text",
+       "required": true,
+       "hint": "Full path of the file"
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "File size (bytes)",
+       "control_type": "number",
+       "required": true,
+       "hint": "File size in bytes"
+      },
+      {
+       "name": "created_at",
+       "type": "date_time",
+       "label": "File creation time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "The file creation time"
+      },
+      {
+       "name": "modified_at",
+       "type": "date_time",
+       "label": "Last modified time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "The last time the file was modified"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "store_file",
+   "title": "Create file",
+   "description": "Create file in Workato FileStorage",
+   "help": "Create a new file in Workato FileStorage by uploading the file contents provided. This action is streaming compatible and can be paired up with both streaming and non-streaming actions.",
+   "input": [
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "The name of the file to be created."
+    },
+    {
+     "name": "file_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "folders_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "file_path",
+      "type": "string"
+     },
+     "hint": "Select or enter a path where file needs to be created. If the path does not exist then error is returned. For example, “samplepath/path1/”."
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text-area",
+     "hint": "The file contents to be uploaded."
+    },
+    {
+     "name": "is_csv_file",
+     "type": "boolean",
+     "label": "Create CSV file",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "is_csv_file",
+      "type": "boolean"
+     },
+     "hint": "Choose “Yes” to store content as a CSV file with column schema. CSV column schema setup is required for fetching CSV file data in batches via FileStorage triggers."
+    },
+    {
+     "name": "schema_type",
+     "type": "string",
+     "label": "CSV column schema setup",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "auto",
+     "options": [
+      "auto",
+      "force"
+     ],
+     "hint": "Choose whether to automatically infer names and data types of the CSV columns or to set it manually. FileStorage can automatically fetch column names from the header row and set the best possible data…"
+    },
+    {
+     "name": "schema",
+     "type": "string",
+     "label": "Column schema",
+     "control_type": "schema-designer",
+     "visible_if": "input.is_csv_file == 'true' && parentInput.schema_type == 'force'",
+     "hint": "Describe the names and the data types of the columns in your CSV data. The columns added top to bottom here will be matched to the CSV contents from left to right."
+    },
+    {
+     "name": "csv_has_header",
+     "type": "boolean",
+     "label": "Contains header row",
+     "control_type": "checkbox",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "true",
+     "toggle_field": {
+      "name": "csv_has_header",
+      "type": "boolean"
+     },
+     "hint": "Select Yes if the CSV data has header row. Defaults to Yes ."
+    },
+    {
+     "name": "csv_delimiter",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "comma",
+     "pick_list": "csv_delimiters",
+     "hint": "Choose the character that separates column values in the CSV content. Defaults is set to 'comma'."
+    },
+    {
+     "name": "csv_quote",
+     "type": "string",
+     "label": "Quote character",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "double",
+     "options": [
+      "double",
+      "single"
+     ],
+     "hint": "Choose the quotation marks used as escape characters in the CSV content. Defaults is set to 'Double'."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "File encoding",
+     "control_type": "select",
+     "visible_if": "input.is_csv_file == 'true'",
+     "default": "UTF-8",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "hint": "Set the encoding of the source file contents. Default is set to 'UTF-8'."
+    },
+    {
+     "name": "overwrite",
+     "type": "boolean",
+     "label": "Overwrite existing file",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "overwrite",
+      "type": "boolean"
+     },
+     "hint": "Choose 'Yes' to overwrite the file if it already exists. Defaults to 'No'."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Full path of the uploaded file"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "integer",
+     "required": true,
+     "hint": "Uploaded file contents size"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1338 @@
+{
+ "id": 52644854,
+ "name": "Select salesforce (with api)",
+ "description": "",
+ "applications": [
+  "workato_api_platform",
+  "salesforce"
+ ],
+ "action_applications": [
+  "salesforce"
+ ],
+ "trigger_application": "workato_api_platform",
+ "business_objects": [
+  "account"
+ ],
+ "categories": [
+  "API tool",
+  "CRM",
+  "Marketing"
+ ],
+ "copy_count": 12,
+ "curated": true,
+ "recipe_type": "apim",
+ "trigger_type": "apim",
+ "published_at": null,
+ "updated_at": "2024-09-05T05:27:32.585-07:00",
+ "source_url": "https://app.workato.com/recipes/52644854?community=us",
+ "steps": [
+  "workato_api_platform.receive_request",
+  "salesforce.search_sobjects",
+  "workato_api_platform.return_response"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "workato_api_platform",
+  "name": "receive_request",
+  "as": "13f0bacf",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "response.content_type": "JSON",
+   "response.responses.0.http_status_code": "200 - OK",
+   "response.responses.1.http_status_code": "204 - No Content"
+  },
+  "toggleCfg": {
+   "response.responses.0.http_status_code": true
+  },
+  "input": {
+   "request": {
+    "content_type": "json",
+    "schema": "[{\"name\":\"email\",\"type\":\"string\",\"optional\":false,\"label\":\"email\",\"control_type\":\"text\"}]"
+   },
+   "response": {
+    "content_type": "json",
+    "responses": [
+     {
+      "http_status_code": "200",
+      "body_schema": "[{\"name\":\"accountName\",\"type\":\"string\",\"optional\":false,\"label\":\"Account Name\",\"control_type\":\"text\"},{\"name\":\"phone\",\"type\":\"string\",\"optional\":false,\"label\":\"phone\",\"control_type\":\"text\"}]"
+     }
+    ]
+   }
+  },
+  "extended_output_schema": [
+   {
+    "label": "Context",
+    "name": "context",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Calling IP address",
+      "optional": true,
+      "type": "string",
+      "name": "calling_ip"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Access profile ID",
+        "parse_output": "integer_conversion",
+        "optional": true,
+        "type": "integer",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Access profile name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       },
+       {
+        "control_type": "text",
+        "label": "Access profile authentication type",
+        "optional": true,
+        "type": "string",
+        "name": "type"
+       }
+      ],
+      "label": "Access profile",
+      "type": "object",
+      "name": "access_profile"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "API client ID",
+        "optional": true,
+        "type": "string",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "API client name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       }
+      ],
+      "label": "API client",
+      "type": "object",
+      "name": "client"
+     },
+     {
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "Issued At",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "iat"
+       },
+       {
+        "control_type": "integer",
+        "label": "Not Before",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "nbf"
+       },
+       {
+        "control_type": "integer",
+        "label": "Expiration Time",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "optional": true,
+        "type": "date_time",
+        "name": "exp"
+       },
+       {
+        "control_type": "text",
+        "label": "Audience",
+        "optional": true,
+        "type": "string",
+        "name": "aud"
+       },
+       {
+        "control_type": "text",
+        "label": "JWT ID",
+        "optional": true,
+        "type": "string",
+        "name": "jti"
+       },
+       {
+        "control_type": "text",
+        "label": "Issuer",
+        "optional": true,
+        "type": "string",
+        "name": "iss"
+       }
+      ],
+      "label": "JWT claims",
+      "type": "object",
+      "name": "jwt_payload"
+     }
+    ],
+    "type": "object"
+   },
+   {
+    "label": "Request parameters",
+    "name": "request",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "email",
+      "name": "email",
+      "type": "string",
+      "optional": false
+     }
+    ],
+    "type": "object"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "salesforce",
+    "name": "search_sobjects",
+    "as": "8fa91eec",
+    "title": "Search Accounts",
+    "description": "Search for <span class=\"provider\">Accounts</span> in <span class=\"provider\">Salesforce</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "sobject_name": "Account",
+     "field_list": [
+      {
+       "label": "Account Name",
+       "value": "Name"
+      },
+      {
+       "label": "Account Phone",
+       "value": "Phone"
+      }
+     ]
+    },
+    "input": {
+     "limit": "150",
+     "sobject_name": "Account",
+     "field_list": "Name\nPhone",
+     "PersonEmail__c": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"13f0bacf\",\"path\":[\"request\",\"email\"]}')}"
+    },
+    "extended_output_schema": [
+     {
+      "label": "Accounts",
+      "name": "Account",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Account Name",
+        "event_title": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Name"
+       },
+       {
+        "control_type": "phone",
+        "label": "Account Phone",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Phone"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Total size",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "totalSize"
+         },
+         {
+          "name": "records",
+          "type": "array",
+          "of": "object",
+          "label": "Files",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "Id"
+           },
+           {
+            "control_type": "number",
+            "label": "Content size",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "ContentSize"
+           },
+           {
+            "control_type": "url",
+            "label": "Content URL",
+            "type": "string",
+            "name": "ContentUrl"
+           },
+           {
+            "control_type": "text",
+            "label": "File extension",
+            "type": "string",
+            "name": "FileExtension"
+           },
+           {
+            "control_type": "text",
+            "label": "File type",
+            "type": "string",
+            "name": "FileType"
+           },
+           {
+            "control_type": "text",
+            "label": "Parent ID",
+            "type": "string",
+            "name": "ParentId"
+           },
+           {
+            "control_type": "text",
+            "label": "Record type",
+            "type": "string",
+            "name": "RecordType"
+           },
+           {
+            "control_type": "text",
+            "label": "Title",
+            "type": "string",
+            "name": "Title"
+           }
+          ]
+         }
+        ],
+        "label": "Combined attachments",
+        "sfdc_field_type": "CombinedAttachment",
+        "type": "object",
+        "name": "CombinedAttachments"
+       }
+      ],
+      "type": "array"
+     },
+     {
+      "control_type": "number",
+      "label": "List size",
+      "name": "list_size",
+      "parse_output": "integer_conversion",
+      "type": "integer"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "phone",
+      "custom": false,
+      "label": "Account Fax",
+      "name": "Fax",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Account ID",
+      "name": "Id",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Account Name",
+      "name": "Name",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "event_title": true,
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Account Number",
+      "name": "AccountNumber",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "phone",
+      "custom": false,
+      "label": "Account Phone",
+      "name": "Phone",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": false,
+      "label": "Account Rating",
+      "name": "Rating",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"Rating\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Account Rating",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "Rating"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Account Site",
+      "name": "Site",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": false,
+      "label": "Account Source",
+      "name": "AccountSource",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"AccountSource\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Account Source",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "AccountSource"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": false,
+      "label": "Account Type",
+      "name": "Type",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"Type\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Account Type",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "Type"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "number",
+      "custom": false,
+      "label": "Annual Revenue",
+      "name": "AnnualRevenue",
+      "optional": true,
+      "parse_output": "float_conversion",
+      "type": "number",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Billing City",
+      "name": "BillingCity",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Billing Country",
+      "name": "BillingCountry",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": false,
+      "label": "Billing Geocode Accuracy",
+      "name": "BillingGeocodeAccuracy",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"BillingGeocodeAccuracy\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Billing Geocode Accuracy",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "BillingGeocodeAccuracy"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "number",
+      "custom": false,
+      "label": "Billing Latitude",
+      "name": "BillingLatitude",
+      "optional": true,
+      "parse_output": "float_conversion",
+      "type": "number",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "number",
+      "custom": false,
+      "label": "Billing Longitude",
+      "name": "BillingLongitude",
+      "optional": true,
+      "parse_output": "float_conversion",
+      "type": "number",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Billing State/Province",
+      "name": "BillingState",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text-area",
+      "custom": false,
+      "label": "Billing Street",
+      "name": "BillingStreet",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Billing Zip/Postal Code",
+      "name": "BillingPostalCode",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Created By ID",
+      "name": "CreatedById",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "date_time",
+      "custom": false,
+      "label": "Created Date",
+      "name": "CreatedDate",
+      "optional": true,
+      "parse_output": "parse_iso8601_timestamp",
+      "type": "date_time",
+      "render_input": "render_iso8601_timestamp",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "D&B Company ID",
+      "name": "DandbCompanyId",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "D-U-N-S Number",
+      "name": "DunsNumber",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Data.com Key",
+      "name": "Jigsaw",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "checkbox",
+      "custom": false,
+      "label": "Deleted",
+      "name": "IsDeleted",
+      "optional": true,
+      "parse_output": {},
+      "toggle_field": {
+       "label": "Deleted",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": false,
+       "sfdc_updateable": false,
+       "type": "boolean",
+       "name": "IsDeleted"
+      },
+      "toggle_hint": "Select from option list",
+      "type": "boolean",
+      "render_input": {},
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "number",
+      "custom": false,
+      "label": "Employees",
+      "name": "NumberOfEmployees",
+      "optional": true,
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": false,
+      "label": "Industry",
+      "name": "Industry",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"Industry\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Industry",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "Industry"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Jigsaw Company ID",
+      "name": "JigsawCompanyId",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "date",
+      "custom": false,
+      "label": "Last Activity",
+      "name": "LastActivityDate",
+      "optional": true,
+      "parse_output": "parse_iso8601_date",
+      "type": "date_time",
+      "render_input": "render_iso8601_date",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Last Modified By ID",
+      "name": "LastModifiedById",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "date_time",
+      "custom": false,
+      "label": "Last Modified Date",
+      "name": "LastModifiedDate",
+      "optional": true,
+      "parse_output": "parse_iso8601_timestamp",
+      "type": "date_time",
+      "render_input": "render_iso8601_timestamp",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "date_time",
+      "custom": false,
+      "label": "Last Referenced Date",
+      "name": "LastReferencedDate",
+      "optional": true,
+      "parse_output": "parse_iso8601_timestamp",
+      "type": "date_time",
+      "render_input": "render_iso8601_timestamp",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "date_time",
+      "custom": false,
+      "label": "Last Viewed Date",
+      "name": "LastViewedDate",
+      "optional": true,
+      "parse_output": "parse_iso8601_timestamp",
+      "type": "date_time",
+      "render_input": "render_iso8601_timestamp",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Master Record ID",
+      "name": "MasterRecordId",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "NAICS Code",
+      "name": "NaicsCode",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "NAICS Description",
+      "name": "NaicsDesc",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Owner ID",
+      "name": "OwnerId",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": false,
+      "label": "Ownership",
+      "name": "Ownership",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"Ownership\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Ownership",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "Ownership"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Parent Account ID",
+      "name": "ParentId",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "url",
+      "custom": false,
+      "label": "Photo URL",
+      "name": "PhotoUrl",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Record Type ID",
+      "name": "RecordTypeId",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "SIC Code",
+      "name": "Sic",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "SIC Description",
+      "name": "SicDesc",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Shipping City",
+      "name": "ShippingCity",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Shipping Country",
+      "name": "ShippingCountry",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": false,
+      "label": "Shipping Geocode Accuracy",
+      "name": "ShippingGeocodeAccuracy",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"ShippingGeocodeAccuracy\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Shipping Geocode Accuracy",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "ShippingGeocodeAccuracy"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "number",
+      "custom": false,
+      "label": "Shipping Latitude",
+      "name": "ShippingLatitude",
+      "optional": true,
+      "parse_output": "float_conversion",
+      "type": "number",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "number",
+      "custom": false,
+      "label": "Shipping Longitude",
+      "name": "ShippingLongitude",
+      "optional": true,
+      "parse_output": "float_conversion",
+      "type": "number",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Shipping State/Province",
+      "name": "ShippingState",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text-area",
+      "custom": false,
+      "label": "Shipping Street",
+      "name": "ShippingStreet",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Shipping Zip/Postal Code",
+      "name": "ShippingPostalCode",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "date_time",
+      "custom": false,
+      "label": "System Modstamp",
+      "name": "SystemModstamp",
+      "optional": true,
+      "parse_output": "parse_iso8601_timestamp",
+      "type": "date_time",
+      "render_input": "render_iso8601_timestamp",
+      "sfdc_createable": false,
+      "sfdc_updateable": false
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Ticker Symbol",
+      "name": "TickerSymbol",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Tradestyle",
+      "name": "Tradestyle",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "url",
+      "custom": false,
+      "label": "Website",
+      "name": "Website",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": false,
+      "label": "Year Started",
+      "name": "YearStarted",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": true,
+      "label": "Active",
+      "name": "Active__c",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"Active__c\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Active",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": true,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "Active__c"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "checkbox",
+      "custom": true,
+      "label": "Active_test",
+      "name": "Active_test__c",
+      "optional": true,
+      "parse_output": {},
+      "toggle_field": {
+       "label": "Active_test",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "optional": true,
+       "custom": true,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "boolean",
+       "name": "Active_test__c"
+      },
+      "toggle_hint": "Select from option list",
+      "type": "boolean",
+      "render_input": {},
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": true,
+      "label": "Customer Priority",
+      "name": "CustomerPriority__c",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"CustomerPriority__c\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Customer Priority",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": true,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "CustomerPriority__c"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": true,
+      "label": "Email",
+      "name": "PersonEmail__c",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "number",
+      "custom": true,
+      "label": "Number of Locations",
+      "name": "NumberofLocations__c",
+      "optional": true,
+      "parse_output": "float_conversion",
+      "type": "number",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": true,
+      "label": "SLA",
+      "name": "SLA__c",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"SLA__c\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "SLA",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": true,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "SLA__c"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "date",
+      "custom": true,
+      "label": "SLA Expiration Date",
+      "name": "SLAExpirationDate__c",
+      "optional": true,
+      "parse_output": "parse_iso8601_date",
+      "type": "date_time",
+      "render_input": "render_iso8601_date",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "text",
+      "custom": true,
+      "label": "SLA Serial Number",
+      "name": "SLASerialNumber__c",
+      "optional": true,
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "select",
+      "custom": true,
+      "label": "Upsell Opportunity",
+      "name": "UpsellOpportunity__c",
+      "optional": true,
+      "pick_list": "sobject_field_values_list",
+      "pick_list_params": {
+       "sobject_name": "\"Account\"",
+       "field_name": "\"UpsellOpportunity__c\""
+      },
+      "toggle_field": {
+       "control_type": "text",
+       "label": "Upsell Opportunity",
+       "toggle_hint": "Enter custom value",
+       "optional": true,
+       "custom": true,
+       "sfdc_createable": true,
+       "sfdc_updateable": true,
+       "type": "string",
+       "name": "UpsellOpportunity__c"
+      },
+      "toggle_hint": "Select from list",
+      "type": "string",
+      "sfdc_createable": true,
+      "sfdc_updateable": true
+     },
+     {
+      "control_type": "checkbox",
+      "disable_formula": true,
+      "extends_schema": true,
+      "hint": "Select <b>Yes</b> to obtain data from notes, attachments and files associated to the queried records. Default value is <b>Yes</b>.",
+      "label": "Select combined attachments",
+      "name": "include_combined_attachments",
+      "optional": true,
+      "parse_output": {},
+      "support_pills": false,
+      "type": "boolean",
+      "render_input": {}
+     }
+    ],
+    "visible_config_fields": [
+     "sobject_name",
+     "field_list",
+     "limit",
+     "Id",
+     "Name",
+     "PersonEmail__c"
+    ],
+    "uuid": "24768da2-7e19-4adc-b01c-f503ee28a9e2"
+   },
+   {
+    "number": 2,
+    "provider": "workato_api_platform",
+    "name": "return_response",
+    "as": "9c87a09c",
+    "title": null,
+    "description": "<span class=\"step-statement step-statement_return-variant\">Return</span><span class=\"provider\">200 - OK</span>",
+    "keyword": "action",
+    "input": {
+     "http_status_code": "200",
+     "response": {
+      "accountName": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"8fa91eec\",\"path\":[\"Account\",{\"path_element_type\":\"current_item\"},\"Name\"]}')}",
+      "phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"8fa91eec\",\"path\":[\"Account\",{\"path_element_type\":\"current_item\"},\"Phone\"]}')}"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "change_on_blur": true,
+      "control_type": "select",
+      "extends_schema": true,
+      "label": "Response",
+      "name": "http_status_code",
+      "pick_list": [
+       [
+        "200 - OK",
+        "200"
+       ]
+      ],
+      "type": "string"
+     },
+     {
+      "label": "Response body",
+      "name": "response",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Account Name",
+        "name": "accountName",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "phone",
+        "name": "phone",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "change_on_blur": true,
+      "control_type": "select",
+      "extends_schema": true,
+      "label": "Response",
+      "name": "http_status_code",
+      "pick_list": [
+       [
+        "200 - OK",
+        "200"
+       ]
+      ],
+      "type": "string"
+     },
+     {
+      "label": "Response body",
+      "name": "response",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Account Name",
+        "name": "accountName",
+        "type": "string",
+        "optional": false
+       },
+       {
+        "control_type": "text",
+        "label": "phone",
+        "name": "phone",
+        "type": "string",
+        "optional": false
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "uuid": "4aeaa950-7bcb-4364-b953-235cc33442f2"
+   }
+  ],
+  "comment": "Define the request and response parameters for this API endpoint",
+  "uuid": "feb6f3ff-50ef-4175-886d-f3fa4be96191",
+  "unfinished": false,
+  "param": {}
+ }
+}

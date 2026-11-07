@@ -1,0 +1,259 @@
+{
+ "id": 567937,
+ "name": "Upload Workday employees report to Box",
+ "description": "At 12:00am UTC daily, extract information from the Workday report and sync it to a Box folder as a CSV file\n\n- Input the URL into action step 1\n- If the URL is entered correctly, you will be able to see the data output on the right hand side when you map the fields in step 2 for the creation of the CSV\n- You will need to add in your own column labels depending on what shows up in the report\n- It is currently uploaded to a folder named Reports in Box, do change it in step 3 if you want to upload it to another folder",
+ "applications": [
+  "clock",
+  "workday",
+  "csv_parser",
+  "box"
+ ],
+ "action_applications": [
+  "workday",
+  "csv_parser",
+  "box"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [
+  "file"
+ ],
+ "categories": [
+  "Utilities",
+  "Marketing",
+  "HR",
+  "Collaboration",
+  "Document Management"
+ ],
+ "copy_count": 261,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2017-07-18T22:30:06.244-07:00",
+ "source_url": "https://app.workato.com/recipes/567937?community=us",
+ "steps": [
+  "clock.daily_task",
+  "workday.get_report",
+  "csv_parser.create_csv_lines",
+  "box.upload_file_content"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "daily_task",
+  "as": "daily_task",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {
+   "sunday": true,
+   "monday": true,
+   "tuesday": true,
+   "wednesday": true,
+   "thursday": true,
+   "friday": true,
+   "saturday": true
+  },
+  "input": {
+   "sunday": "true",
+   "monday": "true",
+   "tuesday": "true",
+   "wednesday": "true",
+   "thursday": "true",
+   "friday": "true",
+   "saturday": "true",
+   "time_zone": "UTC",
+   "hour": "24",
+   "minute": "00"
+  },
+  "parameters_schema": "",
+  "block": [
+   {
+    "number": 1,
+    "provider": "workday",
+    "name": "get_report",
+    "as": "get_report",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "comment": "Run and retrieve report data from report URL",
+    "uuid": "5994f81e-b4c6-4802-9cca-420c5dedff24"
+   },
+   {
+    "number": 2,
+    "provider": "csv_parser",
+    "name": "create_csv_lines",
+    "as": "create_csv_lines",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "create_header_line": true
+    },
+    "input": {
+     "create_header_line": "true",
+     "column_labels": "WID\nName\nRole\nEmployee_ID\nDOB\nAddress_Primary\nEmail\nPhone_Primary\n",
+     "lines": {
+      "____source": "#{_('data.workday.get_report.report')}",
+      "column_0": "#{_('data.workday.get_report.report.first.Workday_ID')}",
+      "column_1": "#{_('data.workday.get_report.report.first.Legal_Name')}",
+      "column_2": "#{_('data.workday.get_report.report.first.Role_Name')}",
+      "column_3": "#{_('data.workday.get_report.report.first.Employee_ID')}",
+      "column_4": "#{_('data.workday.get_report.report.first.Date_Of_Birth')}",
+      "column_5": "#{_('data.workday.get_report.report.first.Primary_Home_Address')}",
+      "column_6": "#{_('data.workday.get_report.report.first.Email_Work')}",
+      "column_7": "#{_('data.workday.get_report.report.first.Phone_Primary_Home')}"
+     }
+    },
+    "extended_input_schema": [
+     {
+      "type": "array",
+      "name": "lines",
+      "label": "Lines",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "WID",
+        "optional": true,
+        "type": "string",
+        "name": "column_0",
+        "parent": "lines",
+        "path": "lines.column_0"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "type": "string",
+        "name": "column_1",
+        "parent": "lines",
+        "path": "lines.column_1"
+       },
+       {
+        "control_type": "text",
+        "label": "Role",
+        "optional": true,
+        "type": "string",
+        "name": "column_2",
+        "parent": "lines",
+        "path": "lines.column_2"
+       },
+       {
+        "control_type": "text",
+        "label": "Employee_ID",
+        "optional": true,
+        "type": "string",
+        "name": "column_3",
+        "parent": "lines",
+        "path": "lines.column_3"
+       },
+       {
+        "control_type": "text",
+        "label": "DOB",
+        "optional": true,
+        "type": "string",
+        "name": "column_4",
+        "parent": "lines",
+        "path": "lines.column_4"
+       },
+       {
+        "control_type": "text",
+        "label": "Address_Primary",
+        "optional": true,
+        "type": "string",
+        "name": "column_5",
+        "parent": "lines",
+        "path": "lines.column_5"
+       },
+       {
+        "control_type": "text",
+        "label": "Email",
+        "optional": true,
+        "type": "string",
+        "name": "column_6",
+        "parent": "lines",
+        "path": "lines.column_6"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone_Primary",
+        "optional": true,
+        "type": "string",
+        "name": "column_7",
+        "parent": "lines",
+        "path": "lines.column_7"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "column_labels",
+     "create_header_line",
+     "lines.column_0",
+     "lines",
+     "lines.column_1",
+     "lines.column_2",
+     "lines.column_3",
+     "lines.column_4",
+     "lines.column_5",
+     "lines.column_6",
+     "lines.column_7"
+    ],
+    "comment": "Generate CSV file from report data",
+    "uuid": "6a860aa7-93ba-4a78-9829-936d80bc833b"
+   },
+   {
+    "number": 3,
+    "provider": "box",
+    "name": "upload_file_content",
+    "as": "upload_file_content",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "parent_id": {
+      "ids": [
+       "0",
+       "27535698101",
+       "30102122006"
+      ],
+      "titles": [
+       "Home folder",
+       "Bain Capital Deals",
+       "Reports"
+      ]
+     }
+    },
+    "toggleCfg": {
+     "parent_id": true
+    },
+    "input": {
+     "body": "#{_('data.csv_parser.create_csv_lines.csv_lines')}",
+     "filename": "=\"Employees (#{_('data.clock.daily_task.scheduled_time').strftime(\"%e %b %Y\")}).csv\"",
+     "parent_id": "30102122006"
+    },
+    "comment": "upload to the reports folder",
+    "uuid": "16238bf6-192a-43fd-831b-e162f75a189c"
+   }
+  ],
+  "comment": "12:00AM UTC daily",
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Time"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "=_('data.clock.timer.time').strftime(\"%B %e, %I:%M%p\")"
+  },
+  "uuid": "b5f1dfc7-4c76-4865-94dd-1b3fe3deac00",
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

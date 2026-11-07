@@ -5,7 +5,7 @@ Community recipes are published by their authors as reusable templates
 (docs: kb/docs/en/community-library.md). This script stores only what's needed to
 learn recipe patterns: name, description, apps, popularity, source URL, and the recipe
 `code` and `config`. Author contact details are never stored,
-and e-mail addresses inside steps are replaced with user@example.com.
+and e-mail addresses and credentials inside steps are redacted.
 
 Sources (public; reached through the Workato app host):
   https://app.trial.workato.com/recipes/<id>.json?community=us       metadata
@@ -45,16 +45,39 @@ def get(url: str) -> dict:
 
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+# Credentials that authors sometimes leave in steps. Matched values are replaced, never stored.
+SECRET_RES = [
+    re.compile(r"\b(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]{10,}"),          # Stripe
+    re.compile(r"\bxox[abposr]-[A-Za-z0-9-]{10,}"),                       # Slack
+    re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b"),                         # AWS access key id
+    re.compile(r"\bgh[pousr]_[A-Za-z0-9]{30,}"),                          # GitHub
+    re.compile(r"\bwrk[a-z]*-[A-Za-z0-9-]{20,}"),                         # Workato API token
+    re.compile(r"\bsk-[A-Za-z0-9_-]{20,}"),                               # OpenAI-style
+    re.compile(r"\bAIza[0-9A-Za-z_-]{30,}"),                              # Google API key
+    re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----"),
+    re.compile(r"(?i)\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]{16,}"),
+]
+SENSITIVE_KEY = re.compile(r"(?i)(password|passwd|secret|api[_-]?key|access[_-]?key|token|authorization|private[_-]?key)")
 
 
-def redact(obj):
-    """Replace e-mail addresses that authors typed into steps with a placeholder."""
+def redact_str(s: str) -> str:
+    s = EMAIL_RE.sub("user@example.com", s)
+    for rx in SECRET_RES:
+        s = rx.sub(lambda m: (m.group(1) + " " if m.re.pattern.startswith("(?i)") else "") + "REDACTED", s)
+    return s
+
+
+def redact(obj, key: str = ""):
+    """Remove e-mail addresses and credentials that authors typed into steps."""
     if isinstance(obj, str):
-        return EMAIL_RE.sub("user@example.com", obj)
+        literal = obj and not obj.startswith("=") and "#{" not in obj and "_dp(" not in obj
+        if key and SENSITIVE_KEY.search(key) and literal and len(obj) >= 6:
+            return "REDACTED"
+        return redact_str(obj)
     if isinstance(obj, list):
-        return [redact(x) for x in obj]
+        return [redact(x, key) for x in obj]
     if isinstance(obj, dict):
-        return {k: redact(v) for k, v in obj.items()}
+        return {k: redact(v, k) for k, v in obj.items()}
     return obj
 
 

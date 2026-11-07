@@ -1,0 +1,1279 @@
+{
+ "name": "workato_db_table",
+ "title": "Workato Data Tables",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Workato"
+ ],
+ "aliases": [
+  "Workato Data Tables",
+  "utilities",
+  "utility",
+  "data",
+  "database",
+  "record",
+  "table storage",
+  "datatable"
+ ],
+ "triggers": [
+  {
+   "name": "new_records_polling",
+   "title": "New records",
+   "description": "New records in a data table",
+   "help": "Use this trigger to retrieve new records created since the last time the recipe was triggered, up to a maximum of 1000 records per batch.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get new records since given date/time, up to 30 days ago. Leave empty to get new records since one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "hint": "Number of records to fetch in each batch. Default is 200."
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_record_id",
+     "type": "string",
+     "label": "First record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_record_id",
+     "type": "string",
+     "label": "Last record ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_records_realtime",
+   "title": "New record",
+   "description": "New record in a data table",
+   "help": "Use this trigger to retrieve new record created since the last time the recipe was triggered.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get new records since given date/time, up to 30 days ago. Leave empty to get new records since one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Change ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "updated_records_polling",
+   "title": "New/updated records",
+   "description": "New/updated records in a data table",
+   "help": "Use this trigger to retrieve records created/updated since the last time the recipe was triggered, up to a maximum of 1000 records per batch.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get new/updated records since given date/time, up to 30 days ago. Leave empty to get updated records since one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "hint": "Number of records to fetch in each batch. Default is 200."
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_record_id",
+     "type": "string",
+     "label": "First record ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_record_id",
+     "type": "string",
+     "label": "Last record ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "updated_records_realtime",
+   "title": "New/updated record",
+   "description": "New/updated record in a data table",
+   "help": "Use this trigger to retrieve record created/updated since the last time the recipe was triggered.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get new/updated records since given date/time, up to 30 days ago. Leave empty to get updated records since one hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Change ID",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "add_record",
+   "title": "Create record",
+   "description": "Create a new record in a data table",
+   "help": "Use this action to create a new record in a data table",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_records_batch",
+   "title": "Create records",
+   "description": "Create new records in a data table",
+   "help": "Use this action to create new records in a data table. Supports maximum of 1000 records per batch.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_record",
+   "title": "Delete record",
+   "description": "Delete a record from a data table",
+   "help": "Use this action to delete a record from a data table",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "record_id",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Choose a record (identified by Record ID ) to delete. Use a data pill or enter the exact ID."
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "delete_records_batch",
+   "title": "Delete records",
+   "description": "Delete multiple records in a data table",
+   "help": "Use this action to delete multiple records in a data table. Supports maximum of 1000 records per batch.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "records",
+     "type": "array",
+     "label": "Records",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "record_id",
+       "type": "string",
+       "label": "Record ID",
+       "control_type": "text",
+       "required": true,
+       "hint": "Provide the ID of the record"
+      }
+     ],
+     "hint": "Provide the list of records"
+    }
+   ],
+   "output": [
+    {
+     "name": "records",
+     "type": "array",
+     "label": "Records",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "record_id",
+       "type": "string",
+       "label": "Record ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "delete_records_by_condition",
+   "title": "Delete records by condition",
+   "description": "Delete records by condition in a data table",
+   "help": "Use this action to delete all records matching the specified filter conditions in a data table.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "filters",
+     "type": "array",
+     "label": "Filters",
+     "required": true,
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "field_id",
+       "type": "string",
+       "label": "Column name",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "current_table_columns_list",
+       "extends_schema": true
+      },
+      {
+       "name": "op_id",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'id'",
+       "options": [
+        "eq",
+        "ne"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_default",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "                            parentInput.field_id && (input[parentInput.field_id] === 'string' || input[parentInput.field_id] === 'file')\n",
+       "options": [
+        "eq",
+        "ne",
+        "isnull",
+        "isnotnull",
+        "starts_with"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_boolean",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'boolean'",
+       "options": [
+        "istrue",
+        "isfalse",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_set_default",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'number_set' || input[parentInput.field_id] === 'integer_set'                      || input[parentInput.field_id] === 'string_set' || input[parentInput.field_id] === 'date_set' ||                      input[parentInput.field_id] === 'date_time_set' || input[parentInput.field_id] === 'relation_set')",
+       "options": [
+        "eq",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_integer",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'integer'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_number",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'number'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_date_time",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'date_time'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_date",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'date'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_relation",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "input[parentInput.field_id] === 'relation'",
+       "options": [
+        "eq",
+        "ne",
+        "in",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "value_default",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'string' || input[parentInput.field_id] === 'file'                      || input[parentInput.field_id] === 'id' || input[parentInput.field_id] === 'string_set') && !(parentInput.op_default === 'isnull' || parentInput.op_default === 'isnotnull') &&                      !(parentInput.op_boolean === 'isnull' || parentInput.op_boolean === 'isnotnull') && !(parentInput.op_boolean === 'istrue' ||                      parentInput.op_boolean === 'isfalse')",
+       "extends_schema": true
+      },
+      {
+       "name": "value_integer",
+       "type": "integer",
+       "label": "Value",
+       "control_type": "integer",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'integer' && !(parentInput.op_integer === 'isnull' || parentInput.op_integer === 'isnotnull')                      || input[parentInput.field_id] === 'integer_set' && !(parentInput.op_integer_set === 'isnull' || parentInput.op_integer_set === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_number",
+       "type": "number",
+       "label": "Value",
+       "control_type": "number",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'number' && !(parentInput.op_number === 'isnull' || parentInput.op_number === 'isnotnull')                      || input[parentInput.field_id] === 'number_set' && !(parentInput.op_number_set === 'isnull' || parentInput.op_number_set === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_date_time",
+       "type": "date_time",
+       "label": "Value",
+       "control_type": "date_time",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'date_time' && !(parentInput.op_date_time === 'isnull' || parentInput.op_date_time === 'isnotnull')                      || input[parentInput.field_id] === 'date_time_set' && !(parentInput.op_date_time_set === 'isnull' || parentInput.op_date_time_set === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_date",
+       "type": "date",
+       "label": "Value",
+       "control_type": "date",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'date' && !(parentInput.op_date === 'isnull' || parentInput.op_date === 'isnotnull')                      || input[parentInput.field_id] === 'date_set' && !(parentInput.op_date_set === 'isnull' || parentInput.op_date_set === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_relation",
+       "type": "string",
+       "label": "Record ID",
+       "control_type": "text",
+       "visible_if": "                            parentInput.field_id && (input[parentInput.field_id] === 'relation' || input[parentInput.field_id] === 'relation_set') &&\n                            !(parentInput.op_relation === 'isnull' || parentInput.op_relation === 'isnotnull' || parentInput.op_relation === 'in')\n",
+       "extends_schema": true,
+       "hint": "Provide the corresponding record ID from the linked table. A valid record ID follows the format of a 128-bit UUID, for example: e04b77b7-31d0-4602-92ee-505270baaf52 ."
+      },
+      {
+       "name": "value_relation_in",
+       "type": "string",
+       "label": "Record ID",
+       "control_type": "text",
+       "visible_if": "                            parentInput.field_id && ((input[parentInput.field_id] === 'relation'                             || input[parentInput.field_id] === 'relation_set') && parentInput.op_relation === 'in')\n",
+       "extends_schema": true,
+       "hint": "Provide the corresponding record ID from the linked table seperated by comma. For example: b2skf-jdjwkdk-wjfi,b2skf-jdjwkdk-fifo To find Record ID, Go to Data table -> hidden columns -> select record …"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "deleted_count",
+     "type": "integer",
+     "label": "Deleted records count",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_records",
+   "title": "Search records",
+   "description": "Search records in a data table",
+   "help": "Use this action to search for records in a data table matching specified criteria. Limit to the number of returned records defaults to 100 and can be increased up to a maximum of 1000 records.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "filters",
+     "type": "array",
+     "label": "Filters",
+     "extends_schema": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "field_id",
+       "type": "string",
+       "label": "Column name",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "current_table_columns_list",
+       "extends_schema": true
+      },
+      {
+       "name": "op_id",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'id'",
+       "options": [
+        "eq",
+        "ne",
+        "in"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_default",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'string' || input[parentInput.field_id] === 'file')\n",
+       "options": [
+        "eq",
+        "ne",
+        "isnull",
+        "isnotnull",
+        "starts_with",
+        "in"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_boolean",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'boolean'",
+       "options": [
+        "istrue",
+        "isfalse",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_set_default",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'number_set' || input[parentInput.field_id] === 'integer_set'                          || input[parentInput.field_id] === 'string_set' || input[parentInput.field_id] === 'date_set' ||                          input[parentInput.field_id] === 'date_time_set' || input[parentInput.field_id] === 'relation_set')",
+       "options": [
+        "eq",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_integer",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'integer'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull",
+        "in"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_number",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'number'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull",
+        "in"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_date_time",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'date_time'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull",
+        "in"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_date",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'date'",
+       "options": [
+        "eq",
+        "ne",
+        "gt",
+        "lt",
+        "gte",
+        "lte",
+        "isnull",
+        "isnotnull",
+        "in"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "op_relation",
+       "type": "string",
+       "label": "Operand",
+       "control_type": "select",
+       "visible_if": "input[parentInput.field_id] === 'relation'",
+       "options": [
+        "eq",
+        "ne",
+        "in",
+        "isnull",
+        "isnotnull"
+       ],
+       "extends_schema": true
+      },
+      {
+       "name": "value_default",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'string' || input[parentInput.field_id] === 'file'                          || input[parentInput.field_id] === 'id' || input[parentInput.field_id] === 'string_set') && !(parentInput.op_default === 'isnull' || parentInput.op_default === 'isnotnull') && parentInput.op_default !== 'in' && parentInput.op_id !== 'in' &&                          !(parentInput.op_boolean === 'isnull' || parentInput.op_boolean === 'isnotnull') && !(parentInput.op_boolean === 'istrue' ||                          parentInput.op_boolean === 'isfalse')",
+       "extends_schema": true
+      },
+      {
+       "name": "value_integer",
+       "type": "string",
+       "label": "Value",
+       "control_type": "integer",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'integer' && !(parentInput.op_integer === 'isnull' || parentInput.op_integer === 'isnotnull') && parentInput.op_integer !== 'in'                          || input[parentInput.field_id] === 'integer_set' && !(parentInput.op_set_default === 'isnull' || parentInput.op_set_default === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_number",
+       "type": "string",
+       "label": "Value",
+       "control_type": "number",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'number' && !(parentInput.op_number === 'isnull' || parentInput.op_number === 'isnotnull') && parentInput.op_number !== 'in'                          || input[parentInput.field_id] === 'number_set' && !(parentInput.op_set_default === 'isnull' || parentInput.op_set_default === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_date_time",
+       "type": "string",
+       "label": "Value",
+       "control_type": "date_time",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'date_time' && !(parentInput.op_date_time === 'isnull' || parentInput.op_date_time === 'isnotnull') && parentInput.op_date_time !== 'in'                          || input[parentInput.field_id] === 'date_time_set' && !(parentInput.op_set_default === 'isnull' || parentInput.op_set_default === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_date",
+       "type": "string",
+       "label": "Value",
+       "control_type": "date",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'date' && !(parentInput.op_date === 'isnull' || parentInput.op_date === 'isnotnull') && parentInput.op_date !== 'in'                          || input[parentInput.field_id] === 'date_set' && !(parentInput.op_set_default === 'isnull' || parentInput.op_set_default === 'isnotnull'))",
+       "extends_schema": true
+      },
+      {
+       "name": "value_relation",
+       "type": "string",
+       "label": "Record ID",
+       "control_type": "text",
+       "visible_if": "parentInput.field_id && (input[parentInput.field_id] === 'relation' || input[parentInput.field_id] === 'relation_set') &&\n!(parentInput.op_relation === 'isnull' || parentInput.op_relation === 'isnotnull' || parentInput.op_relation === 'in')\n",
+       "extends_schema": true,
+       "hint": "Provide the corresponding record ID from the linked table. A valid record ID follows the format of a 128-bit UUID, for example: e04b77b7-31d0-4602-92ee-505270baaf52 ."
+      },
+      {
+       "name": "value_default_in",
+       "type": "array",
+       "label": "Values",
+       "visible_if": "                           parentInput.field_id && (input[parentInput.field_id] === 'string' || input[parentInput.field_id] === 'file'                            || input[parentInput.field_id] === 'id') && (parentInput.op_default === 'in' || parentInput.op_id === 'in')\n",
+       "extends_schema": true,
+       "of": "string",
+       "hint": "Add multiple values. Records matching any of the values will be returned."
+      },
+      {
+       "name": "value_integer_in",
+       "type": "array",
+       "label": "Values",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'integer' && parentInput.op_integer === 'in'",
+       "extends_schema": true,
+       "of": "integer",
+       "hint": "Add multiple values. Records matching any of the values will be returned."
+      },
+      {
+       "name": "value_number_in",
+       "type": "array",
+       "label": "Values",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'number' && parentInput.op_number === 'in'",
+       "extends_schema": true,
+       "of": "number",
+       "hint": "Add multiple values. Records matching any of the values will be returned."
+      },
+      {
+       "name": "value_date_in",
+       "type": "array",
+       "label": "Values",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'date' && parentInput.op_date === 'in'",
+       "extends_schema": true,
+       "of": "date",
+       "hint": "Add multiple values. Records matching any of the values will be returned."
+      },
+      {
+       "name": "value_date_time_in",
+       "type": "array",
+       "label": "Values",
+       "visible_if": "parentInput.field_id && input[parentInput.field_id] === 'date_time' && parentInput.op_date_time === 'in'",
+       "extends_schema": true,
+       "of": "date_time",
+       "hint": "Add multiple values. Records matching any of the values will be returned."
+      },
+      {
+       "name": "value_relation_in",
+       "type": "array",
+       "label": "Record ID",
+       "visible_if": "                           parentInput.field_id && input[parentInput.field_id] === 'relation' && parentInput.op_relation === 'in'\n",
+       "extends_schema": true,
+       "of": "string",
+       "hint": "Add multiple values. Records matching any of the values will be returned. A valid record ID follows the format of a 128-bit UUID, for example: e04b77b7-31d0-4602-92ee-505270baaf52 . To find Record ID,…"
+      }
+     ]
+    },
+    {
+     "name": "order_by_field_id",
+     "type": "string",
+     "label": "Sort by",
+     "control_type": "select",
+     "pick_list": "sorted_columns_list",
+     "extends_schema": true
+    },
+    {
+     "name": "order_direction",
+     "type": "string",
+     "label": "Sort direction",
+     "control_type": "select",
+     "default": "asc",
+     "options": [
+      "asc",
+      "desc"
+     ],
+     "extends_schema": true
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "default": 100,
+     "hint": "Limit the number of records that can be returned. It's set to 100 by default and can be adjusted to a maximum of 1000."
+    },
+    {
+     "name": "continuation_token",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "hint": "Get records starting from the given offset"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "remove_values_from_record",
+   "title": "Remove values from a record",
+   "description": "Remove values from a record in a data table",
+   "help": "Use this action to remove values from specified fields from a record. Note that required field values cannot be removed.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "record_id",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Choose a record (identified by Record ID) to remove values from. Use a data pill or enter the exact ID."
+    },
+    {
+     "name": "values_to_be_removed",
+     "type": "string",
+     "label": "Values to be removed",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "current_user_table_non_primary_columns_list",
+     "hint": "Select the field values to be removed. Note that required fields cannot be selected as their values cannot be removed."
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "truncate_table",
+   "title": "Truncate table",
+   "description": "Truncate a data table",
+   "help": "Use this action to delete all entries from the specified data table. This action can't be undone.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "update_record",
+   "title": "Update record",
+   "description": "Update a record in a data table",
+   "help": "Use this action to update a record in a data table",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "record_id",
+     "type": "string",
+     "label": "Record ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Choose a record (identified by Record ID ) to update. Use a data pill or enter the exact ID."
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_records_batch",
+   "title": "Update records",
+   "description": "Update multiple records in a data table",
+   "help": "Use this action to update multiple records in a data table. Supports maximum of 1000 records per batch.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upsert_record",
+   "title": "Upsert record",
+   "description": "Upsert record in a data table",
+   "help": "Updates a record in a data table if it matches a given primary key, otherwise creates new record",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "primary_field_id",
+     "type": "string",
+     "label": "Primary key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_columns_list",
+     "extends_schema": true,
+     "hint": "Column that will be used to detect whether the record already exists for a given set of fields"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": [
+    {
+     "name": "created",
+     "type": "boolean",
+     "label": "Record created",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "created",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "upsert_records_batch",
+   "title": "Upsert records",
+   "description": "Upsert multiple records in a data table",
+   "help": "Use this action to upsert multiple records in a data table. Supports maximum of 1000 records per batch.",
+   "input": [
+    {
+     "name": "table_id",
+     "type": "string",
+     "label": "Data table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_list",
+     "extends_schema": true,
+     "hint": "{{#if input.table_id}} You can view your selected data table here . {{/if}} {{#if !input.table_id}} Select a data table. {{/if}}"
+    },
+    {
+     "name": "primary_field_id",
+     "type": "string",
+     "label": "Primary key",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "current_user_table_columns_list",
+     "extends_schema": true,
+     "hint": "Column that will be used to detect whether the record already exists for a given set of fields"
+    },
+    {
+     "name": "output_format",
+     "type": "string",
+     "label": "Choose the desired output format",
+     "control_type": "select",
+     "options": [
+      "field_hash_to_value",
+      "field_name_to_value"
+     ],
+     "extends_schema": true,
+     "hint": "Go to our documentation page to learn more."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

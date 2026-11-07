@@ -1,0 +1,1157 @@
+{
+ "name": "onprem_files",
+ "title": "On-prem files",
+ "requires_connection": true,
+ "categories": [
+  "Document/File",
+  "Marketing"
+ ],
+ "aliases": [
+  "On-prem files",
+  "on premise",
+  "onprem files",
+  "nasuni"
+ ],
+ "triggers": [
+  {
+   "name": "csv_file_batch",
+   "title": "New CSV file in folder",
+   "description": "New CSV file in on-prem folder",
+   "help": "Triggers when a new CSV file is added in the selected on-premise folder. When recipe is first started, trigger will pick up lines in all CSV files in the folder. Lines will be processed in batchs in each job. Subsequently, lines in each new CSV file added in the selected folder will be processed as …",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Trigger on",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "interval",
+      "schedule"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_csv_file_batch",
+   "title": "New lines in CSV file",
+   "description": "New batch of lines in on-prem CSV file",
+   "help": "On recipe start, trigger will pick up all existing lines in batches. Each batch is processed as individual jobs. Maximum batch size is 2000. Subsequently, new lines added to the end of the file will be processed as new job(s).",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "CSV file",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_files",
+     "extends_schema": true,
+     "hint": "The first line of this file will be used as column headers in the output of this trigger."
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      ",",
+      "semicolon",
+      "space",
+      "tab"
+     ],
+     "extends_schema": true,
+     "hint": "The delimiter character that separates each column in the CSV file. CSV files typically use comma ."
+    },
+    {
+     "name": "quote_char",
+     "type": "string",
+     "label": "Quote character",
+     "control_type": "select",
+     "default": "\"",
+     "options": [
+      "\"",
+      "'",
+      "\u0000"
+     ],
+     "hint": "Character used to quote the CSV cell values. Select None if no quote character is used. Default value is Double quote ."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "File encoding",
+     "control_type": "select",
+     "default": "default",
+     "pick_list": "java_encodings",
+     "hint": "Set the File encoding of the source CSV file. Use 'Auto-Detect' to attempt to auto-recognize the encoding based on characters in the file."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "required": true,
+     "default": 100,
+     "hint": "Number of CSV lines in a batch. Maximum batch size is 2000"
+    }
+   ],
+   "output": [
+    {
+     "name": "line_start",
+     "type": "integer",
+     "label": "First line number in batch",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "line_end",
+     "type": "integer",
+     "label": "Last line number in batch",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_csv_file_line",
+   "title": "New line in CSV file",
+   "description": "New line in on-prem CSV file",
+   "help": "On recipe start, trigger will pick up all existing lines. Each line will be processed as individual jobs. Subsequently, each new line added to the end of the file will be processed as a new job.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "file",
+     "type": "string",
+     "label": "CSV file",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_files",
+     "extends_schema": true,
+     "hint": "The first line of this file will be used as column headers in the output of this trigger."
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      ",",
+      "semicolon",
+      "space",
+      "tab"
+     ],
+     "extends_schema": true,
+     "hint": "The delimiter character that separates each column in the CSV file. CSV files typically use comma ."
+    },
+    {
+     "name": "quote_char",
+     "type": "string",
+     "label": "Quote character",
+     "control_type": "select",
+     "default": "\"",
+     "options": [
+      "\"",
+      "'",
+      "\u0000"
+     ],
+     "hint": "Character used to quote the CSV cell values. Select None if no quote character is used. Default value is Double quote ."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "File encoding",
+     "control_type": "select",
+     "default": "default",
+     "pick_list": "java_encodings",
+     "hint": "Set the File encoding of the source CSV file. Use 'Auto-Detect' to attempt to auto-recognize the encoding based on characters in the file."
+    }
+   ],
+   "output": [
+    {
+     "name": "line",
+     "type": "integer",
+     "label": "Line number",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_file",
+   "title": "New file in folder",
+   "description": "New file in on-prem folder",
+   "help": "Triggers when a new file is added in the selected folder. The output includes file metadata and file contents. When recipe is first started, all files in the folder will be picked up. Subsequently, each new file added will be processed as a new job. Note that when trigger picks up a file, it will re…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Trigger on",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "interval",
+      "schedule"
+     ],
+     "extends_schema": true
+    }
+   ],
+   "output": [
+    {
+     "name": "original_path",
+     "type": "string",
+     "label": "File path (original)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path before file was processed."
+    },
+    {
+     "name": "original_name",
+     "type": "string",
+     "label": "File name (original)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name before file was processed."
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path (processed)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path after file has been processed."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name (processed)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name after file has been processed."
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "File contents"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The file creation time"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "add_csv_line",
+   "title": "Append line to CSV file",
+   "description": "Append a line to an on-prem CSV file",
+   "help": "Append new line to the end of an existing CSV file. Warning The selected file can become corrupted if more than one append action is run simultaneously on the same file.",
+   "input": [
+    {
+     "name": "file",
+     "type": "string",
+     "label": "CSV file",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_files",
+     "extends_schema": true,
+     "hint": "Select the CSV file to append line to. Workato will automatically generate an input field for each column."
+    },
+    {
+     "name": "column_separator",
+     "type": "string",
+     "label": "Column delimiter",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      ",",
+      "semicolon",
+      "space",
+      "tab"
+     ],
+     "extends_schema": true,
+     "hint": "The delimiter character that separates each column in the CSV file. CSV files typically use comma ."
+    },
+    {
+     "name": "quote_char",
+     "type": "string",
+     "label": "Quote character",
+     "control_type": "select",
+     "default": "\"",
+     "options": [
+      "\"",
+      "'"
+     ],
+     "hint": "Character used to quote the CSV cell values. Default value is Double quote ."
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "File encoding",
+     "control_type": "select",
+     "default": "default",
+     "pick_list": "java_encodings",
+     "hint": "Set the File encoding of the source CSV file. Use 'Auto-Detect' to attempt to auto-recognize the encoding based on characters in the file."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "bytes",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    }
+   ]
+  },
+  {
+   "name": "create_folder",
+   "title": "Create folder",
+   "description": "Create a new folder in a specified on-prem folder",
+   "help": "This action creates a new folder in a specified on-prem parent folder.",
+   "input": [
+    {
+     "name": "parent_folder",
+     "type": "string",
+     "label": "Parent folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "hint": "Select the parent folder of the new folder to be created."
+    },
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the path of the folder to be created. If any folders on the path do not exist, they will be created automatically."
+    }
+   ],
+   "output": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "required": true,
+     "hint": "Relative path to created folder without escaped characters, if any"
+    }
+   ]
+  },
+  {
+   "name": "delete_file",
+   "title": "Delete file",
+   "description": "Delete a file in an on-prem folder",
+   "help": "This action deletes a file from a specified on-prem folder.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File to delete",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_files",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select the file to delete."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Deleted file",
+     "control_type": "text",
+     "required": true,
+     "hint": "Path to the deleted file"
+    }
+   ]
+  },
+  {
+   "name": "delete_folder",
+   "title": "Delete folder",
+   "description": "Deletes an on-prem folder",
+   "help": "This action deletes a specified on-prem folder. Only empty folders will be deleted by default.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Folder to delete",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Select the folder to delete."
+    },
+    {
+     "name": "only_delete_empty_folders",
+     "type": "boolean",
+     "label": "Only delete empty folders?",
+     "control_type": "checkbox",
+     "visible_if": "input.only_delete_empty_folders == 'true'",
+     "default": "true",
+     "toggle_field": {
+      "name": "only_delete_empty_folders",
+      "type": "boolean"
+     },
+     "hint": "If Yes , this action will not delete folders containing files or folders. Defaults to Yes ."
+    },
+    {
+     "name": "only_delete_empty_folders",
+     "type": "boolean",
+     "label": "Only delete empty folders?",
+     "control_type": "checkbox",
+     "visible_if": "input.only_delete_empty_folders != 'true'",
+     "default": "true",
+     "toggle_field": {
+      "name": "only_delete_empty_folders",
+      "type": "boolean"
+     },
+     "hint": "If Yes , this action will not delete folders containing files or folders. Defaults to Yes . Warning: Selecting 'No' means that the folder and its contents will be deleted. This cannot be undone once e…"
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "Path to folder deleted",
+     "control_type": "text",
+     "required": true,
+     "hint": "Resolved path to the folder deleted"
+    }
+   ]
+  },
+  {
+   "name": "download_file",
+   "title": "Download file",
+   "description": "Download an on-prem file",
+   "help": "Download contents of an on-prem file. File contents can be used in subsequent steps in the recipe to upload to other applications. File metadata output is only available with OPA 2.9.1or newer.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_files",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Download contents from this file"
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "File encoding",
+     "control_type": "select",
+     "pick_list": "ruby_encodings",
+     "hint": "Set the file encoding of the source file. Use 'Auto-Detect' to attempt to auto-recognize the encoding based on characters in the file."
+    },
+    {
+     "name": "chunk_size",
+     "type": "integer",
+     "label": "Chunk size (KB)",
+     "control_type": "integer",
+     "hint": "File contents will be streamed in small chunks. Define chunk size in kilobytes here. The default chunk size will be set to 10240 KB if the field is left blank.The minimum chunk size supported is 32 KB…"
+    }
+   ],
+   "output": [
+    {
+     "name": "original_path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "original_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "File contents"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The file creation time"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    }
+   ]
+  },
+  {
+   "name": "generate_file_url",
+   "title": "Generate on-prem file URL",
+   "description": "Generate an on-prem file URL to be used in other connectors.",
+   "help": "Generate a URL to an on-premise file. This URL can be used as a reference in later steps.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Choose a target folder."
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name, including extension. Do not include full path."
+    }
+   ],
+   "output": [
+    {
+     "name": "url",
+     "type": "string",
+     "label": "File URL",
+     "control_type": "text",
+     "required": true,
+     "hint": "On-prem file URL"
+    }
+   ]
+  },
+  {
+   "name": "list_files",
+   "title": "List files in folder",
+   "description": "List all files in an on-prem folder",
+   "help": "List all files in an on-prem folder. You can filter the files based on a naming pattern. Files returned in this action will be sorted alphabetically, according to the file path.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "List files in this folder."
+    },
+    {
+     "name": "recurse",
+     "type": "boolean",
+     "label": "Include files in sub-folders?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "recurse",
+      "type": "boolean"
+     },
+     "hint": "If Yes , files in sub-folders will be returned."
+    },
+    {
+     "name": "pattern",
+     "type": "string",
+     "label": "Filter files by naming pattern",
+     "control_type": "text",
+     "hint": "Only files matching this naming pattern will be picked up. Learn more ."
+    }
+   ],
+   "output": [
+    {
+     "name": "files",
+     "type": "array",
+     "label": "Files",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "path",
+       "type": "string",
+       "label": "File path",
+       "control_type": "text",
+       "required": true,
+       "hint": "File path"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "File name",
+       "control_type": "text",
+       "required": true,
+       "hint": "File name"
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "File size (bytes)",
+       "control_type": "text",
+       "required": true,
+       "hint": "File size in bytes"
+      },
+      {
+       "name": "created",
+       "type": "date_time",
+       "label": "Created time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "The file creation time"
+      },
+      {
+       "name": "modified",
+       "type": "date_time",
+       "label": "Last modified time",
+       "control_type": "date_time",
+       "required": true,
+       "hint": "The last time the file was modified"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "move_file",
+   "title": "Move file",
+   "description": "Move an on-prem file to a different folder",
+   "help": "Move an existing on-prem file to a different folder.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_files",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Move this file to a different folder."
+    },
+    {
+     "name": "new_folder",
+     "type": "string",
+     "label": "Destination folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "new_folder",
+      "type": "string"
+     },
+     "hint": "Move the file to this folder."
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "original_path",
+     "type": "string",
+     "label": "File path (original)",
+     "control_type": "text",
+     "required": true,
+     "hint": "Original file path"
+    },
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path (new)",
+     "control_type": "text",
+     "required": true,
+     "hint": "New file path"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The file creation time"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    }
+   ]
+  },
+  {
+   "name": "rename_file",
+   "title": "Rename file",
+   "description": "Rename an on-prem file",
+   "help": "Rename an existing on-prem file. This action does not allow you to rename folders.",
+   "input": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_files",
+     "toggle_field": {
+      "name": "path",
+      "type": "string"
+     },
+     "hint": "Rename this file."
+    },
+    {
+     "name": "new_name",
+     "type": "string",
+     "label": "New file name",
+     "control_type": "text",
+     "required": true,
+     "hint": "New file name, including extension. Do not include full path."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The file creation time"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    }
+   ]
+  },
+  {
+   "name": "upload_file",
+   "title": "Upload file (Legacy)",
+   "description": "Upload a new file to an on-prem folder",
+   "help": "This action has been marked as legacy and should be swapped out for our new Upload file action. Our new action enables large file sizes for transfer. Upload a new file to an on-prem folder. If a file with the same name already exists in the folder, you can choose to overwrite that file or upload a d…",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Upload the file to this folder."
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name, including extension. Do not include full path."
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text-area",
+     "required_when_visible": true,
+     "hint": "Use File contents datapill from another action/trigger or provide text directly. Leave it blank to create an empty file at the target location."
+    },
+    {
+     "name": "overwrite",
+     "type": "boolean",
+     "label": "Overwrite existing file?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "overwrite",
+      "type": "boolean"
+     },
+     "hint": "If Yes , overwrite content of existing file with the same name. If No , create a new file and append an incremental number at the end, e.g. report_1.csv , report_2.csv ."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The file creation time"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    },
+    {
+     "name": "existed",
+     "type": "boolean",
+     "label": "File existed before upload?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "existed",
+      "type": "boolean"
+     },
+     "hint": "True if a file with the same name already existed in the folder"
+    }
+   ]
+  },
+  {
+   "name": "upload_file_multistep",
+   "title": "Upload file",
+   "description": "Upload a new file to an on-prem folder",
+   "help": "Upload a new file to an on-prem folder. If a file with the same name already exists in the folder, you can choose to overwrite that file or upload a duplicate.",
+   "input": [
+    {
+     "name": "folder_path",
+     "type": "string",
+     "label": "Folder",
+     "control_type": "tree",
+     "required": true,
+     "pick_list": "my_folders",
+     "toggle_field": {
+      "name": "folder_path",
+      "type": "string"
+     },
+     "hint": "Upload the file to this folder."
+    },
+    {
+     "name": "filename",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name, including extension. Do not include full path."
+    },
+    {
+     "name": "content",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text-area",
+     "required_when_visible": true,
+     "hint": "Use File contents datapill from another action/trigger or provide text directly. Leave it blank to create an empty file at the target location."
+    },
+    {
+     "name": "overwrite",
+     "type": "boolean",
+     "label": "Overwrite existing file?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "overwrite",
+      "type": "boolean"
+     },
+     "hint": "If Yes , overwrite content of existing file with the same name. If No , create a new file and append an incremental number at the end, e.g. report_1.csv , report_2.csv ."
+    }
+   ],
+   "output": [
+    {
+     "name": "path",
+     "type": "string",
+     "label": "File path",
+     "control_type": "text",
+     "required": true,
+     "hint": "File path"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name"
+    },
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "File size (bytes)",
+     "control_type": "text",
+     "required": true,
+     "hint": "File size in bytes"
+    },
+    {
+     "name": "created",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The file creation time"
+    },
+    {
+     "name": "modified",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The last time the file was modified"
+    },
+    {
+     "name": "existed",
+     "type": "boolean",
+     "label": "File existed before upload?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "existed",
+      "type": "boolean"
+     },
+     "hint": "True if a file with the same name already existed in the folder"
+    }
+   ]
+  }
+ ]
+}

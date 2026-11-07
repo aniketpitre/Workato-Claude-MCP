@@ -1,0 +1,3940 @@
+{
+ "name": "bamboohr",
+ "title": "BambooHR",
+ "requires_connection": true,
+ "categories": [
+  "HR management"
+ ],
+ "aliases": [
+  "BambooHR"
+ ],
+ "triggers": [
+  {
+   "name": "new_employee",
+   "title": "New employee",
+   "description": "New employee in BambooHR",
+   "help": "Check for created employee every {{authUser.membership.poll_interval}} minutes",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Fetches employee created since the given date. Leave empty to get employee created 2 hours ago Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "flag",
+     "type": "boolean",
+     "label": "Enrich output data?",
+     "control_type": "checkbox",
+     "default": "true",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "flag",
+      "type": "string"
+     },
+     "hint": "Set the Enrich output data? to No to get the new/updated record IDs only. This prevents rate limit errors in high volume usecases."
+    },
+    {
+     "name": "field_configuration",
+     "type": "object",
+     "label": "Output field configuration",
+     "visible_if": "input.flag != \"false\"",
+     "properties": [
+      {
+       "name": "fields",
+       "type": "string",
+       "label": "Output fields",
+       "control_type": "multiselect",
+       "pick_list": "fields_list",
+       "extends_schema": true,
+       "hint": "Select the fields you wish to use in your recipe. All fields will be returned if left blank."
+      }
+     ]
+    },
+    {
+     "name": "only_current",
+     "type": "boolean",
+     "label": "Only current",
+     "control_type": "checkbox",
+     "visible_if": "input.flag == \"true\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "only_current",
+      "type": "boolean"
+     },
+     "hint": "When set to true , will only contain employee details that are in-effect as of the current date. Setting this to false will return future dated values from history table fields. Defaults to true ."
+    }
+   ],
+   "output": [
+    {
+     "name": "middleName",
+     "type": "string",
+     "label": "Middle name",
+     "control_type": "text"
+    },
+    {
+     "name": "dateOfBirth",
+     "type": "date_time",
+     "label": "Date of birth",
+     "control_type": "date"
+    },
+    {
+     "name": "gender",
+     "type": "string",
+     "label": "Gender",
+     "control_type": "text",
+     "hint": "Male or Female"
+    },
+    {
+     "name": "address1",
+     "type": "string",
+     "label": "Address line 1",
+     "control_type": "text",
+     "hint": "The employee's first address line."
+    },
+    {
+     "name": "address2",
+     "type": "string",
+     "label": "Address line 2",
+     "control_type": "text",
+     "hint": "The employee's second address line."
+    },
+    {
+     "name": "city",
+     "type": "string",
+     "label": "City",
+     "control_type": "text"
+    },
+    {
+     "name": "state",
+     "type": "string",
+     "label": "State",
+     "control_type": "text"
+    },
+    {
+     "name": "country",
+     "type": "string",
+     "label": "Country",
+     "control_type": "text"
+    },
+    {
+     "name": "zipcode",
+     "type": "string",
+     "label": "Zipcode",
+     "control_type": "text"
+    },
+    {
+     "name": "mobilePhone",
+     "type": "string",
+     "label": "Mobile phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workEmail",
+     "type": "string",
+     "label": "Work email",
+     "control_type": "email",
+     "hint": "The employee's work email address."
+    },
+    {
+     "name": "employeeNumber",
+     "type": "string",
+     "label": "Employee number",
+     "control_type": "text",
+     "hint": "Employee number (assigned by your company)."
+    },
+    {
+     "name": "hireDate",
+     "type": "date_time",
+     "label": "Hire date",
+     "control_type": "date"
+    },
+    {
+     "name": "homeEmail",
+     "type": "string",
+     "label": "Home email",
+     "control_type": "email"
+    },
+    {
+     "name": "homePhone",
+     "type": "string",
+     "label": "Home phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workPhone",
+     "type": "string",
+     "label": "Work phone",
+     "control_type": "phone",
+     "hint": "The employee's work phone number, without extension."
+    },
+    {
+     "name": "workPhoneExtension",
+     "type": "string",
+     "label": "Work phone extension",
+     "control_type": "text",
+     "hint": "The employee's work phone extension (if any)."
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "preferredName",
+     "type": "string",
+     "label": "Preferred name",
+     "control_type": "text"
+    },
+    {
+     "name": "payRate",
+     "type": "number",
+     "label": "Pay rate",
+     "control_type": "number",
+     "hint": "The employee's CURRENT pay rate (e.g., $8.25)."
+    },
+    {
+     "name": "payRateEffectiveDate",
+     "type": "date_time",
+     "label": "Pay rate effective date",
+     "control_type": "date",
+     "hint": "The day the most recent change was made."
+    },
+    {
+     "name": "payType",
+     "type": "string",
+     "label": "Pay type",
+     "control_type": "select",
+     "options": [
+      "hourly",
+      "salary",
+      "commission",
+      "exception hourly",
+      "monthly",
+      "weekly",
+      "piece rate",
+      "contract",
+      "daily",
+      "pro rata"
+     ]
+    },
+    {
+     "name": "ssn",
+     "type": "string",
+     "label": "SSN",
+     "control_type": "text",
+     "hint": "The employee's Social Security number."
+    },
+    {
+     "name": "sin",
+     "type": "string",
+     "label": "SIN",
+     "control_type": "text",
+     "hint": "The employee's Canadian Social Insurance Number."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "The employee's employee status (Active or Inactive)."
+    },
+    {
+     "name": "terminationDate",
+     "type": "date_time",
+     "label": "Termination date",
+     "control_type": "date",
+     "hint": "The date the employee was terminated."
+    },
+    {
+     "name": "rehireDate",
+     "type": "date_time",
+     "label": "Rehire date",
+     "control_type": "date",
+     "hint": "The date the employee was rehired."
+    },
+    {
+     "name": "standardHoursPerWeek",
+     "type": "integer",
+     "label": "Standard hours per week",
+     "control_type": "number",
+     "hint": "The number of hours the employee works in a standard week."
+    },
+    {
+     "name": "bonusDate",
+     "type": "date_time",
+     "label": "Bonus date",
+     "control_type": "date",
+     "hint": "The date of the last bonus."
+    },
+    {
+     "name": "bonusAmount",
+     "type": "string",
+     "label": "Bonus amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent bonus."
+    },
+    {
+     "name": "bonusComment",
+     "type": "string",
+     "label": "Bonus comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent bonus."
+    },
+    {
+     "name": "commissionDate",
+     "type": "date_time",
+     "label": "Commission date",
+     "control_type": "date",
+     "hint": "The date of the last commission."
+    },
+    {
+     "name": "commissionAmount",
+     "type": "string",
+     "label": "Commission amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent commission."
+    },
+    {
+     "name": "commissionComment",
+     "type": "string",
+     "label": "Commission comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent commission."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "firstName",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastName",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName1",
+     "type": "string",
+     "label": "Full name 1",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName2",
+     "type": "string",
+     "label": "Full name 2",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName3",
+     "type": "string",
+     "label": "Full name 3",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName4",
+     "type": "string",
+     "label": "Full name 4",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName5",
+     "type": "string",
+     "label": "Full name 5",
+     "control_type": "text"
+    },
+    {
+     "name": "jobTitle",
+     "type": "string",
+     "label": "Job title",
+     "control_type": "text"
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "text"
+    },
+    {
+     "name": "age",
+     "type": "integer",
+     "label": "Age",
+     "control_type": "number"
+    },
+    {
+     "name": "bestEmail",
+     "type": "string",
+     "label": "Best email",
+     "control_type": "email"
+    },
+    {
+     "name": "birthday",
+     "type": "string",
+     "label": "Birthday",
+     "control_type": "text"
+    },
+    {
+     "name": "workPhonePlusExtension",
+     "type": "string",
+     "label": "Work phone plus extension",
+     "control_type": "text"
+    },
+    {
+     "name": "supervisorId",
+     "type": "integer",
+     "label": "Supervisor ID",
+     "control_type": "number"
+    },
+    {
+     "name": "supervisorEId",
+     "type": "integer",
+     "label": "Supervisor E ID",
+     "control_type": "number"
+    },
+    {
+     "name": "get_employee_by_id+supervisorEId",
+     "type": "object",
+     "label": "Supervisor details",
+     "required": true
+    },
+    {
+     "name": "stateCode",
+     "type": "string",
+     "label": "State code",
+     "control_type": "text"
+    },
+    {
+     "name": "photoUploaded",
+     "type": "boolean",
+     "label": "Photo uploaded",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "photoUploaded",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "department",
+     "type": "string",
+     "label": "Department",
+     "control_type": "text"
+    },
+    {
+     "name": "supervisor",
+     "type": "string",
+     "label": "Supervisor",
+     "control_type": "text"
+    },
+    {
+     "name": "division",
+     "type": "string",
+     "label": "Division",
+     "control_type": "text"
+    },
+    {
+     "name": "payGroupId",
+     "type": "integer",
+     "label": "Pay group ID",
+     "control_type": "number"
+    },
+    {
+     "name": "eeo",
+     "type": "string",
+     "label": "Equal Employment Opportunity",
+     "control_type": "text"
+    },
+    {
+     "name": "employmentHistoryStatus",
+     "type": "string",
+     "label": "Employment history status",
+     "control_type": "text"
+    },
+    {
+     "name": "ethnicity",
+     "type": "string",
+     "label": "Ethnicity",
+     "control_type": "text"
+    },
+    {
+     "name": "flsaCode",
+     "type": "string",
+     "label": "FLSA employee exemption",
+     "control_type": "text"
+    },
+    {
+     "name": "maritalStatus",
+     "type": "string",
+     "label": "Marital status",
+     "control_type": "text"
+    },
+    {
+     "name": "lastChanged",
+     "type": "date_time",
+     "label": "Last changed",
+     "control_type": "date"
+    },
+    {
+     "name": "payChangeReason",
+     "type": "string",
+     "label": "Pay change reason",
+     "control_type": "text"
+    },
+    {
+     "name": "payGroup",
+     "type": "string",
+     "label": "Pay group",
+     "control_type": "text"
+    },
+    {
+     "name": "bonusReason",
+     "type": "string",
+     "label": "Bonus reason",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "new_employee_webhook",
+   "title": "New employee",
+   "description": "New employee in BambooHR",
+   "help": "Please connect to get Webhook URL",
+   "input": [
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "E.g. New employee event . It is appended to the Webhook URL created by Workato. Update the Webhook URL in BambooHR UI."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "get_fields_pick_list",
+     "extends_schema": true,
+     "hint": "Select the fields which are selected while creating the webhook."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true
+    }
+   ]
+  },
+  {
+   "name": "schedule_custom_report",
+   "title": "Schedule custom employee report",
+   "description": "Scheduled report in BambooHR",
+   "help": "Runs a report on the specified schedule and returns new/updated employees between 2 consecutive report runs. The set of data returned depends on the fields selected.",
+   "input": [
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "visible_if": "!!input.since",
+     "extends_schema": true,
+     "hint": "Fetches employees in custom report created or updated since the given date and time. Leave empty to get records created or updated 1 hour ago. Once recipe has been run or tested, value cannot be chang…"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Fields",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "all_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select the fields you wish to retrieve"
+    },
+    {
+     "name": "only_current",
+     "type": "boolean",
+     "label": "Only current",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "only_current",
+      "type": "boolean"
+     },
+     "hint": "When set to true , the report will only contain employee details that are in-effect as of the date of the report generation.Setting this to false will include future-dated changes in the report. Defau…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "updated_employee",
+   "title": "New/updated employee",
+   "description": "New/updated employee in BambooHR",
+   "help": "Check for created or updated employee every {{authUser.membership.poll_interval}} minutes",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Fetches employee created or updated since the given date. Leave empty to get employee created or updated 2 hours ago Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "flag",
+     "type": "boolean",
+     "label": "Enrich output data?",
+     "control_type": "checkbox",
+     "default": "true",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "flag",
+      "type": "string"
+     },
+     "hint": "Set the Enrich output data? to No to get the new/updated record IDs only. This prevents rate limit errors in high volume usecases."
+    },
+    {
+     "name": "field_configuration",
+     "type": "object",
+     "label": "Output field configuration",
+     "visible_if": "input.flag != \"false\"",
+     "properties": [
+      {
+       "name": "fields",
+       "type": "string",
+       "label": "Output fields",
+       "control_type": "multiselect",
+       "pick_list": "fields_list",
+       "extends_schema": true,
+       "hint": "Select the fields you wish to use in your recipe. All fields will be returned if left blank."
+      }
+     ]
+    },
+    {
+     "name": "only_current",
+     "type": "boolean",
+     "label": "Only current",
+     "control_type": "checkbox",
+     "visible_if": "input.flag == \"true\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "only_current",
+      "type": "boolean"
+     },
+     "hint": "When set to true , will only contain employee details that are in-effect as of the current date. Setting this to false will return future dated values from history table fields. Defaults to true ."
+    }
+   ],
+   "output": [
+    {
+     "name": "middleName",
+     "type": "string",
+     "label": "Middle name",
+     "control_type": "text"
+    },
+    {
+     "name": "dateOfBirth",
+     "type": "date_time",
+     "label": "Date of birth",
+     "control_type": "date"
+    },
+    {
+     "name": "gender",
+     "type": "string",
+     "label": "Gender",
+     "control_type": "text",
+     "hint": "Male or Female"
+    },
+    {
+     "name": "address1",
+     "type": "string",
+     "label": "Address line 1",
+     "control_type": "text",
+     "hint": "The employee's first address line."
+    },
+    {
+     "name": "address2",
+     "type": "string",
+     "label": "Address line 2",
+     "control_type": "text",
+     "hint": "The employee's second address line."
+    },
+    {
+     "name": "city",
+     "type": "string",
+     "label": "City",
+     "control_type": "text"
+    },
+    {
+     "name": "state",
+     "type": "string",
+     "label": "State",
+     "control_type": "text"
+    },
+    {
+     "name": "country",
+     "type": "string",
+     "label": "Country",
+     "control_type": "text"
+    },
+    {
+     "name": "zipcode",
+     "type": "string",
+     "label": "Zipcode",
+     "control_type": "text"
+    },
+    {
+     "name": "mobilePhone",
+     "type": "string",
+     "label": "Mobile phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workEmail",
+     "type": "string",
+     "label": "Work email",
+     "control_type": "email",
+     "hint": "The employee's work email address."
+    },
+    {
+     "name": "employeeNumber",
+     "type": "string",
+     "label": "Employee number",
+     "control_type": "text",
+     "hint": "Employee number (assigned by your company)."
+    },
+    {
+     "name": "hireDate",
+     "type": "date_time",
+     "label": "Hire date",
+     "control_type": "date"
+    },
+    {
+     "name": "homeEmail",
+     "type": "string",
+     "label": "Home email",
+     "control_type": "email"
+    },
+    {
+     "name": "homePhone",
+     "type": "string",
+     "label": "Home phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workPhone",
+     "type": "string",
+     "label": "Work phone",
+     "control_type": "phone",
+     "hint": "The employee's work phone number, without extension."
+    },
+    {
+     "name": "workPhoneExtension",
+     "type": "string",
+     "label": "Work phone extension",
+     "control_type": "text",
+     "hint": "The employee's work phone extension (if any)."
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "preferredName",
+     "type": "string",
+     "label": "Preferred name",
+     "control_type": "text"
+    },
+    {
+     "name": "payRate",
+     "type": "number",
+     "label": "Pay rate",
+     "control_type": "number",
+     "hint": "The employee's CURRENT pay rate (e.g., $8.25)."
+    },
+    {
+     "name": "payRateEffectiveDate",
+     "type": "date_time",
+     "label": "Pay rate effective date",
+     "control_type": "date",
+     "hint": "The day the most recent change was made."
+    },
+    {
+     "name": "payType",
+     "type": "string",
+     "label": "Pay type",
+     "control_type": "select",
+     "options": [
+      "hourly",
+      "salary",
+      "commission",
+      "exception hourly",
+      "monthly",
+      "weekly",
+      "piece rate",
+      "contract",
+      "daily",
+      "pro rata"
+     ]
+    },
+    {
+     "name": "ssn",
+     "type": "string",
+     "label": "SSN",
+     "control_type": "text",
+     "hint": "The employee's Social Security number."
+    },
+    {
+     "name": "sin",
+     "type": "string",
+     "label": "SIN",
+     "control_type": "text",
+     "hint": "The employee's Canadian Social Insurance Number."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "The employee's employee status (Active or Inactive)."
+    },
+    {
+     "name": "terminationDate",
+     "type": "date_time",
+     "label": "Termination date",
+     "control_type": "date",
+     "hint": "The date the employee was terminated."
+    },
+    {
+     "name": "rehireDate",
+     "type": "date_time",
+     "label": "Rehire date",
+     "control_type": "date",
+     "hint": "The date the employee was rehired."
+    },
+    {
+     "name": "standardHoursPerWeek",
+     "type": "integer",
+     "label": "Standard hours per week",
+     "control_type": "number",
+     "hint": "The number of hours the employee works in a standard week."
+    },
+    {
+     "name": "bonusDate",
+     "type": "date_time",
+     "label": "Bonus date",
+     "control_type": "date",
+     "hint": "The date of the last bonus."
+    },
+    {
+     "name": "bonusAmount",
+     "type": "string",
+     "label": "Bonus amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent bonus."
+    },
+    {
+     "name": "bonusComment",
+     "type": "string",
+     "label": "Bonus comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent bonus."
+    },
+    {
+     "name": "commissionDate",
+     "type": "date_time",
+     "label": "Commission date",
+     "control_type": "date",
+     "hint": "The date of the last commission."
+    },
+    {
+     "name": "commissionAmount",
+     "type": "string",
+     "label": "Commission amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent commission."
+    },
+    {
+     "name": "commissionComment",
+     "type": "string",
+     "label": "Commission comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent commission."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "firstName",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastName",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName1",
+     "type": "string",
+     "label": "Full name 1",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName2",
+     "type": "string",
+     "label": "Full name 2",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName3",
+     "type": "string",
+     "label": "Full name 3",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName4",
+     "type": "string",
+     "label": "Full name 4",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName5",
+     "type": "string",
+     "label": "Full name 5",
+     "control_type": "text"
+    },
+    {
+     "name": "jobTitle",
+     "type": "string",
+     "label": "Job title",
+     "control_type": "text"
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "text"
+    },
+    {
+     "name": "age",
+     "type": "integer",
+     "label": "Age",
+     "control_type": "number"
+    },
+    {
+     "name": "bestEmail",
+     "type": "string",
+     "label": "Best email",
+     "control_type": "email"
+    },
+    {
+     "name": "birthday",
+     "type": "string",
+     "label": "Birthday",
+     "control_type": "text"
+    },
+    {
+     "name": "workPhonePlusExtension",
+     "type": "string",
+     "label": "Work phone plus extension",
+     "control_type": "text"
+    },
+    {
+     "name": "supervisorId",
+     "type": "integer",
+     "label": "Supervisor ID",
+     "control_type": "number"
+    },
+    {
+     "name": "supervisorEId",
+     "type": "integer",
+     "label": "Supervisor E ID",
+     "control_type": "number"
+    },
+    {
+     "name": "get_employee_by_id+supervisorEId",
+     "type": "object",
+     "label": "Supervisor details",
+     "required": true
+    },
+    {
+     "name": "stateCode",
+     "type": "string",
+     "label": "State code",
+     "control_type": "text"
+    },
+    {
+     "name": "photoUploaded",
+     "type": "boolean",
+     "label": "Photo uploaded",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "photoUploaded",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "department",
+     "type": "string",
+     "label": "Department",
+     "control_type": "text"
+    },
+    {
+     "name": "supervisor",
+     "type": "string",
+     "label": "Supervisor",
+     "control_type": "text"
+    },
+    {
+     "name": "division",
+     "type": "string",
+     "label": "Division",
+     "control_type": "text"
+    },
+    {
+     "name": "payGroupId",
+     "type": "integer",
+     "label": "Pay group ID",
+     "control_type": "number"
+    },
+    {
+     "name": "eeo",
+     "type": "string",
+     "label": "Equal Employment Opportunity",
+     "control_type": "text"
+    },
+    {
+     "name": "employmentHistoryStatus",
+     "type": "string",
+     "label": "Employment history status",
+     "control_type": "text"
+    },
+    {
+     "name": "ethnicity",
+     "type": "string",
+     "label": "Ethnicity",
+     "control_type": "text"
+    },
+    {
+     "name": "flsaCode",
+     "type": "string",
+     "label": "FLSA employee exemption",
+     "control_type": "text"
+    },
+    {
+     "name": "maritalStatus",
+     "type": "string",
+     "label": "Marital status",
+     "control_type": "text"
+    },
+    {
+     "name": "lastChanged",
+     "type": "date_time",
+     "label": "Last changed",
+     "control_type": "date"
+    },
+    {
+     "name": "payChangeReason",
+     "type": "string",
+     "label": "Pay change reason",
+     "control_type": "text"
+    },
+    {
+     "name": "payGroup",
+     "type": "string",
+     "label": "Pay group",
+     "control_type": "text"
+    },
+    {
+     "name": "bonusReason",
+     "type": "string",
+     "label": "Bonus reason",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "updated_employee_webhook",
+   "title": "New/updated employee",
+   "description": "New/updated employee in BambooHR",
+   "help": "Please connect to get Webhook URL",
+   "input": [
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "E.g. New/updated employee event . It is appended to the Webhook URL created by Workato. Update the Webhook URL in BambooHR UI."
+    },
+    {
+     "name": "field_list",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "get_fields_pick_list",
+     "extends_schema": true,
+     "hint": "Select the fields which are selected while creating the webhook."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in BambooHR (Custom)",
+   "help": "Build your own BambooHR action with a HTTP request. The request will be authorized with your BambooHR connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_employee",
+   "title": "Create employee",
+   "description": "Create employee in BambooHR",
+   "help": "This action does not return details of the employee created. To get employee details, user should add in action: get employee details by ID",
+   "input": [
+    {
+     "name": "firstName",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastName",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "middleName",
+     "type": "string",
+     "label": "Middle name",
+     "control_type": "text"
+    },
+    {
+     "name": "dateOfBirth",
+     "type": "date_time",
+     "label": "Date of birth",
+     "control_type": "date"
+    },
+    {
+     "name": "gender",
+     "type": "string",
+     "label": "Gender",
+     "control_type": "text",
+     "hint": "Male or Female"
+    },
+    {
+     "name": "address1",
+     "type": "string",
+     "label": "Address line 1",
+     "control_type": "text",
+     "hint": "The employee's first address line."
+    },
+    {
+     "name": "address2",
+     "type": "string",
+     "label": "Address line 2",
+     "control_type": "text",
+     "hint": "The employee's second address line."
+    },
+    {
+     "name": "city",
+     "type": "string",
+     "label": "City",
+     "control_type": "text"
+    },
+    {
+     "name": "state",
+     "type": "string",
+     "label": "State",
+     "control_type": "text"
+    },
+    {
+     "name": "country",
+     "type": "string",
+     "label": "Country",
+     "control_type": "text"
+    },
+    {
+     "name": "zipcode",
+     "type": "string",
+     "label": "Zipcode",
+     "control_type": "text"
+    },
+    {
+     "name": "mobilePhone",
+     "type": "string",
+     "label": "Mobile phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workEmail",
+     "type": "string",
+     "label": "Work email",
+     "control_type": "email",
+     "hint": "The employee's work email address."
+    },
+    {
+     "name": "employeeNumber",
+     "type": "string",
+     "label": "Employee number",
+     "control_type": "text",
+     "hint": "Employee number (assigned by your company)."
+    },
+    {
+     "name": "hireDate",
+     "type": "date_time",
+     "label": "Hire date",
+     "control_type": "date"
+    },
+    {
+     "name": "homeEmail",
+     "type": "string",
+     "label": "Home email",
+     "control_type": "email"
+    },
+    {
+     "name": "homePhone",
+     "type": "string",
+     "label": "Home phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workPhone",
+     "type": "string",
+     "label": "Work phone",
+     "control_type": "phone",
+     "hint": "The employee's work phone number, without extension."
+    },
+    {
+     "name": "workPhoneExtension",
+     "type": "string",
+     "label": "Work phone extension",
+     "control_type": "text",
+     "hint": "The employee's work phone extension (if any)."
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "preferredName",
+     "type": "string",
+     "label": "Preferred name",
+     "control_type": "text"
+    },
+    {
+     "name": "payRate",
+     "type": "number",
+     "label": "Pay rate",
+     "control_type": "number",
+     "hint": "The employee's CURRENT pay rate (e.g., $8.25)."
+    },
+    {
+     "name": "payRateEffectiveDate",
+     "type": "date_time",
+     "label": "Pay rate effective date",
+     "control_type": "date",
+     "hint": "The day the most recent change was made."
+    },
+    {
+     "name": "payType",
+     "type": "string",
+     "label": "Pay type",
+     "control_type": "select",
+     "options": [
+      "hourly",
+      "salary",
+      "commission",
+      "exception hourly",
+      "monthly",
+      "weekly",
+      "piece rate",
+      "contract",
+      "daily",
+      "pro rata"
+     ]
+    },
+    {
+     "name": "ssn",
+     "type": "string",
+     "label": "SSN",
+     "control_type": "text",
+     "hint": "The employee's Social Security number."
+    },
+    {
+     "name": "sin",
+     "type": "string",
+     "label": "SIN",
+     "control_type": "text",
+     "hint": "The employee's Canadian Social Insurance Number."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "The employee's employee status (Active or Inactive)."
+    },
+    {
+     "name": "terminationDate",
+     "type": "date_time",
+     "label": "Termination date",
+     "control_type": "date",
+     "hint": "The date the employee was terminated."
+    },
+    {
+     "name": "rehireDate",
+     "type": "date_time",
+     "label": "Rehire date",
+     "control_type": "date",
+     "hint": "The date the employee was rehired."
+    },
+    {
+     "name": "standardHoursPerWeek",
+     "type": "integer",
+     "label": "Standard hours per week",
+     "control_type": "number",
+     "hint": "The number of hours the employee works in a standard week."
+    },
+    {
+     "name": "bonusDate",
+     "type": "date_time",
+     "label": "Bonus date",
+     "control_type": "date",
+     "hint": "The date of the last bonus."
+    },
+    {
+     "name": "bonusAmount",
+     "type": "string",
+     "label": "Bonus amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent bonus."
+    },
+    {
+     "name": "bonusComment",
+     "type": "string",
+     "label": "Bonus comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent bonus."
+    },
+    {
+     "name": "commissionDate",
+     "type": "date_time",
+     "label": "Commission date",
+     "control_type": "date",
+     "hint": "The date of the last commission."
+    },
+    {
+     "name": "commissionAmount",
+     "type": "string",
+     "label": "Commission amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent commission."
+    },
+    {
+     "name": "commissionComment",
+     "type": "string",
+     "label": "Commission comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent commission."
+    },
+    {
+     "name": "exempt",
+     "type": "string",
+     "label": "Overtime status",
+     "control_type": "select",
+     "options": [
+      "Exempt",
+      "Non-Exempt"
+     ],
+     "toggle_field": {
+      "name": "exempt",
+      "type": "string"
+     },
+     "hint": "The FLSA overtime status."
+    },
+    {
+     "name": "OvertimeRate",
+     "type": "object",
+     "label": "Overtime rate",
+     "visible_if": "input.exempt == \"Non-Exempt\"",
+     "properties": [
+      {
+       "name": "value",
+       "type": "number",
+       "label": "Amount",
+       "control_type": "number"
+      },
+      {
+       "name": "currency",
+       "type": "string",
+       "label": "Currency code",
+       "control_type": "text",
+       "hint": "E.g. EUR for Euro. Default to the currency that you have set in your account."
+      }
+     ],
+     "hint": "Overtime rate for Non exempt."
+    },
+    {
+     "name": "payPer",
+     "type": "string",
+     "label": "Pay per",
+     "control_type": "select",
+     "options": [
+      "Hour",
+      "Day",
+      "Week",
+      "Month",
+      "Quarter",
+      "Year",
+      "Pay period",
+      "Piece"
+     ],
+     "toggle_field": {
+      "name": "payPer",
+      "type": "string"
+     },
+     "hint": "Select the employee's current pay per"
+    },
+    {
+     "name": "maritalStatus",
+     "type": "string",
+     "label": "Marital status",
+     "control_type": "select",
+     "options": [
+      "Single",
+      "Married",
+      "Domestic partnership",
+      "Common law"
+     ],
+     "toggle_field": {
+      "name": "maritalStatus",
+      "type": "string"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "url",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_or_update_time_off_request",
+   "title": "Create/update time off request",
+   "description": "Create/update a time off request on BambooHR",
+   "help": "This action creates a time off request for a specified user. If a reference to an existing request is provided, an update will be performed instead. To cancel a request, use the Update time off request status action instead.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Employee ID",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "id",
+      "type": "string"
+     },
+     "hint": "The ID of the employee requesting for time off."
+    },
+    {
+     "name": "timeOffTypeId",
+     "type": "string",
+     "label": "Time off type",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "timeOffTypeId",
+      "type": "string"
+     },
+     "hint": "The type of the time off requested. Select from the options provided or enter the type ID manually."
+    },
+    {
+     "name": "start",
+     "type": "date",
+     "label": " Start date",
+     "control_type": "date",
+     "required": true,
+     "hint": "The start date of the time off. Select date or type it in YYYY-MM-DD format."
+    },
+    {
+     "name": "end",
+     "type": "date",
+     "label": "End date",
+     "control_type": "date",
+     "required": true,
+     "hint": "The end date of the time off. Select date or type it in YYYY-MM-DD format."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "The status of the time off request. Select from the picklist or input either approved , requested or denied"
+    },
+    {
+     "name": "break_down_amount_per_day",
+     "type": "boolean",
+     "label": "Break down amount per day",
+     "control_type": "checkbox",
+     "required": true,
+     "default": "false",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "break_down_amount_per_day",
+      "type": "boolean"
+     },
+     "hint": "When enabled, a break down of the amount of time off taken by the employee per day needs to be provided. Allowed values are true or false"
+    },
+    {
+     "name": "note",
+     "type": "string",
+     "label": "Note",
+     "control_type": "text",
+     "hint": "Enter any notes you want to attach to the request. By default note will be made on behalf of the requesting employee."
+    },
+    {
+     "name": "previousRequest",
+     "type": "string",
+     "label": "Previous request ID",
+     "control_type": "text",
+     "hint": "When an existing request is selected, an update will be performed instead. Leave blank to create a new request."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_table_record",
+   "title": "Create table record of employee",
+   "description": "Create table record of employee in BambooHR",
+   "help": "This action creates a table record for an employee. Table records are identified by row ID. To get the row ID, use the Get table records of employee action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Employee ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "BambooHR internal ID of employee"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "table_list",
+     "extends_schema": true
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "delete_table_record",
+   "title": "Delete table record",
+   "description": "Delete table record of employee in BambooHR",
+   "help": "This action deletes a table record of an employee. The table records are identified by the row ID. To get the row ID, use the Get table records of employee action",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Employee ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "BambooHR internal ID of Employee"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "table_list",
+     "extends_schema": true
+    },
+    {
+     "name": "row_id",
+     "type": "integer",
+     "label": "Row ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "BambooHR internal ID of row"
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "get_company_report",
+   "title": "Get company employee report by ID",
+   "description": "Get company report by ID in BambooHR",
+   "input": [
+    {
+     "name": "report_id",
+     "type": "string",
+     "label": "Report ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the report ID. You can get the report number by hovering over the report name and noting the ID from the URL. Supports only reports from my reports and manage reports."
+    },
+    {
+     "name": "only_current",
+     "type": "boolean",
+     "label": "Only current",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "only_current",
+      "type": "boolean"
+     },
+     "hint": "When set to true , the report will only contain employee details that are in-effect as of the date of the report generation.Setting this to false will include future-dated changes in the report. Defau…"
+    },
+    {
+     "name": "sample_document",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Enter example schema JSON for employees. Used to generate the Workato output datatree for use in subsequent recipe steps"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_employee_by_id",
+   "title": "Get employee details by ID",
+   "description": "Get employee details in BambooHR",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Employee ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "BambooHR internal ID of Employee"
+    },
+    {
+     "name": "field_configuration",
+     "type": "object",
+     "label": "Output field configuration",
+     "properties": [
+      {
+       "name": "fields",
+       "type": "string",
+       "label": "Custom output fields",
+       "control_type": "multiselect",
+       "pick_list": "fields_list",
+       "extends_schema": true,
+       "toggle_field": {
+        "name": "custom_field_ids",
+        "type": "string"
+       },
+       "hint": "Select the fields you wish to use in your recipe. All fields will be returned if left blank."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "middleName",
+     "type": "string",
+     "label": "Middle name",
+     "control_type": "text"
+    },
+    {
+     "name": "dateOfBirth",
+     "type": "date_time",
+     "label": "Date of birth",
+     "control_type": "date"
+    },
+    {
+     "name": "gender",
+     "type": "string",
+     "label": "Gender",
+     "control_type": "text",
+     "hint": "Male or Female"
+    },
+    {
+     "name": "address1",
+     "type": "string",
+     "label": "Address line 1",
+     "control_type": "text",
+     "hint": "The employee's first address line."
+    },
+    {
+     "name": "address2",
+     "type": "string",
+     "label": "Address line 2",
+     "control_type": "text",
+     "hint": "The employee's second address line."
+    },
+    {
+     "name": "city",
+     "type": "string",
+     "label": "City",
+     "control_type": "text"
+    },
+    {
+     "name": "state",
+     "type": "string",
+     "label": "State",
+     "control_type": "text"
+    },
+    {
+     "name": "country",
+     "type": "string",
+     "label": "Country",
+     "control_type": "text"
+    },
+    {
+     "name": "zipcode",
+     "type": "string",
+     "label": "Zipcode",
+     "control_type": "text"
+    },
+    {
+     "name": "mobilePhone",
+     "type": "string",
+     "label": "Mobile phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workEmail",
+     "type": "string",
+     "label": "Work email",
+     "control_type": "email",
+     "hint": "The employee's work email address."
+    },
+    {
+     "name": "employeeNumber",
+     "type": "string",
+     "label": "Employee number",
+     "control_type": "text",
+     "hint": "Employee number (assigned by your company)."
+    },
+    {
+     "name": "hireDate",
+     "type": "date_time",
+     "label": "Hire date",
+     "control_type": "date"
+    },
+    {
+     "name": "homeEmail",
+     "type": "string",
+     "label": "Home email",
+     "control_type": "email"
+    },
+    {
+     "name": "homePhone",
+     "type": "string",
+     "label": "Home phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workPhone",
+     "type": "string",
+     "label": "Work phone",
+     "control_type": "phone",
+     "hint": "The employee's work phone number, without extension."
+    },
+    {
+     "name": "workPhoneExtension",
+     "type": "string",
+     "label": "Work phone extension",
+     "control_type": "text",
+     "hint": "The employee's work phone extension (if any)."
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "preferredName",
+     "type": "string",
+     "label": "Preferred name",
+     "control_type": "text"
+    },
+    {
+     "name": "payRate",
+     "type": "number",
+     "label": "Pay rate",
+     "control_type": "number",
+     "hint": "The employee's CURRENT pay rate (e.g., $8.25)."
+    },
+    {
+     "name": "payRateEffectiveDate",
+     "type": "date_time",
+     "label": "Pay rate effective date",
+     "control_type": "date",
+     "hint": "The day the most recent change was made."
+    },
+    {
+     "name": "payType",
+     "type": "string",
+     "label": "Pay type",
+     "control_type": "select",
+     "options": [
+      "hourly",
+      "salary",
+      "commission",
+      "exception hourly",
+      "monthly",
+      "weekly",
+      "piece rate",
+      "contract",
+      "daily",
+      "pro rata"
+     ]
+    },
+    {
+     "name": "ssn",
+     "type": "string",
+     "label": "SSN",
+     "control_type": "text",
+     "hint": "The employee's Social Security number."
+    },
+    {
+     "name": "sin",
+     "type": "string",
+     "label": "SIN",
+     "control_type": "text",
+     "hint": "The employee's Canadian Social Insurance Number."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "The employee's employee status (Active or Inactive)."
+    },
+    {
+     "name": "terminationDate",
+     "type": "date_time",
+     "label": "Termination date",
+     "control_type": "date",
+     "hint": "The date the employee was terminated."
+    },
+    {
+     "name": "rehireDate",
+     "type": "date_time",
+     "label": "Rehire date",
+     "control_type": "date",
+     "hint": "The date the employee was rehired."
+    },
+    {
+     "name": "standardHoursPerWeek",
+     "type": "integer",
+     "label": "Standard hours per week",
+     "control_type": "number",
+     "hint": "The number of hours the employee works in a standard week."
+    },
+    {
+     "name": "bonusDate",
+     "type": "date_time",
+     "label": "Bonus date",
+     "control_type": "date",
+     "hint": "The date of the last bonus."
+    },
+    {
+     "name": "bonusAmount",
+     "type": "string",
+     "label": "Bonus amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent bonus."
+    },
+    {
+     "name": "bonusComment",
+     "type": "string",
+     "label": "Bonus comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent bonus."
+    },
+    {
+     "name": "commissionDate",
+     "type": "date_time",
+     "label": "Commission date",
+     "control_type": "date",
+     "hint": "The date of the last commission."
+    },
+    {
+     "name": "commissionAmount",
+     "type": "string",
+     "label": "Commission amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent commission."
+    },
+    {
+     "name": "commissionComment",
+     "type": "string",
+     "label": "Commission comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent commission."
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "firstName",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastName",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "displayName",
+     "type": "string",
+     "label": "Display name",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName1",
+     "type": "string",
+     "label": "Full name 1",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName2",
+     "type": "string",
+     "label": "Full name 2",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName3",
+     "type": "string",
+     "label": "Full name 3",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName4",
+     "type": "string",
+     "label": "Full name 4",
+     "control_type": "text"
+    },
+    {
+     "name": "fullName5",
+     "type": "string",
+     "label": "Full name 5",
+     "control_type": "text"
+    },
+    {
+     "name": "jobTitle",
+     "type": "string",
+     "label": "Job title",
+     "control_type": "text"
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "text"
+    },
+    {
+     "name": "age",
+     "type": "integer",
+     "label": "Age",
+     "control_type": "number"
+    },
+    {
+     "name": "bestEmail",
+     "type": "string",
+     "label": "Best email",
+     "control_type": "email"
+    },
+    {
+     "name": "birthday",
+     "type": "string",
+     "label": "Birthday",
+     "control_type": "text"
+    },
+    {
+     "name": "workPhonePlusExtension",
+     "type": "string",
+     "label": "Work phone plus extension",
+     "control_type": "text"
+    },
+    {
+     "name": "supervisorId",
+     "type": "integer",
+     "label": "Supervisor ID",
+     "control_type": "number"
+    },
+    {
+     "name": "supervisorEId",
+     "type": "integer",
+     "label": "Supervisor E ID",
+     "control_type": "number"
+    },
+    {
+     "name": "get_employee_by_id+supervisorEId",
+     "type": "object",
+     "label": "Supervisor details",
+     "required": true
+    },
+    {
+     "name": "stateCode",
+     "type": "string",
+     "label": "State code",
+     "control_type": "text"
+    },
+    {
+     "name": "photoUploaded",
+     "type": "boolean",
+     "label": "Photo uploaded",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "photoUploaded",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "department",
+     "type": "string",
+     "label": "Department",
+     "control_type": "text"
+    },
+    {
+     "name": "supervisor",
+     "type": "string",
+     "label": "Supervisor",
+     "control_type": "text"
+    },
+    {
+     "name": "division",
+     "type": "string",
+     "label": "Division",
+     "control_type": "text"
+    },
+    {
+     "name": "payGroupId",
+     "type": "integer",
+     "label": "Pay group ID",
+     "control_type": "number"
+    },
+    {
+     "name": "eeo",
+     "type": "string",
+     "label": "Equal Employment Opportunity",
+     "control_type": "text"
+    },
+    {
+     "name": "employmentHistoryStatus",
+     "type": "string",
+     "label": "Employment history status",
+     "control_type": "text"
+    },
+    {
+     "name": "ethnicity",
+     "type": "string",
+     "label": "Ethnicity",
+     "control_type": "text"
+    },
+    {
+     "name": "flsaCode",
+     "type": "string",
+     "label": "FLSA employee exemption",
+     "control_type": "text"
+    },
+    {
+     "name": "maritalStatus",
+     "type": "string",
+     "label": "Marital status",
+     "control_type": "text"
+    },
+    {
+     "name": "lastChanged",
+     "type": "date_time",
+     "label": "Last changed",
+     "control_type": "date"
+    },
+    {
+     "name": "payChangeReason",
+     "type": "string",
+     "label": "Pay change reason",
+     "control_type": "text"
+    },
+    {
+     "name": "payGroup",
+     "type": "string",
+     "label": "Pay group",
+     "control_type": "text"
+    },
+    {
+     "name": "bonusReason",
+     "type": "string",
+     "label": "Bonus reason",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_report_v2",
+   "title": "Get report by ID (v2)",
+   "description": "Get report by ID in BambooHR",
+   "input": [
+    {
+     "name": "report_id",
+     "type": "string",
+     "label": "Report ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the report ID. Works with both legacy report IDs and BambooHR's new custom report IDs — legacy IDs that have been migrated are automatically translated to their new ID."
+    },
+    {
+     "name": "page",
+     "type": "integer",
+     "label": "Page",
+     "control_type": "integer",
+     "default": 1,
+     "hint": "The page number to retrieve. Defaults to 1 ."
+    },
+    {
+     "name": "page_size",
+     "type": "integer",
+     "label": "Page size",
+     "control_type": "integer",
+     "default": 500,
+     "hint": "The number of records to retrieve per page. Defaults to 500 . Maximum is 1000 ."
+    },
+    {
+     "name": "sample_document",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Enter example schema JSON for the report data. Used to generate the Workato output datatree for use in subsequent recipe steps."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_table_records",
+   "title": "Get table records of employee",
+   "description": "Get table records of employee in BambooHR",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Employee ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "BambooHR internal ID of Employee"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "table_list",
+     "extends_schema": true
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_time_off_balance",
+   "title": "Get time off balance",
+   "description": "Get time off balance in BambooHR",
+   "help": "Retrieves the authenticated user's accrued time off balances as of a given date.",
+   "input": [
+    {
+     "name": "as_of_date",
+     "type": "date",
+     "label": "As of date",
+     "control_type": "date",
+     "hint": "Date to calculate balances as of. Defaults to today."
+    }
+   ],
+   "output": [
+    {
+     "name": "balances",
+     "type": "array",
+     "label": "Balances",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "time_off_type_id",
+       "type": "string",
+       "label": "Time off type ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "units",
+       "type": "string",
+       "label": "Units",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "balance",
+       "type": "number",
+       "label": "Balance",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "end",
+       "type": "date",
+       "label": "Calculation end date",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "policy_type",
+       "type": "string",
+       "label": "Policy type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "used_year_to_date",
+       "type": "number",
+       "label": "Used year to date",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_employees_in_directory",
+   "title": "List employees in directory",
+   "description": "List employees in BambooHR",
+   "help": "This action lists all the employees in employee directory.",
+   "input": [],
+   "output": [
+    {
+     "name": "employees",
+     "type": "array",
+     "label": "Employees",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "firstName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "lastName",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "preferredName",
+       "type": "string",
+       "label": "Preferred name",
+       "control_type": "text"
+      },
+      {
+       "name": "gender",
+       "type": "string",
+       "label": "Gender",
+       "control_type": "text"
+      },
+      {
+       "name": "jobTitle",
+       "type": "string",
+       "label": "Job title",
+       "control_type": "text"
+      },
+      {
+       "name": "workPhone",
+       "type": "string",
+       "label": "Work phone",
+       "control_type": "text"
+      },
+      {
+       "name": "mobilePhone",
+       "type": "string",
+       "label": "Mobile phone",
+       "control_type": "text"
+      },
+      {
+       "name": "workEmail",
+       "type": "string",
+       "label": "Work email",
+       "control_type": "text"
+      },
+      {
+       "name": "department",
+       "type": "string",
+       "label": "Department",
+       "control_type": "text"
+      },
+      {
+       "name": "location",
+       "type": "string",
+       "label": "Location",
+       "control_type": "text"
+      },
+      {
+       "name": "division",
+       "type": "string",
+       "label": "Division",
+       "control_type": "text"
+      },
+      {
+       "name": "linkedIn",
+       "type": "string",
+       "label": "Linked in",
+       "control_type": "text"
+      },
+      {
+       "name": "workPhoneExtension",
+       "type": "string",
+       "label": "Work phone extension",
+       "control_type": "text"
+      },
+      {
+       "name": "photoUploaded",
+       "type": "boolean",
+       "label": "Photo uploaded",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "photoUploaded",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "photoUrl",
+       "type": "string",
+       "label": "Photo URL",
+       "control_type": "text"
+      },
+      {
+       "name": "canUploadPhoto",
+       "type": "integer",
+       "label": "Can upload photo",
+       "control_type": "integer"
+      },
+      {
+       "name": "supervisor",
+       "type": "string",
+       "label": "Supervisor",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_time_off_requests",
+   "title": "List time off requests",
+   "description": "List time off request on BambooHR",
+   "help": "This request lists all time off requests occurring between two specified dates. More filters can be specified to further narrow down the result.",
+   "input": [
+    {
+     "name": "start",
+     "type": "date",
+     "label": "Start date",
+     "control_type": "date",
+     "required": true,
+     "hint": "The start date of the time off. Select date or type it in YYYY-MM-DD format."
+    },
+    {
+     "name": "end",
+     "type": "date",
+     "label": "End date",
+     "control_type": "date",
+     "required": true,
+     "hint": "The end date of the time off. Select date or type it in YYYY-MM-DD format."
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "hint": "Specify a request ID to narrow the result to just this particular request."
+    },
+    {
+     "name": "employeeId",
+     "type": "string",
+     "label": "Employee ID",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "employeeId",
+      "type": "string"
+     },
+     "hint": "Specify an employee ID to narrow the result to just requests from this particular employee."
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "type",
+      "type": "string"
+     },
+     "hint": "Select the type(s) of time off to narrow the result to, or input ID of each of them manually separated by comma."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "Select the status(es) of time off to narrow the result to, or input each of them manually separated by comma."
+    },
+    {
+     "name": "action",
+     "type": "string",
+     "label": "Action",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "action",
+      "type": "string"
+     },
+     "hint": "Select from the picklist or input either view , myRequests or approve"
+    }
+   ],
+   "output": [
+    {
+     "name": "request",
+     "type": "array",
+     "label": "Request",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "employeeId",
+       "type": "string",
+       "label": "Employee ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "status",
+       "type": "object",
+       "label": "Status",
+       "required": true,
+       "properties": [
+        {
+         "name": "lastChanged",
+         "type": "date",
+         "label": "Last changed",
+         "control_type": "date",
+         "required": true
+        },
+        {
+         "name": "lastChangedByUserId",
+         "type": "string",
+         "label": "Last changed by user ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "status",
+         "type": "string",
+         "label": "Status",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "start",
+       "type": "date",
+       "label": "Start",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "end",
+       "type": "date",
+       "label": "End",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "created",
+       "type": "date",
+       "label": "Created",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "object",
+       "label": "Type",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "icon",
+         "type": "string",
+         "label": "Icon",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "amount",
+       "type": "object",
+       "label": "Amount",
+       "required": true,
+       "properties": [
+        {
+         "name": "unit",
+         "type": "string",
+         "label": "Unit",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "amount",
+         "type": "string",
+         "label": "Amount",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "actions",
+       "type": "object",
+       "label": "Actions",
+       "required": true,
+       "properties": [
+        {
+         "name": "view",
+         "type": "string",
+         "label": "View",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "edit",
+         "type": "string",
+         "label": "Edit",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "cancel",
+         "type": "string",
+         "label": "Cancel",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "approve",
+         "type": "string",
+         "label": "Approve",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "deny",
+         "type": "string",
+         "label": "Deny",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "bypass",
+         "type": "string",
+         "label": "Bypass",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "dates",
+       "type": "array",
+       "label": "Dates",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "date",
+         "type": "date",
+         "label": "Date",
+         "control_type": "date",
+         "required": true
+        },
+        {
+         "name": "val",
+         "type": "string",
+         "label": "Val",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "notes",
+       "type": "object",
+       "label": "Notes",
+       "required": true,
+       "properties": [
+        {
+         "name": "employee",
+         "type": "string",
+         "label": "Employee",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "manager",
+         "type": "string",
+         "label": "Manager",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_time_off_types",
+   "title": "List time off types",
+   "description": "List time off types in BambooHR",
+   "help": "Lists the time off types the authenticated user is eligible to request. Returns only the subset of active types the caller may currently request, not the full company catalog.",
+   "input": [],
+   "output": [
+    {
+     "name": "time_off_types",
+     "type": "array",
+     "label": "Time off types",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "units",
+       "type": "string",
+       "label": "Units",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "icon",
+       "type": "string",
+       "label": "Icon",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "color",
+       "type": "string",
+       "label": "Color",
+       "control_type": "text"
+      },
+      {
+       "name": "source",
+       "type": "string",
+       "label": "Source",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_whos_out",
+   "title": "List who's out",
+   "description": "List who's out in BambooHR",
+   "help": "Lists approved time off and company holidays in a date range. Defaults to today through 14 days out. Requested-but-unapproved time off is not included.",
+   "input": [
+    {
+     "name": "start_date",
+     "type": "date",
+     "label": "Start date",
+     "control_type": "date",
+     "hint": "Left boundary of the window. Defaults to today."
+    },
+    {
+     "name": "end_date",
+     "type": "date",
+     "label": "End date",
+     "control_type": "date",
+     "hint": "Right boundary of the window. Defaults to 14 days from today."
+    }
+   ],
+   "output": [
+    {
+     "name": "entries",
+     "type": "array",
+     "label": "Entries",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number",
+       "hint": "Stable identifier for the time off record. Not present for holiday entries."
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true,
+       "hint": "timeOff or holiday."
+      },
+      {
+       "name": "employee_id",
+       "type": "integer",
+       "label": "Employee ID",
+       "control_type": "number"
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "start",
+       "type": "date",
+       "label": "Start",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "end",
+       "type": "date",
+       "label": "End",
+       "control_type": "date",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "request_custom_report",
+   "title": "Create custom employee report",
+   "description": "Create a custom report on employees in BambooHR",
+   "help": "This action creates a custom report on employees in BambooHR based on the selected fields",
+   "input": [
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Fields",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "all_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fields",
+      "type": "string"
+     },
+     "hint": "Select the fields you wish to retrieve"
+    },
+    {
+     "name": "only_current",
+     "type": "boolean",
+     "label": "Only current",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "only_current",
+      "type": "boolean"
+     },
+     "hint": "When set to true , the report will only contain employee details that are in-effect as of the date of the report generation.Setting this to false will include future-dated changes in the report. Defau…"
+    },
+    {
+     "name": "last_changed",
+     "type": "date_time",
+     "label": "Last changed",
+     "control_type": "date_time",
+     "extends_schema": true,
+     "hint": "Include only the records that have been changed since given date"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "request_time_off",
+   "title": "Request time off",
+   "description": "Request time off in BambooHR",
+   "help": "Submits a time off request for the authenticated user. Always resolves to the caller's own employee record; the caller cannot request time off on behalf of anyone else through this action.",
+   "input": [
+    {
+     "name": "timeOffTypeId",
+     "type": "string",
+     "label": "Time off type",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "timeOffTypeId",
+      "type": "string"
+     },
+     "hint": "The type of time off requested."
+    },
+    {
+     "name": "start",
+     "type": "date",
+     "label": "Start date",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "end",
+     "type": "date",
+     "label": "End date",
+     "control_type": "date",
+     "required": true
+    },
+    {
+     "name": "amount",
+     "type": "number",
+     "label": "Amount",
+     "control_type": "number",
+     "hint": "Total amount for the whole request. Ignored if Dates is provided."
+    },
+    {
+     "name": "dates",
+     "type": "array",
+     "label": "Dates",
+     "of": "object",
+     "properties": [
+      {
+       "name": "ymd",
+       "type": "date",
+       "label": "Date",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "amount",
+       "type": "number",
+       "label": "Amount",
+       "control_type": "number",
+       "required": true
+      }
+     ],
+     "hint": "Per-day amount breakdown. If provided, Amount is ignored."
+    },
+    {
+     "name": "note",
+     "type": "string",
+     "label": "Note",
+     "control_type": "text",
+     "hint": "Employee-authored note visible to approvers."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "employeeId",
+     "type": "string",
+     "label": "Employee ID",
+     "control_type": "text"
+    },
+    {
+     "name": "start",
+     "type": "date",
+     "label": "Start",
+     "control_type": "date"
+    },
+    {
+     "name": "end",
+     "type": "date",
+     "label": "End",
+     "control_type": "date"
+    },
+    {
+     "name": "created",
+     "type": "date",
+     "label": "Created",
+     "control_type": "date"
+    },
+    {
+     "name": "status",
+     "type": "object",
+     "label": "Status",
+     "properties": [
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastChanged",
+       "type": "string",
+       "label": "Last changed",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastChangedByUserId",
+       "type": "string",
+       "label": "Last changed by user ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text"
+    },
+    {
+     "name": "type",
+     "type": "object",
+     "label": "Type",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "amount",
+     "type": "object",
+     "label": "Amount",
+     "properties": [
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Unit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "amount",
+       "type": "number",
+       "label": "Amount",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "notes",
+     "type": "object",
+     "label": "Notes",
+     "properties": [
+      {
+       "name": "employee",
+       "type": "string",
+       "label": "Employee",
+       "control_type": "text"
+      },
+      {
+       "name": "manager",
+       "type": "string",
+       "label": "Manager",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "dates",
+     "type": "object",
+     "label": "Dates"
+    },
+    {
+     "name": "comments",
+     "type": "array",
+     "label": "Comments",
+     "of": "object"
+    },
+    {
+     "name": "approvers",
+     "type": "array",
+     "label": "Approvers",
+     "of": "object",
+     "properties": [
+      {
+       "name": "userId",
+       "type": "string",
+       "label": "User ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "employeeId",
+       "type": "string",
+       "label": "Employee ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "photoUrl",
+       "type": "string",
+       "label": "Photo URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "actions",
+     "type": "object",
+     "label": "Actions",
+     "properties": [
+      {
+       "name": "view",
+       "type": "string",
+       "label": "View",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "edit",
+       "type": "string",
+       "label": "Edit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "cancel",
+       "type": "string",
+       "label": "Cancel",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "approve",
+       "type": "string",
+       "label": "Approve",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "deny",
+       "type": "string",
+       "label": "Deny",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "bypass",
+       "type": "string",
+       "label": "Bypass",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "policyType",
+     "type": "string",
+     "label": "Policy type",
+     "control_type": "text"
+    },
+    {
+     "name": "usedYearToDate",
+     "type": "number",
+     "label": "Used year to date",
+     "control_type": "number"
+    },
+    {
+     "name": "balanceOnDateOfRequest",
+     "type": "number",
+     "label": "Balance on date of request",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "search_employees",
+   "title": "Search employees",
+   "description": "Search employees in BambooHR",
+   "help": "Finds coworkers in the published company directory by name, department, job title, location, or exact employee ID. Employees excluded from the directory (inactive, former, or unpublished) are never returned, and lookup always runs against the directory, never the full employee record.",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "hint": "Full or partial name, matched against first name, last name, or display name."
+    },
+    {
+     "name": "department",
+     "type": "string",
+     "label": "Department",
+     "control_type": "text",
+     "hint": "Department name to match. Mutually exclusive with employee ID."
+    },
+    {
+     "name": "job_title",
+     "type": "string",
+     "label": "Job title",
+     "control_type": "text",
+     "hint": "Job title substring to match."
+    },
+    {
+     "name": "location",
+     "type": "string",
+     "label": "Location",
+     "control_type": "text",
+     "hint": "Location name to match."
+    },
+    {
+     "name": "employee_id",
+     "type": "string",
+     "label": "Employee ID",
+     "control_type": "text",
+     "hint": "Exact internal BambooHR employee ID. Mutually exclusive with the other criteria."
+    }
+   ],
+   "output": [
+    {
+     "name": "employees",
+     "type": "array",
+     "label": "Employees",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "displayName",
+       "type": "string",
+       "label": "Display name",
+       "control_type": "text"
+      },
+      {
+       "name": "firstName",
+       "type": "string",
+       "label": "First name",
+       "control_type": "text"
+      },
+      {
+       "name": "lastName",
+       "type": "string",
+       "label": "Last name",
+       "control_type": "text"
+      },
+      {
+       "name": "preferredName",
+       "type": "string",
+       "label": "Preferred name",
+       "control_type": "text"
+      },
+      {
+       "name": "gender",
+       "type": "string",
+       "label": "Gender",
+       "control_type": "text"
+      },
+      {
+       "name": "jobTitle",
+       "type": "string",
+       "label": "Job title",
+       "control_type": "text"
+      },
+      {
+       "name": "workPhone",
+       "type": "string",
+       "label": "Work phone",
+       "control_type": "text"
+      },
+      {
+       "name": "mobilePhone",
+       "type": "string",
+       "label": "Mobile phone",
+       "control_type": "text"
+      },
+      {
+       "name": "workEmail",
+       "type": "string",
+       "label": "Work email",
+       "control_type": "text"
+      },
+      {
+       "name": "department",
+       "type": "string",
+       "label": "Department",
+       "control_type": "text"
+      },
+      {
+       "name": "location",
+       "type": "string",
+       "label": "Location",
+       "control_type": "text"
+      },
+      {
+       "name": "division",
+       "type": "string",
+       "label": "Division",
+       "control_type": "text"
+      },
+      {
+       "name": "linkedIn",
+       "type": "string",
+       "label": "Linked in",
+       "control_type": "text"
+      },
+      {
+       "name": "workPhoneExtension",
+       "type": "string",
+       "label": "Work phone extension",
+       "control_type": "text"
+      },
+      {
+       "name": "photoUploaded",
+       "type": "boolean",
+       "label": "Photo uploaded",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "photoUploaded",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "photoUrl",
+       "type": "string",
+       "label": "Photo URL",
+       "control_type": "text"
+      },
+      {
+       "name": "canUploadPhoto",
+       "type": "integer",
+       "label": "Can upload photo",
+       "control_type": "integer"
+      },
+      {
+       "name": "supervisor",
+       "type": "string",
+       "label": "Supervisor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "truncated",
+     "type": "boolean",
+     "label": "Truncated?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "truncated",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "update_employee",
+   "title": "Update employee",
+   "description": "Update employee in BambooHR",
+   "help": "This action does not return details of the employee updated. To get employee details, user should add in action: get employee details by ID",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Employee ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "BambooHR internal ID of Employee to update"
+    },
+    {
+     "name": "firstName",
+     "type": "string",
+     "label": "First name",
+     "control_type": "text"
+    },
+    {
+     "name": "lastName",
+     "type": "string",
+     "label": "Last name",
+     "control_type": "text"
+    },
+    {
+     "name": "middleName",
+     "type": "string",
+     "label": "Middle name",
+     "control_type": "text"
+    },
+    {
+     "name": "dateOfBirth",
+     "type": "date_time",
+     "label": "Date of birth",
+     "control_type": "date"
+    },
+    {
+     "name": "gender",
+     "type": "string",
+     "label": "Gender",
+     "control_type": "text",
+     "hint": "Male or Female"
+    },
+    {
+     "name": "address1",
+     "type": "string",
+     "label": "Address line 1",
+     "control_type": "text",
+     "hint": "The employee's first address line."
+    },
+    {
+     "name": "address2",
+     "type": "string",
+     "label": "Address line 2",
+     "control_type": "text",
+     "hint": "The employee's second address line."
+    },
+    {
+     "name": "city",
+     "type": "string",
+     "label": "City",
+     "control_type": "text"
+    },
+    {
+     "name": "state",
+     "type": "string",
+     "label": "State",
+     "control_type": "text"
+    },
+    {
+     "name": "country",
+     "type": "string",
+     "label": "Country",
+     "control_type": "text"
+    },
+    {
+     "name": "zipcode",
+     "type": "string",
+     "label": "Zipcode",
+     "control_type": "text"
+    },
+    {
+     "name": "mobilePhone",
+     "type": "string",
+     "label": "Mobile phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workEmail",
+     "type": "string",
+     "label": "Work email",
+     "control_type": "email",
+     "hint": "The employee's work email address."
+    },
+    {
+     "name": "employeeNumber",
+     "type": "string",
+     "label": "Employee number",
+     "control_type": "text",
+     "hint": "Employee number (assigned by your company)."
+    },
+    {
+     "name": "hireDate",
+     "type": "date_time",
+     "label": "Hire date",
+     "control_type": "date"
+    },
+    {
+     "name": "homeEmail",
+     "type": "string",
+     "label": "Home email",
+     "control_type": "email"
+    },
+    {
+     "name": "homePhone",
+     "type": "string",
+     "label": "Home phone",
+     "control_type": "phone"
+    },
+    {
+     "name": "workPhone",
+     "type": "string",
+     "label": "Work phone",
+     "control_type": "phone",
+     "hint": "The employee's work phone number, without extension."
+    },
+    {
+     "name": "workPhoneExtension",
+     "type": "string",
+     "label": "Work phone extension",
+     "control_type": "text",
+     "hint": "The employee's work phone extension (if any)."
+    },
+    {
+     "name": "nickname",
+     "type": "string",
+     "label": "Nickname",
+     "control_type": "text"
+    },
+    {
+     "name": "preferredName",
+     "type": "string",
+     "label": "Preferred name",
+     "control_type": "text"
+    },
+    {
+     "name": "payRate",
+     "type": "number",
+     "label": "Pay rate",
+     "control_type": "number",
+     "hint": "The employee's CURRENT pay rate (e.g., $8.25)."
+    },
+    {
+     "name": "payRateEffectiveDate",
+     "type": "date_time",
+     "label": "Pay rate effective date",
+     "control_type": "date",
+     "hint": "The day the most recent change was made."
+    },
+    {
+     "name": "payType",
+     "type": "string",
+     "label": "Pay type",
+     "control_type": "select",
+     "options": [
+      "hourly",
+      "salary",
+      "commission",
+      "exception hourly",
+      "monthly",
+      "weekly",
+      "piece rate",
+      "contract",
+      "daily",
+      "pro rata"
+     ]
+    },
+    {
+     "name": "ssn",
+     "type": "string",
+     "label": "SSN",
+     "control_type": "text",
+     "hint": "The employee's Social Security number."
+    },
+    {
+     "name": "sin",
+     "type": "string",
+     "label": "SIN",
+     "control_type": "text",
+     "hint": "The employee's Canadian Social Insurance Number."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "hint": "The employee's employee status (Active or Inactive)."
+    },
+    {
+     "name": "terminationDate",
+     "type": "date_time",
+     "label": "Termination date",
+     "control_type": "date",
+     "hint": "The date the employee was terminated."
+    },
+    {
+     "name": "rehireDate",
+     "type": "date_time",
+     "label": "Rehire date",
+     "control_type": "date",
+     "hint": "The date the employee was rehired."
+    },
+    {
+     "name": "standardHoursPerWeek",
+     "type": "integer",
+     "label": "Standard hours per week",
+     "control_type": "number",
+     "hint": "The number of hours the employee works in a standard week."
+    },
+    {
+     "name": "bonusDate",
+     "type": "date_time",
+     "label": "Bonus date",
+     "control_type": "date",
+     "hint": "The date of the last bonus."
+    },
+    {
+     "name": "bonusAmount",
+     "type": "string",
+     "label": "Bonus amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent bonus."
+    },
+    {
+     "name": "bonusComment",
+     "type": "string",
+     "label": "Bonus comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent bonus."
+    },
+    {
+     "name": "commissionDate",
+     "type": "date_time",
+     "label": "Commission date",
+     "control_type": "date",
+     "hint": "The date of the last commission."
+    },
+    {
+     "name": "commissionAmount",
+     "type": "string",
+     "label": "Commission amount",
+     "control_type": "text",
+     "hint": "The amount of the most recent commission."
+    },
+    {
+     "name": "commissionComment",
+     "type": "string",
+     "label": "Commission comment",
+     "control_type": "text-area",
+     "hint": "Comment about the most recent commission."
+    },
+    {
+     "name": "exempt",
+     "type": "string",
+     "label": "Overtime status",
+     "control_type": "select",
+     "options": [
+      "Exempt",
+      "Non-Exempt"
+     ],
+     "toggle_field": {
+      "name": "exempt",
+      "type": "string"
+     },
+     "hint": "The FLSA overtime status."
+    },
+    {
+     "name": "OvertimeRate",
+     "type": "object",
+     "label": "Overtime rate",
+     "visible_if": "input.exempt == \"Non-Exempt\"",
+     "properties": [
+      {
+       "name": "value",
+       "type": "number",
+       "label": "Amount",
+       "control_type": "number"
+      },
+      {
+       "name": "currency",
+       "type": "string",
+       "label": "Currency code",
+       "control_type": "text",
+       "hint": "E.g. EUR for Euro. Default to the currency that you have set in your account."
+      }
+     ],
+     "hint": "Overtime rate for Non exempt."
+    },
+    {
+     "name": "payPer",
+     "type": "string",
+     "label": "Pay per",
+     "control_type": "select",
+     "options": [
+      "Hour",
+      "Day",
+      "Week",
+      "Month",
+      "Quarter",
+      "Year",
+      "Pay period",
+      "Piece"
+     ],
+     "toggle_field": {
+      "name": "payPer",
+      "type": "string"
+     },
+     "hint": "Select the employee's current pay per"
+    },
+    {
+     "name": "maritalStatus",
+     "type": "string",
+     "label": "Marital status",
+     "control_type": "select",
+     "options": [
+      "Single",
+      "Married",
+      "Domestic partnership",
+      "Common law"
+     ],
+     "toggle_field": {
+      "name": "maritalStatus",
+      "type": "string"
+     }
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_table_record",
+   "title": "Update table record of employee",
+   "description": "Update table record of employee in BambooHR",
+   "help": "This action updates the table record of an employee. Table records are identified by row ID. To get the row ID, use the Get table records of employee action.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Employee ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "BambooHR internal ID of employee"
+    },
+    {
+     "name": "table",
+     "type": "string",
+     "label": "Table",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "table_list",
+     "extends_schema": true
+    },
+    {
+     "name": "row_id",
+     "type": "integer",
+     "label": "Row ID",
+     "control_type": "integer",
+     "required": true,
+     "hint": "BambooHR internal ID of row"
+    }
+   ],
+   "output": [
+    {
+     "name": "success",
+     "type": "boolean",
+     "label": "Success",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "success",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "update_time_off_request_status",
+   "title": "Update time off request status",
+   "description": "Update time off request on BambooHR",
+   "help": "This request updates the status of a specified time off request. Managers can approve or deny the request, whereas requester can cancel the request.",
+   "input": [
+    {
+     "name": "request_id",
+     "type": "string",
+     "label": "Request ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The ID of the time off request to be approved/cancelled/denied."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "The new status of the time off request. Select from the picklist or input either approved , cancelled or denied"
+    },
+    {
+     "name": "note",
+     "type": "string",
+     "label": "Note",
+     "control_type": "text",
+     "hint": "Enter any notes you want to attach to the status updated. By default note will be made on behalf of the person performing the status update."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

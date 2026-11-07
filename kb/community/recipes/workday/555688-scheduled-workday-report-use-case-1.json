@@ -1,0 +1,292 @@
+{
+ "id": 555688,
+ "name": "Scheduled Workday report (Use Case 1)",
+ "description": "When there is a new/updated Object in Workday, log message to output",
+ "applications": [
+  "workday",
+  "csv_parser",
+  "sftp"
+ ],
+ "action_applications": [
+  "csv_parser",
+  "sftp"
+ ],
+ "trigger_application": "workday",
+ "business_objects": [],
+ "categories": [
+  "HR management",
+  "ERP",
+  "Financial Management",
+  "Data Parser",
+  "File Transfer"
+ ],
+ "copy_count": 27,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-11-15T13:38:38.458-08:00",
+ "source_url": "https://app.workato.com/recipes/555688?community=us",
+ "steps": [
+  "workday.scheduled_report_batch",
+  "csv_parser.create_csv_lines",
+  "sftp.upload"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "workday",
+  "name": "scheduled_report_batch",
+  "as": "scheduled_report_batch",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {
+   "Sunday": true,
+   "Monday": true,
+   "Tuesday": true,
+   "Wednesday": true,
+   "Thursday": true,
+   "Friday": true,
+   "Saturday": true
+  },
+  "input": {
+   "schedule": "hourly",
+   "hour": "0",
+   "minute": "15",
+   "day_of_month": "1",
+   "Sunday": "true",
+   "Monday": "true",
+   "Tuesday": "true",
+   "Wednesday": "true",
+   "Thursday": "true",
+   "Friday": "true",
+   "Saturday": "true",
+   "time_zone": "Singapore",
+   "report_url": "https://wd2-impl-services1.workday.com/ccx/service/customreport2/workato_pt1/szaretsky/Worker-Workspace_Data?format=json"
+  },
+  "extended_output_schema": [
+   {
+    "type": "date_time",
+    "name": "scheduled_time",
+    "control_type": "date_time",
+    "label": "Scheduled time",
+    "render_input": "date_time_conversion",
+    "parse_output": "date_time_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "total_number_of_records",
+    "control_type": "number",
+    "label": "Total number of records",
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "starting_offset",
+    "control_type": "number",
+    "label": "Starting offset",
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "ending_offset",
+    "control_type": "number",
+    "label": "Ending offset",
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "boolean",
+    "name": "first_batch",
+    "control_type": "checkbox",
+    "label": "First batch",
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "First batch",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "type": "boolean",
+     "name": "first_batch"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "boolean",
+    "name": "last_batch",
+    "control_type": "checkbox",
+    "label": "Last batch",
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Last batch",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "type": "boolean",
+     "name": "last_batch"
+    },
+    "render_input": {},
+    "parse_output": {}
+   },
+   {
+    "type": "array",
+    "name": "records_batch",
+    "label": "Records batch",
+    "of": "object",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Legal name",
+      "type": "string",
+      "name": "legalName"
+     },
+     {
+      "control_type": "text",
+      "label": "Business title",
+      "type": "string",
+      "name": "businessTitle"
+     },
+     {
+      "control_type": "text",
+      "label": "Worker additional data",
+      "type": "string",
+      "name": "Worker_Additional_Data"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "csv_parser",
+    "name": "create_csv_lines",
+    "as": "create_csv_lines",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "create_header_line": false
+    },
+    "input": {
+     "column_labels": "Name\nTitle\nFloor\nOfficeNum\nUsername\nSecondaryID\nLastUpdate",
+     "lines": {
+      "____source": "#{_('data.workday.scheduled_report_batch.records_batch')}",
+      "column_0": "#{_('data.workday.scheduled_report_batch.records_batch.first.legalName')}",
+      "column_6": "=now.strftime(\"%m-%d-%Y\")",
+      "column_1": "#{_('data.workday.scheduled_report_batch.records_batch.first.businessTitle')}"
+     },
+     "create_header_line": "#{_('data.workday.scheduled_report_batch.first_batch')}"
+    },
+    "extended_input_schema": [
+     {
+      "type": "array",
+      "name": "lines",
+      "label": "Lines",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "type": "string",
+        "name": "column_0",
+        "parent": "lines",
+        "path": "lines.column_0"
+       },
+       {
+        "control_type": "text",
+        "label": "Title",
+        "optional": true,
+        "type": "string",
+        "name": "column_1",
+        "parent": "lines",
+        "path": "lines.column_1"
+       },
+       {
+        "control_type": "text",
+        "label": "Floor",
+        "optional": true,
+        "type": "string",
+        "name": "column_2",
+        "parent": "lines",
+        "path": "lines.column_2"
+       },
+       {
+        "control_type": "text",
+        "label": "OfficeNum",
+        "optional": true,
+        "type": "string",
+        "name": "column_3",
+        "parent": "lines",
+        "path": "lines.column_3"
+       },
+       {
+        "control_type": "text",
+        "label": "Username",
+        "optional": true,
+        "type": "string",
+        "name": "column_4",
+        "parent": "lines",
+        "path": "lines.column_4"
+       },
+       {
+        "control_type": "text",
+        "label": "SecondaryID",
+        "optional": true,
+        "type": "string",
+        "name": "column_5",
+        "parent": "lines",
+        "path": "lines.column_5"
+       },
+       {
+        "control_type": "text",
+        "label": "LastUpdate",
+        "optional": true,
+        "type": "string",
+        "name": "column_6",
+        "parent": "lines",
+        "path": "lines.column_6"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "column_labels",
+     "create_header_line",
+     "lines.column_0",
+     "lines",
+     "lines.column_1",
+     "lines.column_2",
+     "lines.column_3",
+     "lines.column_4",
+     "lines.column_5",
+     "lines.column_6"
+    ],
+    "comment": "Conditionally add headers to CSV",
+    "uuid": "1e35e0d9-c031-44bf-86fd-a28ff15cd4e7"
+   },
+   {
+    "number": 2,
+    "provider": "sftp",
+    "name": "upload",
+    "as": "upload",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "append": false
+    },
+    "input": {
+     "filename": "Workday_Worker.csv",
+     "content": "#{_('data.csv_parser.create_csv_lines.csv_lines')}",
+     "append": "#{_('data.workday.scheduled_report_batch.first_batch')}"
+    },
+    "uuid": "5dc799d0-a35c-4c91-be0e-c5855ecffcbe",
+    "title": null,
+    "description": null
+   }
+  ],
+  "uuid": "d29e2820-7902-422e-acdf-f39031693f58",
+  "param": {}
+ }
+}

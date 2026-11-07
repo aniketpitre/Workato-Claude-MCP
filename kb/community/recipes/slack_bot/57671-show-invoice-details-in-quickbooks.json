@@ -1,0 +1,367 @@
+{
+ "id": 57671,
+ "name": "Show Invoice details in QuickBooks",
+ "description": "1. Type the Workbot command **QuickBooks show invoice** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will ask for the **QuickBooks internal invoice ID**.\n3. Workbot will display the invoice details in Slack.\n\n**Notes**\nWorkbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "quickbooks",
+  "slack_bot",
+  "workato_variable"
+ ],
+ "action_applications": [
+  "quickbooks",
+  "slack_bot",
+  "workato_variable"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "invoice",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "Accounting",
+  "Recipe Tools"
+ ],
+ "copy_count": 3939,
+ "curated": true,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2021-02-15T00:58:05.831-08:00",
+ "source_url": "https://app.workato.com/recipes/57671?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "quickbooks.search_invoice",
+  "slack_bot.post_bot_reply_v2",
+  "quickbooks.get_invoice",
+  "slack_bot.post_bot_reply_v2",
+  "workato_variable.declare_variable",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">quickbooks show invoice</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "QuickBooks Online"
+  },
+  "toggleCfg": {
+   "domain": false,
+   "name": true,
+   "scope": true
+  },
+  "input": {
+   "domain": "quickbooks",
+   "name": "show",
+   "scope": "invoice",
+   "parameters": "[{\"name\":\"id\",\"type\":\"string\",\"optional\":false,\"hint\":\"invoice id\",\"sample\":\"89\",\"control_type\":\"text\"}]",
+   "description": "Show Invoice details",
+   "hide_from_help": "false",
+   "allow_dialog": "true"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "ID",
+      "name": "id",
+      "type": "string",
+      "optional": false,
+      "hint": "invoice id",
+      "sample": "89"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "quickbooks",
+    "name": "search_invoice",
+    "as": "search_invoice",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Id": "#{_('data.slack_bot.bot_command_v2.parameters.id')}"
+    },
+    "uuid": "e60852eb-a84a-4b11-958e-f195b2cc0291"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_('data.quickbooks.search_invoice.invoices.first.____Size', 'list_meta', '____Size', 'data.quickbooks.search_invoice.invoices')}",
+       "rhs": "0"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "Searched for invoice"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "#{_('data.slack_bot.bot_command_v2.parameters.id')} was not found"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "Oops! I wasn't able to find invoice #{_('data.slack_bot.bot_command_v2.parameters.id')} in Quickbooks :grin: \nCheck the id you entered is correct "
+        }
+       ]
+      },
+      "uuid": "e873d40e-7b06-4521-9368-be2ad52c0e5a",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     },
+     {
+      "number": 4,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "present",
+         "lhs": "#{_('data.workato.job_context.user_id')}",
+         "rhs": null
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 5,
+        "keyword": "stop",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "stop_with_error": "false"
+        },
+        "uuid": "d833e8d2-6f7f-40a6-af95-f69c75d48cb8"
+       }
+      ],
+      "uuid": "0fc49c27-0b54-40bd-abec-9e4fa94d6f02"
+     }
+    ],
+    "uuid": "2cdb4cc2-f4de-4a42-937e-48fe3adffc20"
+   },
+   {
+    "number": 6,
+    "provider": "quickbooks",
+    "name": "get_invoice",
+    "as": "get_invoice",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "id": "#{_('data.quickbooks.search_invoice.invoices.first.Id')}"
+    },
+    "uuid": "7f7f8fc5-eaea-430d-89f2-d74560dccbcd"
+   },
+   {
+    "number": 7,
+    "provider": "slack_bot",
+    "name": "post_bot_reply_v2",
+    "as": "post_bot_reply_v2__1",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "blocks": [
+      {
+       "block_type": "section_with_text",
+       "section_text": "Here you go"
+      },
+      {
+       "block_type": "section_with_fields",
+       "section_text": "<https://qbo.intuit.com/app/invoice?txnId=#{_('data.quickbooks.search_invoice.invoices.first.Id')}|Invoice number: #{_('data.quickbooks.search_invoice.invoices.first.DocNumber')}>",
+       "attachment_fields": [
+        {
+         "value": "#{_('data.quickbooks.search_invoice.invoices.first.CustomerRef.name')}",
+         "title": "*Name:*"
+        },
+        {
+         "value": "#{_('data.quickbooks.get_invoice.Balance')}",
+         "title": "*Invoice balance:*"
+        },
+        {
+         "value": "#{_('data.quickbooks.search_invoice.invoices.first.BillEmail.Address')}",
+         "title": "*Email:*"
+        },
+        {
+         "value": "#{_('data.quickbooks.search_invoice.invoices.first.Balance')}",
+         "title": "*Customer balance:*"
+        },
+        {
+         "value": "#{_('data.quickbooks.search_invoice.invoices.first.TotalAmt')}",
+         "title": "*Total amount:*"
+        },
+        {
+         "value": "#{_('data.quickbooks.search_invoice.invoices.first.Id')}",
+         "title": "*ID:*"
+        },
+        {
+         "value": "#{_('data.quickbooks.search_invoice.invoices.first.TxnTaxDetail.TotalTax')}",
+         "title": "*Tax amount:*"
+        }
+       ]
+      }
+     ]
+    },
+    "uuid": "4e332fac-f0a0-40f1-8a95-eeb3b574917b",
+    "title": null,
+    "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+   },
+   {
+    "number": 8,
+    "as": "foreach",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 9,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "not_equals_to",
+         "lhs": "=_('data.foreach.foreach.index', 'foreach_meta') + 1",
+         "rhs": "#{_('data.foreach.foreach.size', 'foreach_meta')}"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 10,
+        "provider": "workato_variable",
+        "name": "declare_variable",
+        "as": "ee71e3c6",
+        "title": "  Create variable Title",
+        "description": "Create variable <span class=\"provider\">Title</span>",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "type": "string",
+         "name": "Title",
+         "value": "=\"Line item \" + _('data.foreach.foreach.LineNum').to_s + \" of \" + \n(_('data.foreach.foreach.size', 'foreach_meta')-1).to_s"
+        },
+        "extended_output_schema": [
+         {
+          "type": "string",
+          "name": "value",
+          "control_type": "text",
+          "label": "Title"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "type": "string",
+          "name": "value",
+          "control_type": "text",
+          "label": "Default value",
+          "hint": "Default value for the variable",
+          "sticky": true,
+          "optional": true,
+          "strip_interpolation": true
+         }
+        ],
+        "uuid": "0ee6584f-3184-4cbb-b583-d5e584b67e55"
+       },
+       {
+        "number": 11,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply_v2__2",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "blocks": [
+          {
+           "block_type": "section_with_text",
+           "section_text": "QuickBooks Invoice Line details"
+          },
+          {
+           "block_type": "section_with_fields",
+           "section_text": "*<https://qbo.intuit.com/app/invoice?txnId=#{_('data.quickbooks.search_invoice.invoices.first.Id')}|#{_('data.workato_variable.ee71e3c6.value')}>*",
+           "attachment_fields": [
+            {
+             "value": "#{_('data.foreach.foreach.Description')}",
+             "title": "*Description:*"
+            },
+            {
+             "value": "#{_('data.foreach.foreach.SalesItemLineDetail.Qty')}",
+             "title": "*Quantity:*"
+            },
+            {
+             "value": "#{_('data.foreach.foreach.SalesItemLineDetail.UnitPrice')}",
+             "title": "*Price:*"
+            },
+            {
+             "value": "=_('data.foreach.foreach.SalesItemLineDetail.TaxCodeRef.value') == \"TAX\" ? \"Yes\" : (_('data.foreach.foreach.SalesItemLineDetail.TaxCodeRef.value') == \"NON\" ? \"no\" : _('data.foreach.foreach.SalesItemLineDetail.TaxCodeRef.value'))",
+             "title": "*Taxable:*"
+            }
+           ]
+          }
+         ]
+        },
+        "uuid": "10291d18-fc03-44a0-b6d1-5a4bb9c2a025",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       }
+      ],
+      "uuid": "f85d01db-39e9-4e11-a039-52d2b9509a09"
+     }
+    ],
+    "source": "#{_('data.quickbooks.get_invoice.Line')}",
+    "uuid": "c81945e0-d5b1-43b5-8be2-3f58d67a18c1"
+   }
+  ],
+  "uuid": "3119a2a0-e1b0-40dd-935c-f210524cc3e6",
+  "param": {}
+ }
+}

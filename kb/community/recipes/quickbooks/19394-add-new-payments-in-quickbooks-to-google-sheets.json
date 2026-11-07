@@ -1,0 +1,317 @@
+{
+ "id": 19394,
+ "name": "Add new payments in QuickBooks to Google Sheets",
+ "description": "This integration moves new QuickBooks Online payments to a Google Sheet.\n\n---------------------------\n\nTo run this recipe,  make sure the file in exists in Google Sheets. Copy the sample sheet named *Payments* to create one.\n[See sample Google Sheet here](https://docs.google.com/a/workato.com/spreadsheets/d/1WusU70Ot9YhGs9ZcJ6tZnlDLZFR0yb8RuE4i6p242nU/edit?usp=sharing)\n\n**Directory**: Create file in top directory\n**Sheet**: Payments\n**Name** : QuickBooks Transaction Summary\n**Column names: **\nTxn Date\tTxn Type\tCustomerID\tCustomer Name\tDocument ID\tAmount\tDue Date\tStage",
+ "applications": [
+  "quickbooks",
+  "google_sheets"
+ ],
+ "action_applications": [
+  "google_sheets"
+ ],
+ "trigger_application": "quickbooks",
+ "business_objects": [
+  "payment",
+  "spreadsheet row"
+ ],
+ "categories": [
+  "Accounting",
+  "Finance",
+  "Utilities"
+ ],
+ "copy_count": 749,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-08-18T03:46:36.993-07:00",
+ "source_url": "https://app.workato.com/recipes/19394?community=us",
+ "steps": [
+  "quickbooks.new_payment",
+  "google_sheets.search_spreadsheet_rows_v3_new",
+  "google_sheets.add_spreadsheet_row_v4"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "quickbooks",
+  "name": "new_payment",
+  "as": "new_payment",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "#{_('data.workato.job_context.parameters.start_date')}"
+  },
+  "parameters_schema": "[\n  {\n    \"label\": \"Start date\",\n    \"name\": \"start_date\",\n    \"type\": \"date_time\",\n    \"control_type\": \"date_time\",\n    \"hint\": \"Set the date and time from when you want to process records from, by clicking on the calendar icon  to the left. (For example: setting it to 12/28/2015 12:00 am will pick up all records created or updated since that time.)\"\n  }\n]",
+  "block": [
+   {
+    "number": 1,
+    "provider": "google_sheets",
+    "name": "search_spreadsheet_rows_v3_new",
+    "as": "search_spreadsheet_rows_v3_new",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "spreadsheet": " Workato Sample: QuickBooks Transaction Summary"
+    },
+    "toggleCfg": {},
+    "input": {
+     "spreadsheet": "https://spreadsheets.google.com/feeds/worksheets/1WusU70Ot9YhGs9ZcJ6tZnlDLZFR0yb8RuE4i6p242nU/private/full",
+     "sheet_name": "Payments",
+     "query_string": "Documentid = #{_('data.quickbooks.new_payment.Id')}"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Txn Date - Txndate",
+        "optional": true,
+        "type": "string",
+        "name": "txndate"
+       },
+       {
+        "control_type": "text",
+        "label": "Txn Type - Txntype",
+        "optional": true,
+        "type": "string",
+        "name": "txntype"
+       },
+       {
+        "control_type": "text",
+        "label": "CustomerID - Customerid",
+        "optional": true,
+        "type": "string",
+        "name": "customerid"
+       },
+       {
+        "control_type": "text",
+        "label": "Customer Name - Customername",
+        "optional": true,
+        "type": "string",
+        "name": "customername"
+       },
+       {
+        "control_type": "text",
+        "label": "Document ID - Documentid",
+        "optional": true,
+        "type": "string",
+        "name": "documentid"
+       },
+       {
+        "control_type": "text",
+        "label": "Amount - Amount",
+        "optional": true,
+        "type": "string",
+        "name": "amount"
+       },
+       {
+        "control_type": "text",
+        "label": "Due Date - Duedate",
+        "optional": true,
+        "type": "string",
+        "name": "duedate"
+       },
+       {
+        "control_type": "text",
+        "label": "Stage - Stage",
+        "optional": true,
+        "type": "string",
+        "name": "stage"
+       },
+       {
+        "control_type": "text",
+        "label": "Row ID",
+        "optional": true,
+        "type": "string",
+        "name": "__row_id"
+       }
+      ]
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "sheet_name",
+      "control_type": "select",
+      "label": "Sheet name",
+      "hint": "Select the sheet to search",
+      "pick_list": [
+       [
+        "Payments",
+        "Payments"
+       ]
+      ],
+      "optional": false,
+      "extends_schema": true
+     },
+     {
+      "type": "string",
+      "name": "query_string",
+      "control_type": "text",
+      "label": "Search query",
+      "hint": "Values and column names are case insensitive, but must be an exact match. Column names should have no spaces.<br>\n                                E.g. PersonName = \"john Doe\" and personheight < 175 <a target=\"_blank\" href=\"http://resources.workato.com/googlesheets-connector/#/list/6?_k=fe4ck3\">Learn more about queries</a>",
+      "optional": false
+     }
+    ],
+    "comment": "Search rows by payment ID",
+    "uuid": "7c2c6346-36b1-4cc4-a173-bd9e069afbed"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.google_sheets.search_spreadsheet_rows_v3_new.rows.first.__row_id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "google_sheets",
+      "name": "add_spreadsheet_row_v4",
+      "as": "add_spreadsheet_row_v4",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "spreadsheet": " Workato Sample: QuickBooks Transaction Summary"
+      },
+      "toggleCfg": {},
+      "input": {
+       "spreadsheet": "1WusU70Ot9YhGs9ZcJ6tZnlDLZFR0yb8RuE4i6p242nU",
+       "sheet": "Payments",
+       "data": {
+        "col_1": "=_('data.quickbooks.new_payment.TxnDate').to_date",
+        "col_2": "payment",
+        "col_3": "#{_('data.quickbooks.new_payment.CustomerRef.value')}",
+        "col_4": "#{_('data.quickbooks.new_payment.CustomerRef.name')}",
+        "col_5": "#{_('data.quickbooks.new_payment.Id')}",
+        "col_6": "#{_('data.quickbooks.new_payment.TotalAmt')}",
+        "col_7": "N/A",
+        "col_8": "N/A"
+       }
+      },
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "sheet",
+        "control_type": "select",
+        "label": "Sheet",
+        "hint": "Select the sheet to create row in",
+        "pick_list": [
+         [
+          "Payments",
+          "Payments"
+         ]
+        ],
+        "optional": false,
+        "extends_schema": true
+       },
+       {
+        "type": "object",
+        "name": "data",
+        "label": "Columns",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Txndate - Txndate",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_1",
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Txntype - Txntype",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_2",
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "CustomerID - Customer",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_3",
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Customername - Customername",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_4",
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Documentid - Documentid",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_5",
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Amount - Amount",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_6",
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Duedate - Duedate",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_7",
+          "parent": "data"
+         },
+         {
+          "control_type": "text",
+          "label": "Stage - Stage",
+          "optional": true,
+          "custom": true,
+          "type": "string",
+          "name": "col_8",
+          "parent": "data"
+         }
+        ]
+       }
+      ],
+      "uuid": "95c137c0-613e-4c13-ae38-74e26c2aa38f"
+     }
+    ],
+    "comment": "If row does not exist already, create one",
+    "uuid": "cb3d1b1e-e75d-4097-866b-ad0d40bd77b8"
+   }
+  ],
+  "uuid": "965ca5e9-6e68-4e3a-9e2c-c63242301b1c",
+  "param": {}
+ }
+}

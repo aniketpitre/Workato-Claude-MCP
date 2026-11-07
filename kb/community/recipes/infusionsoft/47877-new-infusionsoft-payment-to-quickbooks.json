@@ -1,0 +1,598 @@
+{
+ "id": 47877,
+ "name": "New Infusionsoft payment to QuickBooks",
+ "description": "**New Infusionsoft payment to QuickBooks**\n- Skip refunds\n- Skip if the payment came from QuickBooks\n- Payments will be applied if the invoice is found in QuickBooks. Invoice could have come from Infusionsoft or have been created in Quickbooks.\n- Payments will be applied to the invoice in QuickBooks ONLY if the payment amount is less than the balance due\n\nQuestions? Contact us at [user@example.com](mailto:user@example.com)",
+ "applications": [
+  "infusionsoft",
+  "clock",
+  "infusionsoft",
+  "quickbooks",
+  "email"
+ ],
+ "action_applications": [
+  "clock",
+  "infusionsoft",
+  "quickbooks",
+  "email"
+ ],
+ "trigger_application": "infusionsoft",
+ "business_objects": [
+  "payment",
+  "invoice",
+  "email",
+  "customer"
+ ],
+ "categories": [
+  "CRM",
+  "Marketing",
+  "Utilities",
+  "Accounting",
+  "Finance"
+ ],
+ "copy_count": 642,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2017-07-06T12:20:41.028-07:00",
+ "source_url": "https://app.workato.com/recipes/47877?community=us",
+ "steps": [
+  "infusionsoft.new_payment_v2",
+  "clock.pause",
+  "infusionsoft.get_invoice",
+  "infusionsoft.search_orders",
+  "quickbooks.search_invoice",
+  "email.send_mail",
+  "quickbooks.lookup_customer",
+  "quickbooks.create_payment_v2",
+  "quickbooks.search_invoice",
+  "email.send_mail",
+  "quickbooks.lookup_customer",
+  "quickbooks.create_payment_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "infusionsoft",
+  "name": "new_payment_v2",
+  "as": "new_payment_v2",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {
+   "all_payments": true
+  },
+  "input": {
+   "all_payments": "false"
+  },
+  "parameters_schema": "",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "clock",
+    "name": "pause",
+    "as": "pause",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "minutes": "5"
+    },
+    "comment": "Wait 5 mins to make sure Invoice is synced before processing payment",
+    "uuid": "b60ae661-cc94-4130-b78e-53da6f1d4332",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "or",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_('data.infusionsoft.new_payment_v2.PayType')}",
+       "rhs": "Refund"
+      },
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.infusionsoft.new_payment_v2.PayNote')}",
+       "rhs": "QBO Payment"
+      }
+     ]
+    },
+    "uuid": "08a466e4-094c-4d10-a1eb-a04bb3bcb97a"
+   },
+   {
+    "number": 3,
+    "provider": "infusionsoft",
+    "name": "get_invoice",
+    "as": "get_invoice",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Id": "#{_('data.infusionsoft.new_payment_v2.InvoiceId')}"
+    },
+    "comment": "",
+    "uuid": "1c39eee6-8b1a-4779-a9b6-739823a55640",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 4,
+    "provider": "infusionsoft",
+    "name": "search_orders",
+    "as": "search_orders",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "Id": "#{_('data.infusionsoft.get_invoice.JobId')}"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "orders",
+      "label": "Orders",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Contact ID",
+        "type": "integer",
+        "name": "ContactId"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Date created",
+        "parse_output": {},
+        "type": "date_time",
+        "name": "DateCreated"
+       },
+       {
+        "control_type": "date",
+        "label": "Due date",
+        "parse_output": "parse_date_output",
+        "render_input": "render_date_input",
+        "type": "date_time",
+        "name": "DueDate"
+       },
+       {
+        "control_type": "number",
+        "label": "ID",
+        "type": "integer",
+        "name": "Id"
+       },
+       {
+        "control_type": "text",
+        "label": "Job notes",
+        "type": "string",
+        "name": "JobNotes"
+       },
+       {
+        "control_type": "number",
+        "label": "Job recurring ID",
+        "type": "integer",
+        "name": "JobRecurringId"
+       },
+       {
+        "control_type": "text",
+        "label": "Job status",
+        "type": "string",
+        "name": "JobStatus"
+       },
+       {
+        "control_type": "text",
+        "label": "Job title",
+        "type": "string",
+        "name": "JobTitle"
+       },
+       {
+        "control_type": "number",
+        "label": "Order status",
+        "type": "integer",
+        "name": "OrderStatus"
+       },
+       {
+        "control_type": "text",
+        "label": "Order type",
+        "type": "string",
+        "name": "OrderType"
+       },
+       {
+        "control_type": "number",
+        "label": "Product ID",
+        "type": "integer",
+        "name": "ProductId"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship city",
+        "type": "string",
+        "name": "ShipCity"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship company",
+        "type": "string",
+        "name": "ShipCompany"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship country",
+        "type": "string",
+        "name": "ShipCountry"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship first name",
+        "type": "string",
+        "name": "ShipFirstName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship last name",
+        "type": "string",
+        "name": "ShipLastName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship middle name",
+        "type": "string",
+        "name": "ShipMiddleName"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship phone",
+        "type": "string",
+        "name": "ShipPhone"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship state",
+        "type": "string",
+        "name": "ShipState"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship street 1",
+        "type": "string",
+        "name": "ShipStreet1"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship street 2",
+        "type": "string",
+        "name": "ShipStreet2"
+       },
+       {
+        "control_type": "text",
+        "label": "Ship zip",
+        "type": "string",
+        "name": "ShipZip"
+       },
+       {
+        "control_type": "date",
+        "label": "Start date",
+        "parse_output": "parse_date_output",
+        "render_input": "render_date_input",
+        "type": "date_time",
+        "name": "StartDate"
+       }
+      ]
+     }
+    ],
+    "comment": "Get the associated Order/Invoice to check for Invoices created from QuickBooks",
+    "uuid": "bb844dcb-fd09-43f7-be38-c5185c548ff3"
+   },
+   {
+    "number": 5,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.infusionsoft.search_orders.orders.first.JobTitle')}",
+       "rhs": "QuickBooks Invoice"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 6,
+      "provider": "quickbooks",
+      "name": "search_invoice",
+      "as": "search_invoice",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "DocNumber": "=_('data.infusionsoft.search_orders.orders.first.JobTitle').split(\": \").last"
+      },
+      "comment": "Search using the QuickBooks ID stored in the Job Title field",
+      "uuid": "744228e6-4966-4f09-b85e-2bdaa2db0b15",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 7,
+      "keyword": "filter",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "blank",
+         "lhs": "#{_('data.quickbooks.search_invoice.invoices.first.Id')}",
+         "rhs": null
+        }
+       ]
+      },
+      "uuid": "fe93d4a6-d1a8-441b-8405-ca21674f148c"
+     },
+     {
+      "number": 8,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "less_than",
+         "lhs": "=_('data.quickbooks.search_invoice.invoices.first.Balance').to_f",
+         "rhs": "=_('data.infusionsoft.new_payment_v2.PayAmt').to_f"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 9,
+        "provider": "email",
+        "name": "send_mail",
+        "as": "send_mail",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "to": "#{_('data.workato.job_context.user_email')}",
+         "subject": "Infusionsoft payment for Invoice ID #{_('data.infusionsoft.get_invoice.Id')} could not be transferred to QuickBooks",
+         "body": "Payment details\nCustomer: #{_('data.infusionsoft.get_invoice.get_contact(ContactId>Id).FirstName')} #{_('data.infusionsoft.get_invoice.get_contact(ContactId>Id).LastName')}\nCustomer company: #{_('data.infusionsoft.get_invoice.get_contact(ContactId>Id).Company')}\nDate: #{_('data.infusionsoft.new_payment_v2.PayDate')}\nPayment amount: #{_('data.infusionsoft.new_payment_v2.PayAmt')}\n\nQuickbooks invoice number: #{_('data.quickbooks.search_invoice.invoices.first.DocNumber')}\nQuickbooks invoice amount due: #{_('data.quickbooks.search_invoice.invoices.first.Balance')}"
+        },
+        "uuid": "08d98e57-d99e-4489-8c90-28adabd6d3be",
+        "title": null,
+        "description": null
+       },
+       {
+        "number": 10,
+        "keyword": "stop",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "stop_with_error": "false"
+        },
+        "uuid": "9e487e2b-d8f3-4e2b-9894-487a8654a57d"
+       }
+      ],
+      "uuid": "0a7df857-97b1-462d-a127-47f6a9d8f981"
+     },
+     {
+      "number": 11,
+      "provider": "quickbooks",
+      "name": "lookup_customer",
+      "as": "lookup_customer",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "display_name": "#{_('data.quickbooks.search_invoice.invoices.first.CustomerRef.name')}"
+      },
+      "visible_config_fields": [
+       "display_name"
+      ],
+      "comment": "Get customer ID using customer display name",
+      "uuid": "981d6c23-11ff-45cd-a3d0-03b246fed9e4",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 12,
+      "provider": "quickbooks",
+      "name": "create_payment_v2",
+      "as": "create_payment_v2",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "TxnDate": "=_('data.infusionsoft.new_payment_v2.PayDate').to_date",
+       "PrivateNote": "Payment from Infusionsoft ID: #{_('data.infusionsoft.new_payment_v2.Id')}",
+       "Line": {
+        "Amount": "#{_('data.infusionsoft.new_payment_v2.PayAmt')}",
+        "LinkedTxn": {
+         "TxnId": "#{_('data.quickbooks.search_invoice.invoices.first.Id')}",
+         "TxnType": "Invoice",
+         "TxnLineId": "0"
+        }
+       },
+       "CustomerRef": "#{_('data.quickbooks.lookup_customer.Id')}",
+       "PaymentRefNum": "#{_('data.infusionsoft.new_payment_v2.Id')}"
+      },
+      "visible_config_fields": [
+       "TxnDate",
+       "PrivateNote",
+       "Line",
+       "Line.Amount",
+       "PaymentRefNum"
+      ],
+      "comment": "Process credit payments",
+      "uuid": "b3b39cf9-ca23-4d62-a6d3-13fe743df55e"
+     },
+     {
+      "number": 13,
+      "keyword": "stop",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "2f07b3d7-a84d-4b4f-ac8f-f05493ec14f8"
+     }
+    ],
+    "comment": "For Invoices that were created from QuickBooks",
+    "uuid": "858fa824-0661-479c-a09f-9b86a83d8faa"
+   },
+   {
+    "number": 14,
+    "provider": "quickbooks",
+    "name": "search_invoice",
+    "as": "search_invoice1",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "DocNumber": "#{_('data.infusionsoft.new_payment_v2.InvoiceId')}"
+    },
+    "comment": "Search for invoices that went from InfusionSoft",
+    "uuid": "53a43d33-a6ff-4c91-86e1-3cea42095b42",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 15,
+    "keyword": "filter",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.quickbooks.search_invoice1.invoices.first.Id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "uuid": "64f64c4f-f2ef-4eb0-9e8c-debb93c5cb7a"
+   },
+   {
+    "number": 16,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "less_than",
+       "lhs": "=_('data.quickbooks.search_invoice1.invoices.first.Balance').to_f",
+       "rhs": "=_('data.infusionsoft.new_payment_v2.PayAmt').to_f"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 17,
+      "provider": "email",
+      "name": "send_mail",
+      "as": "send_mail1",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "to": "#{_('data.workato.job_context.user_email')}",
+       "subject": "Infusionsoft payment for Invoice ID #{_('data.infusionsoft.get_invoice.Id')} could not be transferred to QuickBooks",
+       "body": "Payment details\nCustomer: #{_('data.infusionsoft.get_invoice.get_contact(ContactId>Id).FirstName')} #{_('data.infusionsoft.get_invoice.get_contact(ContactId>Id).LastName')}\nCustomer company: #{_('data.infusionsoft.get_invoice.get_contact(ContactId>Id).Company')}\nDate: #{_('data.infusionsoft.new_payment_v2.PayDate')}\nPayment amount: #{_('data.infusionsoft.new_payment_v2.PayAmt')}\n\nQuickbooks invoice number: #{_('data.quickbooks.search_invoice1.invoices.first.DocNumber')}\nQuickbooks invoice amount due: #{_('data.quickbooks.search_invoice1.invoices.first.Balance')}"
+      },
+      "uuid": "5aba48f8-b4e5-4eb3-918c-565cbcf2201f",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 18,
+      "keyword": "stop",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "9b0e3161-8355-4881-bfc1-62c66d83ba9b"
+     }
+    ],
+    "uuid": "60414194-8294-42a2-a698-1e450effc80e"
+   },
+   {
+    "number": 19,
+    "provider": "quickbooks",
+    "name": "lookup_customer",
+    "as": "lookup_customer1",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "display_name": "#{_('data.quickbooks.search_invoice1.invoices.first.CustomerRef.name')}"
+    },
+    "visible_config_fields": [
+     "display_name"
+    ],
+    "comment": "Get customer ID using customer display name",
+    "uuid": "fd98df11-40b0-47eb-8586-7db3fdd8daf4",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 20,
+    "provider": "quickbooks",
+    "name": "create_payment_v2",
+    "as": "create_payment_v22",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "TxnDate": "=_('data.infusionsoft.new_payment_v2.PayDate').to_date",
+     "PrivateNote": "Payment from Infusionsoft ID: #{_('data.infusionsoft.new_payment_v2.Id')}",
+     "Line": {
+      "Amount": "#{_('data.infusionsoft.new_payment_v2.PayAmt')}",
+      "LinkedTxn": {
+       "TxnId": "#{_('data.quickbooks.search_invoice1.invoices.first.Id')}",
+       "TxnType": "Invoice",
+       "TxnLineId": "0"
+      }
+     },
+     "CustomerRef": "#{_('data.quickbooks.lookup_customer1.Id')}",
+     "PaymentRefNum": "#{_('data.infusionsoft.new_payment_v2.Id')}"
+    },
+    "visible_config_fields": [
+     "TxnDate",
+     "PrivateNote",
+     "Line",
+     "Line.Amount",
+     "PaymentRefNum"
+    ],
+    "comment": "Process credit payments",
+    "uuid": "efa0eaf8-3534-4892-9e08-c96652b1d504"
+   }
+  ],
+  "uuid": "3a8125fe-cd71-4e87-b6dc-5a36f824fe89",
+  "title": null,
+  "description": null
+ }
+}

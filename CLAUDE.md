@@ -9,7 +9,16 @@ copy of the official Workato documentation to build from.
   `post_mcp_mcp_servers`, `post_recipe_validators_validate`, ...). Each tool takes fixed `verb` and
   `path` arguments; copy them from the tool schema. The token's API client role decides which
   tools exist. Do not build a replacement server. (AIRO MCP isn't available on this Free plan.)
-- **Knowledge**: `kb/` holds the Workato docs as Markdown (from docs.workato.com `llms.txt`).
+- **Knowledge** (`kb/`, owned by the `workato-librarian` agent):
+  | Store | Use it for |
+  | --- | --- |
+  | `kb/patterns/RECIPE_JSON_SPEC.md` | **Read before writing any recipe JSON.** Structure, datapills, control flow, platform steps, checklist |
+  | `kb/connectors/` (live catalog: 324 connectors) | Exact trigger and action names, required inputs, outputs: `python3 kb/search.py --connector <name> [--op <action>]` |
+  | `kb/examples/index.json` (309 real recipes) | Closest proven example to adapt: `python3 kb/search.py --examples <provider.action> [--feature try]` |
+  | `kb/patterns/workato-labs/` | Workato Labs official recipe skills (MIT): fundamentals, control flow, connector patterns, lint rules |
+  | `kb/docs/` (4,513 pages) | Concepts, connector behaviour, platform features: `python3 kb/search.py "<query>"` |
+
+  Precedence when sources disagree: **live catalog > real exported recipes > Labs docs > general docs.**
 
 ## Working rules
 
@@ -19,6 +28,7 @@ copy of the official Workato documentation to build from.
    - Browse: `kb/INDEX.md` → `kb/index/<section>.md` → the page under `kb/docs/en/...`
    - Read one section of a page: `python3 kb/search.py --read en/recipes/triggers --heading "Polling"`
    - Connector docs live under `kb/docs/en/connectors/<app>/` (triggers/, actions/).
+   - Before generating JSON: the spec, then the catalog entry for every step, then the closest example.
 2. **Then check the API contract.** Each MCP tool maps to a Developer API endpoint documented in
    `kb/docs/en/workato-api/*.md` (index: `kb/docs/en/workato-api/resources.md`). Read the
    payload section before any `post_`/`put_` call.

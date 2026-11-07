@@ -1,0 +1,1813 @@
+{
+ "name": "linkedin",
+ "title": "LinkedIn",
+ "requires_connection": true,
+ "categories": [
+  "Social"
+ ],
+ "aliases": [
+  "LinkedIn"
+ ],
+ "triggers": [
+  {
+   "name": "new_lead_gen_form_response",
+   "title": "New lead gen form submitted",
+   "description": "New lead gen form submitted in LinkedIn",
+   "help": "Triggers immediately when a Lead Gen Form is filled up from a lead. Lead Gen form submissions are tied to specific advertising accounts on LinkedIn and retrieve all form submissions across all creatives in this account. Each account or campaign can have only one trigger on Workato associated with it…",
+   "input": [
+    {
+     "name": "account",
+     "type": "string",
+     "label": "Advertising account",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "advertising_account",
+     "toggle_field": {
+      "name": "account",
+      "type": "string"
+     },
+     "hint": "Select the advertising account to pick up form submissions from. Only the first 1000 accounts are shown. Toggle to provide the account URN manually if your account cannot be found."
+    },
+    {
+     "name": "form_id",
+     "type": "string",
+     "label": "Form",
+     "control_type": "select",
+     "pick_list": "versioned_lead_forms",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "form_id",
+      "type": "string"
+     },
+     "hint": "Select a form to load data tree. Only the first 1000 forms are returned. Toggle to provide the form URN manually if your form cannot be found."
+    },
+    {
+     "name": "creative",
+     "type": "string",
+     "label": "Creative",
+     "control_type": "select",
+     "pick_list": "ad_creatives",
+     "toggle_field": {
+      "name": "creative",
+      "type": "string"
+     },
+     "hint": "Select a creative to only pick up form submissions from this specified creative. Only the first 1000 creatives are returned. Toggle to provide the creative URN manually if your creative cannot be foun…"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created one hour ago. You can only retrieve leads created in the last…"
+    }
+   ],
+   "output": [
+    {
+     "name": "submittedAt",
+     "type": "date_time",
+     "label": "Submitted at",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Form response ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "leadType",
+     "type": "string",
+     "label": "Lead type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "leadAction",
+     "type": "string",
+     "label": "Lead action",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "submitter",
+     "type": "string",
+     "label": "Submitter",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "associatedEntity",
+     "type": "object",
+     "label": "Associated entity",
+     "required": true,
+     "properties": [
+      {
+       "name": "sponsoredCreative",
+       "type": "string",
+       "label": "Sponsored creative",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "leadGenFormResponse",
+     "type": "string",
+     "label": "Lead gen form response",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "testLead",
+     "type": "boolean",
+     "label": "Test lead",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "testLead",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "versionedLeadGenFormUrn",
+     "type": "string",
+     "label": "Versioned lead gen form urn",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "required": true,
+     "properties": [
+      {
+       "name": "sponsoredAccount",
+       "type": "string",
+       "label": "Sponsored account",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "leadMetadata",
+     "type": "object",
+     "label": "Lead metadata",
+     "required": true,
+     "properties": [
+      {
+       "name": "sponsoredLeadMetadata",
+       "type": "object",
+       "label": "Sponsored lead metadata",
+       "required": true,
+       "properties": [
+        {
+         "name": "campaign",
+         "type": "string",
+         "label": "Campaign",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in LinkedIn (Custom)",
+   "help": "Build your own LinkedIn action with a HTTP request. The request will be authorized with your LinkedIn connection. Note: Set the Linkedin-Version header to the version of the LinkedIn API you want to use.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_campaign_by_id",
+   "title": "Get campaign details by ID",
+   "description": "Get campaign details by ID in LinkedIn",
+   "help": "Get details of a campaign by providing the ID.",
+   "input": [
+    {
+     "name": "account",
+     "type": "string",
+     "label": "Advertising account",
+     "control_type": "select",
+     "required_when_visible": true,
+     "pick_list": "advertising_account",
+     "toggle_field": {
+      "name": "account",
+      "type": "string"
+     },
+     "hint": "Select the advertising account to pick up form submissions from. Only the first 1000 accounts are shown. Toggle to provide the account URN manually if your account cannot be found."
+    },
+    {
+     "name": "campaign_id",
+     "type": "string",
+     "label": "Campaign ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Campaign ID can be found in the url."
+    }
+   ],
+   "output": [
+    {
+     "name": "format",
+     "type": "string",
+     "label": "Format",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "servingStatuses",
+     "type": "array",
+     "label": "Serving statuses",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "servingStatus",
+       "type": "string",
+       "label": "Serving status",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "locale",
+     "type": "object",
+     "label": "Locale",
+     "required": true,
+     "properties": [
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "language",
+       "type": "string",
+       "label": "Language",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "version",
+     "type": "object",
+     "label": "Version",
+     "required": true,
+     "properties": [
+      {
+       "name": "versionTag",
+       "type": "string",
+       "label": "Version tag",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "associatedEntity",
+     "type": "string",
+     "label": "Associated entity",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "runSchedule",
+     "type": "object",
+     "label": "Run schedule",
+     "required": true,
+     "properties": [
+      {
+       "name": "start",
+       "type": "date_time",
+       "label": "Start",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "end",
+       "type": "date_time",
+       "label": "End",
+       "control_type": "date_time",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "changeAuditStamps",
+     "type": "object",
+     "label": "Change audit stamps",
+     "required": true,
+     "properties": [
+      {
+       "name": "created",
+       "type": "object",
+       "label": "Created",
+       "required": true,
+       "properties": [
+        {
+         "name": "time",
+         "type": "date_time",
+         "label": "Time",
+         "control_type": "date_time",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "lastModified",
+       "type": "object",
+       "label": "Last modified",
+       "required": true,
+       "properties": [
+        {
+         "name": "time",
+         "type": "date_time",
+         "label": "Time",
+         "control_type": "date_time",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "targeting",
+     "type": "object",
+     "label": "Targeting",
+     "required": true,
+     "properties": [
+      {
+       "name": "excludedTargetingFacets",
+       "type": "object",
+       "label": "Excluded targeting facets",
+       "required": true,
+       "properties": [
+        {
+         "name": "followedCompanies",
+         "type": "array",
+         "label": "Followed companies",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "followedCompany",
+           "type": "string",
+           "label": "Followed company",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "includedTargetingFacets",
+       "type": "object",
+       "label": "Included targeting facets",
+       "required": true,
+       "properties": [
+        {
+         "name": "jobFunctions",
+         "type": "array",
+         "label": "Job functions",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "jobFunction",
+           "type": "string",
+           "label": "Job function",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "locations",
+         "type": "array",
+         "label": "Locations",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "location",
+           "type": "string",
+           "label": "Location",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "interfaceLocales",
+         "type": "array",
+         "label": "Interface locales",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "country",
+           "type": "string",
+           "label": "Country",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "language",
+           "type": "string",
+           "label": "Language",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "seniorities",
+         "type": "array",
+         "label": "Seniorities",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "seniority",
+           "type": "string",
+           "label": "Seniority",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "staffCountRanges",
+         "type": "array",
+         "label": "Staff count ranges",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "staffCountRange",
+           "type": "string",
+           "label": "Staff count range",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "ageRanges",
+         "type": "array",
+         "label": "Age ranges",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "ageRange",
+           "type": "string",
+           "label": "Age range",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "campaignGroup",
+     "type": "string",
+     "label": "Campaign group",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "dailyBudget",
+     "type": "object",
+     "label": "Daily budget",
+     "required": true,
+     "properties": [
+      {
+       "name": "amount",
+       "type": "string",
+       "label": "Amount",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "currencyCode",
+       "type": "string",
+       "label": "Currency code",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "unitCost",
+     "type": "object",
+     "label": "Unit cost",
+     "required": true,
+     "properties": [
+      {
+       "name": "amount",
+       "type": "string",
+       "label": "Amount",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "currencyCode",
+       "type": "string",
+       "label": "Currency code",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "costType",
+     "type": "string",
+     "label": "Cost type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "creativeSelection",
+     "type": "string",
+     "label": "Creative selection",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "offsiteDeliveryEnabled",
+     "type": "boolean",
+     "label": "Offsite delivery enabled",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "offsiteDeliveryEnabled",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "account",
+     "type": "string",
+     "label": "Account",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "audienceExpansionEnabled",
+     "type": "boolean",
+     "label": "Audience expansion enabled",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "audienceExpansionEnabled",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "storyDeliveryEnabled",
+     "type": "boolean",
+     "label": "Story delivery enabled",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "storyDeliveryEnabled",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "optimizationTargetType",
+     "type": "string",
+     "label": "Optimization target type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "pacingStrategy",
+     "type": "string",
+     "label": "Pacing strategy",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "test",
+     "type": "boolean",
+     "label": "Test",
+     "control_type": "text",
+     "required": true,
+     "toggle_field": {
+      "name": "test",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "objectiveType",
+     "type": "string",
+     "label": "Objective type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "offsitePreferences",
+     "type": "object",
+     "label": "Offsite preferences",
+     "required": true,
+     "properties": [
+      {
+       "name": "iabCategories",
+       "type": "object",
+       "label": "Iab categories",
+       "required": true,
+       "properties": [
+        {
+         "name": "exclude",
+         "type": "array",
+         "label": "Exclude",
+         "control_type": "text",
+         "required": true,
+         "of": "string"
+        },
+        {
+         "name": "include",
+         "type": "array",
+         "label": "Include",
+         "control_type": "text",
+         "required": true,
+         "of": "string"
+        }
+       ]
+      },
+      {
+       "name": "publisherRestrictionFiles",
+       "type": "object",
+       "label": "Publisher restriction files",
+       "required": true,
+       "properties": [
+        {
+         "name": "exclude",
+         "type": "array",
+         "label": "Exclude",
+         "control_type": "text",
+         "required": true,
+         "of": "string"
+        },
+        {
+         "name": "include",
+         "type": "array",
+         "label": "Include",
+         "control_type": "text",
+         "required": true,
+         "of": "string"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "targetingCriteria",
+     "type": "object",
+     "label": "Targeting criteria",
+     "required": true,
+     "properties": [
+      {
+       "name": "excludedTargetingFacets",
+       "type": "object",
+       "label": "Excluded targeting facets",
+       "required": true,
+       "properties": [
+        {
+         "name": "followedCompanies",
+         "type": "array",
+         "label": "Followed companies",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "followedCompany",
+           "type": "string",
+           "label": "Followed company",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "includedTargetingFacets",
+       "type": "object",
+       "label": "Included targeting facets",
+       "required": true,
+       "properties": [
+        {
+         "name": "jobFunctions",
+         "type": "array",
+         "label": "Job functions",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "jobFunction",
+           "type": "string",
+           "label": "Job function",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "locations",
+         "type": "array",
+         "label": "Locations",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "location",
+           "type": "string",
+           "label": "Location",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "interfaceLocales",
+         "type": "array",
+         "label": "Interface locales",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "country",
+           "type": "string",
+           "label": "Country",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "language",
+           "type": "string",
+           "label": "Language",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "seniorities",
+         "type": "array",
+         "label": "Seniorities",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "seniority",
+           "type": "string",
+           "label": "Seniority",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "staffCountRanges",
+         "type": "array",
+         "label": "Staff count ranges",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "staffCountRange",
+           "type": "string",
+           "label": "Staff count range",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "ageRanges",
+         "type": "array",
+         "label": "Age ranges",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "ageRange",
+           "type": "string",
+           "label": "Age range",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "connectedTelevisionOnly",
+     "type": "boolean",
+     "label": "Connected television only",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "connectedTelevisionOnly",
+      "type": "boolean"
+     }
+    }
+   ]
+  },
+  {
+   "name": "get_lead_gen_forms_by_id",
+   "title": "Get lead gen form response by ID",
+   "description": "Get lead gen form response by ID in LinkedIn",
+   "help": "Used to retrieve the full details of a lead gen form response, including the questions and answers.",
+   "input": [
+    {
+     "name": "account",
+     "type": "string",
+     "label": "Advertising account",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "advertising_account",
+     "toggle_field": {
+      "name": "account",
+      "type": "string"
+     },
+     "hint": "Select the advertising account to pick up form submissions from. Only the first 1000 accounts are shown. Toggle to provide the account URN manually if your account cannot be found."
+    },
+    {
+     "name": "form_id",
+     "type": "string",
+     "label": "Form",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "lead_forms",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "form_id",
+      "type": "string"
+     },
+     "hint": "Select the form to which the responses are submitted. Only the first 1000 forms are returned. Toggle to provide the form URN manually if your form cannot be found."
+    },
+    {
+     "name": "ad_form_response_id",
+     "type": "string",
+     "label": "Lead gen form response ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide the ID of the lead gen form response. This can be found in the output of New lead gen form submitted trigger."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_list_of_campaigns_by_status",
+   "title": "Retrieve a list of campaigns by status",
+   "description": "Retrieve a list of campaigns by status in LinkedIn",
+   "help": "Obtain a list of campaigns by status. Returns information on the Campaigns including Campaign ID. The Campaign ID may be used in the Get Campaign by ID action.",
+   "input": [
+    {
+     "name": "account",
+     "type": "string",
+     "label": "Advertising account",
+     "control_type": "select",
+     "required_when_visible": true,
+     "pick_list": "advertising_account",
+     "toggle_field": {
+      "name": "account",
+      "type": "string"
+     },
+     "hint": "Select the advertising account to pick up form submissions from. Only the first 1000 accounts are shown. Toggle to provide the account URN manually if your account cannot be found."
+    },
+    {
+     "name": "statuses",
+     "type": "string",
+     "label": "Statuses",
+     "control_type": "multiselect",
+     "required": true,
+     "default": "ACTIVE",
+     "pick_list": "status_list",
+     "hint": "Filter your campaigns by status. You may select more than 1 status. Returns all 'Active' campaigns by default."
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "properties": [
+      {
+       "name": "start",
+       "type": "integer",
+       "label": "Start index",
+       "control_type": "number",
+       "visible_if": "!input.account"
+      },
+      {
+       "name": "pageToken",
+       "type": "string",
+       "label": "Page token",
+       "control_type": "text",
+       "visible_if": "!!input.account",
+       "hint": "Provide the page token to retrieve the next page of results. This token is returned in the output of the previous request."
+      },
+      {
+       "name": "count",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "number",
+       "default": 100,
+       "hint": "Provide value for page size. Defaults to 100"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "elements",
+     "type": "array",
+     "label": "Elements",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "format",
+       "type": "string",
+       "label": "Format",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "servingStatuses",
+       "type": "array",
+       "label": "Serving statuses",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "servingStatus",
+         "type": "string",
+         "label": "Serving status",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "locale",
+       "type": "object",
+       "label": "Locale",
+       "required": true,
+       "properties": [
+        {
+         "name": "country",
+         "type": "string",
+         "label": "Country",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "language",
+         "type": "string",
+         "label": "Language",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "version",
+       "type": "object",
+       "label": "Version",
+       "required": true,
+       "properties": [
+        {
+         "name": "versionTag",
+         "type": "string",
+         "label": "Version tag",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "associatedEntity",
+       "type": "string",
+       "label": "Associated entity",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "runSchedule",
+       "type": "object",
+       "label": "Run schedule",
+       "required": true,
+       "properties": [
+        {
+         "name": "start",
+         "type": "date_time",
+         "label": "Start",
+         "control_type": "date_time",
+         "required": true
+        },
+        {
+         "name": "end",
+         "type": "date_time",
+         "label": "End",
+         "control_type": "date_time",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "changeAuditStamps",
+       "type": "object",
+       "label": "Change audit stamps",
+       "required": true,
+       "properties": [
+        {
+         "name": "created",
+         "type": "object",
+         "label": "Created",
+         "required": true,
+         "properties": [
+          {
+           "name": "time",
+           "type": "date_time",
+           "label": "Time",
+           "control_type": "date_time",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "lastModified",
+         "type": "object",
+         "label": "Last modified",
+         "required": true,
+         "properties": [
+          {
+           "name": "time",
+           "type": "date_time",
+           "label": "Time",
+           "control_type": "date_time",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "targeting",
+       "type": "object",
+       "label": "Targeting",
+       "required": true,
+       "properties": [
+        {
+         "name": "excludedTargetingFacets",
+         "type": "object",
+         "label": "Excluded targeting facets",
+         "required": true,
+         "properties": [
+          {
+           "name": "followedCompanies",
+           "type": "array",
+           "label": "Followed companies",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "followedCompany",
+             "type": "string",
+             "label": "Followed company",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "includedTargetingFacets",
+         "type": "object",
+         "label": "Included targeting facets",
+         "required": true,
+         "properties": [
+          {
+           "name": "jobFunctions",
+           "type": "array",
+           "label": "Job functions",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "jobFunction",
+             "type": "string",
+             "label": "Job function",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "locations",
+           "type": "array",
+           "label": "Locations",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "location",
+             "type": "string",
+             "label": "Location",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "interfaceLocales",
+           "type": "array",
+           "label": "Interface locales",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "country",
+             "type": "string",
+             "label": "Country",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "language",
+             "type": "string",
+             "label": "Language",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "seniorities",
+           "type": "array",
+           "label": "Seniorities",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "seniority",
+             "type": "string",
+             "label": "Seniority",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "staffCountRanges",
+           "type": "array",
+           "label": "Staff count ranges",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "staffCountRange",
+             "type": "string",
+             "label": "Staff count range",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "ageRanges",
+           "type": "array",
+           "label": "Age ranges",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "ageRange",
+             "type": "string",
+             "label": "Age range",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "campaignGroup",
+       "type": "string",
+       "label": "Campaign group",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "dailyBudget",
+       "type": "object",
+       "label": "Daily budget",
+       "required": true,
+       "properties": [
+        {
+         "name": "amount",
+         "type": "string",
+         "label": "Amount",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "currencyCode",
+         "type": "string",
+         "label": "Currency code",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "unitCost",
+       "type": "object",
+       "label": "Unit cost",
+       "required": true,
+       "properties": [
+        {
+         "name": "amount",
+         "type": "string",
+         "label": "Amount",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "currencyCode",
+         "type": "string",
+         "label": "Currency code",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "costType",
+       "type": "string",
+       "label": "Cost type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "creativeSelection",
+       "type": "string",
+       "label": "Creative selection",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "offsiteDeliveryEnabled",
+       "type": "boolean",
+       "label": "Offsite delivery enabled",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "offsiteDeliveryEnabled",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "integer",
+       "required": true
+      },
+      {
+       "name": "account",
+       "type": "string",
+       "label": "Account",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "audienceExpansionEnabled",
+       "type": "boolean",
+       "label": "Audience expansion enabled",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "audienceExpansionEnabled",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "storyDeliveryEnabled",
+       "type": "boolean",
+       "label": "Story delivery enabled",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "storyDeliveryEnabled",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "optimizationTargetType",
+       "type": "string",
+       "label": "Optimization target type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "pacingStrategy",
+       "type": "string",
+       "label": "Pacing strategy",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "test",
+       "type": "boolean",
+       "label": "Test",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "test",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "objectiveType",
+       "type": "string",
+       "label": "Objective type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "offsitePreferences",
+       "type": "object",
+       "label": "Offsite preferences",
+       "required": true,
+       "properties": [
+        {
+         "name": "iabCategories",
+         "type": "object",
+         "label": "Iab categories",
+         "required": true,
+         "properties": [
+          {
+           "name": "exclude",
+           "type": "array",
+           "label": "Exclude",
+           "control_type": "text",
+           "required": true,
+           "of": "string"
+          },
+          {
+           "name": "include",
+           "type": "array",
+           "label": "Include",
+           "control_type": "text",
+           "required": true,
+           "of": "string"
+          }
+         ]
+        },
+        {
+         "name": "publisherRestrictionFiles",
+         "type": "object",
+         "label": "Publisher restriction files",
+         "required": true,
+         "properties": [
+          {
+           "name": "exclude",
+           "type": "array",
+           "label": "Exclude",
+           "control_type": "text",
+           "required": true,
+           "of": "string"
+          },
+          {
+           "name": "include",
+           "type": "array",
+           "label": "Include",
+           "control_type": "text",
+           "required": true,
+           "of": "string"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "targetingCriteria",
+       "type": "object",
+       "label": "Targeting criteria",
+       "required": true,
+       "properties": [
+        {
+         "name": "excludedTargetingFacets",
+         "type": "object",
+         "label": "Excluded targeting facets",
+         "required": true,
+         "properties": [
+          {
+           "name": "followedCompanies",
+           "type": "array",
+           "label": "Followed companies",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "followedCompany",
+             "type": "string",
+             "label": "Followed company",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "includedTargetingFacets",
+         "type": "object",
+         "label": "Included targeting facets",
+         "required": true,
+         "properties": [
+          {
+           "name": "jobFunctions",
+           "type": "array",
+           "label": "Job functions",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "jobFunction",
+             "type": "string",
+             "label": "Job function",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "locations",
+           "type": "array",
+           "label": "Locations",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "location",
+             "type": "string",
+             "label": "Location",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "interfaceLocales",
+           "type": "array",
+           "label": "Interface locales",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "country",
+             "type": "string",
+             "label": "Country",
+             "control_type": "text",
+             "required": true
+            },
+            {
+             "name": "language",
+             "type": "string",
+             "label": "Language",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "seniorities",
+           "type": "array",
+           "label": "Seniorities",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "seniority",
+             "type": "string",
+             "label": "Seniority",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "staffCountRanges",
+           "type": "array",
+           "label": "Staff count ranges",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "staffCountRange",
+             "type": "string",
+             "label": "Staff count range",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          },
+          {
+           "name": "ageRanges",
+           "type": "array",
+           "label": "Age ranges",
+           "required": true,
+           "of": "object",
+           "properties": [
+            {
+             "name": "ageRange",
+             "type": "string",
+             "label": "Age range",
+             "control_type": "text",
+             "required": true
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "connectedTelevisionOnly",
+       "type": "boolean",
+       "label": "Connected television only",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "connectedTelevisionOnly",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "nextPageToken",
+     "type": "string",
+     "label": "Next page token",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "paging",
+     "type": "object",
+     "label": "Paging",
+     "required": true,
+     "properties": [
+      {
+       "name": "start",
+       "type": "integer",
+       "label": "Start",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "count",
+       "type": "integer",
+       "label": "Count",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "array",
+       "label": "Links",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "rel",
+         "type": "string",
+         "label": "Rel",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "total",
+       "type": "integer",
+       "label": "Total",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_lead_gen_form_responses",
+   "title": "Search lead gen form responses",
+   "description": "Search lead gen form responses from LinkedIn",
+   "help": "Retrieves lead gen form responses submitted within the last 90 days.",
+   "input": [
+    {
+     "name": "account",
+     "type": "string",
+     "label": "Advertising account",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "advertising_account",
+     "toggle_field": {
+      "name": "account",
+      "type": "string"
+     },
+     "hint": "Select the advertising account to pick up form submissions from. Only the first 1000 accounts are shown. Toggle to provide the account URN manually if your account cannot be found."
+    },
+    {
+     "name": "form_id",
+     "type": "string",
+     "label": "Form",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "lead_forms",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "form_id",
+      "type": "string"
+     },
+     "hint": "Select the form to which the responses are submitted. Only the first 1000 forms are returned. Toggle to provide the form URN manually if your form cannot be found."
+    },
+    {
+     "name": "timeRange",
+     "type": "object",
+     "label": "Pull reports within a specified time range",
+     "properties": [
+      {
+       "name": "start",
+       "type": "date_time",
+       "label": "Start",
+       "control_type": "date_time",
+       "hint": "Provide start date."
+      },
+      {
+       "name": "end",
+       "type": "date_time",
+       "label": "End",
+       "control_type": "date_time",
+       "hint": "Provide end date."
+      }
+     ]
+    },
+    {
+     "name": "creative",
+     "type": "string",
+     "label": "Creative",
+     "control_type": "select",
+     "pick_list": "ad_creatives",
+     "toggle_field": {
+      "name": "creative",
+      "type": "string"
+     },
+     "hint": "Select a creative to only pick up form submissions from this specified creative. Only the first 1000 creatives are returned. Toggle to provide the creative URN manually if your creative cannot be foun…"
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "required": true,
+     "properties": [
+      {
+       "name": "start",
+       "type": "string",
+       "label": "Page token",
+       "control_type": "text",
+       "hint": "Used for pagination. Use this to skip a specified number of form responses. Provide the next page token from the previous response."
+      },
+      {
+       "name": "count",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "integer",
+       "hint": "Used for pagination. Use this to specify how many form responses to be returned in each call."
+      }
+     ]
+    }
+   ],
+   "output": []
+  }
+ ]
+}

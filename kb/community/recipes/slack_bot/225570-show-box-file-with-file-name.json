@@ -1,0 +1,492 @@
+{
+ "id": 225570,
+ "name": "Show box file with file name",
+ "description": "1. Type the Workbot command **Box show file** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will ask for the **file name**.\n3. Workbot will list a maximum of 3 files whose names partially match the provided file name.\n\n**Notes**\nWorkbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "workato_variable",
+  "box",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "workato_variable",
+  "box",
+  "slack_bot"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "file",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "Recipe Tools",
+  "Document/File",
+  "Marketing"
+ ],
+ "copy_count": 6128,
+ "curated": true,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2021-02-17T04:21:52.744-08:00",
+ "source_url": "https://app.workato.com/recipes/225570?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "workato_variable.declare_variable",
+  "box.search_files",
+  "slack_bot.post_bot_reply_v2",
+  "slack_bot.post_bot_reply_v2",
+  "workato_variable.declare_variable",
+  "workato_variable.declare_variable",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">box show File</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Box"
+  },
+  "toggleCfg": {
+   "domain": true,
+   "name": true,
+   "scope": false
+  },
+  "input": {
+   "domain": "box",
+   "name": "show",
+   "scope": "File",
+   "parameters": "[{\"name\":\"name\",\"type\":\"string\",\"optional\":false,\"hint\":\"name of file\",\"sample\":\"workato\",\"control_type\":\"text\"}]",
+   "description": "Show box file",
+   "hide_from_help": "false"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Name",
+      "name": "name",
+      "type": "string",
+      "optional": false,
+      "hint": "name of file",
+      "sample": "workato"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "fc6790a0",
+    "title": "  Create variable Title",
+    "description": "Create variable <span class=\"provider\">Title</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "variables": {
+      "schema": "[{\"name\":\"title\",\"type\":\"string\",\"optional\":true,\"label\":\"Title\",\"control_type\":\"text\"}]",
+      "data": {
+       "title": "="
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "type": "string",
+      "name": "title",
+      "control_type": "text",
+      "label": "Title",
+      "optional": true
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "object",
+      "name": "variables",
+      "control_type": "form-schema-builder",
+      "label": "Variables",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema",
+        "parent": "variables"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Title",
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true,
+          "parent": "variables.data"
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data",
+        "parent": "variables"
+       }
+      ],
+      "exclude_fields": [
+       "hint"
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.title"
+    ],
+    "uuid": "f5774832-bc85-4f44-8987-9eea4e5f9659"
+   },
+   {
+    "number": 2,
+    "provider": "box",
+    "name": "search_files",
+    "as": "search_files",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "exact_match": true,
+     "type": true
+    },
+    "input": {
+     "query": "#{_('data.slack_bot.bot_command_v2.parameters.name')}",
+     "exact_match": "false",
+     "type": "file"
+    },
+    "visible_config_fields": [
+     "query",
+     "exact_match",
+     "ancestor_folder_ids",
+     "type"
+    ],
+    "uuid": "fa584496-7ee5-483f-aa1c-df159874f1e4",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 3,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.box.search_files.files.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 4,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "Box file not found  :thinking_face:"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "#{_('data.slack_bot.bot_command_v2.parameters.name')} does not exist...please type in the exact file name!"
+        }
+       ]
+      },
+      "uuid": "ca41456d-a81f-4a36-b97a-a9131d1b95ba",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     }
+    ],
+    "uuid": "72f4496b-1166-4bc9-9b97-dac69c64fc13"
+   },
+   {
+    "number": 5,
+    "as": "foreach",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 6,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "equals_to",
+         "lhs": "#{_('data.foreach.foreach.index', 'foreach_meta')}",
+         "rhs": "2"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 7,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply_v2__1",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "blocks": [
+          {
+           "block_type": "section_with_text",
+           "section_text": "Workbot doesn't want to flood your channel"
+          },
+          {
+           "block_type": "section_with_text",
+           "section_text": "<https://app.box.com/files/|More than 3 files found! >"
+          },
+          {
+           "block_type": "section_with_text",
+           "section_text": "Please type the full name instead"
+          }
+         ]
+        },
+        "uuid": "771e0e99-fa2c-4145-9ea7-30687482c518",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       },
+       {
+        "number": 8,
+        "keyword": "stop",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "stop_with_error": "false"
+        },
+        "uuid": "1ab3adb2-87dd-468d-a4d3-80a083bcb27d"
+       }
+      ],
+      "uuid": "10cf3b40-e2a5-4844-b97d-7852a8c2e800"
+     },
+     {
+      "number": 9,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "9ad4a89e",
+      "title": "  Create variable Title",
+      "description": "Create variable <span class=\"provider\">Title</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"title\",\"type\":\"string\",\"optional\":true,\"label\":\"Title\",\"control_type\":\"text\"}]",
+        "data": {
+         "title": "=\"File with name: \" + _('data.foreach.foreach.name').titleize + \" found!\""
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "string",
+        "name": "title",
+        "control_type": "text",
+        "label": "Title",
+        "optional": true
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "variables",
+        "control_type": "form-schema-builder",
+        "label": "Variables",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema",
+          "parent": "variables"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Title",
+            "name": "title",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true,
+            "parent": "variables.data"
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data",
+          "parent": "variables"
+         }
+        ],
+        "exclude_fields": [
+         "hint"
+        ]
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.title"
+      ],
+      "uuid": "e9b239b8-1af1-4d6e-96ed-4c01787042de"
+     },
+     {
+      "number": 10,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "5e55530d",
+      "title": "  Create variable Title Link",
+      "description": "Create variable <span class=\"provider\">Title Link</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"title_link\",\"type\":\"string\",\"optional\":true,\"label\":\"Title Link\",\"control_type\":\"text\"}]",
+        "data": {
+         "title_link": "=\"https://app.box.com/files/0/f/\" +\n   _('data.foreach.foreach.parent.id').to_s + #parent folder id\n   \"/1/f_\"  + \n   _('data.foreach.foreach.id') # file id"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "string",
+        "name": "title_link",
+        "control_type": "text",
+        "label": "Title Link",
+        "optional": true
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "variables",
+        "control_type": "form-schema-builder",
+        "label": "Variables",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema",
+          "parent": "variables"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Title Link",
+            "name": "title_link",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true,
+            "parent": "variables.data"
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data",
+          "parent": "variables"
+         }
+        ],
+        "exclude_fields": [
+         "hint"
+        ]
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.title_link"
+      ],
+      "uuid": "8afc65ca-a95c-4b53-b02a-5191dc1e8ecb"
+     },
+     {
+      "number": 11,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2__2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "Here you go"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "<#{_('data.workato_variable.5e55530d.title_link')}|#{_('data.workato_variable.9ad4a89e.title')}>"
+        }
+       ]
+      },
+      "uuid": "af2821b6-c857-497e-8bce-e23ceee6aa6e",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     }
+    ],
+    "source": "#{_('data.box.search_files.files')}",
+    "uuid": "a208726f-fbea-4ded-94aa-277f164d55cf"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "File name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "File found?"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.slack_bot.bot_command_v2.parameters.name')}",
+   "custom_column_2": "=_('data.box.search_files.files.first.id').present?"
+  },
+  "uuid": "6ad9f1d7-357a-4c37-8459-f413e2c6dce8",
+  "param": {}
+ }
+}

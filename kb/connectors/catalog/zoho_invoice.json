@@ -1,0 +1,3217 @@
+{
+ "name": "zoho_invoice",
+ "title": "Zoho Invoice",
+ "requires_connection": true,
+ "categories": [
+  "Accounting",
+  "Financial Management",
+  "Sales Enablement"
+ ],
+ "aliases": [
+  "Zoho Invoice"
+ ],
+ "triggers": [
+  {
+   "name": "new_estimate",
+   "title": "New estimate",
+   "description": "New estimate in Zoho Invoice",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get data created since the given date/time.Leave empty to get data created 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "estimate_id",
+     "type": "string",
+     "label": "Estimate ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "customer_name",
+     "type": "string",
+     "label": "Customer name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "customer_id",
+     "type": "string",
+     "label": "Customer ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "contact_persons",
+     "type": "array",
+     "label": "Contact persons",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "estimate_number",
+     "type": "string",
+     "label": "Estimate number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "reference_number",
+     "type": "string",
+     "label": "Reference number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_symbol",
+     "type": "string",
+     "label": "Currency symbol",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_id",
+     "type": "string",
+     "label": "Currency ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_code",
+     "type": "string",
+     "label": "Currency code",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "exchange_rate",
+     "type": "number",
+     "label": "Exchange rate",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "discount",
+     "type": "number",
+     "label": "Discount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "discount_applied_on_amount",
+     "type": "number",
+     "label": "Discount applied on amount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "line_items",
+     "type": "array",
+     "label": "Line items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "item_id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "line_item_id",
+       "type": "string",
+       "label": "Line item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "item_order",
+       "type": "string",
+       "label": "Item order",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Line item name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Line item description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "bcy_rate",
+       "type": "number",
+       "label": "Base currency rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "discount_amount",
+       "type": "number",
+       "label": "Discount amount",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "rate",
+       "type": "number",
+       "label": "Line item rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Line item unit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Line item quantity",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "discount",
+       "type": "string",
+       "label": "Discount",
+       "control_type": "text",
+       "required": true,
+       "hint": "Discount applied to the line item"
+      },
+      {
+       "name": "tax_id",
+       "type": "string",
+       "label": "Tax ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_type",
+       "type": "string",
+       "label": "Tax type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "billing_address",
+     "type": "object",
+     "label": "Billing address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "shipping_address",
+     "type": "object",
+     "label": "Shipping address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "taxes",
+     "type": "array",
+     "label": "Taxes",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_amount",
+       "type": "number",
+       "label": "Tax amount",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "payment_options",
+     "type": "object",
+     "label": "Payment options",
+     "required": true,
+     "properties": [
+      {
+       "name": "payment_gateways",
+       "type": "array",
+       "label": "Payment gateways",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "gateway_name",
+         "type": "string",
+         "label": "Gateway name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "additional_field1",
+         "type": "string",
+         "label": "Additional field 1",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "allow_partial_payments",
+     "type": "boolean",
+     "label": "Allow partial payments",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "allow_partial_payments",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "adjustment",
+     "type": "number",
+     "label": "Adjustment",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "adjustment_description",
+     "type": "string",
+     "label": "Adjustment description",
+     "control_type": "text",
+     "hint": "E.g. Rounding off"
+    },
+    {
+     "name": "shipping_charge",
+     "type": "string",
+     "label": "Shipping charge",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_discount_before_tax",
+     "type": "boolean",
+     "label": "Is discount before tax",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_discount_before_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "is_inclusive_tax",
+     "type": "boolean",
+     "label": "Is inclusive tax",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_inclusive_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "is_viewed_by_client",
+     "type": "boolean",
+     "label": "Is viewed by client",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_viewed_by_client",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discount_type",
+     "type": "string",
+     "label": "Discount type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "client_viewed_time",
+     "type": "date_time",
+     "label": "Client viewed time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "last_modified_time",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "total",
+     "type": "number",
+     "label": "Total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "can_send_in_mail",
+     "type": "boolean",
+     "label": "Can send in mail",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "can_send_in_mail",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "attachment_name",
+     "type": "string",
+     "label": "Attachment name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesperson_name",
+     "type": "string",
+     "label": "Salesperson name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesperson_id",
+     "type": "string",
+     "label": "Salesperson ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "terms",
+     "type": "string",
+     "label": "Terms",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "tax_total",
+     "type": "number",
+     "label": "Tax total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "price_precision",
+     "type": "number",
+     "label": "Price precision",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "sub_total",
+     "type": "number",
+     "label": "Sub total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "template_name",
+     "type": "string",
+     "label": "Template name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "template_type",
+     "type": "string",
+     "label": "Template type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "created_by_id",
+     "type": "string",
+     "label": "Created by ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "accepted_date",
+     "type": "date_time",
+     "label": "Accepted date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "declined_date",
+     "type": "date_time",
+     "label": "Declined date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "created_time",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "expiry_date",
+     "type": "date_time",
+     "label": "Expiry date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_invoice",
+   "title": "New invoice",
+   "description": "New invoice in Zoho Invoice",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Get data created since the given date/time.Leave empty to get data created 1 hour ago. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "invoice_id",
+     "type": "string",
+     "label": "Invoice ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "invoice_number",
+     "type": "string",
+     "label": "Invoice number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "payment_terms",
+     "type": "string",
+     "label": "Payment terms",
+     "control_type": "text"
+    },
+    {
+     "name": "payment_terms_label",
+     "type": "string",
+     "label": "Payment terms label",
+     "control_type": "text"
+    },
+    {
+     "name": "due_date",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "reference_number",
+     "type": "string",
+     "label": "Reference number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_payment_date",
+     "type": "date_time",
+     "label": "Last payment date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "customer_name",
+     "type": "string",
+     "label": "Customer name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "customer_id",
+     "type": "string",
+     "label": "Customer ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "contact_persons",
+     "type": "array",
+     "label": "Contact persons",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_id",
+     "type": "string",
+     "label": "Currency ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_code",
+     "type": "string",
+     "label": "Currency code",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "discount",
+     "type": "number",
+     "label": "Discount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "exchange_rate",
+     "type": "number",
+     "label": "Exchange rate",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "is_discount_before_tax",
+     "type": "boolean",
+     "label": "Is discount before tax",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_discount_before_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discount_type",
+     "type": "string",
+     "label": "Discount type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "recurring_invoice_id",
+     "type": "string",
+     "label": "Recurring invoice ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "line_items",
+     "type": "array",
+     "label": "Line items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "item_id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "line_item_id",
+       "type": "string",
+       "label": "Line item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "item_order",
+       "type": "string",
+       "label": "Item order",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Line item name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Line item description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "bcy_rate",
+       "type": "number",
+       "label": "Base currency rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "discount_amount",
+       "type": "number",
+       "label": "Discount amount",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "rate",
+       "type": "number",
+       "label": "Line item rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Line item unit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Line item quantity",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "item_total",
+       "type": "number",
+       "label": "Item total",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "tax_percentage",
+       "type": "number",
+       "label": "Tax percentage",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "project_id",
+       "type": "string",
+       "label": "Project ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "time_entry_ids",
+       "type": "string",
+       "label": "Time entry ids",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "expense_id",
+       "type": "string",
+       "label": "Expense ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "expense_receipt_name",
+       "type": "string",
+       "label": "Expense receipt name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "discount",
+       "type": "string",
+       "label": "Discount",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_id",
+       "type": "string",
+       "label": "Tax ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_type",
+       "type": "string",
+       "label": "Tax type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "billing_address",
+     "type": "object",
+     "label": "Billing address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "shipping_address",
+     "type": "object",
+     "label": "Shipping address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "taxes",
+     "type": "array",
+     "label": "Taxes",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_amount",
+       "type": "number",
+       "label": "Tax amount",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "payment_made",
+     "type": "number",
+     "label": "Payment made",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "credits_applied",
+     "type": "number",
+     "label": "Credits applied",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "payment_reminder_enabled",
+     "type": "boolean",
+     "label": "Payment reminder enabled",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "payment_reminder_enabled",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "tax_amount_withheld",
+     "type": "number",
+     "label": "Tax amount withheld",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "balance",
+     "type": "number",
+     "label": "Balance",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "write_off_amount",
+     "type": "number",
+     "label": "Write off amount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "adjustment",
+     "type": "number",
+     "label": "Adjustment",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "adjustment_description",
+     "type": "string",
+     "label": "Adjustment description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "shipping_charge",
+     "type": "string",
+     "label": "Shipping charge",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "total",
+     "type": "number",
+     "label": "Total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "tax_total",
+     "type": "number",
+     "label": "Tax total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "allow_partial_payments",
+     "type": "boolean",
+     "label": "Allow partial payments",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "allow_partial_payments",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "price_precision",
+     "type": "number",
+     "label": "Price precision",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "sub_total",
+     "type": "number",
+     "label": "Sub total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "terms",
+     "type": "string",
+     "label": "Terms",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "payment_options",
+     "type": "object",
+     "label": "Payment options",
+     "required": true,
+     "properties": [
+      {
+       "name": "payment_gateways",
+       "type": "array",
+       "label": "Payment gateways",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "gateway_name",
+         "type": "string",
+         "label": "Gateway name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "additional_field1",
+         "type": "string",
+         "label": "Additional field 1",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "configured",
+         "type": "boolean",
+         "label": "Configured",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "configured",
+          "type": "boolean"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "can_send_in_mail",
+     "type": "boolean",
+     "label": "Can send in mail",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "can_send_in_mail",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "template_name",
+     "type": "string",
+     "label": "Template name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "created_time",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "attachment_name",
+     "type": "string",
+     "label": "Attachment name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_modified_time",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "salesperson_name",
+     "type": "string",
+     "label": "Salesperson name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesperson_id",
+     "type": "string",
+     "label": "Salesperson ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "invoice_url",
+     "type": "string",
+     "label": "Invoice URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_emailed",
+     "type": "boolean",
+     "label": "Is emailed",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_emailed",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "reminders_sent",
+     "type": "boolean",
+     "label": "Reminders sent",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "reminders_sent",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_reminder_sent_date",
+     "type": "date_time",
+     "label": "Last reminder sent date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Zoho Invoice (Custom)",
+   "help": "Build your own Zoho Invoice action with a HTTP request. The request will be authorized with your Zoho Invoice connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_estimate",
+   "title": "Create estimate",
+   "description": "Create estimate in Zoho Invoice",
+   "input": [
+    {
+     "name": "customer_name",
+     "type": "string",
+     "label": "Customer name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text"
+    },
+    {
+     "name": "auto_generate_estimate_number",
+     "type": "boolean",
+     "label": "Auto generate estimate number",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "auto_generate_estimate_number",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "estimate_number",
+     "type": "string",
+     "label": "Estimate number",
+     "control_type": "text",
+     "hint": "Mandatory if estimate number auto generation is set to false else leave blank"
+    },
+    {
+     "name": "contact_person_email",
+     "type": "number",
+     "label": "Contact person email",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "contact_person_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "send",
+     "type": "boolean",
+     "label": "Send",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "send",
+      "type": "boolean"
+     },
+     "hint": "Send the estimate to the contact person associated with the estimate"
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "hint": "Date the invoice is created"
+    },
+    {
+     "name": "expiry_date",
+     "type": "date_time",
+     "label": "Expiry date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "exchange_rate",
+     "type": "number",
+     "label": "Exchange rate",
+     "control_type": "number",
+     "toggle_field": {
+      "name": "exchange_rate",
+      "type": "string"
+     },
+     "hint": "Equivalent to 1 Base currency"
+    },
+    {
+     "name": "discount",
+     "type": "string",
+     "label": "Discount",
+     "control_type": "text",
+     "hint": "Can be either in % or in amount. E.g. 12.5% or 190"
+    },
+    {
+     "name": "is_discount_before_tax",
+     "type": "boolean",
+     "label": "Is discount before tax",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "is_discount_before_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discount_type",
+     "type": "string",
+     "label": "Discount type",
+     "control_type": "select",
+     "options": [
+      "entity_level",
+      "item_level"
+     ]
+    },
+    {
+     "name": "salesperson_name",
+     "type": "string",
+     "label": "Salesperson name",
+     "control_type": "text"
+    },
+    {
+     "name": "reference_number",
+     "type": "string",
+     "label": "Reference number",
+     "control_type": "text"
+    },
+    {
+     "name": "line_items",
+     "type": "array",
+     "label": "Line items",
+     "of": "object",
+     "properties": [
+      {
+       "name": "item_id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Line item description",
+       "control_type": "text"
+      },
+      {
+       "name": "rate",
+       "type": "number",
+       "label": "Line item rate",
+       "control_type": "number"
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Line item unit",
+       "control_type": "text"
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Line item quantity",
+       "control_type": "number"
+      },
+      {
+       "name": "discount",
+       "type": "string",
+       "label": "Line item discount",
+       "control_type": "text",
+       "hint": "Discount applied to the line item"
+      },
+      {
+       "name": "tax_id",
+       "type": "string",
+       "label": "Tax ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "shipping_charge",
+     "type": "string",
+     "label": "Shipping charge",
+     "control_type": "text"
+    },
+    {
+     "name": "adjustment",
+     "type": "number",
+     "label": "Adjustment",
+     "control_type": "number",
+     "hint": "Adjustments made to the invoice"
+    },
+    {
+     "name": "adjustment_description",
+     "type": "string",
+     "label": "Adjustment description",
+     "control_type": "text",
+     "hint": "E.g. Rounding off"
+    },
+    {
+     "name": "terms",
+     "type": "string",
+     "label": "Terms",
+     "control_type": "text"
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text"
+    }
+   ],
+   "output": [
+    {
+     "name": "estimate_id",
+     "type": "string",
+     "label": "Estimate ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "customer_name",
+     "type": "string",
+     "label": "Customer name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "customer_id",
+     "type": "string",
+     "label": "Customer ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "contact_persons",
+     "type": "array",
+     "label": "Contact persons",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "estimate_number",
+     "type": "string",
+     "label": "Estimate number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "reference_number",
+     "type": "string",
+     "label": "Reference number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_symbol",
+     "type": "string",
+     "label": "Currency symbol",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_id",
+     "type": "string",
+     "label": "Currency ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_code",
+     "type": "string",
+     "label": "Currency code",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "exchange_rate",
+     "type": "number",
+     "label": "Exchange rate",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "discount",
+     "type": "number",
+     "label": "Discount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "discount_applied_on_amount",
+     "type": "number",
+     "label": "Discount applied on amount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "line_items",
+     "type": "array",
+     "label": "Line items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "item_id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "line_item_id",
+       "type": "string",
+       "label": "Line item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "item_order",
+       "type": "string",
+       "label": "Item order",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Line item name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Line item description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "bcy_rate",
+       "type": "number",
+       "label": "Base currency rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "discount_amount",
+       "type": "number",
+       "label": "Discount amount",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "rate",
+       "type": "number",
+       "label": "Line item rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Line item unit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Line item quantity",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "discount",
+       "type": "string",
+       "label": "Discount",
+       "control_type": "text",
+       "required": true,
+       "hint": "Discount applied to the line item"
+      },
+      {
+       "name": "tax_id",
+       "type": "string",
+       "label": "Tax ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_type",
+       "type": "string",
+       "label": "Tax type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "billing_address",
+     "type": "object",
+     "label": "Billing address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "shipping_address",
+     "type": "object",
+     "label": "Shipping address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "taxes",
+     "type": "array",
+     "label": "Taxes",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_amount",
+       "type": "number",
+       "label": "Tax amount",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "payment_options",
+     "type": "object",
+     "label": "Payment options",
+     "required": true,
+     "properties": [
+      {
+       "name": "payment_gateways",
+       "type": "array",
+       "label": "Payment gateways",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "gateway_name",
+         "type": "string",
+         "label": "Gateway name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "additional_field1",
+         "type": "string",
+         "label": "Additional field 1",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "allow_partial_payments",
+     "type": "boolean",
+     "label": "Allow partial payments",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "allow_partial_payments",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "adjustment",
+     "type": "number",
+     "label": "Adjustment",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "adjustment_description",
+     "type": "string",
+     "label": "Adjustment description",
+     "control_type": "text",
+     "hint": "E.g. Rounding off"
+    },
+    {
+     "name": "shipping_charge",
+     "type": "string",
+     "label": "Shipping charge",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_discount_before_tax",
+     "type": "boolean",
+     "label": "Is discount before tax",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_discount_before_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "is_inclusive_tax",
+     "type": "boolean",
+     "label": "Is inclusive tax",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_inclusive_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "is_viewed_by_client",
+     "type": "boolean",
+     "label": "Is viewed by client",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_viewed_by_client",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discount_type",
+     "type": "string",
+     "label": "Discount type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "client_viewed_time",
+     "type": "date_time",
+     "label": "Client viewed time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "last_modified_time",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "total",
+     "type": "number",
+     "label": "Total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "can_send_in_mail",
+     "type": "boolean",
+     "label": "Can send in mail",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "can_send_in_mail",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "attachment_name",
+     "type": "string",
+     "label": "Attachment name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesperson_name",
+     "type": "string",
+     "label": "Salesperson name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesperson_id",
+     "type": "string",
+     "label": "Salesperson ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "terms",
+     "type": "string",
+     "label": "Terms",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "tax_total",
+     "type": "number",
+     "label": "Tax total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "price_precision",
+     "type": "number",
+     "label": "Price precision",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "sub_total",
+     "type": "number",
+     "label": "Sub total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "template_name",
+     "type": "string",
+     "label": "Template name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "template_type",
+     "type": "string",
+     "label": "Template type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "created_by_id",
+     "type": "string",
+     "label": "Created by ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "accepted_date",
+     "type": "date_time",
+     "label": "Accepted date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "declined_date",
+     "type": "date_time",
+     "label": "Declined date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "created_time",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "expiry_date",
+     "type": "date_time",
+     "label": "Expiry date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_invoice",
+   "title": "Create invoice",
+   "description": "Create invoice in Zoho Invoice",
+   "input": [
+    {
+     "name": "customer_name",
+     "type": "string",
+     "label": "Customer name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "auto_generate_invoice_number",
+     "type": "boolean",
+     "label": "Auto generate invoice number",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "auto_generate_invoice_number",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "invoice_number",
+     "type": "string",
+     "label": "Invoice number",
+     "control_type": "text",
+     "hint": "Mandatory if invoice number auto generation is set to false else leave blank"
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text"
+    },
+    {
+     "name": "contact_person_email",
+     "type": "number",
+     "label": "Contact person email",
+     "control_type": "text",
+     "toggle_field": {
+      "name": "contact_person_name",
+      "type": "string"
+     }
+    },
+    {
+     "name": "send",
+     "type": "boolean",
+     "label": "Send",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "send",
+      "type": "boolean"
+     },
+     "hint": "Send the invoice to the contact person associated with the invoice"
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "hint": "Date the invoice is created"
+    },
+    {
+     "name": "payment_terms",
+     "type": "string",
+     "label": "Payment terms",
+     "control_type": "text",
+     "hint": "Payment terms in days e.g. 15, 30, 60"
+    },
+    {
+     "name": "payment_terms_label",
+     "type": "string",
+     "label": "Payment terms label",
+     "control_type": "text",
+     "hint": "Overrides the default payment terms label. Default value for 15 days is 'Net 15 Days'"
+    },
+    {
+     "name": "due_date",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "discount",
+     "type": "string",
+     "label": "Invoice discount",
+     "control_type": "text",
+     "hint": "Can be either in % or in amount. E.g. 12.5% or 190"
+    },
+    {
+     "name": "is_discount_before_tax",
+     "type": "boolean",
+     "label": "Is discount before tax",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "is_discount_before_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discount_type",
+     "type": "string",
+     "label": "Discount type",
+     "control_type": "select",
+     "options": [
+      "entity_level",
+      "item_level"
+     ]
+    },
+    {
+     "name": "exchange_rate",
+     "type": "number",
+     "label": "Exchange rate",
+     "control_type": "number",
+     "toggle_field": {
+      "name": "exchange_rate",
+      "type": "string"
+     },
+     "hint": "Equivalent to 1 Base currency"
+    },
+    {
+     "name": "recurring_invoice_name",
+     "type": "string",
+     "label": "Recurring invoice name",
+     "control_type": "text"
+    },
+    {
+     "name": "invoiced_estimate_id",
+     "type": "string",
+     "label": "Invoiced estimate ID",
+     "control_type": "text"
+    },
+    {
+     "name": "salesperson_name",
+     "type": "string",
+     "label": "Salesperson name",
+     "control_type": "text"
+    },
+    {
+     "name": "line_items",
+     "type": "array",
+     "label": "Line items",
+     "of": "object",
+     "properties": [
+      {
+       "name": "project_id",
+       "type": "string",
+       "label": "Project ID",
+       "control_type": "text"
+      },
+      {
+       "name": "expense_id",
+       "type": "string",
+       "label": "Expense ID",
+       "control_type": "text"
+      },
+      {
+       "name": "item_id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "name",
+        "type": "string"
+       }
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Line item description",
+       "control_type": "text"
+      },
+      {
+       "name": "rate",
+       "type": "number",
+       "label": "Line item rate",
+       "control_type": "number"
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Line item unit",
+       "control_type": "text"
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Line item quantity",
+       "control_type": "number"
+      },
+      {
+       "name": "discount",
+       "type": "string",
+       "label": "Line item discount",
+       "control_type": "text",
+       "hint": "Discount applied to the line item"
+      },
+      {
+       "name": "tax_id",
+       "type": "string",
+       "label": "Tax ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "allow_partial_payments",
+     "type": "boolean",
+     "label": "Allow partial payments",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "allow_partial_payments",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "shipping_charge",
+     "type": "string",
+     "label": "Shipping charge",
+     "control_type": "text"
+    },
+    {
+     "name": "adjustment",
+     "type": "number",
+     "label": "Adjustment",
+     "control_type": "number",
+     "hint": "Adjustments made to the invoice"
+    },
+    {
+     "name": "adjustment_description",
+     "type": "string",
+     "label": "Adjustment description",
+     "control_type": "text",
+     "hint": "E.g. Rounding off"
+    },
+    {
+     "name": "payment_options",
+     "type": "object",
+     "label": "Payment options",
+     "properties": [
+      {
+       "name": "payment_gateways",
+       "type": "array",
+       "label": "Payment gateways",
+       "of": "object",
+       "properties": [
+        {
+         "name": "gateway_name",
+         "type": "string",
+         "label": "Gateway name",
+         "control_type": "select",
+         "options": [
+          "paypal",
+          "authorize_net",
+          "payflow_pro",
+          "stripe",
+          "2checkout",
+          "braintree"
+         ],
+         "toggle_field": {
+          "name": "gateway_name",
+          "type": "string"
+         }
+        },
+        {
+         "name": "additional_field1",
+         "type": "string",
+         "label": "Additional field 1",
+         "control_type": "select",
+         "options": [
+          "standard",
+          "adaptive"
+         ],
+         "toggle_field": {
+          "name": "additional_field1",
+          "type": "string"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "invoice_id",
+     "type": "string",
+     "label": "Invoice ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "invoice_number",
+     "type": "string",
+     "label": "Invoice number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "date",
+     "type": "date_time",
+     "label": "Date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "payment_terms",
+     "type": "string",
+     "label": "Payment terms",
+     "control_type": "text"
+    },
+    {
+     "name": "payment_terms_label",
+     "type": "string",
+     "label": "Payment terms label",
+     "control_type": "text"
+    },
+    {
+     "name": "due_date",
+     "type": "date_time",
+     "label": "Due date",
+     "control_type": "date_time"
+    },
+    {
+     "name": "reference_number",
+     "type": "string",
+     "label": "Reference number",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_payment_date",
+     "type": "date_time",
+     "label": "Last payment date",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "customer_name",
+     "type": "string",
+     "label": "Customer name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "customer_id",
+     "type": "string",
+     "label": "Customer ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "contact_persons",
+     "type": "array",
+     "label": "Contact persons",
+     "control_type": "text",
+     "required": true,
+     "of": "string"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_id",
+     "type": "string",
+     "label": "Currency ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "currency_code",
+     "type": "string",
+     "label": "Currency code",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "discount",
+     "type": "number",
+     "label": "Discount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "exchange_rate",
+     "type": "number",
+     "label": "Exchange rate",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "is_discount_before_tax",
+     "type": "boolean",
+     "label": "Is discount before tax",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_discount_before_tax",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "discount_type",
+     "type": "string",
+     "label": "Discount type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "recurring_invoice_id",
+     "type": "string",
+     "label": "Recurring invoice ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "line_items",
+     "type": "array",
+     "label": "Line items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "item_id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "line_item_id",
+       "type": "string",
+       "label": "Line item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "item_order",
+       "type": "string",
+       "label": "Item order",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Line item name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Line item description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "bcy_rate",
+       "type": "number",
+       "label": "Base currency rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "discount_amount",
+       "type": "number",
+       "label": "Discount amount",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "rate",
+       "type": "number",
+       "label": "Line item rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "unit",
+       "type": "string",
+       "label": "Line item unit",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Line item quantity",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "item_total",
+       "type": "number",
+       "label": "Item total",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "tax_percentage",
+       "type": "number",
+       "label": "Tax percentage",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "project_id",
+       "type": "string",
+       "label": "Project ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "time_entry_ids",
+       "type": "string",
+       "label": "Time entry ids",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "expense_id",
+       "type": "string",
+       "label": "Expense ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "expense_receipt_name",
+       "type": "string",
+       "label": "Expense receipt name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "discount",
+       "type": "string",
+       "label": "Discount",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_id",
+       "type": "string",
+       "label": "Tax ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_type",
+       "type": "string",
+       "label": "Tax type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "billing_address",
+     "type": "object",
+     "label": "Billing address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "shipping_address",
+     "type": "object",
+     "label": "Shipping address",
+     "required": true,
+     "properties": [
+      {
+       "name": "address",
+       "type": "string",
+       "label": "Address",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "city",
+       "type": "string",
+       "label": "City",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "state",
+       "type": "string",
+       "label": "State",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "zip",
+       "type": "string",
+       "label": "Zip",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "country",
+       "type": "string",
+       "label": "Country",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fax",
+       "type": "string",
+       "label": "Fax",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "taxes",
+     "type": "array",
+     "label": "Taxes",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_amount",
+       "type": "number",
+       "label": "Tax amount",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "payment_made",
+     "type": "number",
+     "label": "Payment made",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "credits_applied",
+     "type": "number",
+     "label": "Credits applied",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "payment_reminder_enabled",
+     "type": "boolean",
+     "label": "Payment reminder enabled",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "payment_reminder_enabled",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "tax_amount_withheld",
+     "type": "number",
+     "label": "Tax amount withheld",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "balance",
+     "type": "number",
+     "label": "Balance",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "write_off_amount",
+     "type": "number",
+     "label": "Write off amount",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "adjustment",
+     "type": "number",
+     "label": "Adjustment",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "adjustment_description",
+     "type": "string",
+     "label": "Adjustment description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "shipping_charge",
+     "type": "string",
+     "label": "Shipping charge",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "total",
+     "type": "number",
+     "label": "Total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "tax_total",
+     "type": "number",
+     "label": "Tax total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "allow_partial_payments",
+     "type": "boolean",
+     "label": "Allow partial payments",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "allow_partial_payments",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "price_precision",
+     "type": "number",
+     "label": "Price precision",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "sub_total",
+     "type": "number",
+     "label": "Sub total",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "notes",
+     "type": "string",
+     "label": "Notes",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "terms",
+     "type": "string",
+     "label": "Terms",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "payment_options",
+     "type": "object",
+     "label": "Payment options",
+     "required": true,
+     "properties": [
+      {
+       "name": "payment_gateways",
+       "type": "array",
+       "label": "Payment gateways",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "gateway_name",
+         "type": "string",
+         "label": "Gateway name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "additional_field1",
+         "type": "string",
+         "label": "Additional field 1",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "configured",
+         "type": "boolean",
+         "label": "Configured",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "configured",
+          "type": "boolean"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "can_send_in_mail",
+     "type": "boolean",
+     "label": "Can send in mail",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "can_send_in_mail",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "template_name",
+     "type": "string",
+     "label": "Template name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "template_id",
+     "type": "string",
+     "label": "Template ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "created_time",
+     "type": "date_time",
+     "label": "Created time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "attachment_name",
+     "type": "string",
+     "label": "Attachment name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_modified_time",
+     "type": "date_time",
+     "label": "Last modified time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "salesperson_name",
+     "type": "string",
+     "label": "Salesperson name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "salesperson_id",
+     "type": "string",
+     "label": "Salesperson ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "invoice_url",
+     "type": "string",
+     "label": "Invoice URL",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "is_emailed",
+     "type": "boolean",
+     "label": "Is emailed",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "is_emailed",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "reminders_sent",
+     "type": "boolean",
+     "label": "Reminders sent",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "reminders_sent",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_reminder_sent_date",
+     "type": "date_time",
+     "label": "Last reminder sent date",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_item",
+   "title": "Search items",
+   "description": "Search items in Zoho Invoice",
+   "input": [
+    {
+     "name": "item_name",
+     "type": "string",
+     "label": "Item name",
+     "control_type": "text",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "items",
+     "type": "array",
+     "label": "Items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "item_id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Line item name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Line item description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_id",
+       "type": "string",
+       "label": "Tax ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "tax_name",
+       "type": "string",
+       "label": "Tax name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rate",
+       "type": "number",
+       "label": "Rate",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "tax_percentage",
+       "type": "number",
+       "label": "Tax percentage",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,6405 @@
+{
+ "name": "miro_board",
+ "title": "Miro",
+ "requires_connection": true,
+ "categories": [
+  "Collaboration"
+ ],
+ "aliases": [
+  "Miro"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Miro (Custom)",
+   "help": "Build your own Miro action with a HTTP request. The request will be authorized with your Miro connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "attach_tag_to_item",
+   "title": "Attach tag to item",
+   "description": "Attach tag to item in Miro",
+   "help": "Attaches a tag to a board item. Supported for cards and sticky notes only.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    },
+    {
+     "name": "tag_id",
+     "type": "string",
+     "label": "Tag ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the tag. Use the List board tags action to find tag IDs."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "copy_board_v2",
+   "title": "Copy existing board",
+   "description": "Copy an existing board in Miro",
+   "help": "Creates a new board by copying an existing one. Provide the source board and optional name, description, and sharing policy.",
+   "input": [
+    {
+     "name": "source",
+     "type": "string",
+     "label": "Original board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "toggle_field": {
+      "name": "source",
+      "type": "string"
+     }
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "hint": "Name of the new board. Defaults to Copy of the original board title if left blank."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Description of the new board. Defaults to the original board description if left blank."
+    },
+    {
+     "name": "teamId",
+     "type": "string",
+     "label": "Team ID",
+     "control_type": "text",
+     "hint": "ID of the team to create the copied board in. Defaults to the authenticated user's default team."
+    },
+    {
+     "name": "sharingPolicy",
+     "type": "object",
+     "label": "Sharing policy",
+     "properties": [
+      {
+       "name": "access",
+       "type": "string",
+       "label": "Access by link",
+       "control_type": "select",
+       "options": [
+        "private",
+        "view",
+        "comment"
+       ],
+       "toggle_field": {
+        "name": "access",
+        "type": "string"
+       },
+       "hint": "Access to the board by link."
+      },
+      {
+       "name": "teamAccess",
+       "type": "string",
+       "label": "Access by team",
+       "control_type": "select",
+       "options": [
+        "private",
+        "view",
+        "comment",
+        "edit"
+       ],
+       "toggle_field": {
+        "name": "teamAccess",
+        "type": "string"
+       },
+       "hint": "Team access to the board."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Board ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "viewLink",
+     "type": "string",
+     "label": "View link",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastOpenedAt",
+     "type": "date_time",
+     "label": "Last opened at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "lastOpenedBy",
+     "type": "object",
+     "label": "Last opened by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "team",
+     "type": "object",
+     "label": "Team",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "currentUserMembership",
+     "type": "object",
+     "label": "Current user membership",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "picture",
+     "type": "object",
+     "label": "Picture",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "imageURL",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "permissionsPolicy",
+     "type": "object",
+     "label": "Permissions policy",
+     "required": true,
+     "properties": [
+      {
+       "name": "collaborationToolsStartAccess",
+       "type": "string",
+       "label": "Collaboration tools start access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "copyAccess",
+       "type": "string",
+       "label": "Copy access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "copyAccessLevel",
+       "type": "string",
+       "label": "Copy access level",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sharingAccess",
+       "type": "string",
+       "label": "Sharing access",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "sharingPolicy",
+     "type": "object",
+     "label": "Sharing policy",
+     "required": true,
+     "properties": [
+      {
+       "name": "access",
+       "type": "string",
+       "label": "Access by link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "teamAccess",
+       "type": "string",
+       "label": "Team access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "organizationAccess",
+       "type": "string",
+       "label": "Organization access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "inviteToAccountAndBoardLinkAccess",
+       "type": "string",
+       "label": "Invite to account and board link access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accessPasswordRequired",
+       "type": "boolean",
+       "label": "Access password required",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "accessPasswordRequired",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_board_v2",
+   "title": "Create board",
+   "description": "Create a board in Miro",
+   "help": "Creates a new board in Miro. Provide a name and optional description.",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "hint": "Board title. Defaults to Untitled if left blank."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "hint": "Board description."
+    },
+    {
+     "name": "teamId",
+     "type": "string",
+     "label": "Team ID",
+     "control_type": "text",
+     "hint": "ID of the team to create the board in. Defaults to the authenticated user's default team."
+    },
+    {
+     "name": "projectId",
+     "type": "string",
+     "label": "Project ID",
+     "control_type": "text",
+     "hint": "ID of the project to assign this board to."
+    },
+    {
+     "name": "sharingPolicy",
+     "type": "object",
+     "label": "Sharing policy",
+     "properties": [
+      {
+       "name": "access",
+       "type": "string",
+       "label": "Access by link",
+       "control_type": "select",
+       "options": [
+        "private",
+        "view",
+        "comment"
+       ],
+       "toggle_field": {
+        "name": "access",
+        "type": "string"
+       },
+       "hint": "Access to the board by link."
+      },
+      {
+       "name": "teamAccess",
+       "type": "string",
+       "label": "Access by team",
+       "control_type": "select",
+       "options": [
+        "private",
+        "view",
+        "comment",
+        "edit"
+       ],
+       "toggle_field": {
+        "name": "teamAccess",
+        "type": "string"
+       },
+       "hint": "Team access to the board."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Board ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "viewLink",
+     "type": "string",
+     "label": "View link",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastOpenedAt",
+     "type": "date_time",
+     "label": "Last opened at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "lastOpenedBy",
+     "type": "object",
+     "label": "Last opened by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "team",
+     "type": "object",
+     "label": "Team",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "currentUserMembership",
+     "type": "object",
+     "label": "Current user membership",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "picture",
+     "type": "object",
+     "label": "Picture",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "imageURL",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "permissionsPolicy",
+     "type": "object",
+     "label": "Permissions policy",
+     "required": true,
+     "properties": [
+      {
+       "name": "collaborationToolsStartAccess",
+       "type": "string",
+       "label": "Collaboration tools start access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "copyAccess",
+       "type": "string",
+       "label": "Copy access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "copyAccessLevel",
+       "type": "string",
+       "label": "Copy access level",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sharingAccess",
+       "type": "string",
+       "label": "Sharing access",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "sharingPolicy",
+     "type": "object",
+     "label": "Sharing policy",
+     "required": true,
+     "properties": [
+      {
+       "name": "access",
+       "type": "string",
+       "label": "Access by link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "teamAccess",
+       "type": "string",
+       "label": "Team access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "organizationAccess",
+       "type": "string",
+       "label": "Organization access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "inviteToAccountAndBoardLinkAccess",
+       "type": "string",
+       "label": "Invite to account and board link access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accessPasswordRequired",
+       "type": "boolean",
+       "label": "Access password required",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "accessPasswordRequired",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_card_widget_v2",
+   "title": "Create a card widget on board",
+   "description": "Create a card widget on board in Miro",
+   "help": "Creates a card on the specified board using the Miro v2 API. Supports due date, assignee, frame placement, tags, position, and geometry.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent frame",
+     "control_type": "select",
+     "pick_list": "frames",
+     "toggle_field": {
+      "name": "parent_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 frames alphabetically. If not listed, use toggle to enter frame ID directly."
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Card title",
+       "control_type": "text",
+       "hint": "Card title. Max 6000 symbols."
+      },
+      {
+       "name": "link",
+       "type": "string",
+       "label": "Title link",
+       "control_type": "text",
+       "hint": "URL to embed in the card title as a clickable link."
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Card description",
+       "control_type": "text",
+       "hint": "Card description. Opens on double-click."
+      },
+      {
+       "name": "dueDate",
+       "type": "date_time",
+       "label": "Card due date",
+       "control_type": "date_time",
+       "hint": "Due date for the card."
+      },
+      {
+       "name": "assigneeId",
+       "type": "string",
+       "label": "Assignee ID",
+       "control_type": "text",
+       "hint": "ID of the user to assign to this card."
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "properties": [
+      {
+       "name": "cardTheme",
+       "type": "string",
+       "label": "Card border color",
+       "control_type": "text",
+       "hint": "Hex color for the card border (e.g. #2399f3 )."
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X coordinate",
+       "control_type": "text"
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y coordinate",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "number",
+       "hint": "Width in pixels."
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "number",
+       "hint": "Height in pixels."
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "number",
+       "hint": "Rotation in degrees. Positive = clockwise."
+      }
+     ]
+    },
+    {
+     "name": "tag_ids",
+     "type": "array",
+     "label": "Tag IDs",
+     "of": "object",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "List of tag IDs to attach to this item. Replaces all existing tags. Maximum 8 tags. Use the List board tags action to find tag IDs."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "dueDate",
+       "type": "date_time",
+       "label": "Due date",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "assigneeId",
+       "type": "string",
+       "label": "Assignee ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "cardTheme",
+       "type": "string",
+       "label": "Card theme",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_sticky_note",
+   "title": "Create sticky note",
+   "description": "Create sticky note in Miro",
+   "help": "Creates a sticky note on the specified board. Optionally place it in a frame and attach tags after creation.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent frame",
+     "control_type": "select",
+     "pick_list": "frames",
+     "toggle_field": {
+      "name": "parent_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 frames alphabetically. If not listed, use toggle to enter frame ID directly."
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "hint": "Text content of the sticky note. Supports basic HTML."
+      },
+      {
+       "name": "shape",
+       "type": "string",
+       "label": "Shape",
+       "control_type": "select",
+       "pick_list": "sticky_note_shapes",
+       "toggle_field": {
+        "name": "shape",
+        "type": "string"
+       }
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "properties": [
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "select",
+       "pick_list": "sticky_note_fill_colors",
+       "toggle_field": {
+        "name": "fillColor",
+        "type": "string"
+       },
+       "hint": "Defaults to light_yellow ."
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "select",
+       "pick_list": "text_align_options",
+       "toggle_field": {
+        "name": "textAlign",
+        "type": "string"
+       },
+       "hint": "Horizontal text alignment."
+      },
+      {
+       "name": "textAlignVertical",
+       "type": "string",
+       "label": "Text align vertical",
+       "control_type": "select",
+       "pick_list": "text_align_vertical_options",
+       "toggle_field": {
+        "name": "textAlignVertical",
+        "type": "string"
+       },
+       "hint": "Vertical text alignment."
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X coordinate",
+       "control_type": "text"
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y coordinate",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "number"
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "tag_ids",
+     "type": "array",
+     "label": "Tag IDs",
+     "of": "object",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "List of tag IDs to attach to this item. Replaces all existing tags. Maximum 8 tags. Use the List board tags action to find tag IDs."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shape",
+       "type": "string",
+       "label": "Shape",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlignVertical",
+       "type": "string",
+       "label": "Text align vertical",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_tag",
+   "title": "Create tag",
+   "description": "Create tag in Miro",
+   "help": "Creates a new tag on the specified board with a title and optional fill color.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Tag title",
+     "control_type": "text",
+     "required": true,
+     "hint": "Title of the tag. Maximum 120 characters."
+    },
+    {
+     "name": "fillColor",
+     "type": "string",
+     "label": "Fill color",
+     "control_type": "select",
+     "required": true,
+     "default": "red",
+     "options": [
+      "red",
+      "magenta",
+      "violet",
+      "light_green",
+      "green",
+      "dark_green",
+      "cyan",
+      "blue",
+      "dark_blue",
+      "yellow",
+      "gray",
+      "black"
+     ],
+     "toggle_field": {
+      "name": "fillColor",
+      "type": "string"
+     },
+     "hint": "Fill color for the tag label. Defaults to red ."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Tag ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "fillColor",
+     "type": "string",
+     "label": "Fill color",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "create_text_item",
+   "title": "Create text item",
+   "description": "Create text item in Miro",
+   "help": "Creates a text item on the specified board. Supports HTML content and style customization.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent frame",
+     "control_type": "select",
+     "pick_list": "frames",
+     "toggle_field": {
+      "name": "parent_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 frames alphabetically. If not listed, use toggle to enter frame ID directly."
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true,
+       "hint": "Text content. Supports basic HTML formatting."
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "properties": [
+      {
+       "name": "color",
+       "type": "string",
+       "label": "Text color",
+       "control_type": "text",
+       "hint": "Hex color for text (e.g. #1a1a1a ). Note: inline HTML color styles in content override this value."
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "hint": "Hex color for the background (e.g. #ffffff )."
+      },
+      {
+       "name": "fillOpacity",
+       "type": "string",
+       "label": "Fill opacity",
+       "control_type": "text",
+       "hint": "Background opacity. Value between 0.0 (transparent) and 1.0 (opaque)."
+      },
+      {
+       "name": "fontFamily",
+       "type": "string",
+       "label": "Font family",
+       "control_type": "select",
+       "pick_list": "font_families",
+       "toggle_field": {
+        "name": "fontFamily",
+        "type": "string"
+       }
+      },
+      {
+       "name": "fontSize",
+       "type": "string",
+       "label": "Font size",
+       "control_type": "text",
+       "hint": "Font size in dp (e.g. 14 ). Supported range: 10–288."
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "select",
+       "pick_list": "text_align_options",
+       "toggle_field": {
+        "name": "textAlign",
+        "type": "string"
+       },
+       "hint": "Horizontal text alignment."
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X coordinate",
+       "control_type": "text"
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y coordinate",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "number"
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "number",
+       "hint": "Rotation angle in degrees. Positive = clockwise, negative = counterclockwise."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "color",
+       "type": "string",
+       "label": "Color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillOpacity",
+       "type": "string",
+       "label": "Fill opacity",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fontFamily",
+       "type": "string",
+       "label": "Font family",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fontSize",
+       "type": "string",
+       "label": "Font size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "detach_tag_from_item",
+   "title": "Detach tag from item",
+   "description": "Detach tag from item in Miro",
+   "help": "Removes a tag from a board item. Supported for cards and sticky notes only.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    },
+    {
+     "name": "tag_id",
+     "type": "string",
+     "label": "Tag ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the tag. Use the List board tags action to find tag IDs."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_board",
+   "title": "Get board",
+   "description": "Get board in Miro",
+   "help": "Returns full details of a board by its ID, including name, description, sharing policy, and timestamps.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Board ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "viewLink",
+     "type": "string",
+     "label": "View link",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "lastOpenedAt",
+     "type": "date_time",
+     "label": "Last opened at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "lastOpenedBy",
+     "type": "object",
+     "label": "Last opened by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "owner",
+     "type": "object",
+     "label": "Owner",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "team",
+     "type": "object",
+     "label": "Team",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "currentUserMembership",
+     "type": "object",
+     "label": "Current user membership",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "role",
+       "type": "string",
+       "label": "Role",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "picture",
+     "type": "object",
+     "label": "Picture",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "imageURL",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "permissionsPolicy",
+     "type": "object",
+     "label": "Permissions policy",
+     "required": true,
+     "properties": [
+      {
+       "name": "collaborationToolsStartAccess",
+       "type": "string",
+       "label": "Collaboration tools start access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "copyAccess",
+       "type": "string",
+       "label": "Copy access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "copyAccessLevel",
+       "type": "string",
+       "label": "Copy access level",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sharingAccess",
+       "type": "string",
+       "label": "Sharing access",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "sharingPolicy",
+     "type": "object",
+     "label": "Sharing policy",
+     "required": true,
+     "properties": [
+      {
+       "name": "access",
+       "type": "string",
+       "label": "Access by link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "teamAccess",
+       "type": "string",
+       "label": "Team access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "organizationAccess",
+       "type": "string",
+       "label": "Organization access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "inviteToAccountAndBoardLinkAccess",
+       "type": "string",
+       "label": "Invite to account and board link access",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "accessPasswordRequired",
+       "type": "boolean",
+       "label": "Access password required",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "accessPasswordRequired",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_card",
+   "title": "Get card",
+   "description": "Get card in Miro",
+   "help": "Returns details of a card item including title, description, due date, assignee, style, and attached tags.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "dueDate",
+       "type": "date_time",
+       "label": "Due date",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "assigneeId",
+       "type": "string",
+       "label": "Assignee ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "cardTheme",
+       "type": "string",
+       "label": "Card theme",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_sticky_note",
+   "title": "Get sticky note",
+   "description": "Get sticky note in Miro",
+   "help": "Returns details of a sticky note item including content, style, position, geometry, and attached tags.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shape",
+       "type": "string",
+       "label": "Shape",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlignVertical",
+       "type": "string",
+       "label": "Text align vertical",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_text_item",
+   "title": "Get text item",
+   "description": "Get text item in Miro",
+   "help": "Returns details of a text item including content, style, position, and geometry.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "color",
+       "type": "string",
+       "label": "Color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillOpacity",
+       "type": "string",
+       "label": "Fill opacity",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fontFamily",
+       "type": "string",
+       "label": "Font family",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fontSize",
+       "type": "string",
+       "label": "Font size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_board_items",
+   "title": "List board items",
+   "description": "List board items in Miro",
+   "help": "Returns items on the specified board. Filter by item type (sticky note, card, text, etc.). Supports cursor-based pagination.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "parent_item_id",
+     "type": "string",
+     "label": "Parent frame",
+     "control_type": "select",
+     "pick_list": "frames",
+     "toggle_field": {
+      "name": "parent_item_id",
+      "type": "string"
+     },
+     "hint": "Return only items inside this frame. Shows up to 50 frames alphabetically. If not listed, use toggle to enter frame ID directly."
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Item type",
+     "control_type": "select",
+     "options": [
+      "app_card",
+      "card",
+      "document",
+      "embed",
+      "frame",
+      "image",
+      "shape",
+      "sticky_note",
+      "text"
+     ],
+     "toggle_field": {
+      "name": "type",
+      "type": "string"
+     },
+     "hint": "Filter items by type. Leave blank to return all item types."
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "properties": [
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "integer",
+       "hint": "Number of results to return per page. Maximum 50."
+      },
+      {
+       "name": "cursor",
+       "type": "string",
+       "label": "Cursor",
+       "control_type": "text",
+       "hint": "Copy the Cursor from a previous response to fetch the next page."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "items",
+     "type": "array",
+     "label": "Items",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Item ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isSupported",
+       "type": "boolean",
+       "label": "Is supported",
+       "control_type": "text",
+       "required": true,
+       "toggle_field": {
+        "name": "isSupported",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "data",
+       "type": "object",
+       "label": "Data",
+       "required": true,
+       "properties": [
+        {
+         "name": "content",
+         "type": "string",
+         "label": "Content",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "shape",
+         "type": "string",
+         "label": "Shape",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "title",
+         "type": "string",
+         "label": "Title",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "description",
+         "type": "string",
+         "label": "Description",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "dueDate",
+         "type": "date_time",
+         "label": "Due date",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "assigneeId",
+         "type": "string",
+         "label": "Assignee ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "status",
+         "type": "string",
+         "label": "Status",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "owned",
+         "type": "boolean",
+         "label": "Owned",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "owned",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "fields",
+         "type": "array",
+         "label": "Fields",
+         "required": true,
+         "of": "object",
+         "properties": [
+          {
+           "name": "value",
+           "type": "string",
+           "label": "Value",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "tooltip",
+           "type": "string",
+           "label": "Tooltip",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "fillColor",
+           "type": "string",
+           "label": "Fill color",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "textColor",
+           "type": "string",
+           "label": "Text color",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "iconUrl",
+           "type": "string",
+           "label": "Icon URL",
+           "control_type": "text",
+           "required": true
+          },
+          {
+           "name": "iconShape",
+           "type": "string",
+           "label": "Icon shape",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        },
+        {
+         "name": "mode",
+         "type": "string",
+         "label": "Mode",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "previewUrl",
+         "type": "string",
+         "label": "Preview URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "imageUrl",
+         "type": "string",
+         "label": "Image URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "altText",
+         "type": "string",
+         "label": "Alt text",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "documentUrl",
+         "type": "string",
+         "label": "Document URL",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "format",
+         "type": "string",
+         "label": "Format",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Data type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "showContent",
+         "type": "boolean",
+         "label": "Show content",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "showContent",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "contentType",
+         "type": "string",
+         "label": "Content type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "contentVersion",
+         "type": "integer",
+         "label": "Content version",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "html",
+         "type": "string",
+         "label": "HTML",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "style",
+       "type": "object",
+       "label": "Style",
+       "required": true,
+       "properties": [
+        {
+         "name": "fillColor",
+         "type": "string",
+         "label": "Fill color",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "fillOpacity",
+         "type": "string",
+         "label": "Fill opacity",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "color",
+         "type": "string",
+         "label": "Color",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "fontFamily",
+         "type": "string",
+         "label": "Font family",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "fontSize",
+         "type": "string",
+         "label": "Font size",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "textAlign",
+         "type": "string",
+         "label": "Text align",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "textAlignVertical",
+         "type": "string",
+         "label": "Text align vertical",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "borderColor",
+         "type": "string",
+         "label": "Border color",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "borderWidth",
+         "type": "string",
+         "label": "Border width",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "borderOpacity",
+         "type": "string",
+         "label": "Border opacity",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "borderStyle",
+         "type": "string",
+         "label": "Border style",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "position",
+       "type": "object",
+       "label": "Position",
+       "required": true,
+       "properties": [
+        {
+         "name": "x",
+         "type": "number",
+         "label": "X",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "y",
+         "type": "number",
+         "label": "Y",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "origin",
+         "type": "string",
+         "label": "Origin",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "relativeTo",
+         "type": "string",
+         "label": "Relative to",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "geometry",
+       "type": "object",
+       "label": "Geometry",
+       "required": true,
+       "properties": [
+        {
+         "name": "width",
+         "type": "number",
+         "label": "Width",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "height",
+         "type": "number",
+         "label": "Height",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "parent",
+       "type": "object",
+       "label": "Parent",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "links",
+         "type": "object",
+         "label": "Links",
+         "required": true,
+         "properties": [
+          {
+           "name": "self",
+           "type": "string",
+           "label": "Self",
+           "control_type": "text",
+           "required": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "related",
+         "type": "string",
+         "label": "Related",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "createdBy",
+       "type": "object",
+       "label": "Created by",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "createdAt",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "modifiedBy",
+       "type": "object",
+       "label": "Modified by",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "modifiedAt",
+       "type": "date_time",
+       "label": "Modified at",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "required": true,
+     "properties": [
+      {
+       "name": "cursor",
+       "type": "string",
+       "label": "Cursor",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "size",
+       "type": "integer",
+       "label": "Size",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "total",
+       "type": "integer",
+       "label": "Total",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_board_tags",
+   "title": "List board tags",
+   "description": "List board tags in Miro",
+   "help": "Returns all tags defined on the specified board. Supports pagination via offset.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "properties": [
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "integer",
+       "hint": "Number of results to return per page. Defaults to 20 when not provided. Maximum 50."
+      },
+      {
+       "name": "offset",
+       "type": "integer",
+       "label": "Offset",
+       "control_type": "integer",
+       "hint": "Number of results to skip. Copy from a previous response to fetch the next page."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "required": true,
+     "properties": [
+      {
+       "name": "total",
+       "type": "integer",
+       "label": "Total",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "next_page_offset",
+       "type": "integer",
+       "label": "Next page offset",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_boards",
+   "title": "Search boards",
+   "description": "Search boards in Miro",
+   "help": "Returns boards you have access to. Filter by name using the search query. Supports pagination via offset.",
+   "input": [
+    {
+     "name": "query",
+     "type": "string",
+     "label": "Search query",
+     "control_type": "text",
+     "hint": "Search boards by name or description. Ignored when Team ID or Project ID is provided. Can be combined with Owner to narrow results."
+    },
+    {
+     "name": "owner",
+     "type": "string",
+     "label": "Owner",
+     "control_type": "text",
+     "hint": "Filter boards by owner ID (e.g. 3074457353169356300 ). Ignored when Team ID or Project ID is provided. Can be combined with Search query to narrow results."
+    },
+    {
+     "name": "team_id",
+     "type": "string",
+     "label": "Team ID",
+     "control_type": "text",
+     "hint": "Return boards for this team. When provided, Search query and Owner are ignored."
+    },
+    {
+     "name": "project_id",
+     "type": "string",
+     "label": "Project ID",
+     "control_type": "text",
+     "hint": "Return boards in this project (Space). When provided, Search query and Owner are ignored."
+    },
+    {
+     "name": "sort",
+     "type": "string",
+     "label": "Sort by",
+     "control_type": "select",
+     "options": [
+      "default",
+      "last_modified",
+      "last_opened",
+      "last_created",
+      "alphabetically"
+     ],
+     "toggle_field": {
+      "name": "sort",
+      "type": "string"
+     },
+     "hint": "Sort order for the returned boards. Defaults to last modified ."
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "properties": [
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Page size",
+       "control_type": "integer",
+       "hint": "Number of results to return per page. Defaults to 20 when not provided. Maximum 50."
+      },
+      {
+       "name": "offset",
+       "type": "integer",
+       "label": "Offset",
+       "control_type": "integer",
+       "hint": "Number of results to skip. Copy from a previous response to fetch the next page."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "boards",
+     "type": "array",
+     "label": "Boards",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Board ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "viewLink",
+       "type": "string",
+       "label": "View link",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdAt",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "modifiedAt",
+       "type": "date_time",
+       "label": "Modified at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "lastOpenedAt",
+       "type": "date_time",
+       "label": "Last opened at",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "createdBy",
+       "type": "object",
+       "label": "Created by",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "modifiedBy",
+       "type": "object",
+       "label": "Modified by",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "lastOpenedBy",
+       "type": "object",
+       "label": "Last opened by",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "owner",
+       "type": "object",
+       "label": "Owner",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "team",
+       "type": "object",
+       "label": "Team",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "currentUserMembership",
+       "type": "object",
+       "label": "Current user membership",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "role",
+         "type": "string",
+         "label": "Role",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "picture",
+       "type": "object",
+       "label": "Picture",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "imageURL",
+         "type": "string",
+         "label": "Image URL",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "permissionsPolicy",
+       "type": "object",
+       "label": "Permissions policy",
+       "required": true,
+       "properties": [
+        {
+         "name": "collaborationToolsStartAccess",
+         "type": "string",
+         "label": "Collaboration tools start access",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "copyAccess",
+         "type": "string",
+         "label": "Copy access",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "copyAccessLevel",
+         "type": "string",
+         "label": "Copy access level",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "sharingAccess",
+         "type": "string",
+         "label": "Sharing access",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "sharingPolicy",
+       "type": "object",
+       "label": "Sharing policy",
+       "required": true,
+       "properties": [
+        {
+         "name": "access",
+         "type": "string",
+         "label": "Access by link",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "teamAccess",
+         "type": "string",
+         "label": "Team access",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "organizationAccess",
+         "type": "string",
+         "label": "Organization access",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "inviteToAccountAndBoardLinkAccess",
+         "type": "string",
+         "label": "Invite to account and board link access",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "accessPasswordRequired",
+         "type": "boolean",
+         "label": "Access password required",
+         "control_type": "text",
+         "required": true,
+         "toggle_field": {
+          "name": "accessPasswordRequired",
+          "type": "boolean"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "pagination",
+     "type": "object",
+     "label": "Pagination",
+     "required": true,
+     "properties": [
+      {
+       "name": "total",
+       "type": "integer",
+       "label": "Total",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "label": "Limit",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "next_page_offset",
+       "type": "integer",
+       "label": "Next page offset",
+       "control_type": "number",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_card",
+   "title": "Update card",
+   "description": "Update card in Miro",
+   "help": "Updates a card's title, description, due date, assignee, or style. If tag IDs are provided, they replace the existing tags on the item.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent frame",
+     "control_type": "select",
+     "pick_list": "frames",
+     "toggle_field": {
+      "name": "parent_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 frames alphabetically. If not listed, use toggle to enter frame ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text"
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      },
+      {
+       "name": "dueDate",
+       "type": "date_time",
+       "label": "Due date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "assigneeId",
+       "type": "string",
+       "label": "Assignee ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "properties": [
+      {
+       "name": "cardTheme",
+       "type": "string",
+       "label": "Card theme",
+       "control_type": "text",
+       "hint": "Hex color for the card theme."
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X coordinate",
+       "control_type": "text"
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y coordinate",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "number",
+       "hint": "Width of the item, in pixels."
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "number",
+       "hint": "Height of the item, in pixels."
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "number",
+       "hint": "Rotation angle in degrees. Positive = clockwise, negative = counterclockwise."
+      }
+     ]
+    },
+    {
+     "name": "tag_ids",
+     "type": "array",
+     "label": "Tag IDs",
+     "of": "object",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "List of tag IDs to attach to this item. Replaces all existing tags. Maximum 8 tags. Use the List board tags action to find tag IDs."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "dueDate",
+       "type": "date_time",
+       "label": "Due date",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "assigneeId",
+       "type": "string",
+       "label": "Assignee ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "cardTheme",
+       "type": "string",
+       "label": "Card theme",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_sticky_note",
+   "title": "Update sticky note",
+   "description": "Update sticky note in Miro",
+   "help": "Updates a sticky note's content, style, or position. If tag IDs are provided, they replace the existing tags on the item.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent frame",
+     "control_type": "select",
+     "pick_list": "frames",
+     "toggle_field": {
+      "name": "parent_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 frames alphabetically. If not listed, use toggle to enter frame ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "hint": "New text content for the sticky note."
+      },
+      {
+       "name": "shape",
+       "type": "string",
+       "label": "Shape",
+       "control_type": "select",
+       "pick_list": "sticky_note_shapes",
+       "toggle_field": {
+        "name": "shape",
+        "type": "string"
+       }
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "properties": [
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "select",
+       "pick_list": "sticky_note_fill_colors",
+       "toggle_field": {
+        "name": "fillColor",
+        "type": "string"
+       },
+       "hint": "Defaults to light_yellow ."
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "select",
+       "pick_list": "text_align_options",
+       "toggle_field": {
+        "name": "textAlign",
+        "type": "string"
+       },
+       "hint": "Horizontal text alignment."
+      },
+      {
+       "name": "textAlignVertical",
+       "type": "string",
+       "label": "Text align vertical",
+       "control_type": "select",
+       "pick_list": "text_align_vertical_options",
+       "toggle_field": {
+        "name": "textAlignVertical",
+        "type": "string"
+       },
+       "hint": "Vertical text alignment."
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X coordinate",
+       "control_type": "text"
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y coordinate",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "number"
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "tag_ids",
+     "type": "array",
+     "label": "Tag IDs",
+     "of": "object",
+     "properties": [
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "List of tag IDs to attach to this item. Replaces all existing tags. Maximum 8 tags. Use the List board tags action to find tag IDs."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "shape",
+       "type": "string",
+       "label": "Shape",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlignVertical",
+       "type": "string",
+       "label": "Text align vertical",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "tags",
+     "type": "array",
+     "label": "Tags",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "Tag ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_text_item",
+   "title": "Update text item",
+   "description": "Update text item in Miro",
+   "help": "Updates a text item's content or style.",
+   "input": [
+    {
+     "name": "board_id",
+     "type": "string",
+     "label": "Board",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "boards",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "board_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 boards alphabetically. If not listed, use toggle to enter board ID directly."
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent frame",
+     "control_type": "select",
+     "pick_list": "frames",
+     "toggle_field": {
+      "name": "parent_id",
+      "type": "string"
+     },
+     "hint": "Shows up to 50 frames alphabetically. If not listed, use toggle to enter frame ID directly."
+    },
+    {
+     "name": "item_id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Enter the ID of the board item."
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true,
+       "hint": "New text content. Supports basic HTML formatting."
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "properties": [
+      {
+       "name": "color",
+       "type": "string",
+       "label": "Text color",
+       "control_type": "text",
+       "hint": "Hex color for text (e.g. #1a1a1a ). Note: inline HTML color styles in content override this value."
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "hint": "Hex color for the background (e.g. #ffffff )."
+      },
+      {
+       "name": "fillOpacity",
+       "type": "string",
+       "label": "Fill opacity",
+       "control_type": "text",
+       "hint": "Background opacity. Value between 0.0 (transparent) and 1.0 (opaque)."
+      },
+      {
+       "name": "fontFamily",
+       "type": "string",
+       "label": "Font family",
+       "control_type": "select",
+       "pick_list": "font_families",
+       "toggle_field": {
+        "name": "fontFamily",
+        "type": "string"
+       }
+      },
+      {
+       "name": "fontSize",
+       "type": "string",
+       "label": "Font size",
+       "control_type": "text",
+       "hint": "Font size in dp (e.g. 14 ). Supported range: 10–288."
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "select",
+       "pick_list": "text_align_options",
+       "toggle_field": {
+        "name": "textAlign",
+        "type": "string"
+       },
+       "hint": "Horizontal text alignment."
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X coordinate",
+       "control_type": "text"
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y coordinate",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "number"
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "number",
+       "hint": "Rotation angle in degrees. Positive = clockwise, negative = counterclockwise."
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "data",
+     "type": "object",
+     "label": "Data",
+     "required": true,
+     "properties": [
+      {
+       "name": "content",
+       "type": "string",
+       "label": "Content",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "style",
+     "type": "object",
+     "label": "Style",
+     "required": true,
+     "properties": [
+      {
+       "name": "color",
+       "type": "string",
+       "label": "Color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillColor",
+       "type": "string",
+       "label": "Fill color",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fillOpacity",
+       "type": "string",
+       "label": "Fill opacity",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fontFamily",
+       "type": "string",
+       "label": "Font family",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fontSize",
+       "type": "string",
+       "label": "Font size",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "textAlign",
+       "type": "string",
+       "label": "Text align",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "position",
+     "type": "object",
+     "label": "Position",
+     "required": true,
+     "properties": [
+      {
+       "name": "x",
+       "type": "number",
+       "label": "X",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "y",
+       "type": "number",
+       "label": "Y",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "origin",
+       "type": "string",
+       "label": "Origin",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "relativeTo",
+       "type": "string",
+       "label": "Relative to",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "geometry",
+     "type": "object",
+     "label": "Geometry",
+     "required": true,
+     "properties": [
+      {
+       "name": "width",
+       "type": "number",
+       "label": "Width",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "height",
+       "type": "number",
+       "label": "Height",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "rotation",
+       "type": "number",
+       "label": "Rotation",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdBy",
+     "type": "object",
+     "label": "Created by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "modifiedBy",
+     "type": "object",
+     "label": "Modified by",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "createdAt",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "modifiedAt",
+     "type": "date_time",
+     "label": "Modified at",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent_id",
+     "type": "string",
+     "label": "Parent ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "parent",
+     "type": "object",
+     "label": "Parent",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "links",
+       "type": "object",
+       "label": "Links",
+       "required": true,
+       "properties": [
+        {
+         "name": "self",
+         "type": "string",
+         "label": "Self",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "links",
+     "type": "object",
+     "label": "Links",
+     "required": true,
+     "properties": [
+      {
+       "name": "self",
+       "type": "string",
+       "label": "Self",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related",
+       "type": "string",
+       "label": "Related",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1691 @@
+{
+ "name": "pivotal_tracker",
+ "title": "Pivotal Tracker",
+ "requires_connection": true,
+ "categories": [
+  "Project Management"
+ ],
+ "aliases": [
+  "Pivotal Tracker"
+ ],
+ "triggers": [
+  {
+   "name": "new_or_updated_story",
+   "title": "New or updated story",
+   "description": "New or updated story in Pivotal Tracker",
+   "help": "Triggers when a new story is created in the project. Define the project for Workato to check new stories in. Checks for new stories every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "updated_after",
+     "type": "date_time",
+     "label": "Since",
+     "control_type": "date_time",
+     "hint": "When left blank, trigger will start picking up tasks created or updated 1 hour ago"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number"
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Story title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "story_type",
+     "type": "string",
+     "label": "Story type",
+     "control_type": "text",
+     "hint": "Possible values are feature, bug, chore, release"
+    },
+    {
+     "name": "current_state",
+     "type": "string",
+     "label": "Current state",
+     "control_type": "text",
+     "hint": "Possible values are accepted, delivered, finished, started, rejected, planned, unstarted, unscheduled"
+    },
+    {
+     "name": "estimate",
+     "type": "integer",
+     "label": "Estimate",
+     "control_type": "number",
+     "hint": "Can be specified if 'Story type' is 'feature'. Accepted values are 0, 1, 2, 3"
+    },
+    {
+     "name": "accepted_at",
+     "type": "date_time",
+     "label": "Accepted at",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Current state' is 'accepted'. Should be current date or past date"
+    },
+    {
+     "name": "deadline",
+     "type": "date_time",
+     "label": "Deadline",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Story type' is 'release'"
+    },
+    {
+     "name": "requested_by_id",
+     "type": "integer",
+     "label": "Requested by ID",
+     "control_type": "number",
+     "hint": "Enter ID of valid requester"
+    },
+    {
+     "name": "owner_ids",
+     "type": "array",
+     "label": "Owner ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Owner ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "labels",
+     "type": "array",
+     "label": "Labels",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "project_id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "created_at",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "updated_at",
+       "type": "date_time",
+       "label": "Updated at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "kind",
+       "type": "string",
+       "label": "Kind",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "owned_by_id",
+     "type": "integer",
+     "label": "Owned by ID",
+     "control_type": "number"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Pivotal Tracker (Custom)",
+   "help": "Build your own Pivotal Tracker action with a HTTP request. The request will be authorized with your Pivotal Tracker connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_comment",
+   "title": "Create comment",
+   "description": "Create comment in Pivotal Tracker",
+   "help": "Creates a comment in a specific story. Specify the project ID, story ID and text to create a comment.",
+   "input": [
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "person_id",
+     "type": "integer",
+     "label": "Person ID",
+     "control_type": "number",
+     "hint": "ID of the comment creator"
+    },
+    {
+     "name": "commit_identifier",
+     "type": "string",
+     "label": "Commit identifier",
+     "control_type": "text"
+    },
+    {
+     "name": "commit_type",
+     "type": "string",
+     "label": "Commit type",
+     "control_type": "text"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "person_id",
+     "type": "integer",
+     "label": "Person ID",
+     "control_type": "number",
+     "hint": "ID of the comment creator"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "commit_identifier",
+     "type": "string",
+     "label": "Commit identifier",
+     "control_type": "text"
+    },
+    {
+     "name": "commit_type",
+     "type": "string",
+     "label": "Commit type",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_story",
+   "title": "Create story",
+   "description": "Create story in Pivotal Tracker",
+   "help": "Creates a story in a specific project. Specify the project ID and the story name to create a story.",
+   "input": [
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Story title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "story_type",
+     "type": "string",
+     "label": "Story type",
+     "control_type": "text",
+     "hint": "Possible values are feature, bug, chore, release"
+    },
+    {
+     "name": "current_state",
+     "type": "string",
+     "label": "Current state",
+     "control_type": "text",
+     "hint": "Possible values are accepted, delivered, finished, started, rejected, planned, unstarted, unscheduled"
+    },
+    {
+     "name": "estimate",
+     "type": "integer",
+     "label": "Estimate",
+     "control_type": "number",
+     "hint": "Can be specified if 'Story type' is 'feature'. Accepted values are 0, 1, 2, 3"
+    },
+    {
+     "name": "accepted_at",
+     "type": "date_time",
+     "label": "Accepted at",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Current state' is 'accepted'. Should be current date or past date"
+    },
+    {
+     "name": "deadline",
+     "type": "date_time",
+     "label": "Deadline",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Story type' is 'release'"
+    },
+    {
+     "name": "requested_by_id",
+     "type": "integer",
+     "label": "Requested by ID",
+     "control_type": "number",
+     "hint": "Enter ID of valid requester"
+    },
+    {
+     "name": "owner_ids",
+     "type": "array",
+     "label": "Owner ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Owner ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "follower_ids",
+     "type": "array",
+     "label": "Follower ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Follower ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "after_id",
+     "type": "integer",
+     "label": "After",
+     "control_type": "number",
+     "hint": "Enter story ID to create story after the specified story. Hover over the story in project page to get ID"
+    },
+    {
+     "name": "before_id",
+     "type": "integer",
+     "label": "Before",
+     "control_type": "number",
+     "hint": "Enter story ID to create story before the specified story. Hover over the story in project page to get ID"
+    },
+    {
+     "name": "integration_id",
+     "type": "integer",
+     "label": "Integration ID",
+     "control_type": "number",
+     "hint": "In project page, click on Settings->Integrations. Click edit on the required integration. ID can be found at the end of URL"
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "hint": "The integration's specific ID for the story"
+    },
+    {
+     "name": "comments",
+     "type": "array",
+     "label": "Comments",
+     "of": "object",
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "tasks",
+     "type": "array",
+     "label": "Tasks",
+     "of": "object",
+     "properties": [
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "labels",
+     "type": "array",
+     "label": "Labels",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number"
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Story title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "story_type",
+     "type": "string",
+     "label": "Story type",
+     "control_type": "text",
+     "hint": "Possible values are feature, bug, chore, release"
+    },
+    {
+     "name": "current_state",
+     "type": "string",
+     "label": "Current state",
+     "control_type": "text",
+     "hint": "Possible values are accepted, delivered, finished, started, rejected, planned, unstarted, unscheduled"
+    },
+    {
+     "name": "accepted_at",
+     "type": "date_time",
+     "label": "Accepted at",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Current state' is 'accepted'. Should be current date or past date"
+    },
+    {
+     "name": "deadline",
+     "type": "date_time",
+     "label": "Deadline",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Story type' is 'release'"
+    },
+    {
+     "name": "requested_by_id",
+     "type": "integer",
+     "label": "Requested by ID",
+     "control_type": "number",
+     "hint": "Enter ID of valid requester"
+    },
+    {
+     "name": "owner_ids",
+     "type": "array",
+     "label": "Owner ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Owner ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "labels",
+     "type": "array",
+     "label": "Labels",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "project_id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "created_at",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "updated_at",
+       "type": "date_time",
+       "label": "Updated at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "kind",
+       "type": "string",
+       "label": "Kind",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "owned_by_id",
+     "type": "integer",
+     "label": "Owned by ID",
+     "control_type": "number"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "integration_id",
+     "type": "integer",
+     "label": "Integration ID",
+     "control_type": "number",
+     "hint": "In project page, click on Settings->Integrations. Click edit on the required integration. ID can be found at the end of URL"
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "hint": "The integration's specific ID for the story"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_task",
+   "title": "Create task",
+   "description": "Create task in Pivotal Tracker",
+   "help": "Creates a task in a specific story. Specify the project ID, story ID and description to create a task.",
+   "input": [
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "complete",
+     "type": "number",
+     "label": "Complete",
+     "control_type": "number",
+     "hint": "Defaults to 'No'"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "number",
+     "hint": "Positions start counting from 1 for the first task on a story"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "complete",
+     "type": "number",
+     "label": "Complete",
+     "control_type": "number",
+     "hint": "Defaults to 'No'"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "number",
+     "hint": "Positions start counting from 1 for the first task on a story"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    }
+   ]
+  },
+  {
+   "name": "delete_story",
+   "title": "Delete story",
+   "description": "Delete story in Pivotal Tracker",
+   "help": "Delete a story of a project. Specify the project ID and story ID to delete the story.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_story_by_id",
+   "title": "Get story by ID",
+   "description": "Get story by ID in Pivotal Tracker",
+   "help": "Retrieve details of a story. Specify the project ID and story ID to retrieve the story.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number"
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Story title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "story_type",
+     "type": "string",
+     "label": "Story type",
+     "control_type": "text",
+     "hint": "Possible values are feature, bug, chore, release"
+    },
+    {
+     "name": "current_state",
+     "type": "string",
+     "label": "Current state",
+     "control_type": "text",
+     "hint": "Possible values are accepted, delivered, finished, started, rejected, planned, unstarted, unscheduled"
+    },
+    {
+     "name": "accepted_at",
+     "type": "date_time",
+     "label": "Accepted at",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Current state' is 'accepted'. Should be current date or past date"
+    },
+    {
+     "name": "deadline",
+     "type": "date_time",
+     "label": "Deadline",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Story type' is 'release'"
+    },
+    {
+     "name": "requested_by_id",
+     "type": "integer",
+     "label": "Requested by ID",
+     "control_type": "number",
+     "hint": "Enter ID of valid requester"
+    },
+    {
+     "name": "owner_ids",
+     "type": "array",
+     "label": "Owner ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Owner ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "labels",
+     "type": "array",
+     "label": "Labels",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "project_id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "created_at",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "updated_at",
+       "type": "date_time",
+       "label": "Updated at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "kind",
+       "type": "string",
+       "label": "Kind",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "owned_by_id",
+     "type": "integer",
+     "label": "Owned by ID",
+     "control_type": "number"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "integration_id",
+     "type": "integer",
+     "label": "Integration ID",
+     "control_type": "number",
+     "hint": "In project page, click on Settings->Integrations. Click edit on the required integration. ID can be found at the end of URL"
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "hint": "The integration's specific ID for the story"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_task_by_id",
+   "title": "Get task by ID",
+   "description": "Get task by ID in Pivotal Tracker",
+   "help": "Retrieve details of a task. Specify the project ID and story ID to retrieve the task.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "complete",
+     "type": "number",
+     "label": "Complete",
+     "control_type": "number",
+     "hint": "Defaults to 'No'"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "number",
+     "hint": "Positions start counting from 1 for the first task on a story"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    }
+   ]
+  },
+  {
+   "name": "list_task_in_a_story",
+   "title": "List tasks in a story",
+   "description": "List task in story in Pivotal Tracker",
+   "help": "List tasks in a specific story. Specify the project ID and story ID to retrieve a list of tasks.",
+   "input": [
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    }
+   ],
+   "output": [
+    {
+     "name": "task",
+     "type": "array",
+     "label": "Task",
+     "of": "object",
+     "properties": [
+      {
+       "name": "kind",
+       "type": "string",
+       "label": "Kind",
+       "control_type": "text"
+      },
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Task ID",
+       "control_type": "number"
+      },
+      {
+       "name": "story_id",
+       "type": "integer",
+       "label": "Story ID",
+       "control_type": "number",
+       "required": true,
+       "hint": "Hover over the story in project page to get ID"
+      },
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "complete",
+       "type": "number",
+       "label": "Complete",
+       "control_type": "number",
+       "hint": "Defaults to 'No'"
+      },
+      {
+       "name": "position",
+       "type": "integer",
+       "label": "Position",
+       "control_type": "number",
+       "hint": "Positions start counting from 1 for the first task on a story"
+      },
+      {
+       "name": "created_at",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "updated_at",
+       "type": "date_time",
+       "label": "Updated at",
+       "control_type": "date_time"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_story",
+   "title": "Update story",
+   "description": "Update story in Pivotal Tracker",
+   "help": "Update the details of a story. Specify the project ID and story ID to update the story.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Story title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "story_type",
+     "type": "string",
+     "label": "Story type",
+     "control_type": "text",
+     "hint": "Possible values are feature, bug, chore, release"
+    },
+    {
+     "name": "current_state",
+     "type": "string",
+     "label": "Current state",
+     "control_type": "text",
+     "hint": "Possible values are accepted, delivered, finished, started, rejected, planned, unstarted, unscheduled"
+    },
+    {
+     "name": "estimate",
+     "type": "integer",
+     "label": "Estimate",
+     "control_type": "number",
+     "hint": "Can be specified if 'Story type' is 'feature'. Accepted values are 0, 1, 2, 3"
+    },
+    {
+     "name": "accepted_at",
+     "type": "date_time",
+     "label": "Accepted at",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Current state' is 'accepted'. Should be current date or past date"
+    },
+    {
+     "name": "deadline",
+     "type": "date_time",
+     "label": "Deadline",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Story type' is 'release'"
+    },
+    {
+     "name": "requested_by_id",
+     "type": "integer",
+     "label": "Requested by ID",
+     "control_type": "number",
+     "hint": "Enter ID of valid requester"
+    },
+    {
+     "name": "owner_ids",
+     "type": "array",
+     "label": "Owner ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Owner ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "follower_ids",
+     "type": "array",
+     "label": "Follower ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Follower ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "after_id",
+     "type": "integer",
+     "label": "After",
+     "control_type": "number",
+     "hint": "Enter story ID to create story after the specified story. Hover over the story in project page to get ID"
+    },
+    {
+     "name": "before_id",
+     "type": "integer",
+     "label": "Before",
+     "control_type": "number",
+     "hint": "Enter story ID to create story before the specified story. Hover over the story in project page to get ID"
+    },
+    {
+     "name": "integration_id",
+     "type": "integer",
+     "label": "Integration ID",
+     "control_type": "number",
+     "hint": "In project page, click on Settings->Integrations. Click edit on the required integration. ID can be found at the end of URL"
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "hint": "The integration's specific ID for the story"
+    },
+    {
+     "name": "comments",
+     "type": "array",
+     "label": "Comments",
+     "of": "object",
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "tasks",
+     "type": "array",
+     "label": "Tasks",
+     "of": "object",
+     "properties": [
+      {
+       "name": "description",
+       "type": "string",
+       "label": "Description",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "labels",
+     "type": "array",
+     "label": "Labels",
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "ID",
+     "control_type": "number"
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Story title",
+     "control_type": "text"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text"
+    },
+    {
+     "name": "story_type",
+     "type": "string",
+     "label": "Story type",
+     "control_type": "text",
+     "hint": "Possible values are feature, bug, chore, release"
+    },
+    {
+     "name": "current_state",
+     "type": "string",
+     "label": "Current state",
+     "control_type": "text",
+     "hint": "Possible values are accepted, delivered, finished, started, rejected, planned, unstarted, unscheduled"
+    },
+    {
+     "name": "accepted_at",
+     "type": "date_time",
+     "label": "Accepted at",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Current state' is 'accepted'. Should be current date or past date"
+    },
+    {
+     "name": "deadline",
+     "type": "date_time",
+     "label": "Deadline",
+     "control_type": "date_time",
+     "hint": "Can be specified if 'Story type' is 'release'"
+    },
+    {
+     "name": "requested_by_id",
+     "type": "integer",
+     "label": "Requested by ID",
+     "control_type": "number",
+     "hint": "Enter ID of valid requester"
+    },
+    {
+     "name": "owner_ids",
+     "type": "array",
+     "label": "Owner ids",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "Owner ID",
+       "control_type": "number"
+      }
+     ]
+    },
+    {
+     "name": "labels",
+     "type": "array",
+     "label": "Labels",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "integer",
+       "label": "ID",
+       "control_type": "number"
+      },
+      {
+       "name": "project_id",
+       "type": "integer",
+       "label": "Project ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text"
+      },
+      {
+       "name": "created_at",
+       "type": "date_time",
+       "label": "Created at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "updated_at",
+       "type": "date_time",
+       "label": "Updated at",
+       "control_type": "date_time"
+      },
+      {
+       "name": "kind",
+       "type": "string",
+       "label": "Kind",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "owned_by_id",
+     "type": "integer",
+     "label": "Owned by ID",
+     "control_type": "number"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "integration_id",
+     "type": "integer",
+     "label": "Integration ID",
+     "control_type": "number",
+     "hint": "In project page, click on Settings->Integrations. Click edit on the required integration. ID can be found at the end of URL"
+    },
+    {
+     "name": "external_id",
+     "type": "string",
+     "label": "Application ID",
+     "control_type": "text",
+     "hint": "The integration's specific ID for the story"
+    },
+    {
+     "name": "url",
+     "type": "string",
+     "label": "URL",
+     "control_type": "text"
+    },
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "update_task",
+   "title": "Update task",
+   "description": "Update task in Pivotal Tracker",
+   "help": "Update the details of a task. Specify the project ID and story ID to update the task.",
+   "input": [
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "project_id",
+     "type": "integer",
+     "label": "Project ID",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "project_id",
+      "type": "integer"
+     },
+     "hint": "Can be found at the end of url in project page"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "complete",
+     "type": "number",
+     "label": "Complete",
+     "control_type": "number",
+     "hint": "Defaults to 'No'"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "number",
+     "hint": "Positions start counting from 1 for the first task on a story"
+    }
+   ],
+   "output": [
+    {
+     "name": "kind",
+     "type": "string",
+     "label": "Kind",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "integer",
+     "label": "Task ID",
+     "control_type": "number"
+    },
+    {
+     "name": "story_id",
+     "type": "integer",
+     "label": "Story ID",
+     "control_type": "number",
+     "required": true,
+     "hint": "Hover over the story in project page to get ID"
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Description",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "complete",
+     "type": "number",
+     "label": "Complete",
+     "control_type": "number",
+     "hint": "Defaults to 'No'"
+    },
+    {
+     "name": "position",
+     "type": "integer",
+     "label": "Position",
+     "control_type": "number",
+     "hint": "Positions start counting from 1 for the first task on a story"
+    },
+    {
+     "name": "created_at",
+     "type": "date_time",
+     "label": "Created at",
+     "control_type": "date_time"
+    },
+    {
+     "name": "updated_at",
+     "type": "date_time",
+     "label": "Updated at",
+     "control_type": "date_time"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,535 @@
+{
+ "name": "kafka",
+ "title": "Apache Kafka",
+ "requires_connection": true,
+ "categories": [
+  "messaging",
+  "Marketing"
+ ],
+ "aliases": [
+  "Apache Kafka",
+  "kafka",
+  "messaging"
+ ],
+ "triggers": [
+  {
+   "name": "new_message",
+   "title": "New message in topic (Deprecated)",
+   "description": "New message in Kafka topic",
+   "help": "Kafka connection settings are determined by the on-prem agent configuration. Note: This trigger works only with agents older than 2.20.0.",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "group",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Use specified Kafka consumer group."
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "onprem",
+      "onprem_protobuf"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"onprem\"}} Select from your schemas. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update schema here . {{/if}} {…"
+    },
+    {
+     "name": "key_schema_type",
+     "type": "string",
+     "label": "Key schema type",
+     "control_type": "select",
+     "default": "plaintext",
+     "options": [
+      "plaintext",
+      "onprem"
+     ],
+     "extends_schema": true,
+     "hint": "Select the schema of message key. To use schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "key_schema_id",
+     "type": "string",
+     "label": "Key schema",
+     "control_type": "select",
+     "visible_if": "input.key_schema_type == \"onprem\"",
+     "pick_list": "key_schema_list",
+     "extends_schema": true,
+     "hint": "Select from your schemas."
+    },
+    {
+     "name": "auto_offset",
+     "type": "string",
+     "label": "Initial offset",
+     "control_type": "select",
+     "options": [
+      "earliest",
+      "latest"
+     ],
+     "hint": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server (e.g. because that data has been deleted)."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_message_batch",
+   "title": "New messages in topic (Deprecated)",
+   "description": "New messages in Kafka topic",
+   "help": "Kafka connection settings are determined by the on-prem agent configuration. Note: This trigger works only with agents older than 2.20.0.",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "group",
+     "type": "string",
+     "label": "Group ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Use specified Kafka consumer group."
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "onprem",
+      "onprem_protobuf"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"onprem\"}} Select from your schemas. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update schema here . {{/if}} {…"
+    },
+    {
+     "name": "key_schema_type",
+     "type": "string",
+     "label": "Key schema type",
+     "control_type": "select",
+     "default": "plaintext",
+     "options": [
+      "plaintext",
+      "onprem"
+     ],
+     "extends_schema": true,
+     "hint": "Select the schema of message key. To use schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "key_schema_id",
+     "type": "string",
+     "label": "Key schema",
+     "control_type": "select",
+     "visible_if": "input.key_schema_type == \"onprem\"",
+     "pick_list": "key_schema_list",
+     "extends_schema": true,
+     "hint": "Select from your schemas."
+    },
+    {
+     "name": "auto_offset",
+     "type": "string",
+     "label": "Initial offset",
+     "control_type": "select",
+     "options": [
+      "earliest",
+      "latest"
+     ],
+     "hint": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server (e.g. because that data has been deleted)."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "text",
+     "required": true,
+     "default": "100",
+     "hint": "Select size of returned events batch Ranging from 1 to 100. Default is 100."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_message_batch_v2",
+   "title": "New messages in topic",
+   "description": "New messages in Kafka topic",
+   "help": "Triggers when messages are published in the selected topic. These messages will be processed in batches. Requires on-prem agent version 2.20.0 or higher. Recommended to use.",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "onprem",
+      "onprem_protobuf"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"onprem\"}} Select from your schemas. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update schema here . {{/if}} {…"
+    },
+    {
+     "name": "key_schema_type",
+     "type": "string",
+     "label": "Key schema type",
+     "control_type": "select",
+     "default": "plaintext",
+     "options": [
+      "plaintext",
+      "onprem"
+     ],
+     "extends_schema": true,
+     "hint": "Select the schema of message key. To use schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "key_schema_id",
+     "type": "string",
+     "label": "Key schema",
+     "control_type": "select",
+     "visible_if": "input.key_schema_type == \"onprem\"",
+     "pick_list": "key_schema_list",
+     "extends_schema": true,
+     "hint": "Select from your schemas."
+    },
+    {
+     "name": "auto_offset",
+     "type": "string",
+     "label": "Initial offset",
+     "control_type": "select",
+     "options": [
+      "earliest",
+      "latest"
+     ],
+     "hint": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server (e.g. because that data has been deleted)."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "text",
+     "required": true,
+     "default": "100",
+     "hint": "Select size of returned events batch Ranging from 1 to 100. Default is 100."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_message_v2",
+   "title": "New message in topic",
+   "description": "New message in Kafka topic",
+   "help": "Triggers when a new message is published in the selected Kafka topic. Requires on-prem agent version 2.20.0 or higher. Recommended to use.",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "onprem",
+      "onprem_protobuf"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"onprem\"}} Select from your schemas. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update schema here . {{/if}} {…"
+    },
+    {
+     "name": "key_schema_type",
+     "type": "string",
+     "label": "Key schema type",
+     "control_type": "select",
+     "default": "plaintext",
+     "options": [
+      "plaintext",
+      "onprem"
+     ],
+     "extends_schema": true,
+     "hint": "Select the schema of message key. To use schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "key_schema_id",
+     "type": "string",
+     "label": "Key schema",
+     "control_type": "select",
+     "visible_if": "input.key_schema_type == \"onprem\"",
+     "pick_list": "key_schema_list",
+     "extends_schema": true,
+     "hint": "Select from your schemas."
+    },
+    {
+     "name": "auto_offset",
+     "type": "string",
+     "label": "Initial offset",
+     "control_type": "select",
+     "options": [
+      "earliest",
+      "latest"
+     ],
+     "hint": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server (e.g. because that data has been deleted)."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "publish_to_topic",
+   "title": "Publish message",
+   "description": "Publish message to Kafka topic",
+   "help": "Kafka connection settings are determined by the on-prem agent configuration.",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "onprem",
+      "onprem_protobuf"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"onprem\"}} Select from your schemas. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update schema here . {{/if}} {…"
+    }
+   ],
+   "output": [
+    {
+     "name": "size",
+     "type": "integer",
+     "label": "Size",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "timestamp",
+     "type": "integer",
+     "label": "Timestamp",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "partition",
+     "type": "integer",
+     "label": "Partition",
+     "control_type": "integer",
+     "required": true
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "publish_to_topic_batch",
+   "title": "Publish messages",
+   "description": "Publish messages to Kafka topic",
+   "help": "Kafka connection settings are determined by the on-prem agent configuration.",
+   "input": [
+    {
+     "name": "topic",
+     "type": "string",
+     "label": "Topic",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "topic_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "topic",
+      "type": "string"
+     },
+     "hint": "Select a topic"
+    },
+    {
+     "name": "schema_source",
+     "type": "string",
+     "label": "Message schema source",
+     "control_type": "select",
+     "required_when_visible": true,
+     "default": "workato",
+     "options": [
+      "workato",
+      "onprem",
+      "onprem_protobuf"
+     ],
+     "extends_schema": true,
+     "hint": "Select where your message schema is defined. To retrieve schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "workato_schema_id",
+     "type": "string",
+     "label": "Message schema",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "workato_schema_list",
+     "extends_schema": true,
+     "hint": "{{#if input.schema_source == \"onprem\"}} Select from your schemas. {{#else}} Select from your common data models. Create new schema here . {{#if input.workato_schema_id}} Update schema here . {{/if}} {…"
+    },
+    {
+     "name": "key_schema_type",
+     "type": "string",
+     "label": "Key schema type",
+     "control_type": "select",
+     "default": "plaintext",
+     "options": [
+      "plaintext",
+      "onprem"
+     ],
+     "extends_schema": true,
+     "hint": "Select the schema of message key. To use schemas from schema-registry, configure on-prem agent accordingly."
+    },
+    {
+     "name": "key_schema_id",
+     "type": "string",
+     "label": "Key schema",
+     "control_type": "select",
+     "visible_if": "input.key_schema_type == \"onprem\"",
+     "pick_list": "key_schema_list",
+     "extends_schema": true,
+     "hint": "Select from your schemas."
+    },
+    {
+     "name": "partition",
+     "type": "integer",
+     "label": "Partition",
+     "control_type": "integer",
+     "hint": "You can explicitly publish message to the specific topic partition (index starts from 0). Otherwise Kafka will select partition automatically."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

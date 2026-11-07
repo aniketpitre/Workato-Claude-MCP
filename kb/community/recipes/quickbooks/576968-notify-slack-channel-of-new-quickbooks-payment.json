@@ -1,0 +1,72 @@
+{
+ "id": 576968,
+ "name": "Notify Slack channel of new Quickbooks payment",
+ "description": "1. New payment is made in Quickbooks.\n2. Workato notifies a Slack channel.\n\n### Configurations\nDuring recipe setup, enter the Slack channel to notify of new payments.",
+ "applications": [
+  "quickbooks",
+  "slack"
+ ],
+ "action_applications": [
+  "slack"
+ ],
+ "trigger_application": "quickbooks",
+ "business_objects": [
+  "message"
+ ],
+ "categories": [
+  "Accounting",
+  "Collaboration",
+  "Sales Enablement"
+ ],
+ "copy_count": 11,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2020-08-06T00:26:42.570-07:00",
+ "source_url": "https://app.workato.com/recipes/576968?community=us",
+ "steps": [
+  "quickbooks.new_payment",
+  "slack.post_message_to_channel"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "quickbooks",
+  "name": "new_payment",
+  "as": "new_payment",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {},
+  "parameters_schema": "[\n  {\n    \"label\": \"Slack channel\",\n    \"name\": \"channel\",\n    \"type\": \"string\",\n    \"control_type\": \"text\",\n    \"hint\": \"slack channel to receive notifications from this recipe\"\n  }\n]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "slack",
+    "name": "post_message_to_channel",
+    "as": "post_message_to_channel",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "channel": false
+    },
+    "input": {
+     "color": "good",
+     "attachment_text": "=\"Customer: \" + _('data.quickbooks.new_payment.CustomerRef.lookup_customer_by_id(value>id).DisplayName') + (_('data.quickbooks.new_payment.CustomerRef.lookup_customer_by_id(value>id).CompanyName').present? ? \", \" + _('data.quickbooks.new_payment.CustomerRef.lookup_customer_by_id(value>id).CompanyName') : \"\") + \"\\n\" +\n\"Amount: \" + _('data.quickbooks.new_payment.CurrencyRef.value') + \" \" + _('data.quickbooks.new_payment.TotalAmt').to_s + \"\\n\" +\n\"Unapplied amount: \" + _('data.quickbooks.new_payment.UnappliedAmt').to_s + \"\\n\" +\n\"Payment method: \" + (_('data.quickbooks.new_payment.PaymentMethodRef.name').present? ? _('data.quickbooks.new_payment.PaymentMethodRef.name').to_s : \"none\")",
+     "title_link": "https://qbo.intuit.com/app/recvpayment?txnId=#{_('data.quickbooks.new_payment.Id')}",
+     "title": "Payment ID: #{_('data.quickbooks.new_payment.Id')}",
+     "text": "Hurray, you got paid!",
+     "channel": "='#' + _('data.workato.job_context.parameters.channel').gsub('#','')"
+    },
+    "uuid": "df515f9b-5eb6-4a49-aa42-ed9afd747653",
+    "title": null,
+    "description": null
+   }
+  ],
+  "uuid": "0131b128-31a4-438f-b9f7-08a6cdbeb097"
+ }
+}

@@ -1,0 +1,372 @@
+{
+ "id": 914898,
+ "name": "Add leads to conversion list in batches when product usage limit is exceeded",
+ "description": "1. Check for users where:\n   - expected limit is exceeded by actual usage\n   - has not be converted to a paying customer\n2. Add this user to a lead list",
+ "applications": [
+  "snowflake",
+  "marketo"
+ ],
+ "action_applications": [
+  "marketo"
+ ],
+ "trigger_application": "snowflake",
+ "business_objects": [],
+ "categories": [
+  "Database",
+  "Marketing"
+ ],
+ "copy_count": 8,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2019-03-23T00:39:02.954-07:00",
+ "source_url": "https://app.workato.com/recipes/914898?community=us",
+ "steps": [
+  "snowflake.new_rows_batch",
+  "marketo.add_leads_to_list"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "snowflake",
+  "name": "new_rows_batch",
+  "as": "6a1a13b7",
+  "title": "New rows in PUBLIC.CUSTOMER_PRODUCT_USAGE",
+  "description": "New <span class=\"provider\">batch of rows</span> in <span class=\"provider\">PUBLIC.CUSTOMER_PRODUCT_USAGE</span> table in <span class=\"provider\">Snowflake</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "table": "PUBLIC.CUSTOMER_PRODUCT_USAGE",
+   "primary_key": "ID",
+   "sort_column": "ACCOUNTING_PERIOD"
+  },
+  "toggleCfg": {
+   "table": true
+  },
+  "input": {
+   "table": "PUBLIC.CUSTOMER_PRODUCT_USAGE",
+   "primary_key": "ID",
+   "where": "usage_count > task_limit and subscription_plan is null",
+   "batch_size": "100"
+  },
+  "extended_output_schema": [
+   {
+    "type": "array",
+    "name": "rows",
+    "label": "Rows",
+    "of": "object",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "SUBJECT",
+      "details": {
+       "primary_key": false,
+       "data_type": "varchar",
+       "column_name": "SUBJECT",
+       "length": 250,
+       "precision": 250,
+       "scale": null
+      },
+      "parse_output": "fix_encoding",
+      "optional": true,
+      "hint": "varchar, max length 250",
+      "type": "string",
+      "name": "subject"
+     },
+     {
+      "control_type": "date_time",
+      "label": "DUE_DATE",
+      "render_input": "convert_date_time",
+      "parse_output": "convert_date_time",
+      "details": {
+       "primary_key": false,
+       "data_type": "date",
+       "column_name": "DUE_DATE",
+       "length": null,
+       "precision": null,
+       "scale": null
+      },
+      "optional": true,
+      "hint": "date",
+      "type": "date_time",
+      "name": "due_date"
+     },
+     {
+      "control_type": "text",
+      "label": "SUBSCRIPTION_PLAN",
+      "details": {
+       "primary_key": false,
+       "data_type": "varchar",
+       "column_name": "SUBSCRIPTION_PLAN",
+       "length": 25,
+       "precision": 25,
+       "scale": null
+      },
+      "parse_output": "fix_encoding",
+      "optional": true,
+      "hint": "varchar, max length 25",
+      "type": "string",
+      "name": "subscription_plan"
+     },
+     {
+      "control_type": "text",
+      "label": "STATUS",
+      "details": {
+       "primary_key": false,
+       "data_type": "varchar",
+       "column_name": "STATUS",
+       "length": 25,
+       "precision": 25,
+       "scale": null
+      },
+      "parse_output": "fix_encoding",
+      "optional": true,
+      "hint": "varchar, max length 25",
+      "type": "string",
+      "name": "status"
+     },
+     {
+      "control_type": "integer",
+      "label": "USAGE_COUNT",
+      "parse_output": "parse_integer_output",
+      "details": {
+       "primary_key": false,
+       "data_type": "number",
+       "column_name": "USAGE_COUNT",
+       "length": null,
+       "precision": 38,
+       "scale": 0
+      },
+      "optional": true,
+      "hint": "number",
+      "type": "integer",
+      "name": "usage_count"
+     },
+     {
+      "control_type": "date_time",
+      "label": "ACCOUNTING_PERIOD",
+      "render_input": "convert_to_datetime",
+      "parse_output": "parse_date_time_local",
+      "details": {
+       "primary_key": false,
+       "data_type": "timestamp_ntz",
+       "column_name": "ACCOUNTING_PERIOD",
+       "length": 9,
+       "precision": 9,
+       "scale": null
+      },
+      "optional": true,
+      "hint": "timestamp_ntz, max length 9",
+      "type": "date_time",
+      "name": "accounting_period"
+     },
+     {
+      "control_type": "integer",
+      "label": "CONNECTION_COUNT",
+      "parse_output": "parse_integer_output",
+      "details": {
+       "primary_key": false,
+       "data_type": "number",
+       "column_name": "CONNECTION_COUNT",
+       "length": null,
+       "precision": 38,
+       "scale": 0
+      },
+      "optional": true,
+      "hint": "number",
+      "type": "integer",
+      "name": "connection_count"
+     },
+     {
+      "control_type": "text",
+      "label": "USER_EMAIL",
+      "details": {
+       "primary_key": false,
+       "data_type": "varchar",
+       "column_name": "USER_EMAIL",
+       "length": 50,
+       "precision": 50,
+       "scale": null
+      },
+      "parse_output": "fix_encoding",
+      "optional": true,
+      "hint": "varchar, max length 50",
+      "type": "string",
+      "name": "user_email"
+     },
+     {
+      "control_type": "integer",
+      "label": "TASK_LIMIT",
+      "parse_output": "parse_integer_output",
+      "details": {
+       "primary_key": false,
+       "data_type": "number",
+       "column_name": "TASK_LIMIT",
+       "length": null,
+       "precision": 38,
+       "scale": 0
+      },
+      "optional": true,
+      "hint": "number",
+      "type": "integer",
+      "name": "task_limit"
+     },
+     {
+      "control_type": "integer",
+      "label": "ID",
+      "parse_output": "parse_integer_output",
+      "details": {
+       "primary_key": false,
+       "data_type": "number",
+       "column_name": "ID",
+       "length": null,
+       "precision": 38,
+       "scale": 0
+      },
+      "optional": true,
+      "hint": "number",
+      "type": "integer",
+      "name": "id"
+     },
+     {
+      "control_type": "text",
+      "label": "ACCOUNT_REP_EMAIL",
+      "details": {
+       "primary_key": false,
+       "data_type": "varchar",
+       "column_name": "ACCOUNT_REP_EMAIL",
+       "length": 50,
+       "precision": 50,
+       "scale": null
+      },
+      "parse_output": "fix_encoding",
+      "optional": true,
+      "hint": "varchar, max length 50",
+      "type": "string",
+      "name": "account_rep_email"
+     },
+     {
+      "control_type": "text",
+      "label": "SFDC_ID",
+      "details": {
+       "primary_key": false,
+       "data_type": "varchar",
+       "column_name": "SFDC_ID",
+       "length": 16777216,
+       "precision": 16777216,
+       "scale": null
+      },
+      "parse_output": "fix_encoding",
+      "optional": true,
+      "hint": "varchar, max length 16777216",
+      "type": "string",
+      "name": "sfdc_id"
+     },
+     {
+      "control_type": "text",
+      "label": "MARKETO_ID",
+      "details": {
+       "primary_key": false,
+       "data_type": "varchar",
+       "column_name": "MARKETO_ID",
+       "length": 16777216,
+       "precision": 16777216,
+       "scale": null
+      },
+      "parse_output": "fix_encoding",
+      "optional": true,
+      "hint": "varchar, max length 16777216",
+      "type": "string",
+      "name": "marketo_id"
+     }
+    ]
+   },
+   {
+    "type": "integer",
+    "name": "first_id",
+    "control_type": "number",
+    "label": "First row ID",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "integer",
+    "name": "last_id",
+    "control_type": "number",
+    "label": "Last row ID",
+    "optional": true,
+    "parse_output": "integer_conversion"
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "primary_key",
+    "control_type": "select",
+    "label": "Unique key",
+    "hint": "Select a unique key column to deduplicate rows. Performance can be improved if the selected unique key is indexed. <a href=\"https://docs.workato.com/connectors/snowflake.html#unique-key\" target=\"_blank\">Learn more</a>",
+    "pick_list": "columns_list",
+    "pick_list_params": {
+     "table": "table"
+    },
+    "extends_schema": true
+   },
+   {
+    "type": "integer",
+    "name": "batch_size",
+    "control_type": "text",
+    "label": "Batch size",
+    "hint": "Batch size of rows to return in each job. Maximum batch size is 100 and default is 100.",
+    "default": "100",
+    "parse_output": "integer_conversion"
+   },
+   {
+    "type": "string",
+    "name": "output_columns",
+    "control_type": "multiselect",
+    "label": "Output columns",
+    "hint": "Choose columns to be returned from the selected table. Leave blank to return all columns.",
+    "pick_list": "columns_list",
+    "pick_list_params": {
+     "table": "table"
+    },
+    "optional": true,
+    "extends_schema": true,
+    "delimiter": "\n"
+   },
+   {
+    "type": "string",
+    "name": "where",
+    "control_type": "text",
+    "label": "WHERE condition",
+    "hint": "Rows matching this condition will be processed, e.g. <b>currency = 'USD'</b> (enclose strings in single quotes)",
+    "sticky": true,
+    "optional": true
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "marketo",
+    "name": "add_leads_to_list",
+    "as": "9584187b",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "input": {
+      "id": "#{_('data.snowflake.6a1a13b7.rows.first.marketo_id')}",
+      "____source": "#{_('data.snowflake.6a1a13b7.rows')}"
+     },
+     "list_id": "Conversion list"
+    },
+    "comment": "",
+    "uuid": "676a5ec1-4865-4518-9605-882718fad9a6"
+   }
+  ],
+  "uuid": "6e01b7ae-a88e-4408-81a2-4341a116b931",
+  "param": {}
+ }
+}

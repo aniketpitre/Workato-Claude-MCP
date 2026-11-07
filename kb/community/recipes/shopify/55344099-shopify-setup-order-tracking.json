@@ -1,0 +1,1290 @@
+{
+ "id": 55344099,
+ "name": "Shopify - Setup Order Tracking",
+ "description": "When there is a trigger event, do action",
+ "applications": [
+  "shopify",
+  "workato_db_table",
+  "coax_connector_3082925_1699932125",
+  "workato_variable",
+  "clock"
+ ],
+ "action_applications": [
+  "workato_db_table",
+  "coax_connector_3082925_1699932125",
+  "workato_variable",
+  "clock"
+ ],
+ "trigger_application": "shopify",
+ "business_objects": [
+  "order",
+  "53617"
+ ],
+ "categories": [
+  "Ecommerce",
+  "Sales Enablement",
+  "Recipe Tools",
+  "Workato",
+  "Marketing"
+ ],
+ "copy_count": 18,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2026-02-15T19:56:00.111-08:00",
+ "source_url": "https://app.workato.com/recipes/55344099?community=us",
+ "steps": [
+  "shopify.updated_order",
+  "workato_db_table.get_records",
+  "coax_connector_3082925_1699932125.parse_phone_number",
+  "workato_variable.declare_variable",
+  "coax_connector_3082925_1699932125.upsert_contact",
+  "coax_connector_3082925_1699932125.create_activity",
+  "coax_connector_3082925_1699932125.send_message",
+  "coax_connector_3082925_1699932125.create_tracking_version_two",
+  "clock.wait_for_interval",
+  "coax_connector_3082925_1699932125.create_tracking_version_two",
+  "workato_db_table.add_record"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "shopify",
+  "name": "updated_order",
+  "as": "9db77dd1",
+  "keyword": "trigger",
+  "input": {
+   "status": "any"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "present",
+     "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"fulfillments\",{\"path_element_type\":\"current_item\"},\"tracking_number\"]}')}",
+     "rhs": "",
+     "uuid": "condition-9eb2602d-2f2b-45df-b866-2dc460eb4d4d"
+    },
+    {
+     "operand": "greater_than",
+     "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"created_at\"]}').to_date()",
+     "rhs": "=now.to_date() - 15.days",
+     "uuid": "22af70cc-0218-464a-b2f8-be1c3780c5b5"
+    },
+    {
+     "operand": "not_equals_to",
+     "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"fulfillments\"]}')[0]['shipment_status']",
+     "rhs": "delivered",
+     "uuid": "ab6b8a51-693b-41d0-a321-ef9bd5a8f550"
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "block": [
+   {
+    "number": 1,
+    "provider": "workato_db_table",
+    "name": "get_records",
+    "as": "c7d03aea",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table_id": "Shopify Data Table",
+     "filters.0.field_id": "Order ID",
+     "filters.1.field_id": "SMS Status"
+    },
+    "input": {
+     "order_direction": "asc",
+     "limit": "100",
+     "table_id": "53617",
+     "211a6b10-d6b6-4cd8-8cc0-5cce2b9652f8": "string",
+     "47aef481-340d-4e33-844d-f96aa4b3089e": "string",
+     "e4d39e27-24e9-4797-a6e3-70df18ed2f6d": "string",
+     "5b3ca04b-f6dc-4a79-a9b7-e8ebd86ab369": "string",
+     "8d8664fa-94ba-497a-9c80-10f3d99203b0": "string",
+     "f1d1a777-86bb-4791-bcd8-759ebffc2e02": "string",
+     "5c19f896-e4e2-4c6a-9978-16b17ea7dc8c": "string",
+     "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+     "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+     "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+     "filters": [
+      {
+       "field_id": "47aef481-340d-4e33-844d-f96aa4b3089e",
+       "op_default": "eq",
+       "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"name\"]}')}"
+      },
+      {
+       "field_id": "f1d1a777-86bb-4791-bcd8-759ebffc2e02",
+       "op_default": "eq",
+       "value_default": "Dispatched"
+      }
+     ]
+    },
+    "extended_output_schema": [
+     {
+      "label": "Records",
+      "name": "records",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Record ID",
+        "type": "string",
+        "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+       },
+       {
+        "control_type": "text",
+        "label": "Platform",
+        "type": "string",
+        "name": "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8"
+       },
+       {
+        "control_type": "text",
+        "label": "Order ID",
+        "type": "string",
+        "name": "47aef481_340d_4e33_844d_f96aa4b3089e"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "type": "string",
+        "name": "e4d39e27_24e9_4797_a6e3_70df18ed2f6d"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "type": "string",
+        "name": "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "type": "string",
+        "name": "8d8664fa_94ba_497a_9c80_10f3d99203b0"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Status",
+        "type": "string",
+        "name": "f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Sent",
+        "type": "string",
+        "name": "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+       }
+      ],
+      "type": "array"
+     },
+     {
+      "control_type": "text",
+      "label": "Next Page Token",
+      "name": "continuation_token",
+      "type": "string"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_211a6b10-d6b6-4cd8-8cc0-5cce2b9652f8",
+      "name": "211a6b10-d6b6-4cd8-8cc0-5cce2b9652f8",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_47aef481-340d-4e33-844d-f96aa4b3089e",
+      "name": "47aef481-340d-4e33-844d-f96aa4b3089e",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_e4d39e27-24e9-4797-a6e3-70df18ed2f6d",
+      "name": "e4d39e27-24e9-4797-a6e3-70df18ed2f6d",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_5b3ca04b-f6dc-4a79-a9b7-e8ebd86ab369",
+      "name": "5b3ca04b-f6dc-4a79-a9b7-e8ebd86ab369",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_8d8664fa-94ba-497a-9c80-10f3d99203b0",
+      "name": "8d8664fa-94ba-497a-9c80-10f3d99203b0",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_f1d1a777-86bb-4791-bcd8-759ebffc2e02",
+      "name": "f1d1a777-86bb-4791-bcd8-759ebffc2e02",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "string",
+      "label": "$internal_value_5c19f896-e4e2-4c6a-9978-16b17ea7dc8c",
+      "name": "5c19f896-e4e2-4c6a-9978-16b17ea7dc8c",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "id",
+      "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "date_time",
+      "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "default": "date_time",
+      "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+      "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+      "ngIf": "false",
+      "optional": true,
+      "type": "string"
+     }
+    ],
+    "uuid": "f21d14a6-72ef-463a-ac6a-331c2ffdf639",
+    "title": null,
+    "description": "Search records in <span class=\"provider\">a data table</span>"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "greater_than",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c7d03aea\",\"path\":[\"records\",{\"path_element_type\":\"size\"}]}')}",
+       "rhs": "0",
+       "uuid": "e647e2f5-b075-4935-9e73-9f7161086883"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "as": "88a95493",
+      "keyword": "stop",
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "be7f3305-1a83-4d81-8db2-8dbd1c93088f"
+     }
+    ],
+    "uuid": "54d5843d-a9f1-4e95-a92f-d886b1399f47"
+   },
+   {
+    "number": 4,
+    "keyword": "try",
+    "input": {},
+    "block": [
+     {
+      "number": 5,
+      "provider": "coax_connector_3082925_1699932125",
+      "name": "parse_phone_number",
+      "as": "ec3f7b78",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "input": {
+       "number": "=_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"phone\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"phone\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"billing_address\",\"phone\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"billing_address\",\"phone\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"customer\",\"phone\"]}')",
+       "country_code": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"billing_address\",\"country_code\"]}')}"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "phone",
+        "label": "Phone Number",
+        "name": "number",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Country Code (ISO2 or ISO3)",
+        "name": "country_code",
+        "optional": true,
+        "type": "string"
+       }
+      ],
+      "visible_config_fields": [
+       "country_code"
+      ],
+      "uuid": "2caf1d21-5f3b-4165-a8c8-77cf4c822d85"
+     },
+     {
+      "number": 6,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "398c231b",
+      "keyword": "action",
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"Phone\",\"type\":\"string\",\"optional\":true,\"label\":\"Phone\",\"details\":{\"real_name\":\"Phone\"},\"control_type\":\"text\"}]",
+        "data": {
+         "Phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"ec3f7b78\",\"path\":[\"body\",\"code\"]}')}#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"ec3f7b78\",\"path\":[\"body\",\"phone\"]}')}"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "name": "Phone",
+        "optional": true,
+        "type": "string",
+        "details": {
+         "real_name": "Phone"
+        }
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "add_field_label": "Add a variable",
+        "control_type": "form-schema-builder",
+        "empty_schema_title": "Add variables by giving them a name, type and default value",
+        "exclude_fields": [
+         "hint"
+        ],
+        "item_label": "variable",
+        "label": "Variables",
+        "mark_as_required": true,
+        "name": "variables",
+        "ngIf": "!input.name",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Phone",
+            "name": "Phone",
+            "type": "string",
+            "optional": true,
+            "details": {
+             "real_name": "Phone"
+            },
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "type": "object"
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.Phone"
+      ],
+      "uuid": "1195c85a-f5e3-489d-a413-de65bdbfb99c",
+      "title": "  Create variable Phone",
+      "description": "Create variable <span class=\"provider\">Phone</span>"
+     },
+     {
+      "number": 7,
+      "as": "3e18e919",
+      "keyword": "catch",
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [],
+      "uuid": "826e827d-3148-49c1-9cd6-b08df7b2bd10"
+     }
+    ],
+    "uuid": "4edab641-0703-4ec5-8467-3f65ab83384f"
+   },
+   {
+    "number": 8,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}",
+       "rhs": "",
+       "uuid": "0bab340d-12fa-4cce-ac80-c9d1a1697e6b"
+      },
+      {
+       "operand": "blank",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"email\"]}')}",
+       "rhs": "",
+       "uuid": "50745cc1-5570-4744-89e3-72a98059fa31"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 9,
+      "as": "1bda60ba",
+      "keyword": "stop",
+      "input": {
+       "stop_with_error": "false"
+      },
+      "uuid": "143d034d-1570-4346-a510-dde2d5f081df",
+      "skip": false
+     }
+    ],
+    "uuid": "9030ae16-9a11-4344-a58d-af7e11778b00",
+    "skip": false
+   },
+   {
+    "number": 10,
+    "provider": "coax_connector_3082925_1699932125",
+    "name": "upsert_contact",
+    "as": "a7243070",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "input": {
+     "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"first_name\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"last_name\"]}')}",
+     "address": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"address1\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"address2\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"city\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"zip\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"province\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"country\"]}')}",
+     "phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}",
+     "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"email\"]}')}",
+     "added_tags": "=[\"Via Shopify\"]",
+     "do_not_update": "true"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "label": "Contact Name",
+      "name": "name",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Address",
+      "name": "address",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "email",
+      "label": "Contact Email",
+      "name": "email",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "phone",
+      "label": "Receiving Phone Number",
+      "name": "phone",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Company Name",
+      "name": "company_name",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "checkbox",
+      "label": "Skip Update",
+      "name": "do_not_update",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "hint": "This will replace all existing tags on the contact. Please use following format: [\"tag1\", \"tag2\"]",
+      "label": "Add Tags",
+      "name": "tags",
+      "of": "string",
+      "optional": true,
+      "type": "array"
+     },
+     {
+      "hint": "This will append the provided tags to existing tags on a contact. Please use following format: [\"tag1\", \"tag2\"]",
+      "label": "Update To Tags",
+      "name": "added_tags",
+      "of": "string",
+      "optional": true,
+      "type": "array"
+     },
+     {
+      "control_type": "text",
+      "label": "Enquiry ID",
+      "name": "enquiry_id",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "select",
+      "label": "Location",
+      "name": "location_id",
+      "optional": true,
+      "pick_list": "locations",
+      "type": "string"
+     }
+    ],
+    "visible_config_fields": [
+     "added_tags",
+     "company_name",
+     "phone",
+     "email",
+     "name",
+     "address",
+     "do_not_update"
+    ],
+    "uuid": "6cddad62-e3e7-48a9-8e9e-37470cdf67f3",
+    "skip": false
+   },
+   {
+    "number": 11,
+    "provider": "coax_connector_3082925_1699932125",
+    "name": "create_activity",
+    "as": "61908e7a",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "type": "Order Fulfilled"
+    },
+    "input": {
+     "type": "order_fulfilled",
+     "description": "Order  #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"name\"]}')} has been fulfilled in Shopify",
+     "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"email\"]}')}",
+     "meta": [
+      {
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"name\"]}')}",
+       "key": "shopify_order_name"
+      },
+      {
+       "key": "check_order_status",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"order_status_url\"]}')}"
+      },
+      {
+       "key": "line_items",
+       "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"line_items\"]}').pluck(\"title\").join(\", \\n\")"
+      },
+      {
+       "key": "platform",
+       "value": "Shopify"
+      },
+      {
+       "key": "order_total",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"total_price\"]}')}"
+      },
+      {
+       "key": "address",
+       "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"address1\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"address2\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"city\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"province\"]}')}"
+      },
+      {
+       "key": "view_order",
+       "value": "https://admin.shopify.com/store/#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Shopify Store\"}')}/orders/#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"id\"]}')}"
+      },
+      {
+       "key": "view_customer",
+       "value": "https://admin.shopify.com/store/#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Shopify Store\"}')}/customers/#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"customer\",\"id\"]}')}"
+      }
+     ],
+     "phone": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}').presence",
+     "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+     "job_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+     "tracking_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"fulfillments\",{\"path_element_type\":\"current_item\"},\"tracking_number\"]}')}"
+    },
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "label": "Recipe ID",
+      "name": "recipe_id",
+      "optional": false,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Job ID",
+      "name": "job_id",
+      "optional": false,
+      "type": "string"
+     },
+     {
+      "control_type": "select",
+      "label": "Activity Type",
+      "name": "type",
+      "optional": false,
+      "pick_list": "activity_type",
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Activity Description",
+      "name": "description",
+      "optional": false,
+      "type": "string"
+     },
+     {
+      "control_type": "email",
+      "label": "Customer Email",
+      "name": "email",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "phone",
+      "label": "Receiving Phone Number",
+      "name": "phone",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Tracking Number",
+      "name": "tracking_number",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "select",
+      "label": "Location",
+      "name": "location_id",
+      "optional": true,
+      "pick_list": "locations",
+      "type": "string"
+     },
+     {
+      "control_type": "key_value",
+      "empty_list_title": "Add metadata",
+      "item_label": "Metadata",
+      "label": "Metadata",
+      "name": "meta",
+      "of": "object",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Key",
+        "optional": true,
+        "type": "string",
+        "name": "key"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ],
+      "type": "array"
+     },
+     {
+      "control_type": "text",
+      "label": "Enquiry ID",
+      "name": "enquiry_id",
+      "optional": true,
+      "type": "string"
+     },
+     {
+      "control_type": "text",
+      "label": "Metadata JSON",
+      "name": "meta_text",
+      "optional": true,
+      "type": "string"
+     }
+    ],
+    "visible_config_fields": [
+     "type",
+     "description",
+     "meta",
+     "phone",
+     "email",
+     "recipe_id",
+     "job_id",
+     "tracking_number"
+    ],
+    "uuid": "f7653f3e-7e8c-4c08-9996-bfe039e09d55"
+   },
+   {
+    "number": 12,
+    "keyword": "if",
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"ec3f7b78\",\"path\":[\"body\",\"type\"]}')}",
+       "rhs": "MOBILE",
+       "uuid": "7b77f143-6694-4250-9c75-a0b53f96d6c9"
+      },
+      {
+       "operand": "present",
+       "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}",
+       "rhs": "",
+       "uuid": "ef82d103-3e46-4713-bb84-e3abf20fe013"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 13,
+      "provider": "coax_connector_3082925_1699932125",
+      "name": "send_message",
+      "as": "095fc234",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "input": {
+       "message": "Hi #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"first_name\"]}')}, \n\nYour order #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"name\"]}')} has been dispatched, if you have any question please feel free to respond to this message. \nTracking Link: #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"fulfillments\",{\"path_element_type\":\"current_item\"},\"tracking_url\"]}')}\n\n{{ business_name }}",
+       "phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}"
+      },
+      "extended_input_schema": [
+       {
+        "control_type": "text",
+        "label": "Message",
+        "name": "message",
+        "optional": false,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Receiver Name",
+        "name": "name",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "phone",
+        "label": "Receiving Phone Number",
+        "name": "phone",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Enquiry ID",
+        "name": "enquiry_id",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Skip Update",
+        "name": "do_not_update",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "control_type": "select",
+        "label": "Activity Type",
+        "name": "activity_type",
+        "optional": true,
+        "pick_list": "activity_type",
+        "type": "string"
+       },
+       {
+        "control_type": "text",
+        "label": "Activity Description",
+        "name": "activity_description",
+        "optional": true,
+        "type": "string"
+       },
+       {
+        "label": "Attachment URLs",
+        "name": "attachment_urls",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "URL",
+          "optional": true,
+          "type": "string",
+          "name": "url"
+         }
+        ],
+        "type": "array"
+       },
+       {
+        "control_type": "select",
+        "label": "Location",
+        "name": "location_id",
+        "optional": true,
+        "pick_list": "locations",
+        "type": "string"
+       },
+       {
+        "control_type": "key_value",
+        "empty_list_title": "Add metadata",
+        "item_label": "Metadata",
+        "label": "Metadata",
+        "name": "meta",
+        "of": "object",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Key",
+          "optional": true,
+          "type": "string",
+          "name": "key"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "type": "array"
+       }
+      ],
+      "visible_config_fields": [
+       "phone"
+      ],
+      "uuid": "3fd91123-0be5-4325-9bc6-9f972230cf4e"
+     },
+     {
+      "number": 14,
+      "keyword": "try",
+      "input": {},
+      "block": [
+       {
+        "number": 15,
+        "provider": "coax_connector_3082925_1699932125",
+        "name": "create_tracking_version_two",
+        "as": "a5cd63a2",
+        "title": null,
+        "description": null,
+        "keyword": "action",
+        "input": {
+         "tracking_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"fulfillments\",{\"path_element_type\":\"current_item\"},\"tracking_number\"]}')}",
+         "phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}"
+        },
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "label": "Tracking Number",
+          "name": "tracking_number",
+          "optional": false,
+          "type": "string"
+         },
+         {
+          "control_type": "email",
+          "label": "Customer Email",
+          "name": "email",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "phone",
+          "label": "Receiving Phone Number",
+          "name": "phone",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "label": "Enquiry ID",
+          "name": "enquiry_id",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "select",
+          "label": "Location",
+          "name": "location_id",
+          "optional": true,
+          "pick_list": "locations",
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "label": "Courier Code",
+          "name": "courier_code",
+          "optional": true,
+          "type": "string"
+         }
+        ],
+        "uuid": "6ac6eb35-710e-43ed-9cd2-f2685fe6351a"
+       },
+       {
+        "number": 16,
+        "as": "5fa935d6",
+        "keyword": "catch",
+        "input": {
+         "max_retry_count": "0",
+         "retry_interval": "2"
+        },
+        "block": [
+         {
+          "number": 17,
+          "keyword": "try",
+          "input": {},
+          "block": [
+           {
+            "number": 18,
+            "provider": "clock",
+            "name": "wait_for_interval",
+            "as": "f2ab62d3",
+            "keyword": "action",
+            "toggleCfg": {
+             "interval": false
+            },
+            "input": {
+             "interval": "10"
+            },
+            "uuid": "1048736e-b2c4-4d97-beb7-cf9c4a314f1d",
+            "title": null,
+            "description": null
+           },
+           {
+            "number": 19,
+            "provider": "coax_connector_3082925_1699932125",
+            "name": "create_tracking_version_two",
+            "as": "a5fa10ef",
+            "title": null,
+            "description": null,
+            "keyword": "action",
+            "input": {
+             "tracking_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"fulfillments\",{\"path_element_type\":\"current_item\"},\"tracking_number\"]}')}",
+             "phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "text",
+              "label": "Tracking Number",
+              "name": "tracking_number",
+              "optional": false,
+              "type": "string"
+             },
+             {
+              "control_type": "email",
+              "label": "Customer Email",
+              "name": "email",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "phone",
+              "label": "Receiving Phone Number",
+              "name": "phone",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Enquiry ID",
+              "name": "enquiry_id",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "select",
+              "label": "Location",
+              "name": "location_id",
+              "optional": true,
+              "pick_list": "locations",
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Courier Code",
+              "name": "courier_code",
+              "optional": true,
+              "type": "string"
+             }
+            ],
+            "uuid": "13c21eb4-0f30-458b-8950-29b3f2c2966d"
+           },
+           {
+            "number": 20,
+            "as": "a4415b50",
+            "keyword": "catch",
+            "input": {
+             "max_retry_count": "0",
+             "retry_interval": "2"
+            },
+            "block": [],
+            "uuid": "1e40438e-e590-4483-8a12-181c6291a1ad"
+           }
+          ],
+          "uuid": "59a24623-ab4d-469a-9adf-4db007690050"
+         }
+        ],
+        "uuid": "407952d1-dd30-42c1-aa4b-5cdff388c08e"
+       }
+      ],
+      "uuid": "7d9e6c4a-e236-4fb5-bb40-e29882ffbe47"
+     }
+    ],
+    "uuid": "af8754e5-78c4-4340-8736-e8c95dcf8b51"
+   },
+   {
+    "number": 21,
+    "provider": "workato_db_table",
+    "name": "add_record",
+    "as": "85ff147c",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table_id": "Shopify Data Table"
+    },
+    "input": {
+     "table_id": "53617",
+     "parameters": {
+      "8d8664fa_94ba_497a_9c80_10f3d99203b0": "Dispatched",
+      "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8": "Shopify",
+      "47aef481_340d_4e33_844d_f96aa4b3089e": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"name\"]}')}",
+      "e4d39e27_24e9_4797_a6e3_70df18ed2f6d": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"first_name\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"shipping_address\",\"last_name\"]}')}",
+      "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}",
+      "f1d1a777_86bb_4791_bcd8_759ebffc2e02": "Dispatched",
+      "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c": "=now.to_date()"
+     }
+    },
+    "extended_output_schema": [
+     {
+      "label": "Record",
+      "name": "record",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Record ID",
+        "type": "string",
+        "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+       },
+       {
+        "control_type": "text",
+        "label": "Platform",
+        "type": "string",
+        "name": "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8"
+       },
+       {
+        "control_type": "text",
+        "label": "Order ID",
+        "type": "string",
+        "name": "47aef481_340d_4e33_844d_f96aa4b3089e"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "type": "string",
+        "name": "e4d39e27_24e9_4797_a6e3_70df18ed2f6d"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "type": "string",
+        "name": "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "type": "string",
+        "name": "8d8664fa_94ba_497a_9c80_10f3d99203b0"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Status",
+        "type": "string",
+        "name": "f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Sent",
+        "type": "string",
+        "name": "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated at",
+        "render_input": "date_time_conversion",
+        "parse_output": "date_time_conversion",
+        "type": "date_time",
+        "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "hint": "Fill the fields for the new record",
+      "label": "New record fields",
+      "name": "parameters",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Platform",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8"
+       },
+       {
+        "control_type": "text",
+        "label": "Order ID",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "47aef481_340d_4e33_844d_f96aa4b3089e"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "e4d39e27_24e9_4797_a6e3_70df18ed2f6d"
+       },
+       {
+        "control_type": "text",
+        "label": "Phone",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369"
+       },
+       {
+        "control_type": "text",
+        "label": "Status",
+        "optional": true,
+        "sticky": true,
+        "type": "string",
+        "name": "8d8664fa_94ba_497a_9c80_10f3d99203b0"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Status",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+       },
+       {
+        "control_type": "text",
+        "label": "SMS Sent",
+        "optional": true,
+        "sticky": false,
+        "type": "string",
+        "name": "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c"
+       }
+      ],
+      "type": "object"
+     }
+    ],
+    "visible_config_fields": [
+     "table_id",
+     "parameters.211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8",
+     "parameters.47aef481_340d_4e33_844d_f96aa4b3089e",
+     "parameters.e4d39e27_24e9_4797_a6e3_70df18ed2f6d",
+     "parameters.5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369",
+     "parameters.8d8664fa_94ba_497a_9c80_10f3d99203b0",
+     "parameters.5c19f896_e4e2_4c6a_9978_16b17ea7dc8c",
+     "parameters.f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+    ],
+    "uuid": "89729d02-6614-428a-aa6a-b33a1fdc03e6",
+    "title": null,
+    "description": "Create a new record in <span class=\"provider\">a data table</span>"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Order No."
+   },
+   {
+    "name": "custom_column_0",
+    "label": "Name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Phone"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Tracking"
+   },
+   {
+    "name": "custom_column_4",
+    "label": "Order ID"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"name\"]}')}",
+   "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"a7243070\",\"path\":[\"body\",\"name\"]}')}",
+   "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"398c231b\",\"path\":[\"Phone\"]}')}",
+   "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"fulfillments\",{\"path_element_type\":\"current_item\"},\"tracking_numbers\"]}')}",
+   "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"9db77dd1\",\"path\":[\"id\"]}')}"
+  },
+  "uuid": "d4e950af-8307-4cb3-9c87-fd94fe8ca83a",
+  "unfinished": false,
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

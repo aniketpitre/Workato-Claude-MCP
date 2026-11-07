@@ -1,0 +1,920 @@
+{
+ "name": "workplace_bot",
+ "title": "Workbot for Workplace",
+ "requires_connection": true,
+ "categories": null,
+ "aliases": [
+  "Workbot for Workplace"
+ ],
+ "triggers": [
+  {
+   "name": "bot_command",
+   "title": "New command",
+   "description": "New command to Workplace Workbot",
+   "help": "Define Workbot command. When this command is sent to Workbot by a %{provider.capitalize} user, it will carry out actions in this recipe. Use the Post reply action to send a response back to the %{provider.capitalize} user.",
+   "input": [
+    {
+     "name": "action_name",
+     "type": "string",
+     "label": "Command name",
+     "control_type": "text",
+     "required": true,
+     "hint": "Command name must be unique, one word, downcased, and contain no spaces."
+    },
+    {
+     "name": "friendly_name",
+     "type": "string",
+     "label": "Command hint",
+     "control_type": "text",
+     "hint": "Display this instead of command name in response to help messages. Can contain muliple words and spaces."
+    },
+    {
+     "name": "parameters",
+     "type": "string",
+     "label": "Parameters",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Define command input fields and get Workbot to request each value from the user."
+    },
+    {
+     "name": "hide_from_help",
+     "type": "boolean",
+     "label": "Hide command in 'help' messages",
+     "control_type": "checkbox",
+     "default": "false",
+     "hint": "If Yes , command will not show in help messages. Defaults to No ."
+    }
+   ],
+   "output": [
+    {
+     "name": "context",
+     "type": "object",
+     "label": "Context",
+     "required": true,
+     "properties": [
+      {
+       "name": "entry_id",
+       "type": "string",
+       "label": "Entry ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "entry_time",
+       "type": "string",
+       "label": "Entry time",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "thread_id",
+       "type": "string",
+       "label": "Thread ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "sender_id",
+       "type": "string",
+       "label": "Sender ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "community_id",
+       "type": "string",
+       "label": "Community ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "messaging_timestamp",
+       "type": "string",
+       "label": "Messaging timestamp",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "message_id",
+       "type": "string",
+       "label": "Message ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "label": "Text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "original_message_json",
+       "type": "string",
+       "label": "Original message json",
+       "control_type": "json",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Workbot for Workplace (Custom)",
+   "help": "Build your own Workplace action with a HTTP request. The request will be authorized under your Workplace account. All string inputs should be in UTF-8 encoding.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "post_bot_attachment",
+   "title": "Post attachment",
+   "description": "Post attachment as Workbot",
+   "help": "Posts an attachment to Workplace user or channel by specifying an attachment URL. Optionally include quick reply buttons together with post.",
+   "input": [
+    {
+     "name": "recipient",
+     "type": "string",
+     "label": "Send message to",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "get_users",
+     "toggle_field": {
+      "name": "recipient",
+      "type": "string"
+     },
+     "hint": "Select user(s) who should receive this message. To dynamically set user(s), toggle to 'Enter custom value'."
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Type",
+     "control_type": "select",
+     "required": true,
+     "hint": "Select attachment type."
+    },
+    {
+     "name": "body",
+     "type": "string",
+     "label": "File contents",
+     "control_type": "text",
+     "required": true,
+     "hint": "File contents can be obtained using action Download file from URL file in File tools by Workato"
+    },
+    {
+     "name": "file_name",
+     "type": "string",
+     "label": "File name",
+     "control_type": "text",
+     "required": true,
+     "hint": "File name should be with file extension, e.g chart.png ."
+    }
+   ],
+   "output": [
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "recipient_id",
+     "type": "string",
+     "label": "Recipient ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "post_bot_message",
+   "title": "Post message",
+   "description": "Post message as Workplace Workbot",
+   "help": "Posts a message to Workplace user or group. Text fields support markdown.",
+   "input": [
+    {
+     "name": "recipient",
+     "type": "string",
+     "label": "Send message to",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "get_users",
+     "toggle_field": {
+      "name": "recipient",
+      "type": "string"
+     },
+     "hint": "Select user(s) who should receive this message. To dynamically set user(s), toggle to 'Enter custom value'."
+    },
+    {
+     "name": "multiple_attachments",
+     "type": "boolean",
+     "label": "Multiple attachments",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "multiple_attachments",
+      "type": "boolean"
+     },
+     "hint": "Select 'Yes' to post multiple messages in a scrollable carousel."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Header text",
+     "control_type": "text",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "Header text."
+    },
+    {
+     "name": "subtitle",
+     "type": "string",
+     "label": "Subtitle text",
+     "control_type": "text",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "Subtitle text."
+    },
+    {
+     "name": "image_url",
+     "type": "string",
+     "label": "Image URL",
+     "control_type": "url",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "Image is displayed above title."
+    },
+    {
+     "name": "default_action_url",
+     "type": "string",
+     "label": "Default action URL",
+     "control_type": "url",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "External URL to open when image is clicked."
+    },
+    {
+     "name": "buttons",
+     "type": "array",
+     "label": "Buttons",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "of": "object",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "select",
+       "required": true,
+       "hint": "If button should execute a command, use 'Command'. If button should open an external URL, use 'URL'."
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "url",
+       "required_when_visible": true,
+       "visible_if": "parentInput.type === 'web_url'"
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Button title",
+       "control_type": "text",
+       "required": true,
+       "hint": "Title of button."
+      },
+      {
+       "name": "bot_command",
+       "type": "string",
+       "label": "Submit button command",
+       "control_type": "select",
+       "required_when_visible": true,
+       "visible_if": "parentInput.type === 'postback'",
+       "pick_list": "bot_command_picklist",
+       "toggle_field": {
+        "name": "bot_command",
+        "type": "string"
+       },
+       "hint": "Workbot command to execute when user clicks on button."
+      },
+      {
+       "name": "params",
+       "type": "string",
+       "label": "Command input values",
+       "control_type": "text",
+       "visible_if": "parentInput.type === 'postback'",
+       "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+      }
+     ],
+     "hint": "Configure each button. Maximum of 3 buttons only."
+    },
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments",
+     "visible_if": "input.multiple_attachments === 'true'",
+     "of": "object",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Header text",
+       "control_type": "text",
+       "hint": "Header text."
+      },
+      {
+       "name": "subtitle",
+       "type": "string",
+       "label": "Subtitle text",
+       "control_type": "text",
+       "hint": "Subtitle text."
+      },
+      {
+       "name": "image_url",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "url",
+       "hint": "Image is displayed above title."
+      },
+      {
+       "name": "default_action_url",
+       "type": "string",
+       "label": "Default action URL",
+       "control_type": "url",
+       "hint": "External URL to open when image is clicked."
+      },
+      {
+       "name": "buttons",
+       "type": "array",
+       "label": "Buttons",
+       "of": "object",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "select",
+         "required": true,
+         "hint": "If button should execute a command, use 'Command'. If button should open an external URL, use 'URL'."
+        },
+        {
+         "name": "url",
+         "type": "string",
+         "label": "URL",
+         "control_type": "url",
+         "required_when_visible": true,
+         "visible_if": "parentInput.type === 'web_url'"
+        },
+        {
+         "name": "title",
+         "type": "string",
+         "label": "Button title",
+         "control_type": "text",
+         "required": true,
+         "hint": "Title of button."
+        },
+        {
+         "name": "bot_command",
+         "type": "string",
+         "label": "Submit button command",
+         "control_type": "select",
+         "required_when_visible": true,
+         "visible_if": "parentInput.type === 'postback'",
+         "pick_list": "bot_command_picklist",
+         "toggle_field": {
+          "name": "bot_command",
+          "type": "string"
+         },
+         "hint": "Workbot command to execute when user clicks on button."
+        },
+        {
+         "name": "params",
+         "type": "string",
+         "label": "Command input values",
+         "control_type": "text",
+         "visible_if": "parentInput.type === 'postback'",
+         "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+        }
+       ],
+       "hint": "Configure each button. Maximum of 3 buttons only."
+      }
+     ],
+     "hint": "Add up to 10 messages in a scrollable carousel."
+    },
+    {
+     "name": "quick_replies",
+     "type": "array",
+     "label": "Quick reply buttons",
+     "of": "object",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true,
+       "hint": "Quick reply button title."
+      },
+      {
+       "name": "image_url",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "url",
+       "hint": "Image is displayed on the quick reply button."
+      },
+      {
+       "name": "bot_command",
+       "type": "string",
+       "label": "Submit button command",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "bot_command_picklist",
+       "toggle_field": {
+        "name": "bot_command",
+        "type": "string"
+       },
+       "hint": "Workbot command to execute when user clicks on quick reply button."
+      },
+      {
+       "name": "params",
+       "type": "string",
+       "label": "Command input values",
+       "control_type": "text",
+       "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+      }
+     ],
+     "hint": "Configure each quick reply button. Maximum of 13 quick reply buttons only."
+    }
+   ],
+   "output": [
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "recipient_id",
+     "type": "string",
+     "label": "Recipient ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "post_bot_reply",
+   "title": "Post message",
+   "description": "Post reply as Workplace Workbot >",
+   "help": "Posts a reply to Workplace user or group. Text fields support markdown.",
+   "input": [
+    {
+     "name": "multiple_attachments",
+     "type": "boolean",
+     "label": "Multiple attachments",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "multiple_attachments",
+      "type": "boolean"
+     },
+     "hint": "Select 'Yes' to post multiple messages in a scrollable carousel."
+    },
+    {
+     "name": "title",
+     "type": "string",
+     "label": "Header text",
+     "control_type": "text",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "Header text."
+    },
+    {
+     "name": "subtitle",
+     "type": "string",
+     "label": "Subtitle text",
+     "control_type": "text",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "Subtitle text."
+    },
+    {
+     "name": "image_url",
+     "type": "string",
+     "label": "Image URL",
+     "control_type": "url",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "Image is displayed above title."
+    },
+    {
+     "name": "default_action_url",
+     "type": "string",
+     "label": "Default action URL",
+     "control_type": "url",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "hint": "External URL to open when image is clicked."
+    },
+    {
+     "name": "buttons",
+     "type": "array",
+     "label": "Buttons",
+     "visible_if": "input.multiple_attachments != 'true'",
+     "of": "object",
+     "properties": [
+      {
+       "name": "type",
+       "type": "string",
+       "label": "Type",
+       "control_type": "select",
+       "required": true,
+       "hint": "If button should execute a command, use 'Command'. If button should open an external URL, use 'URL'."
+      },
+      {
+       "name": "url",
+       "type": "string",
+       "label": "URL",
+       "control_type": "url",
+       "required_when_visible": true,
+       "visible_if": "parentInput.type === 'web_url'"
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Button title",
+       "control_type": "text",
+       "required": true,
+       "hint": "Title of button."
+      },
+      {
+       "name": "bot_command",
+       "type": "string",
+       "label": "Submit button command",
+       "control_type": "select",
+       "required_when_visible": true,
+       "visible_if": "parentInput.type === 'postback'",
+       "pick_list": "bot_command_picklist",
+       "toggle_field": {
+        "name": "bot_command",
+        "type": "string"
+       },
+       "hint": "Workbot command to execute when user clicks on button."
+      },
+      {
+       "name": "params",
+       "type": "string",
+       "label": "Command input values",
+       "control_type": "text",
+       "visible_if": "parentInput.type === 'postback'",
+       "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+      }
+     ],
+     "hint": "Configure each button. Maximum of 3 buttons only."
+    },
+    {
+     "name": "attachments",
+     "type": "array",
+     "label": "Attachments",
+     "visible_if": "input.multiple_attachments === 'true'",
+     "of": "object",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Header text",
+       "control_type": "text",
+       "hint": "Header text."
+      },
+      {
+       "name": "subtitle",
+       "type": "string",
+       "label": "Subtitle text",
+       "control_type": "text",
+       "hint": "Subtitle text."
+      },
+      {
+       "name": "image_url",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "url",
+       "hint": "Image is displayed above title."
+      },
+      {
+       "name": "default_action_url",
+       "type": "string",
+       "label": "Default action URL",
+       "control_type": "url",
+       "hint": "External URL to open when image is clicked."
+      },
+      {
+       "name": "buttons",
+       "type": "array",
+       "label": "Buttons",
+       "of": "object",
+       "properties": [
+        {
+         "name": "type",
+         "type": "string",
+         "label": "Type",
+         "control_type": "select",
+         "required": true,
+         "hint": "If button should execute a command, use 'Command'. If button should open an external URL, use 'URL'."
+        },
+        {
+         "name": "url",
+         "type": "string",
+         "label": "URL",
+         "control_type": "url",
+         "required_when_visible": true,
+         "visible_if": "parentInput.type === 'web_url'"
+        },
+        {
+         "name": "title",
+         "type": "string",
+         "label": "Button title",
+         "control_type": "text",
+         "required": true,
+         "hint": "Title of button."
+        },
+        {
+         "name": "bot_command",
+         "type": "string",
+         "label": "Submit button command",
+         "control_type": "select",
+         "required_when_visible": true,
+         "visible_if": "parentInput.type === 'postback'",
+         "pick_list": "bot_command_picklist",
+         "toggle_field": {
+          "name": "bot_command",
+          "type": "string"
+         },
+         "hint": "Workbot command to execute when user clicks on button."
+        },
+        {
+         "name": "params",
+         "type": "string",
+         "label": "Command input values",
+         "control_type": "text",
+         "visible_if": "parentInput.type === 'postback'",
+         "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+        }
+       ],
+       "hint": "Configure each button. Maximum of 3 buttons only."
+      }
+     ],
+     "hint": "Add up to 10 messages in a scrollable carousel."
+    },
+    {
+     "name": "quick_replies",
+     "type": "array",
+     "label": "Quick reply buttons",
+     "of": "object",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true,
+       "hint": "Quick reply button title."
+      },
+      {
+       "name": "image_url",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "url",
+       "hint": "Image is displayed on the quick reply button."
+      },
+      {
+       "name": "bot_command",
+       "type": "string",
+       "label": "Submit button command",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "bot_command_picklist",
+       "toggle_field": {
+        "name": "bot_command",
+        "type": "string"
+       },
+       "hint": "Workbot command to execute when user clicks on quick reply button."
+      },
+      {
+       "name": "params",
+       "type": "string",
+       "label": "Command input values",
+       "control_type": "text",
+       "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+      }
+     ],
+     "hint": "Configure each quick reply button. Maximum of 13 quick reply buttons only."
+    }
+   ],
+   "output": [
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "recipient_id",
+     "type": "string",
+     "label": "Recipient ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "post_simple_message",
+   "title": "Post simple message",
+   "description": "Post simple message as Workplace Workbot",
+   "help": "Posts a simple message to Workplace user or channel. To post a rich message, use the Post message action.",
+   "input": [
+    {
+     "name": "recipient",
+     "type": "string",
+     "label": "Send message to",
+     "control_type": "multiselect",
+     "required": true,
+     "pick_list": "get_users",
+     "toggle_field": {
+      "name": "recipient",
+      "type": "string"
+     },
+     "hint": "Select user(s) who should receive this message. To dynamically set user(s), toggle to 'Enter custom value'."
+    },
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true,
+     "hint": "Posts a simple text reply. Must be UTF-8 and has a 2000 character limit."
+    },
+    {
+     "name": "quick_replies",
+     "type": "array",
+     "label": "Quick reply buttons",
+     "of": "object",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true,
+       "hint": "Quick reply button title."
+      },
+      {
+       "name": "image_url",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "url",
+       "hint": "Image is displayed on the quick reply button."
+      },
+      {
+       "name": "bot_command",
+       "type": "string",
+       "label": "Submit button command",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "bot_command_picklist",
+       "toggle_field": {
+        "name": "bot_command",
+        "type": "string"
+       },
+       "hint": "Workbot command to execute when user clicks on quick reply button."
+      },
+      {
+       "name": "params",
+       "type": "string",
+       "label": "Command input values",
+       "control_type": "text",
+       "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+      }
+     ],
+     "hint": "Configure each quick reply button. Maximum of 13 quick reply buttons only."
+    }
+   ],
+   "output": [
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "recipient_id",
+     "type": "string",
+     "label": "Recipient ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "post_simple_reply",
+   "title": "Post simple reply",
+   "description": "Post simple reply as Workplace Workbot",
+   "help": "Posts a simple reply to Workplace user or group chat. To post a rich message, use the Post reply action.",
+   "input": [
+    {
+     "name": "text",
+     "type": "string",
+     "label": "Text",
+     "control_type": "text",
+     "required": true,
+     "hint": "Posts a simple text reply. Must be UTF-8 and has a 2000 character limit."
+    },
+    {
+     "name": "quick_replies",
+     "type": "array",
+     "label": "Quick reply buttons",
+     "of": "object",
+     "properties": [
+      {
+       "name": "title",
+       "type": "string",
+       "label": "Title",
+       "control_type": "text",
+       "required": true,
+       "hint": "Quick reply button title."
+      },
+      {
+       "name": "image_url",
+       "type": "string",
+       "label": "Image URL",
+       "control_type": "url",
+       "hint": "Image is displayed on the quick reply button."
+      },
+      {
+       "name": "bot_command",
+       "type": "string",
+       "label": "Submit button command",
+       "control_type": "select",
+       "required": true,
+       "pick_list": "bot_command_picklist",
+       "toggle_field": {
+        "name": "bot_command",
+        "type": "string"
+       },
+       "hint": "Workbot command to execute when user clicks on quick reply button."
+      },
+      {
+       "name": "params",
+       "type": "string",
+       "label": "Command input values",
+       "control_type": "text",
+       "hint": "Pass values for command input. E.g. name : John Smith age : 42"
+      }
+     ],
+     "hint": "Configure each quick reply button. Maximum of 13 quick reply buttons only."
+    }
+   ],
+   "output": [
+    {
+     "name": "message_id",
+     "type": "string",
+     "label": "Message ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "recipient_id",
+     "type": "string",
+     "label": "Recipient ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

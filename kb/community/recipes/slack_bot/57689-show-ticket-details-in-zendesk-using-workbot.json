@@ -1,0 +1,291 @@
+{
+ "id": 57689,
+ "name": "Show Ticket details in Zendesk using Workbot",
+ "description": "Show Ticket details in Zendesk using the command: Show Zendesk Ticket",
+ "applications": [
+  "slack_bot",
+  "zendesk",
+  "workato_variable"
+ ],
+ "action_applications": [
+  "zendesk",
+  "workato_variable"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "ticket",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "Customer Service",
+  "Recipe Tools"
+ ],
+ "copy_count": 8558,
+ "curated": false,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2023-02-15T20:30:21.842-08:00",
+ "source_url": "https://app.workato.com/recipes/57689?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "zendesk.get_ticket_by_id",
+  "slack_bot.post_bot_reply_v2",
+  "workato_variable.declare_variable",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">zendesk show ticket</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Zendesk"
+  },
+  "toggleCfg": {
+   "domain": false,
+   "name": false,
+   "scope": false
+  },
+  "input": {
+   "domain": "zendesk",
+   "name": "show",
+   "scope": "ticket",
+   "parameters": "[{\"name\":\"id\",\"type\":\"integer\",\"optional\":false,\"hint\":\"Ticket ID\",\"sample\":\"9571\",\"control_type\":\"integer\"}]",
+   "description": "Show Ticket details.",
+   "hide_from_help": "false",
+   "allow_dialog": "true"
+  },
+  "extended_output_schema": [
+   {
+    "label": "Parameters",
+    "name": "parameters",
+    "properties": [
+     {
+      "control_type": "integer",
+      "label": "ID",
+      "parse_output": "integer_conversion",
+      "name": "id",
+      "type": "integer",
+      "optional": false,
+      "hint": "Ticket ID",
+      "sample": "9571"
+     }
+    ],
+    "type": "object"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "zendesk",
+      "name": "get_ticket_by_id",
+      "as": "get_ticket_by_id",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "id": "#{_('data.slack_bot.bot_command_v2.parameters.id')}"
+      },
+      "extended_output_schema": [
+       {
+        "label": "Ticket custom fields",
+        "name": "custom_fields",
+        "properties": [],
+        "type": "object"
+       }
+      ],
+      "comment": "retrieve ticket details using zendesk ticket ID",
+      "uuid": "8478d112-c2ec-4c7b-b813-8691b95b91aa"
+     },
+     {
+      "number": 3,
+      "as": "e8c68f3c",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 4,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply1",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "blocks": [
+          {
+           "block_type": "section_with_text",
+           "section_text": "Searched for ticket :ticket:"
+          },
+          {
+           "block_type": "section_with_text",
+           "section_text": "Hey, there seems to be no ticket with id #{_('data.slack_bot.bot_command_v2.parameters.id')} :no_good:"
+          }
+         ]
+        },
+        "comment": "ticket cannot be found",
+        "uuid": "798a3dca-2856-49a5-90c2-8fdb29771956",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       },
+       {
+        "number": 5,
+        "keyword": "stop",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "stop_with_error": "false"
+        },
+        "uuid": "2fb317e8-5274-4a47-8f88-52b8bafd31b9"
+       }
+      ],
+      "uuid": "7412f839-6041-4c91-8ade-b38fcc8bddb3"
+     }
+    ],
+    "uuid": "a772708f-1add-4203-b446-efb8ada0b57e"
+   },
+   {
+    "number": 6,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "1600031e",
+    "title": "  Create variable link",
+    "description": "Create variable <span class=\"provider\">link</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "string",
+     "name": "link",
+     "value": "=_('data.zendesk.get_ticket_by_id.url').gsub(/api\\/.*$/, '') + \"agent/tickets/\" + _('data.zendesk.get_ticket_by_id.id').to_s"
+    },
+    "extended_output_schema": [
+     {
+      "control_type": "text",
+      "label": "link",
+      "name": "value",
+      "type": "string"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "control_type": "text",
+      "hint": "Default value for the variable",
+      "label": "Default value",
+      "name": "value",
+      "optional": true,
+      "sticky": true,
+      "type": "string",
+      "strip_interpolation": true
+     }
+    ],
+    "comment": "use data transformation to format ticket URL",
+    "uuid": "9c0dd891-e079-4826-974e-d7fbf5fdcfc2"
+   },
+   {
+    "number": 7,
+    "provider": "slack_bot",
+    "name": "post_bot_reply_v2",
+    "as": "post_bot_reply_v2",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "message.color": true
+    },
+    "input": {
+     "message": {
+      "attachment_text": "=",
+      "color": "good",
+      "title_link": "="
+     },
+     "blocks": [
+      {
+       "block_type": "section_with_text",
+       "options": [
+        {},
+        {}
+       ],
+       "attachment_fields": [
+        {}
+       ],
+       "section_text": "<#{_('data.workato_variable.1600031e.value')}|Ticket found!>\n*Subject*\n#{_('data.zendesk.get_ticket_by_id.subject')}\n\n*Description*\n#{_('data.zendesk.get_ticket_by_id.description')}"
+      },
+      {
+       "block_type": "section_with_fields",
+       "attachment_fields": [
+        {
+         "title": "*Type:*",
+         "value": "=_('data.zendesk.get_ticket_by_id.type') or \"none\""
+        },
+        {
+         "title": "*Priority:*",
+         "value": "=_('data.zendesk.get_ticket_by_id.priority') or \"none\""
+        },
+        {
+         "title": "*Status:*",
+         "value": "#{_('data.zendesk.get_ticket_by_id.status')}"
+        },
+        {
+         "title": "*Requestor:*",
+         "value": "=_('data.zendesk.get_ticket_by_id.get_user_by_id(requester_id>id).name') or \"none\""
+        },
+        {
+         "title": "*Requestor ID:*",
+         "value": "=_('data.zendesk.get_ticket_by_id.requester_id') ? _('data.zendesk.get_ticket_by_id.requester_id').to_s : \"none\""
+        }
+       ],
+       "section_text": "*Ticket Details:*"
+      }
+     ]
+    },
+    "uuid": "717b0abf-2a6e-45d7-8c0a-5b151a25afd0",
+    "title": null,
+    "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_0",
+    "label": "Ticket ID"
+   },
+   {
+    "name": "custom_column_1",
+    "label": "Subject"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Status"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_0": "#{_('data.slack_bot.bot_command_v2.parameters.id')}",
+   "custom_column_1": "#{_('data.zendesk.get_ticket_by_id.subject')} ",
+   "custom_column_2": "#{_('data.zendesk.get_ticket_by_id.status')}"
+  },
+  "uuid": "7236a820-ab36-4d46-899f-4d0b81ef4538",
+  "param": {}
+ }
+}

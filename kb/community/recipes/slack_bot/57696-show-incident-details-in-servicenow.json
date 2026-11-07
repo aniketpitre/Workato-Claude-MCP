@@ -1,0 +1,3296 @@
+{
+ "id": 57696,
+ "name": "Show Incident details in ServiceNow",
+ "description": "1. Type the Workbot command **ServiceNow show incident** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will ask for the **ServiceNow incident number**.\n3. Workbot will display the ServiceNow incident details in Slack.\n\n**Notes**\nWorkbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "service_now",
+  "workato_variable",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "service_now",
+  "workato_variable",
+  "slack_bot"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "incident~ incident",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "Customer Service",
+  "IT Service Management",
+  "Recipe Tools"
+ ],
+ "copy_count": 4292,
+ "curated": false,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2021-02-15T00:43:47.763-08:00",
+ "source_url": "https://app.workato.com/recipes/57696?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "service_now.search_objects_v2",
+  "workato_variable.declare_variable",
+  "slack_bot.post_bot_reply_v2",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">servicenow show incident</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "ServiceNow"
+  },
+  "toggleCfg": {
+   "domain": true,
+   "name": true,
+   "scope": false
+  },
+  "input": {
+   "domain": "service_now",
+   "name": "show",
+   "scope": "incident",
+   "parameters": "[{\"name\":\"number\",\"type\":\"string\",\"optional\":false,\"sample\":\"INC0020014\",\"hint\":\"Incident number\",\"control_type\":\"text\"}]",
+   "description": "Show Incident details",
+   "hide_from_help": "false",
+   "allow_dialog": "true"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Number",
+      "name": "number",
+      "type": "string",
+      "optional": false,
+      "sample": "INC0020014",
+      "hint": "Incident number"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "service_now",
+    "name": "search_objects_v2",
+    "as": "search_objects_v2",
+    "title": "Search records in Incident",
+    "description": "Search for <span class=\"provider\">records</span> in <span class=\"provider\">Incident</span> table in <span class=\"provider\">ServiceNow</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table": "Incident"
+    },
+    "toggleCfg": {
+     "table": true
+    },
+    "input": {
+     "table": "incident~Incident",
+     "search_columns": {
+      "number": "#{_('data.slack_bot.bot_command_v2.parameters.number')}"
+     },
+     "count": "100"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "result",
+      "label": "Records",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Business resolve time",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "business_stc"
+       },
+       {
+        "control_type": "number",
+        "label": "Resolve time",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "calendar_stc"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Caller",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "caller_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Category",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "category"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Caused by Change",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "caused_by"
+       },
+       {
+        "control_type": "number",
+        "label": "Child Incidents",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "child_incidents"
+       },
+       {
+        "control_type": "text",
+        "label": "Close code",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "close_code"
+       },
+       {
+        "control_type": "number",
+        "label": "Incident state",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "incident_state"
+       },
+       {
+        "control_type": "number",
+        "label": "Notify",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "notify"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Parent Incident",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "parent_incident"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Problem",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "problem_id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Last reopened by",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "reopened_by"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Last reopened at",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "reopened_time"
+       },
+       {
+        "control_type": "number",
+        "label": "Reopen count",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "reopen_count"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Resolved",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "resolved_at"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Resolved by",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "resolved_by"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Change Request",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "rfc"
+       },
+       {
+        "control_type": "number",
+        "label": "Severity",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "severity"
+       },
+       {
+        "control_type": "text",
+        "label": "Subcategory",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "subcategory"
+       },
+       {
+        "control_type": "text",
+        "label": "Sys ID",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Account",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_account"
+       },
+       {
+        "control_type": "text",
+        "label": "Account manager",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_account_manager"
+       },
+       {
+        "control_type": "text",
+        "label": "Application Name",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_application_name"
+       },
+       {
+        "control_type": "text",
+        "label": "Application technology",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_application_technology"
+       },
+       {
+        "control_type": "text",
+        "label": "Area",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_area"
+       },
+       {
+        "control_type": "number",
+        "label": "Asana ID",
+        "parse_output": "integer_conversion",
+        "custom": true,
+        "optional": true,
+        "type": "integer",
+        "name": "u_asana_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Call connectivity issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_call_connectivity_issues"
+       },
+       {
+        "control_type": "text",
+        "label": "Camera issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_camera_issues"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Category",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": true,
+        "optional": true,
+        "type": "date_time",
+        "name": "u_category"
+       },
+       {
+        "control_type": "text",
+        "label": "Category Type",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_category_type"
+       },
+       {
+        "control_type": "text",
+        "label": "Cloud Provider",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_cloud_provider"
+       },
+       {
+        "control_type": "text",
+        "label": "Comments for Engineering",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_comments_for_engineering"
+       },
+       {
+        "control_type": "text",
+        "label": "Content issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_content_issues"
+       },
+       {
+        "control_type": "text",
+        "label": "Customer Impacted",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_customer_impacted"
+       },
+       {
+        "control_type": "text",
+        "label": "Data sensitivity level",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_data_sensitivity_level"
+       },
+       {
+        "control_type": "text",
+        "label": "Decimal",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_decimal"
+       },
+       {
+        "control_type": "text",
+        "label": "Department",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_department"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Dev Deploy Date",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": true,
+        "optional": true,
+        "type": "date_time",
+        "name": "u_dev_deploy_date"
+       },
+       {
+        "control_type": "text",
+        "label": "Employee ID",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_employee_id"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Escalate to Engineering",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Escalate to Engineering",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_escalate_to_engineering"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_escalate_to_engineering"
+       },
+       {
+        "control_type": "text",
+        "label": "ExternalId",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_externalid"
+       },
+       {
+        "control_type": "text",
+        "label": "Functionality",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_functionality"
+       },
+       {
+        "control_type": "text",
+        "label": "Jira Issue ID",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_jira_issue_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Jira Issue Link",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_jira_issue_link"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "list_new",
+        "custom": true,
+        "optional": true,
+        "type": "object",
+        "name": "u_list_new"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "list_old",
+        "custom": true,
+        "optional": true,
+        "type": "object",
+        "name": "u_list_old"
+       },
+       {
+        "control_type": "text",
+        "label": "Meeting date",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_meeting_date"
+       },
+       {
+        "control_type": "text",
+        "label": "Notes from assignee",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_notes_from_assignee"
+       },
+       {
+        "control_type": "number",
+        "label": "Number",
+        "parse_output": "integer_conversion",
+        "custom": true,
+        "optional": true,
+        "type": "integer",
+        "name": "u_number"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Prod Deploy Date",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": true,
+        "optional": true,
+        "type": "date_time",
+        "name": "u_prod_deploy_date"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Raise to Engineering",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Raise to Engineering",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_raise_to_engineering"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_raise_to_engineering"
+       },
+       {
+        "control_type": "text",
+        "label": "Requester Email",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_requester_email"
+       },
+       {
+        "control_type": "text",
+        "label": "Room number",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_room_number"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Sent to Engineering",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Sent to Engineering",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_sent_to_engineering"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_sent_to_engineering"
+       },
+       {
+        "control_type": "text",
+        "label": "sfdc case id",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_sfdc_case_id"
+       },
+       {
+        "control_type": "text",
+        "label": "SF Case ID",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_sf_case_id"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Synced From SF",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Synced From SF",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_synced_from_sf"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_synced_from_sf"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Synced from Workato",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Synced from Workato",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_synced_from_workato"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_synced_from_workato"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Synced From JIRA",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Synced From JIRA",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_sync_to_jira"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_sync_to_jira"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Sync to Salesforce ",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Sync to Salesforce ",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_sync_to_salesforce"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_sync_to_salesforce"
+       },
+       {
+        "control_type": "text",
+        "label": "Tablet issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_tablet_issues"
+       },
+       {
+        "control_type": "text",
+        "label": "Worker ID Reference",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_worker_id_reference"
+       },
+       {
+        "control_type": "text",
+        "label": "INF_Number",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_mas_servicenow_c_inf_number"
+       },
+       {
+        "control_type": "text",
+        "label": "Account name",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_account_name"
+       },
+       {
+        "control_type": "text",
+        "label": "Jira Issue",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_jira_issue"
+       },
+       {
+        "control_type": "text",
+        "label": "Last Updated by Integration User",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_last_updated_by_integration_user"
+       },
+       {
+        "control_type": "number",
+        "label": "Last Updated DateTime by Integration",
+        "parse_output": "integer_conversion",
+        "custom": true,
+        "optional": true,
+        "type": "integer",
+        "name": "x_worka_salesforce_last_updated_datetime_by_integration"
+       },
+       {
+        "control_type": "text",
+        "label": "Last Updated DateTime By Integration2",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_last_updated_datetime_by_integration2"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Active",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Active",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": false,
+         "optional": true,
+         "type": "boolean",
+         "name": "active"
+        },
+        "custom": false,
+        "optional": true,
+        "type": "boolean",
+        "name": "active"
+       },
+       {
+        "control_type": "text",
+        "label": "Activity due",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "activity_due"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Additional assignee list",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "additional_assignee_list"
+       },
+       {
+        "control_type": "text",
+        "label": "Approval",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "approval"
+       },
+       {
+        "control_type": "text",
+        "label": "Approval history",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "approval_history"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Approval set",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "approval_set"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Assigned to",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "assigned_to"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Assignment group",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "assignment_group"
+       },
+       {
+        "control_type": "text",
+        "label": "Business duration",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "business_duration"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Business service",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "business_service"
+       },
+       {
+        "control_type": "text",
+        "label": "Duration",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "calendar_duration"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Closed",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "closed_at"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Closed by",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "closed_by"
+       },
+       {
+        "control_type": "text",
+        "label": "Close notes",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "close_notes"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Affected CI",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "cmdb_ci"
+       },
+       {
+        "control_type": "text",
+        "label": "Additional comments",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "comments"
+       },
+       {
+        "control_type": "text",
+        "label": "Comments and Work notes",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "comments_and_work_notes"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Company",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "company"
+       },
+       {
+        "control_type": "text",
+        "label": "Contact type",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "contact_type"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Contract",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "contract"
+       },
+       {
+        "control_type": "text",
+        "label": "Correlation display",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "correlation_display"
+       },
+       {
+        "control_type": "text",
+        "label": "Correlation ID",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "correlation_id"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Delivery plan",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "delivery_plan"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Delivery task",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "delivery_task"
+       },
+       {
+        "control_type": "text",
+        "label": "Description",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "description"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Due date",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "due_date"
+       },
+       {
+        "control_type": "number",
+        "label": "Escalation",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "escalation"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Expected start",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "expected_start"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Follow up",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "follow_up"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Group list",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "group_list"
+       },
+       {
+        "control_type": "number",
+        "label": "Impact",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "impact"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Knowledge",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Knowledge",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": false,
+         "optional": true,
+         "type": "boolean",
+         "name": "knowledge"
+        },
+        "custom": false,
+        "optional": true,
+        "type": "boolean",
+        "name": "knowledge"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Location",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "location"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Made SLA",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Made SLA",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": false,
+         "optional": true,
+         "type": "boolean",
+         "name": "made_sla"
+        },
+        "custom": false,
+        "optional": true,
+        "type": "boolean",
+        "name": "made_sla"
+       },
+       {
+        "control_type": "text",
+        "label": "Number",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "number"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Opened",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "opened_at"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Opened by",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "opened_by"
+       },
+       {
+        "control_type": "number",
+        "label": "Order",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "order"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Parent",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "parent"
+       },
+       {
+        "control_type": "number",
+        "label": "Priority",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "priority"
+       },
+       {
+        "control_type": "number",
+        "label": "Reassignment count",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "reassignment_count"
+       },
+       {
+        "control_type": "text",
+        "label": "Short description",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "short_description"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Skills",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "skills"
+       },
+       {
+        "control_type": "text",
+        "label": "SLA due",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sla_due"
+       },
+       {
+        "control_type": "number",
+        "label": "State",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "state"
+       },
+       {
+        "control_type": "text",
+        "label": "Task type",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_class_name"
+       },
+       {
+        "control_type": "text",
+        "label": "Created by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_created_by"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "sys_created_on"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Domain",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "sys_domain"
+       },
+       {
+        "control_type": "text",
+        "label": "Domain Path",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_domain_path"
+       },
+       {
+        "control_type": "number",
+        "label": "Updates",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "sys_mod_count"
+       },
+       {
+        "control_type": "text",
+        "label": "Updated by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_updated_by"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "sys_updated_on"
+       },
+       {
+        "control_type": "text",
+        "label": "Time worked",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "time_worked"
+       },
+       {
+        "control_type": "text",
+        "label": "Upon approval",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "upon_approval"
+       },
+       {
+        "control_type": "text",
+        "label": "Upon reject",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "upon_reject"
+       },
+       {
+        "control_type": "number",
+        "label": "Urgency",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "urgency"
+       },
+       {
+        "control_type": "text",
+        "label": "User input",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "user_input"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Watch list",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "watch_list"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Work end",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "work_end"
+       },
+       {
+        "control_type": "text",
+        "label": "Work notes",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "work_notes"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "url",
+          "label": "Link",
+          "optional": true,
+          "type": "string",
+          "name": "link"
+         },
+         {
+          "control_type": "text",
+          "label": "Value",
+          "optional": true,
+          "type": "string",
+          "name": "value"
+         }
+        ],
+        "label": "Work notes list",
+        "custom": false,
+        "optional": true,
+        "type": "object",
+        "name": "work_notes_list"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Work start",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "work_start"
+       }
+      ]
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "object",
+      "name": "search_columns",
+      "label": "Search by column values",
+      "properties": [
+       {
+        "control_type": "number",
+        "label": "Business resolve time",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "business_stc",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Resolve time",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "calendar_stc",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Caller",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "caller_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Category",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "category",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Caused by Change",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "caused_by",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Child Incidents",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "child_incidents",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Close code",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "close_code",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Incident state",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "incident_state",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Notify",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "notify",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Parent Incident",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "parent_incident",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Problem",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "problem_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Last reopened by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "reopened_by",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Last reopened at",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "reopened_time",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Reopen count",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "reopen_count",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Resolved",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "resolved_at",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Resolved by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "resolved_by",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Change Request",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "rfc",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Severity",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "severity",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Subcategory",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "subcategory",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Sys ID",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Account",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_account",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Account manager",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_account_manager",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Application Name",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_application_name",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Application technology",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_application_technology",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Area",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_area",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Asana ID",
+        "parse_output": "integer_conversion",
+        "custom": true,
+        "optional": true,
+        "type": "integer",
+        "name": "u_asana_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Call connectivity issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_call_connectivity_issues",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Camera issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_camera_issues",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Category",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": true,
+        "optional": true,
+        "type": "date_time",
+        "name": "u_category",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Category Type",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_category_type",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Cloud Provider",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_cloud_provider",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Comments for Engineering",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_comments_for_engineering",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Content issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_content_issues",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Customer Impacted",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_customer_impacted",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Data sensitivity level",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_data_sensitivity_level",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Decimal",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_decimal",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Department",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_department",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Dev Deploy Date",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": true,
+        "optional": true,
+        "type": "date_time",
+        "name": "u_dev_deploy_date",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Employee ID",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_employee_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Escalate to Engineering",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Escalate to Engineering",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_escalate_to_engineering",
+         "parent": "search_columns"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_escalate_to_engineering",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "ExternalId",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_externalid",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Functionality",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_functionality",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Jira Issue ID",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_jira_issue_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Jira Issue Link",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_jira_issue_link",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "list_new",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_list_new",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "list_old",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_list_old",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Meeting date",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_meeting_date",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Notes from assignee",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_notes_from_assignee",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Number",
+        "parse_output": "integer_conversion",
+        "custom": true,
+        "optional": true,
+        "type": "integer",
+        "name": "u_number",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Prod Deploy Date",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": true,
+        "optional": true,
+        "type": "date_time",
+        "name": "u_prod_deploy_date",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Raise to Engineering",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Raise to Engineering",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_raise_to_engineering",
+         "parent": "search_columns"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_raise_to_engineering",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Requester Email",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_requester_email",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Room number",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_room_number",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Sent to Engineering",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Sent to Engineering",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_sent_to_engineering",
+         "parent": "search_columns"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_sent_to_engineering",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "sfdc case id",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_sfdc_case_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "SF Case ID",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_sf_case_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Synced From SF",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Synced From SF",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_synced_from_sf",
+         "parent": "search_columns"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_synced_from_sf",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Synced from Workato",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Synced from Workato",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_synced_from_workato",
+         "parent": "search_columns"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_synced_from_workato",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Synced From JIRA",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Synced From JIRA",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_sync_to_jira",
+         "parent": "search_columns"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_sync_to_jira",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Sync to Salesforce ",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Sync to Salesforce ",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": true,
+         "optional": true,
+         "type": "boolean",
+         "name": "u_sync_to_salesforce",
+         "parent": "search_columns"
+        },
+        "custom": true,
+        "optional": true,
+        "type": "boolean",
+        "name": "u_sync_to_salesforce",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Tablet issues",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_tablet_issues",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Worker ID Reference",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "u_worker_id_reference",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "INF_Number",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_mas_servicenow_c_inf_number",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Account name",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_account_name",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Jira Issue",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_jira_issue",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Last Updated by Integration User",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_last_updated_by_integration_user",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Last Updated DateTime by Integration",
+        "parse_output": "integer_conversion",
+        "custom": true,
+        "optional": true,
+        "type": "integer",
+        "name": "x_worka_salesforce_last_updated_datetime_by_integration",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Last Updated DateTime By Integration2",
+        "custom": true,
+        "optional": true,
+        "type": "string",
+        "name": "x_worka_salesforce_last_updated_datetime_by_integration2",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Active",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Active",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": false,
+         "optional": true,
+         "type": "boolean",
+         "name": "active",
+         "parent": "search_columns"
+        },
+        "custom": false,
+        "optional": true,
+        "type": "boolean",
+        "name": "active",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Activity due",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "activity_due",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Additional assignee list",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "additional_assignee_list",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Approval",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "approval",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Approval history",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "approval_history",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Approval set",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "approval_set",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Assigned to",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "assigned_to",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Assignment group",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "assignment_group",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Business duration",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "business_duration",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Business service",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "business_service",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Duration",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "calendar_duration",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Closed",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "closed_at",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Closed by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "closed_by",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Close notes",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "close_notes",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Affected CI",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "cmdb_ci",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Additional comments",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "comments",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Comments and Work notes",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "comments_and_work_notes",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Company",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "company",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Contact type",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "contact_type",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Contract",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "contract",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Correlation display",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "correlation_display",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Correlation ID",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "correlation_id",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Delivery plan",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "delivery_plan",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Delivery task",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "delivery_task",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Description",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "description",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Due date",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "due_date",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Escalation",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "escalation",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Expected start",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "expected_start",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Follow up",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "follow_up",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Group list",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "group_list",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Impact",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "impact",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Knowledge",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Knowledge",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": false,
+         "optional": true,
+         "type": "boolean",
+         "name": "knowledge",
+         "parent": "search_columns"
+        },
+        "custom": false,
+        "optional": true,
+        "type": "boolean",
+        "name": "knowledge",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Location",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "location",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "checkbox",
+        "label": "Made SLA",
+        "render_input": {},
+        "parse_output": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Made SLA",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "custom": false,
+         "optional": true,
+         "type": "boolean",
+         "name": "made_sla",
+         "parent": "search_columns"
+        },
+        "custom": false,
+        "optional": true,
+        "type": "boolean",
+        "name": "made_sla",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Number",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "number",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Opened",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "opened_at",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Opened by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "opened_by",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Order",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "order",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Parent",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "parent",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Priority",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "priority",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Reassignment count",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "reassignment_count",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Short description",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "short_description",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Skills",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "skills",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "SLA due",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sla_due",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "State",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "state",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Task type",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_class_name",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Created by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_created_by",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Created",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "sys_created_on",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Domain",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_domain",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Domain Path",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_domain_path",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Updates",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "sys_mod_count",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Updated by",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "sys_updated_by",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Updated",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "sys_updated_on",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Time worked",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "time_worked",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Upon approval",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "upon_approval",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Upon reject",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "upon_reject",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "number",
+        "label": "Urgency",
+        "parse_output": "integer_conversion",
+        "custom": false,
+        "optional": true,
+        "type": "integer",
+        "name": "urgency",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "User input",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "user_input",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Watch list",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "watch_list",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Work end",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "work_end",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Work notes",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "work_notes",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "text",
+        "label": "Work notes list",
+        "custom": false,
+        "optional": true,
+        "type": "string",
+        "name": "work_notes_list",
+        "parent": "search_columns"
+       },
+       {
+        "control_type": "date_time",
+        "label": "Work start",
+        "render_input": "render_servicenow_utc_time",
+        "parse_output": "parse_servicenow_utc_time",
+        "custom": false,
+        "optional": true,
+        "type": "date_time",
+        "name": "work_start",
+        "parent": "search_columns"
+       }
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "table",
+     "search_columns",
+     "search_columns.number"
+    ],
+    "hidden_config_fields": [
+     "search_columns.sys_id"
+    ],
+    "comment": "search by incident number",
+    "uuid": "486c8cbc-058d-448b-9356-268dc4ead0d1"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.service_now.search_objects_v2.result.first.number')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "7b09e2ab",
+      "title": "  Create variable Link",
+      "description": "Create variable <span class=\"provider\">Link</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "string",
+       "name": "Link",
+       "value": "=_('data.service_now.search_objects_v2.result.first.sys_domain.link').split(\"/api\").first.to_s + \n\"/nav_to.do?uri=incident.do?sys_id=\" + _('data.service_now.search_objects_v2.result.first.number')"
+      },
+      "extended_output_schema": [
+       {
+        "type": "string",
+        "name": "value",
+        "control_type": "text",
+        "label": "Link"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "value",
+        "control_type": "text",
+        "label": "Default value",
+        "hint": "Default value for the variable",
+        "sticky": true,
+        "optional": true,
+        "strip_interpolation": true
+       }
+      ],
+      "uuid": "aba42eb9-899d-4355-b957-36147df54c82"
+     },
+     {
+      "number": 4,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "Here you go\n\n<#{_('data.workato_variable.7b09e2ab.value')}|Incident: #{_('data.slack_bot.bot_command_v2.parameters.number')}>\n*Description* #{_('data.service_now.search_objects_v2.result.first.short_description')}"
+        },
+        {
+         "block_type": "section_with_fields",
+         "attachment_fields": [
+          {
+           "value": "#{_('data.service_now.search_objects_v2.result.first.number')}",
+           "title": "*ID:*"
+          },
+          {
+           "value": "#{_('data.service_now.search_objects_v2.result.first.severity')}",
+           "title": "*Severity:*"
+          },
+          {
+           "title": "*Created by:*",
+           "value": "=_('data.service_now.search_objects_v2.result.first.sys_created_on').to_date.strftime(\"%d %b %Y %l:%M%P %Z\")"
+          },
+          {
+           "value": "= [\"Critical\",\"High\",\"Moderate\",\"Low\",\"Planning\"][_('data.service_now.search_objects_v2.result.first.priority').to_i - 1]",
+           "title": "*Priority:*"
+          },
+          {
+           "value": "= [\"New\",\"Active\",\"Awaiting problem\",\"Awaiting user info\",\"Awaiting evidence\",\"Resolved\",\"Closed\"][_('data.service_now.search_objects_v2.result.first.incident_state').to_i - 1]",
+           "title": "*State:*"
+          },
+          {
+           "value": "#{_('data.service_now.search_objects_v2.result.first.category')}",
+           "title": "*Category:*"
+          }
+         ],
+         "section_text": "Details:"
+        }
+       ]
+      },
+      "uuid": "d3408d96-a83a-4779-a889-95d1444a390c"
+     }
+    ],
+    "uuid": "a24561cf-cf4b-47fb-a23f-c738a528b9d9"
+   },
+   {
+    "number": 5,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.service_now.search_objects_v2.result.first.number')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 6,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2__1",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "Searched incidents"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "Could not find an Incident matching '#{_('data.slack_bot.bot_command_v2.parameters.number')}'"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "Opps! I could not find the incident in ServiceNow \nCheck that you provide the exact Incident number in the right case"
+        }
+       ]
+      },
+      "uuid": "683b95f5-913c-4212-a2a8-d5615aa5da45"
+     }
+    ],
+    "uuid": "f476f6be-9fcf-4cda-97a3-912b2e691966"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Number"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Short description"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Description"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.slack_bot.bot_command_v2.parameters.number')}",
+   "custom_column_2": "#{_('data.service_now.search_objects_v2.result.first.short_description')}",
+   "custom_column_3": "#{_('data.service_now.search_objects_v2.result.first.description')}"
+  },
+  "uuid": "8249a864-23e4-4c9d-ae6b-d7d0547654e1",
+  "param": {}
+ }
+}

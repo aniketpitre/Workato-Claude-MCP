@@ -1,0 +1,271 @@
+{
+ "name": "workato_recipe_function",
+ "title": "Recipe function by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Workato"
+ ],
+ "aliases": [
+  "Recipe function by Workato",
+  "utility",
+  "utilities",
+  "callable"
+ ],
+ "triggers": [
+  {
+   "name": "execute",
+   "title": "New call for function",
+   "description": "Function call",
+   "help": "Use this to build a recipe that can be called from another recipe Define the parameters for this recipe function ( parameters schema ) and the result returned to the parent recipe ( result schema ).",
+   "input": [
+    {
+     "name": "parameters_schema_json",
+     "type": "string",
+     "label": "Parameters schema",
+     "control_type": "schema-designer",
+     "extends_schema": true,
+     "hint": "Describe the schema for the recipe parameters"
+    },
+    {
+     "name": "result_schema_json",
+     "type": "string",
+     "label": "Result schema",
+     "control_type": "schema-designer",
+     "hint": "Describe JSON schema for a recipe return value"
+    }
+   ],
+   "output": [
+    {
+     "name": "context",
+     "type": "object",
+     "label": "Context",
+     "required": true,
+     "properties": [
+      {
+       "name": "calling_job_id",
+       "type": "string",
+       "label": "Calling job ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "calling_recipe_id",
+       "type": "string",
+       "label": "Calling recipe ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "call_recipe",
+   "title": "Call a recipe function (synchronous)",
+   "description": "Call a recipe function",
+   "help": "Call a recipe function . You can use the result from that call in your subsequent steps.",
+   "input": [
+    {
+     "name": "flow_id",
+     "type": "string",
+     "label": "Recipe function",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "recipe_functions",
+     "extends_schema": true,
+     "hint": "Only recipe functions can be called from another recipe. {{#if input.flow_id && recipeInfo.ownersView}} View selected recipe.{{/if}}"
+    }
+   ],
+   "output": [
+    {
+     "name": "job_id",
+     "type": "string",
+     "label": "Job ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "job_url",
+     "type": "string",
+     "label": "Job URL",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "call_recipe_async",
+   "title": "Call a recipe function (asynchronous)",
+   "description": "Call a recipe function (async)",
+   "help": "Call a recipe function to run asynchronously. This action will not wait for the call result and proceed with the next step. You will not be able to use the outputs of the called recipe function.",
+   "input": [
+    {
+     "name": "flow_id",
+     "type": "string",
+     "label": "Recipe function",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "recipe_functions_async",
+     "extends_schema": true,
+     "hint": "Only recipe functions can be called from another recipe. {{#if input.flow_id && recipeInfo.ownersView}} View selected recipe.{{/if}}"
+    }
+   ],
+   "output": [
+    {
+     "name": "job_ref",
+     "type": "string",
+     "label": "Job reference",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "job_url",
+     "type": "string",
+     "label": "Job URL",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "return_result",
+   "title": "Return data from a recipe function",
+   "description": "Return result",
+   "help": "Return data to the parent recipe. The schema for this result is described in the function call trigger.",
+   "input": [],
+   "output": []
+  },
+  {
+   "name": "wait_for_async_jobs",
+   "title": "Wait for async calls",
+   "description": "Wait for an async call to complete",
+   "input": [
+    {
+     "name": "async_calls",
+     "type": "array",
+     "label": "Async calls to wait for",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "job_ref",
+       "type": "string",
+       "label": "Job reference",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Build a list of async recipe function calls job references"
+    },
+    {
+     "name": "timeout",
+     "type": "integer",
+     "label": "Timeout limit (minutes)",
+     "control_type": "number",
+     "required": true,
+     "default": "120",
+     "hint": "Set an upper limit for this wait action. If one or more of the async jobs take longer than this, proceed to the next step without waiting. Maximum is 1440 minutes (24 hours). Passing zero here will be…"
+    }
+   ],
+   "output": [
+    {
+     "name": "results",
+     "type": "array",
+     "label": "Results",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "called_from_line",
+       "type": "integer",
+       "label": "Called from line",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "recipe_id",
+       "type": "string",
+       "label": "Recipe ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "job_id",
+       "type": "integer",
+       "label": "Job ID",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "job_started_at",
+       "type": "date_time",
+       "label": "Job started at",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "job_completed_at",
+       "type": "date_time",
+       "label": "Job completed at",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "job_completed",
+       "type": "boolean",
+       "label": "Job completed",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "job_completed",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "job_error",
+       "type": "string",
+       "label": "Job error",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "all_jobs_succeeded",
+     "type": "boolean",
+     "label": "All jobs succeeded",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "all_jobs_succeeded",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "job_succeeded_count",
+     "type": "integer",
+     "label": "Job succeeded count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "job_failed_count",
+     "type": "integer",
+     "label": "Job failed count",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "job_timed_out_count",
+     "type": "integer",
+     "label": "Job timed out count",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

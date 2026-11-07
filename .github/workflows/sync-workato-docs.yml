@@ -1,12 +1,18 @@
-name: Sync Workato docs knowledge base
+name: Sync Workato knowledge base
 
 on:
   schedule:
-    - cron: "17 3 * * *"   # daily, 03:17 UTC
+    - cron: "17 3 * * *"    # daily 03:17 UTC: docs
+    - cron: "41 4 * * 1"    # Mondays 04:41 UTC: docs + connector catalog + Workato Labs
   workflow_dispatch:
     inputs:
+      scope:
+        description: "What to sync"
+        type: choice
+        options: [docs, all]
+        default: docs
       full:
-        description: "Re-download every page"
+        description: "Docs: re-download every page"
         type: boolean
         default: false
 
@@ -20,6 +26,9 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      WEEKLY: ${{ github.event.schedule == '41 4 * * 1' || inputs.scope == 'all' }}
+      HAS_TOKEN: ${{ secrets.WORKATO_API_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,18 +36,31 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Sync docs.workato.com
+      - name: Docs (docs.workato.com)
         run: python3 kb/sync.py ${{ inputs.full && '--full' || '' }}
+
+      - name: Connector catalog (live workspace)
+        if: env.WEEKLY == 'true' && env.HAS_TOKEN == 'true'
+        env:
+          WORKATO_API_TOKEN: ${{ secrets.WORKATO_API_TOKEN }}
+          WORKATO_BASE_URL: ${{ vars.WORKATO_BASE_URL || 'https://app.trial.workato.com' }}
+        run: python3 kb/connectors/sync_catalog.py
+
+      - name: Workato Labs patterns and samples
+        if: env.WEEKLY == 'true'
+        run: python3 kb/patterns/sync_labs.py
+
+      - name: Rebuild examples index
+        if: env.WEEKLY == 'true'
+        run: python3 kb/examples/build_index.py
 
       - name: Commit changes
         run: |
-          if git diff --quiet -- kb/docs kb/index kb/INDEX.md kb/manifest.json kb/CHANGELOG.md && \
-             [ -z "$(git ls-files --others --exclude-standard kb/)" ]; then
-            echo "Docs unchanged."; exit 0
-          fi
+          if [ -z "$(git status --porcelain kb/)" ]; then echo "Knowledge base unchanged."; exit 0; fi
           git config user.name  "workato-kb-bot"
           git config user.email "workato-kb-bot@users.noreply.github.com"
           git add kb/
-          summary=$(python3 -c "import json;r=json.load(open('kb/last_sync.json'));print(f\"+{r['added_count']} ~{len(r['changed'])} -{len(r['removed'])}\")")
-          git commit -m "kb: sync Workato docs ($summary)"
+          summary=$(python3 -c "import json;r=json.load(open('kb/last_sync.json'));print(f\"docs +{r['added_count']} ~{len(r['changed'])} -{len(r['removed'])}\")")
+          if [ "$WEEKLY" = "true" ]; then summary="$summary, weekly catalog/labs"; fi
+          git commit -m "kb: sync ($summary)"
           git push

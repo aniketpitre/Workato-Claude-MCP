@@ -1,0 +1,2156 @@
+{
+ "name": "microsoft_dynamics_crm",
+ "title": "Microsoft Dynamics 365",
+ "requires_connection": true,
+ "categories": [
+  "CRM"
+ ],
+ "aliases": [
+  "Microsoft Dynamics 365",
+  "Microsoft Dynamics CRM",
+  "dynamics",
+  "crm"
+ ],
+ "triggers": [
+  {
+   "name": "created_bulk_object",
+   "title": "Export new records",
+   "description": "Export new records in Microsoft Dynamics 365",
+   "help": "Triggers when a record in the selected Dynamics 365 object is created. Trigger retrieves records in batches and streams them as a CSV.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_with_updated_date_object_batch",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "CSV columns",
+     "control_type": "multiselect",
+     "pick_list": "crm_schema_fields",
+     "hint": "Select the fields of the object you wish to use as columns in the CSV file content. All fields will be returned as columns if left blank."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "When exporting records to form the CSV, fetch them in batches of",
+     "control_type": "integer",
+     "hint": "This trigger pulls records in batches and streams them as a CSV. Use this field to control the number of records per batch. Minimum is 1 and Maximum is 1000 . Defaults to 100 ."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter condition",
+     "control_type": "text",
+     "hint": "Condition to filter the records. Use OData $filter syntax. E.g. contains(name, 'sample') and revenue gt 1000000 . Learn more about filters"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Defaults to fetching records created one day ago if left blank. Once recipe has been run or test…"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "schema",
+     "type": "array",
+     "label": "Object schema",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "original_type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mapped_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "length",
+       "type": "integer",
+       "label": "Length",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "precision",
+       "type": "integer",
+       "label": "Precision",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "scale",
+       "type": "integer",
+       "label": "Scale",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "custom",
+       "type": "boolean",
+       "label": "Custom field?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "custom",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "created_from",
+     "type": "date_time",
+     "label": "Created from",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "created_or_updated_bulk_object",
+   "title": "Export new/updated records",
+   "description": "Export new/updated records in Microsoft Dynamics 365",
+   "help": "Triggers when a record in the selected Dynamics 365 object is created or updated. Trigger retrieves records in batches and streams them as a CSV.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_with_updated_date_object_batch",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "CSV columns",
+     "control_type": "multiselect",
+     "pick_list": "crm_schema_fields",
+     "hint": "Select the fields of the object you wish to use as columns in the CSV file content. All fields will be returned as columns if left blank."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "When exporting records to form the CSV, fetch them in batches of",
+     "control_type": "integer",
+     "hint": "This trigger pulls records in batches and streams them as a CSV. Use this field to control the number of records per batch. Minimum is 1 and Maximum is 1000 . Defaults to 100 ."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter condition",
+     "control_type": "text",
+     "hint": "Condition to filter the records. Use OData $filter syntax. E.g. contains(name, 'sample') and revenue gt 1000000 . Learn more about filters"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Defaults to fetching records created or updated one day ago if left blank. Once recipe has been …"
+    }
+   ],
+   "output": [
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "File content",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "schema",
+     "type": "array",
+     "label": "Object schema",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Field name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Field label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "original_type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mapped_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "length",
+       "type": "integer",
+       "label": "Length",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "precision",
+       "type": "integer",
+       "label": "Precision",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "scale",
+       "type": "integer",
+       "label": "Scale",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "custom",
+       "type": "boolean",
+       "label": "Custom field?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "custom",
+        "type": "boolean"
+       }
+      }
+     ]
+    },
+    {
+     "name": "created_or_updated_from",
+     "type": "date_time",
+     "label": "Created or updated from",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "deleted_object",
+   "title": "Deleted object",
+   "description": "Deleted object in Microsoft Dynamics 365",
+   "help": "Checks for deleted object, e.g. deleted leads, every {{authUser.membership.poll_interval}} minutes. Each deleted object will be processed as a single trigger event. Enable Auditing for the object to use the trigger. You can enable auditing by visiting object view page -> Customize Entity -> Enable A…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_audit_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "Fetch object deleted from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "deleted_time",
+     "type": "date_time",
+     "label": "Deleted time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "monitor_changes_delta_link_trigger",
+   "title": "Monitor changes in entities",
+   "description": "Monitor all changes in entities in Microsoft Dynamics 365",
+   "help": "Monitor changes in entities using delta links. Please note that the initial poll would return all changes made in a table. This trigger handles entities which don't have modified on timestamp. It is recommended to use the polling triggers for standard entities since this would fetch a huge number of…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Entity",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_delta_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor. Only objects eligible for change tracking are supported."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "fetch_new_changes",
+     "type": "boolean",
+     "label": "Fetch only new changes?",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "fetch_new_changes",
+      "type": "boolean"
+     },
+     "hint": "Choose Yes to return only changes in the records after the recipe has started. Defaults to Yes . Recommended to avoid large number of initial jobs."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "visible_if": "false",
+     "default": 200,
+     "hint": "Maximum number of records per trigger event. Minimum is 1 , maximum is 200 , default is 200 ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "monitor_changes_delta_link_trigger_batch",
+   "title": "Monitor changes in entities",
+   "description": "Monitor all changes in entities in Microsoft Dynamics 365",
+   "help": "Monitor changes in entities using delta links. Please note that the initial poll would return all changes made in a table. This trigger handles entities which don't have modified on timestamp. It is recommended to use the polling triggers for standard entities since this would fetch a huge number of…",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Entity",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_delta_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor. Only objects eligible for change tracking are supported."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "fetch_new_changes",
+     "type": "boolean",
+     "label": "Fetch only new changes?",
+     "control_type": "checkbox",
+     "default": "true",
+     "toggle_field": {
+      "name": "fetch_new_changes",
+      "type": "boolean"
+     },
+     "hint": "Choose Yes to return only changes in the records after the recipe has started. Defaults to Yes . Recommended to avoid large number of initial jobs."
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "integer",
+     "visible_if": "true",
+     "default": 200,
+     "hint": "Maximum number of records per trigger event. Minimum is 1 , maximum is 200 , default is 200 ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_object_v2",
+   "title": "New object",
+   "description": "New object in Microsoft Dynamics 365",
+   "help": "Checks for created object, e.g. created leads, every {{authUser.membership.poll_interval}} minutes. Each new object will be processed as a single trigger event.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_with_date_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch new object from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter condition",
+     "control_type": "text",
+     "hint": "Condition to filter the records. Use OData $filter syntax. E.g. contains(name, 'sample') and revenue gt 1000000 . Learn more about filters"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_batch_object",
+   "title": "New or updated object (batch)",
+   "description": "New or updated object (batch) in Microsoft Dynamics 365",
+   "help": "Checks for created or updated object, e.g. created or updated leads, every {{authUser.membership.poll_interval}} minutes. Trigger will retrieve a batch of new or updated records since the last time recipe triggered, as a single trigger event.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_with_updated_date_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter condition",
+     "control_type": "text",
+     "hint": "Condition to filter the records. Use OData $filter syntax. E.g. contains(name, 'sample') and revenue gt 1000000 . Learn more about filters"
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch new or updated object from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Number of records in a single trigger event, default batch size is 100 . Minimum size is 1 , maximum size is 1000 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "time",
+     "type": "string",
+     "label": "Time",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_id",
+     "type": "string",
+     "label": "First ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_id",
+     "type": "string",
+     "label": "Last ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "new_or_updated_object_v2",
+   "title": "New or updated object",
+   "description": "New or updated object in Microsoft Dynamics 365",
+   "help": "Checks for created or updated object, e.g. created or updated leads, every {{authUser.membership.poll_interval}} minutes. Each new or updated object will be processed as a single trigger event.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_with_updated_date_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch new or updated object from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter condition",
+     "control_type": "text",
+     "hint": "Condition to filter the records. Use OData $filter syntax. E.g. contains(name, 'sample') and revenue gt 1000000 . Learn more about filters"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_webhook",
+   "title": "New object",
+   "description": "New object in Microsoft Dynamics 365",
+   "help": "This trigger requires endpoint setup in Dynamics 365 plugin registration tool with the below endpoint URL. Endpoint URL Please connect to get Webhook URL",
+   "input": [
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Use a unique name to generate webhook URL."
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_with_date_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch object from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "scheduled_object_search",
+   "title": "Scheduled object search",
+   "description": "Scheduled object search in Microsoft Dynamics 365",
+   "help": "Execute object search based on specified schedule. Results will be returned based on specified batch size per trigger event.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter condition",
+     "control_type": "text",
+     "hint": "Condition to filter the records. Use OData $filter syntax. E.g. contains(name, 'sample') and revenue gt 1000000 . Learn more about filters"
+    },
+    {
+     "name": "schedule",
+     "type": "string",
+     "label": "Schedule",
+     "control_type": "select",
+     "required": true,
+     "default": "monthly",
+     "options": [
+      "hourly",
+      "daily",
+      "monthly"
+     ]
+    },
+    {
+     "name": "time_zone",
+     "type": "string",
+     "label": "Time zone",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "timezone_name_global_pick_list"
+    },
+    {
+     "name": "hour",
+     "type": "integer",
+     "label": "Hour",
+     "control_type": "number",
+     "visible_if": "input.schedule != \"hourly\" || input.schedule_settings?.schedule != \"hourly\"",
+     "default": 0,
+     "hint": "Hours in 24-hour format, i.e. 11 for 11am, 23 for 11pm. Defaults to 00 (12am) if left empty."
+    },
+    {
+     "name": "minute",
+     "type": "integer",
+     "label": "Minute",
+     "control_type": "number",
+     "required": true,
+     "default": 0,
+     "hint": "Minutes past the hour, i.e 00 for 0 minutes."
+    },
+    {
+     "name": "day_of_month",
+     "type": "integer",
+     "label": "Day of month",
+     "control_type": "number",
+     "visible_if": "input.schedule == \"monthly\" || input.schedule_settings?.schedule == \"monthly\"",
+     "default": 1,
+     "hint": "1 - 31 , will be rounded down to last day of month for shorter months. Defaults to first day of the month if left empty."
+    },
+    {
+     "name": "Sunday",
+     "type": "boolean",
+     "label": "Sunday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Sunday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Monday",
+     "type": "boolean",
+     "label": "Monday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Monday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Tuesday",
+     "type": "boolean",
+     "label": "Tuesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Tuesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Wednesday",
+     "type": "boolean",
+     "label": "Wednesday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Wednesday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Thursday",
+     "type": "boolean",
+     "label": "Thursday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Thursday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Friday",
+     "type": "boolean",
+     "label": "Friday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Friday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "Saturday",
+     "type": "boolean",
+     "label": "Saturday",
+     "control_type": "checkbox",
+     "visible_if": "input.schedule != \"monthly\" || input.schedule_settings?.schedule != \"monthly\"",
+     "default": "true",
+     "toggle_field": {
+      "name": "Saturday",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "batch_size",
+     "type": "integer",
+     "label": "Batch size",
+     "control_type": "number",
+     "default": 100,
+     "hint": "Number of records in a single trigger event, default batch size is 100 . Minimum size is 1 , maximum size is 1000 ."
+    }
+   ],
+   "output": [
+    {
+     "name": "range",
+     "type": "string",
+     "label": "Range",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "time",
+     "type": "string",
+     "label": "Time",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_id",
+     "type": "string",
+     "label": "First ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_id",
+     "type": "string",
+     "label": "Last ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "first_batch",
+     "type": "boolean",
+     "label": "First batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "first_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "last_batch",
+     "type": "boolean",
+     "label": "Last batch",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "last_batch",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "starting_offset",
+     "type": "integer",
+     "label": "Starting offset",
+     "control_type": "number",
+     "required": true
+    },
+    {
+     "name": "ending_offset",
+     "type": "integer",
+     "label": "Ending offset",
+     "control_type": "number",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "updated_webhook",
+   "title": "New/updated object",
+   "description": "New/updated object in Microsoft Dynamics 365",
+   "help": "This trigger requires endpoint setup in Dynamics 365 plugin registration tool with the below endpoint URL. Endpoint URL Please connect to get Webhook URL",
+   "input": [
+    {
+     "name": "event_name",
+     "type": "string",
+     "label": "Event name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Use a unique name to generate webhook URL."
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_with_date_object",
+     "extends_schema": true,
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead to monitor."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "Fetch object from specified time. Once recipe has been run or tested, value cannot be changed. Learn more"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Microsoft Dynamics 365 (Custom)",
+   "help": "Build your own Microsoft Dynamics 365 action with a HTTP request. The request will be authorized under your Microsoft Dynamics 365 connection OAuth scopes: Scopes Access CRM Online as organization users Headers: By default, Prefer: return=representation is sent. For stream operations (columns with O…",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "close_case",
+   "title": "Close case",
+   "description": "Close case in Microsoft Dynamics 365",
+   "help": "Close case in Microsoft Dynamics 365",
+   "input": [
+    {
+     "name": "incident_id",
+     "type": "string",
+     "label": "Case ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Can be found in the URL of case page."
+    },
+    {
+     "name": "Status",
+     "type": "integer",
+     "label": "Resolution Type",
+     "control_type": "number",
+     "required": true,
+     "toggle_field": {
+      "name": "Status",
+      "type": "string"
+     },
+     "hint": "Use 5 for 'Problem Solved' and 1000 for 'Information Provided'."
+    },
+    {
+     "name": "subject",
+     "type": "string",
+     "label": "Resolution",
+     "control_type": "text"
+    },
+    {
+     "name": "timespent",
+     "type": "integer",
+     "label": "Billable Time",
+     "control_type": "number",
+     "hint": "Billable time in minutes."
+    },
+    {
+     "name": "description",
+     "type": "string",
+     "label": "Remarks",
+     "control_type": "text"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "close_opportunity",
+   "title": "Close opportunity",
+   "description": "Record a win or loss outcome on an opportunity in Microsoft Dynamics 365",
+   "help": "Records a win or loss outcome on an open opportunity, based on Dynamics 365's WinOpportunity/LoseOpportunity actions.",
+   "input": [
+    {
+     "name": "opportunity_id",
+     "type": "string",
+     "label": "Opportunity ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Opportunity to close. Use the ID from a \"Search objects\" step on opportunity , or from id= in the record's URL."
+    },
+    {
+     "name": "outcome",
+     "type": "string",
+     "label": "Outcome",
+     "control_type": "text",
+     "required": true,
+     "hint": "Whether the opportunity was won or lost. Enter won or lost (case-insensitive). Actual revenue and close date are required when won; loss reason is required when lost."
+    },
+    {
+     "name": "status_code",
+     "type": "integer",
+     "label": "Status code",
+     "control_type": "number",
+     "required": true,
+     "hint": "Status Reason value for the given outcome. Not a fixed set of values -- each Dynamics 365 organization can customize its own Status Reason options for the Won/Lost states on Opportunity. Use the \"Get …"
+    },
+    {
+     "name": "actual_revenue",
+     "type": "number",
+     "label": "Actual revenue",
+     "control_type": "number",
+     "hint": "Final deal value. Required for a Won outcome, not applicable for a Lost outcome."
+    },
+    {
+     "name": "close_date",
+     "type": "date",
+     "label": "Close date",
+     "control_type": "date",
+     "hint": "Date the deal closed. Required for a Won outcome, not applicable for a Lost outcome."
+    },
+    {
+     "name": "loss_reason_text",
+     "type": "string",
+     "label": "Loss reason",
+     "control_type": "text",
+     "hint": "Free-text explanation of the loss. Required for a Lost outcome, not applicable for a Won outcome."
+    }
+   ],
+   "output": [
+    {
+     "name": "opportunity_id",
+     "type": "string",
+     "label": "Opportunity ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "outcome",
+     "type": "string",
+     "label": "Outcome",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "create_object",
+   "title": "Create object",
+   "description": "Create object in Microsoft Dynamics 365",
+   "help": "Create a standard or custom object record. First select the specific object to create, then provide the data to write to the record.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead, then provide the data to write to the record"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_object_batch",
+   "title": "Create object",
+   "description": "Create object in Microsoft Dynamics 365",
+   "help": "Create a standard or custom object record. First select the specific object to create, then provide the data to write to the record. This action will allow up to 200 records.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object to create in batches, e.g. Lead"
+    },
+    {
+     "name": "allow_partial_success",
+     "type": "boolean",
+     "label": "Allow partial batch create?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "allow_partial_success",
+      "type": "boolean"
+     },
+     "hint": "Select Yes to allow successful records to be created even if some records fail. Select No to roll back the entire batch if any record creation fails. Defaults to No . Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "batch_ids",
+     "type": "array",
+     "label": "Batch Ids",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_object_by_id",
+   "title": "Get object by ID",
+   "description": "Get object by ID in Microsoft Dynamics 365",
+   "help": "Retrieve the data of the record via its ID or a declared alternate key. If no record matches, an error will be thrown.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead, then provide the ID of the record to retrieve"
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fields_text",
+      "type": "string"
+     },
+     "hint": "Select the fields of the selected object you wish to return. All fields will be returned if left blank."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_object_schema",
+   "title": "Get object schema",
+   "description": "Get object schema from Microsoft Dynamics 365",
+   "help": "Fetch the name and schema of a specific object in Microsoft Dynamics 365. Use this action to replicate schema to your data warehouse.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "label",
+     "type": "string",
+     "label": "Label",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "custom",
+     "type": "boolean",
+     "label": "Custom object?",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "custom",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "fields",
+     "type": "array",
+     "label": "Fields",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "label",
+       "type": "string",
+       "label": "Label",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "length",
+       "type": "integer",
+       "label": "Length",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "scale",
+       "type": "integer",
+       "label": "Scale",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "precision",
+       "type": "integer",
+       "label": "Precision",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "custom",
+       "type": "boolean",
+       "label": "Custom field?",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "custom",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "original_type",
+       "type": "string",
+       "label": "Original type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "mapped_type",
+       "type": "string",
+       "label": "Mapped type",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fields",
+       "type": "array",
+       "label": "Fields",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "name",
+         "type": "string",
+         "label": "Name",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "label",
+         "type": "string",
+         "label": "Label",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "length",
+         "type": "integer",
+         "label": "Length",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "scale",
+         "type": "integer",
+         "label": "Scale",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "precision",
+         "type": "integer",
+         "label": "Precision",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "custom",
+         "type": "boolean",
+         "label": "Custom field?",
+         "control_type": "checkbox",
+         "required": true,
+         "toggle_field": {
+          "name": "custom",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "original_type",
+         "type": "string",
+         "label": "Original type",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "mapped_type",
+         "type": "string",
+         "label": "Mapped type",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "field_capabilities",
+     "type": "array",
+     "label": "Field capabilities",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "is_valid_for_create",
+       "type": "boolean",
+       "label": "Is valid for create",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_valid_for_create",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "is_valid_for_update",
+       "type": "boolean",
+       "label": "Is valid for update",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_valid_for_update",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "is_valid_for_read",
+       "type": "boolean",
+       "label": "Is valid for read",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "is_valid_for_read",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "required_level",
+       "type": "string",
+       "label": "Required level",
+       "control_type": "text",
+       "required": true,
+       "hint": "None, Recommended, ApplicationRequired or SystemRequired."
+      }
+     ]
+    },
+    {
+     "name": "choice_values",
+     "type": "array",
+     "label": "Choice values",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "options",
+       "type": "array",
+       "label": "Options",
+       "required": true,
+       "of": "object",
+       "properties": [
+        {
+         "name": "value",
+         "type": "integer",
+         "label": "Value",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "label",
+         "type": "string",
+         "label": "Label",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "state_value",
+         "type": "integer",
+         "label": "State value",
+         "control_type": "number",
+         "required": true
+        },
+        {
+         "name": "state_label",
+         "type": "string",
+         "label": "State label",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "alternate_keys",
+     "type": "array",
+     "label": "Alternate keys",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "fields",
+       "type": "array",
+       "label": "Fields",
+       "required": true,
+       "of": "string"
+      }
+     ]
+    },
+    {
+     "name": "relationships",
+     "type": "array",
+     "label": "Relationships",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "name",
+       "type": "string",
+       "label": "Name",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "direction",
+       "type": "string",
+       "label": "Direction",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "related_object",
+       "type": "string",
+       "label": "Related object",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "referencing_attribute",
+       "type": "string",
+       "label": "Referencing attribute",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "navigation_property",
+       "type": "string",
+       "label": "Navigation property",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "move_case_to_queue",
+   "title": "Move case to queue",
+   "description": "Move a case to a queue in Microsoft Dynamics 365",
+   "help": "Moves the case's existing queue item to the destination queue via AddToQueue. If the case has no queue item, one is created.",
+   "input": [
+    {
+     "name": "case_id",
+     "type": "string",
+     "label": "Case ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Case to move. Use the ID from a \"Search objects\" step on case , or from id= in the record's URL."
+    },
+    {
+     "name": "destination_queue_id",
+     "type": "string",
+     "label": "Destination queue ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "ID of the target queue. Use \"Search objects\" with Object set to queue to find a queue's ID by its name."
+    },
+    {
+     "name": "source_queue_id",
+     "type": "string",
+     "label": "Source queue ID",
+     "control_type": "text",
+     "hint": "Current queue to move from. Auto-resolved when the case has exactly one queue item. Required when the case is in more than one queue. Use the ID from a \"Search objects\" step on queue ."
+    }
+   ],
+   "output": [
+    {
+     "name": "queue_item_id",
+     "type": "string",
+     "label": "Queue item ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "action_taken",
+     "type": "string",
+     "label": "Action taken",
+     "control_type": "text",
+     "required": true,
+     "hint": "moved when the case's queue item now points at the destination queue; added when the case had no queue item; unchanged when the case was already on the destination queue."
+    },
+    {
+     "name": "source_queue_id",
+     "type": "string",
+     "label": "Source queue ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "qualify_lead",
+   "title": "Qualify lead",
+   "description": "Qualify a lead in Microsoft Dynamics 365",
+   "help": "Qualifies a lead, optionally creating the account, contact, and/or opportunity records linked to it, based on Dynamics 365's QualifyLead action.",
+   "input": [
+    {
+     "name": "lead_id",
+     "type": "string",
+     "label": "Lead ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Dynamics 365 lead to qualify. Use the ID from a previous Search objects step or the record's URL."
+    },
+    {
+     "name": "create_account",
+     "type": "boolean",
+     "label": "Create account?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "create_account",
+      "type": "boolean"
+     },
+     "hint": "Create a new account from the lead's company data. Default: No ."
+    },
+    {
+     "name": "create_contact",
+     "type": "boolean",
+     "label": "Create contact?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "create_contact",
+      "type": "boolean"
+     },
+     "hint": "Create a new contact from the lead's person data. Default: No ."
+    },
+    {
+     "name": "create_opportunity",
+     "type": "boolean",
+     "label": "Create opportunity?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "create_opportunity",
+      "type": "boolean"
+     },
+     "hint": "Create an opportunity linked to the customer below. Requires the customer type and ID, and Create account? and Create contact? must be No. Default: No ."
+    },
+    {
+     "name": "status_code",
+     "type": "integer",
+     "label": "Status code",
+     "control_type": "number",
+     "required": true,
+     "hint": "Lead Status Reason for the qualified state (required by Dynamics QualifyLead). Out-of-box Qualified is often 3 ; use -1 to apply the tenant default Qualified reason, or look up valid values with \"Get …"
+    },
+    {
+     "name": "opportunity_currency_id",
+     "type": "string",
+     "label": "Opportunity currency ID",
+     "control_type": "text",
+     "hint": "Transaction currency for the created opportunity. Derived from the lead's own currency if omitted. Only used when Create opportunity? is Yes. Use the ID from a \"Search objects\" step on transaction cur…"
+    },
+    {
+     "name": "opportunity_customer_type",
+     "type": "string",
+     "label": "Opportunity customer type",
+     "control_type": "select",
+     "options": [
+      "account",
+      "contact"
+     ],
+     "toggle_field": {
+      "name": "opportunity_customer_type_text",
+      "type": "string"
+     },
+     "hint": "Type of the existing account or contact that will become the created opportunity's customer. Must reference a record that already exists, not one this same call creates. Cannot be used when Create acc…"
+    },
+    {
+     "name": "opportunity_customer_id",
+     "type": "string",
+     "label": "Opportunity customer ID",
+     "control_type": "text",
+     "hint": "ID of the existing account or contact that will become the created opportunity's customer. Required when Create opportunity? is Yes, which also requires Create account? and Create contact? to be No: w…"
+    }
+   ],
+   "output": [
+    {
+     "name": "created_entities",
+     "type": "array",
+     "label": "Created entities",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "logical_name",
+       "type": "string",
+       "label": "Object",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "account_id",
+     "type": "string",
+     "label": "Created account ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "contact_id",
+     "type": "string",
+     "label": "Created contact ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "opportunity_id",
+     "type": "string",
+     "label": "Created opportunity ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "reassign_case",
+   "title": "Reassign case",
+   "description": "Reassign ownership of a case in Microsoft Dynamics 365",
+   "help": "Reassigns a case's owner to the given user or team via a direct ownerid update.",
+   "input": [
+    {
+     "name": "case_id",
+     "type": "string",
+     "label": "Case ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Case to reassign. Use the ID from a \"Search objects\" step on case , or from id= in the record's URL."
+    },
+    {
+     "name": "assignee_type",
+     "type": "string",
+     "label": "Assignee type",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "user",
+      "team"
+     ],
+     "toggle_field": {
+      "name": "assignee_type_text",
+      "type": "string"
+     },
+     "hint": "Whether the assignee is a user or a team."
+    },
+    {
+     "name": "assignee_id",
+     "type": "string",
+     "label": "Assignee ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Dynamics ID of the target user or team. Use the ID from a \"Search objects\" step on user or team , matching Assignee type."
+    },
+    {
+     "name": "expected_owner_id",
+     "type": "string",
+     "label": "Expected current owner ID",
+     "control_type": "text",
+     "hint": "If provided, the reassignment is rejected unless the case's current owner matches this ID -- a conflict check for when the case may have been reassigned since you last read it. Leave blank to skip thi…"
+    }
+   ],
+   "output": [
+    {
+     "name": "case_id",
+     "type": "string",
+     "label": "Case ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "new_owner_id",
+     "type": "string",
+     "label": "New owner ID",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "search_objects",
+   "title": "Search objects",
+   "description": "Search objects in Microsoft Dynamics 365",
+   "help": "Search will return results that matches all search criteria. At least one search criteria must be provided. If no records match the search criteria, an empty list will be returned. If one of the search criteria was the ID field and no record was found, an error will be thrown. Results list is limite…",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead, then provide the criteria to search by."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Result list size",
+     "control_type": "integer",
+     "default": 200,
+     "hint": "Number of records retrieved. Minimum is 1 , maximum is 5000 . Defaults to 200 ."
+    },
+    {
+     "name": "fields",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "multiselect",
+     "pick_list": "crm_fields",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "fields_text",
+      "type": "string"
+     },
+     "hint": "Select the fields of the selected objects you wish to use in your recipe. All fields will be returned if left blank."
+    },
+    {
+     "name": "filter",
+     "type": "string",
+     "label": "Filter condition",
+     "control_type": "text",
+     "hint": "Condition to filter the records. Use OData $filter syntax. E.g. contains(name, 'sample') and revenue gt 1000000 . Learn more about filters"
+    },
+    {
+     "name": "orderby",
+     "type": "string",
+     "label": "Order by",
+     "control_type": "text",
+     "hint": "Specify the order in which items are returned using the orderby system query option. Use the asc or desc suffix to specify Ascending or Descending order respectively. The default is Ascending if the s…"
+    },
+    {
+     "name": "expand",
+     "type": "string",
+     "label": "Expand",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Expand navigation properties in the related entity set. E.g. owninguser($expand=businessunitid($select=inheritancemask)) for Contact object. Learn more about expand"
+    },
+    {
+     "name": "next_page_url",
+     "type": "string",
+     "label": "Next page URL",
+     "control_type": "text",
+     "hint": "Next page URL, returned by a previous call, to request the next page of results."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_object",
+   "title": "Update object",
+   "description": "Update object in Microsoft Dynamics 365",
+   "help": "Update a standard or custom object existing record via its ID. First select the specific object to update, then provide the data to write to the record.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead, then provide the data to write to the record"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_object_batch",
+   "title": "Update object",
+   "description": "Update object in Microsoft Dynamics 365",
+   "help": "Update a standard or custom object existing record via its ID. First select the specific object to update, then provide the data to write to the record. This action will allow up to 200 records.",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object to update in batches, e.g. Lead"
+    },
+    {
+     "name": "allow_partial_success",
+     "type": "boolean",
+     "label": "Allow partial batch update?",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "allow_partial_success",
+      "type": "boolean"
+     },
+     "hint": "Select Yes to allow successful records to be updated even if some records fail. Select No to roll back the entire batch if any record updation fails. Defaults to No . Learn more"
+    }
+   ],
+   "output": [
+    {
+     "name": "batch_ids",
+     "type": "array",
+     "label": "Batch Ids",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "upsert_object",
+   "title": "Upsert object",
+   "description": "Upsert object by alternate key in Microsoft Dynamics 365",
+   "help": "Create or update a standard or custom object record identified by a declared alternate key. Dataverse decides whether to create or update at commit time based on whether a matching record exists. First select the object, provide the alternate key field(s) and value(s), then the data to write. Body f…",
+   "input": [
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "crm_object",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "logical_name",
+      "type": "string"
+     },
+     "hint": "Select any standard or custom Microsoft Dynamics 365 object, e.g. lead, then provide the alternate key and the data to write"
+    },
+    {
+     "name": "alternate_key",
+     "type": "string",
+     "label": "Alternate key",
+     "control_type": "code",
+     "required": true,
+     "hint": "Declared alternate-key field name(s) and value(s) identifying the record, as JSON, e.g. {\"new_accountnumber\": \"12345\"} . Use one declared key combination for the URL. Do not repeat those same field(s)…"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

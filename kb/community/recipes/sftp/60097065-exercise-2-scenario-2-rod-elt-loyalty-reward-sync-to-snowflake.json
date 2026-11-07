@@ -1,0 +1,270 @@
+{
+ "id": 60097065,
+ "name": "Exercise 2 | Scenario 2 : ROD | ELT | Loyalty Reward Sync to Snowflake",
+ "description": "- Step 4 - Internal Stage needs to be updated with the stage - Find stage with your name\n- Step 5 - Table and Stage name needs to be updated- Find stage with your name\n- Step 6 -\n  - SQL Statement needs to be represented with your stage and table name in lines 27 and 28\n  - Lines 14 to 24 are incomplete because IDEA’s marketing executive shared additional details to be built into the solution as described in the CLV and Loyalty tables below",
+ "applications": [
+  "sftp",
+  "snowflake",
+  "email"
+ ],
+ "action_applications": [
+  "snowflake",
+  "email"
+ ],
+ "trigger_application": "sftp",
+ "business_objects": [
+  "email"
+ ],
+ "categories": [
+  "File Transfer",
+  "Database",
+  "Marketing",
+  "Recipe Tools",
+  "Workato"
+ ],
+ "copy_count": 15,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": "2026-01-19T20:37:52.480-08:00",
+ "updated_at": "2026-01-19T20:37:52.425-08:00",
+ "source_url": "https://app.workato.com/recipes/60097065?community=us",
+ "steps": [
+  "sftp.new_file_in_dir",
+  "sftp.streamable_download",
+  "snowflake.upload_to_internal_stage",
+  "snowflake.bulk_load_s3",
+  "snowflake.run_custom_sql_async_v2",
+  "email.send_mail"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "sftp",
+  "name": "new_file_in_dir",
+  "as": "df6bf02c",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "directory": {
+    "ids": [
+     "/",
+     "/sharedFolder",
+     "/sharedFolder/customer_loyalty"
+    ],
+    "titles": [
+     "Root directory",
+     "sharedFolder",
+     "customer_loyalty"
+    ]
+   }
+  },
+  "toggleCfg": {
+   "directory": false
+  },
+  "input": {
+   "directory": "/sharedFolder/customer_loyalty",
+   "since": "2025-01-01T00:00:00+05:30"
+  },
+  "visible_config_fields": [
+   "since"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "sftp",
+      "name": "streamable_download",
+      "as": "717281f1",
+      "keyword": "action",
+      "toggleCfg": {
+       "download_in_one_go": true
+      },
+      "input": {
+       "download_in_one_go": "false",
+       "filename": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"sftp\",\"line\":\"df6bf02c\",\"path\":[\"file_path\"]}')}"
+      },
+      "comment": "Download Customer Loyalty File contents",
+      "uuid": "65fbeb61-3618-4d17-8806-68493a935cfd",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 3,
+      "provider": "snowflake",
+      "name": "upload_to_internal_stage",
+      "as": "84d8c507",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "table": "SKO_SCHEMA.AMARNATH_LOYALTY_STAGING",
+       "stage": "AMARNATH_LOYALTY_STAGE ()",
+       "internal_stage": "LOYALTY_INTERNAL_STAGE"
+      },
+      "toggleCfg": {
+       "overwrite": true,
+       "internal_stage": true
+      },
+      "input": {
+       "source_type": "file_contents",
+       "overwrite": "true",
+       "file_contents": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"sftp\",\"line\":\"717281f1\",\"path\":[\"contents\"]}')}",
+       "internal_stage": "LOYALTY_INTERNAL_STAGE"
+      },
+      "requirements": {
+       "extended_input_schema": [
+        {
+         "control_type": "text",
+         "hint": "The file contents to be uploaded.",
+         "label": "File Contents",
+         "name": "file_contents",
+         "type": "string",
+         "strip_interpolation": true
+        },
+        {
+         "control_type": "select",
+         "hint": "Specify the internal stage you would want to load the file into. <a target='_blank' href='https://docs.snowflake.com/en/user-guide/data-load-local-file-system-create-stage'>Learn more</a>",
+         "label": "Internal stage",
+         "name": "internal_stage",
+         "pick_list": "internal_stages_pick_list",
+         "toggle_field": {
+          "control_type": "text",
+          "label": "Internal stage",
+          "toggle_hint": "Enter stage name",
+          "hint": "Specify the internal stage you would want to load the file into. <a target='_blank' href='https://docs.snowflake.com/en/user-guide/data-load-local-file-system-create-stage'>Learn more</a>",
+          "toggle_to_secondary_hint": "Enter stage name",
+          "toggle_to_primary_hint": "Select named stage",
+          "type": "string",
+          "name": "internal_stage"
+         },
+         "toggle_hint": "Select named stage",
+         "type": "string"
+        },
+        {
+         "control_type": "checkbox",
+         "default": "false",
+         "hint": "Specifies if Snowflake should overwrite an existing file with the same name during upload. If left blank, default value is false. <a target=\"_blank\" href=\"https://docs.snowflake.com/en/sql-reference/sql/put#optional-parameters\">Learn more</a>",
+         "label": "Overwrite",
+         "name": "overwrite",
+         "optional": true,
+         "toggle_field": {
+          "label": "Overwrite",
+          "control_type": "text",
+          "toggle_hint": "Use custom value",
+          "optional": true,
+          "default": false,
+          "render_input": null,
+          "parse_output": null,
+          "hint": "Specifies if Snowflake should overwrite an existing file with the same name during upload. If left blank, default value is false. <a target=\"_blank\" href=\"https://docs.snowflake.com/en/sql-reference/sql/put#optional-parameters\">Learn more</a>",
+          "type": "boolean",
+          "name": "overwrite"
+         },
+         "toggle_hint": "Select from option list",
+         "type": "boolean"
+        }
+       ],
+       "extended_output_schema": []
+      },
+      "comment": "Upload to Snowflake Stage - Find an Internal Stage with your Name",
+      "uuid": "ccd52d9f-a419-4a3f-bf69-337966c8757e",
+      "title": null,
+      "description": "Upload <span class=\"provider\">file</span> to <span class=\"provider\">LOYALTY_INTERNAL_STAGE</span> in <span class=\"provider\">Snowflake</span>"
+     },
+     {
+      "number": 4,
+      "provider": "snowflake",
+      "name": "bulk_load_s3",
+      "as": "6fc1e891",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "table": "SKO_SCHEMA.SALESFORCE_STAGING",
+       "stage": "LOYALTY_INTERNAL_STAGE ()"
+      },
+      "toggleCfg": {
+       "table": true,
+       "stage": true
+      },
+      "input": {
+       "table": "SKO_SCHEMA.SALESFORCE_STAGING",
+       "stage": "SKO_SCHEMA.LOYALTY_INTERNAL_STAGE",
+       "file_format_def": "TYPE = 'CSV', FIELD_OPTIONALLY_ENCLOSED_BY = '\"',EMPTY_FIELD_AS_NULL = TRUE"
+      },
+      "comment": "Load Loyalty table from Snowflake Stage - Find Stage Name that has your Name",
+      "uuid": "bcb0d6db-8945-46ad-9c2b-e05bd4dddc0a",
+      "title": null,
+      "description": "Bulk load data to <span class=\"provider\">SKO_SCHEMA.SALESFORCE_STAGING</span> from <span class=\"provider\">SKO_SCHEMA.LOYALTY_INTERNAL_STAGE</span> in <span class=\"provider\">Snowflake</span>"
+     },
+     {
+      "number": 5,
+      "provider": "snowflake",
+      "name": "run_custom_sql_async_v2",
+      "as": "136740bf",
+      "keyword": "action",
+      "input": {
+       "update_only": "false",
+       "sql": "CREATE OR REPLACE TABLE ??.UNIFIED_CUSTOMER_RECORD AS\nwith unified_cust AS(\nselect \nSFDC.ID as IDEA_ID,\n  SFDC.FIRSTNAME as FIRST_NAME,\n  SFDC.LASTNAME as LAST_NAME,\n  SFDC.PHONE as PHONE_NUMBER,\n  SFDC.EMAIL as EMAIL,\n  SFDC.MAILINGSTATE as STATE_PROVIDENCE,\n  SFDC.MAILINGCOUNTRY as COUNTRY,\n  LOY.LOYALTY_TIER as LOYALTY_TIER,\n  SFDC.CLV__C as CLV,\n  LOY.CSTAT AS CSTAT,\n  CASE\n  \tWHEN clv IS NULL THEN 0 \n \tWHEN clv BETWEEN 0 AND ?? THEN 1\n \tWHEN clv BETWEEN 10000 AND 19999 THEN 2\n \tWHEN clv BETWEEN ?? AND 29999 THEN 3\n \tWHEN clv BETWEEN 30000 AND 49999 THEN 4\n \tWHEN clv >= 50000 THEN 5\n  END AS expected_customer_tier,\n  CASE\n  \tWHEN loy.LOYALTY_TIER = 'Gold' THEN 3\n  \tWHEN loy.LOYALTY_TIER = '??' THEN 2\n  \tWHEN loy.LOYALTY_TIER = 'Silver' THEN 1\n  \tELSE 0\n  END AS customer_tier_modifier\nFROM ??.SALESFORCE_CONTACT SFDC\nJOIN ??.LOYALTY_INFO LOY\nON LOY.EMAIL = SFDC.EMAIL\n)\nSELECT DISTINCT\nIDEA_ID\n,FIRST_NAME\n,LAST_NAME\n,PHONE_NUMBER\n,EMAIL\n,STATE_PROVIDENCE\n,COUNTRY\n,CASE \n\tWHEN expected_customer_tier + customer_tier_modifier > 5 THEN 5\n\tELSE expected_customer_tier + customer_tier_modifier\nEND AS CUSTOMER_TIER\n,CSTAT\n,LOYALTY_TIER\n,CLV\n,'0' as AOV\n,'0' as RFM\nFROM unified_cust;",
+       "output_schema": "[]",
+       "timeout": "120",
+       "timeout_v2": "60"
+      },
+      "requirements": {
+       "extended_input_schema": [
+        {
+         "control_type": "integer",
+         "default": "60",
+         "hint": "Set an upper limit for this wait action. If one or more of the async\njobs take longer than this, proceed to the next step without waiting.\nMaximum is 120 minutes.\n",
+         "label": "Timeout limit (minutes)",
+         "name": "timeout_v2",
+         "optional": true,
+         "parse_output": "integer_conversion",
+         "sticky": false,
+         "type": "integer"
+        }
+       ],
+       "extended_output_schema": []
+      },
+      "comment": "Merge Customer Details & Loyalty Information",
+      "uuid": "651462be-0d74-432d-b50a-ce043faf66cd",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 6,
+      "as": "35af54ec",
+      "keyword": "catch",
+      "input": {
+       "max_retry_count": "0",
+       "retry_interval": "2"
+      },
+      "block": [
+       {
+        "number": 7,
+        "provider": "email",
+        "name": "send_mail",
+        "as": "bb87a8ef",
+        "keyword": "action",
+        "input": {
+         "email_type": "-- REDACTED --",
+         "to": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"user_email\"]}')}",
+         "subject": "Error in Recipe - #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+         "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"35af54ec\",\"path\":[\"message\"]}')}"
+        },
+        "uuid": "0c041949-f676-4bf9-8715-2157547adab4",
+        "title": null,
+        "description": null
+       }
+      ],
+      "uuid": "08e5d57f-cfde-480c-8b39-e613e97c35a1"
+     }
+    ],
+    "uuid": "31f9eae6-1633-4cd0-88a0-9bf5e9f2b2a1"
+   }
+  ],
+  "uuid": "8e08801b-3e2a-4838-b64b-9dec8829c07d",
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

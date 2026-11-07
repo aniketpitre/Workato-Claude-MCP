@@ -1,0 +1,369 @@
+{
+ "id": 79726,
+ "name": "Show Invoice details in Xero",
+ "description": "1. Type the Workbot command **Xero show invoice** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will ask for the **Xero invoice number**.\n3. Workbot will display the details of the Xero invoice in Slack.\n\n**Notes**\nWorkbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "xero",
+  "slack_bot",
+  "workato_variable"
+ ],
+ "action_applications": [
+  "xero",
+  "slack_bot",
+  "workato_variable"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "invoice",
+  "message",
+  "contact"
+ ],
+ "categories": [
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "Accounting",
+  "Recipe Tools"
+ ],
+ "copy_count": 3565,
+ "curated": true,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2021-02-16T21:53:10.761-08:00",
+ "source_url": "https://app.workato.com/recipes/79726?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "xero.get_invoice_by_id",
+  "slack_bot.post_bot_reply_v2",
+  "xero.get_contact_by_id",
+  "slack_bot.post_bot_reply_v2",
+  "workato_variable.declare_variable",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">xero show invoice</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Xero"
+  },
+  "toggleCfg": {
+   "domain": true,
+   "name": true,
+   "scope": true
+  },
+  "input": {
+   "domain": "xero",
+   "name": "show",
+   "scope": "invoice",
+   "parameters": "[{\"name\":\"Number\",\"type\":\"string\",\"optional\":false,\"hint\":\"invoice number\",\"sample\":\"INV-89\",\"control_type\":\"text\"}]",
+   "description": "Show Invoice details",
+   "hide_from_help": "false",
+   "allow_dialog": "true"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Number",
+      "name": "number",
+      "type": "string",
+      "optional": false,
+      "hint": "invoice number",
+      "sample": "INV-89"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "xero",
+    "name": "get_invoice_by_id",
+    "as": "get_invoice_by_id",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "InvoiceNumber": "#{_('data.slack_bot.bot_command_v2.parameters.number')}"
+    },
+    "uuid": "384164ab-3f3e-4933-a933-db1603a67b05"
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "equals_to",
+       "lhs": "#{_('data.xero.get_invoice_by_id.InvoiceID')}",
+       "rhs": "0"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "message.color": true
+      },
+      "input": {
+       "message": {
+        "color": "warning"
+       },
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "Searched for invoice"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "#{_('data.slack_bot.bot_command_v2.parameters.number')} was not found"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "Oops! I wasn't able to find invoice #{_('data.slack_bot.bot_command_v2.parameters.number')} in Xero :grin: \nCheck the id you entered is correct "
+        }
+       ]
+      },
+      "uuid": "59d2fb7f-ea56-423c-a6fc-bb6cf74edb4a",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     },
+     {
+      "number": 4,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "present",
+         "lhs": "#{_('data.workato.job_context.user_id')}",
+         "rhs": null
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 5,
+        "keyword": "stop",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "stop_with_error": "false"
+        },
+        "uuid": "86dc65dc-4ec9-420e-9b27-4a952e19011d"
+       }
+      ],
+      "uuid": "7be3379a-5798-46c8-b800-9fafc2835210"
+     }
+    ],
+    "uuid": "f06058e5-e9ea-4f30-969d-3041b46f5a43"
+   },
+   {
+    "number": 6,
+    "provider": "xero",
+    "name": "get_contact_by_id",
+    "as": "get_contact_by_id",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "ContactID": "#{_('data.xero.get_invoice_by_id.Contact.ContactID')}"
+    },
+    "uuid": "b43e3aec-4e12-4d4b-9d2a-0d92076664a4",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 7,
+    "provider": "slack_bot",
+    "name": "post_bot_reply_v2",
+    "as": "post_bot_reply_v2__1",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "message.color": true
+    },
+    "input": {
+     "message": {
+      "color": "good"
+     },
+     "blocks": [
+      {
+       "block_type": "section_with_fields",
+       "section_text": "*Here you go*\n*<https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID=#{_('data.xero.get_invoice_by_id.InvoiceID')}|Invoice number: #{_('data.xero.get_invoice_by_id.InvoiceNumber')}>*",
+       "attachment_fields": [
+        {
+         "value": "#{_('data.xero.get_invoice_by_id.Contact.Name')}",
+         "title": "*Name* -"
+        },
+        {
+         "value": "#{_('data.xero.get_contact_by_id.Balances.AccountsReceivable.Outstanding')}",
+         "title": "*Customer Outstanding Balance* -"
+        },
+        {
+         "value": "#{_('data.xero.get_contact_by_id.Balances.AccountsReceivable.Overdue')}",
+         "title": "*Customer Oustandue Amount* -"
+        },
+        {
+         "value": "#{_('data.xero.get_invoice_by_id.Total')}",
+         "title": "*Invoice Balance* -"
+        },
+        {
+         "value": "#{_('data.xero.get_invoice_by_id.TotalTax')}",
+         "title": "*Invoice Tax* -"
+        }
+       ]
+      }
+     ]
+    },
+    "uuid": "2eaa0710-ff7e-4816-bdee-5f6e09e0b787",
+    "title": null,
+    "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+   },
+   {
+    "number": 8,
+    "as": "foreach",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 9,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "77a02c37",
+      "title": "  Create variable Title",
+      "description": "Create variable <span class=\"provider\">Title</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "string",
+       "name": "Title",
+       "value": "=\"Line item \" + (_('data.foreach.foreach.index', 'foreach_meta') + 1).to_s + \" of \" + \n(_('data.foreach.foreach.size', 'foreach_meta')).to_s"
+      },
+      "extended_output_schema": [
+       {
+        "type": "string",
+        "name": "value",
+        "control_type": "text",
+        "label": "Title"
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "value",
+        "control_type": "text",
+        "label": "Default value",
+        "hint": "Default value for the variable",
+        "sticky": true,
+        "optional": true,
+        "strip_interpolation": true
+       }
+      ],
+      "uuid": "adf60749-ffb1-4d52-9f8f-ccebb909325f"
+     },
+     {
+      "number": 10,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2__2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "message.color": true
+      },
+      "input": {
+       "message": {
+        "title": "=",
+        "color": "good"
+       },
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "*Xero Invoice Line details*"
+        },
+        {
+         "block_type": "section_with_fields",
+         "section_text": "*<https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID=#{_('data.xero.get_invoice_by_id.InvoiceID')}|#{_('data.workato_variable.77a02c37.value')}>*",
+         "attachment_fields": [
+          {
+           "value": "#{_('data.foreach.foreach.Description')}",
+           "title": "*Description* -"
+          },
+          {
+           "value": "=_('data.foreach.foreach.Quantity').to_s",
+           "title": "*Quantity* -"
+          },
+          {
+           "value": "=_('data.foreach.foreach.UnitAmount').to_s",
+           "title": "*Price* -"
+          },
+          {
+           "value": "=_('data.foreach.foreach.LineAmount').to_s",
+           "title": "*Line amount* -"
+          },
+          {
+           "value": "#{_('data.foreach.foreach.AccountCode')}",
+           "title": "*Account code* -"
+          },
+          {
+           "value": "=_('data.foreach.foreach.TaxAmount').to_s",
+           "title": "*Tax amount* -"
+          }
+         ]
+        }
+       ]
+      },
+      "uuid": "e7a39744-7528-4159-abd0-590381ffb738",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     }
+    ],
+    "source": "#{_('data.xero.get_invoice_by_id.LineItems')}",
+    "uuid": "72313fcd-ad8e-44fe-bb4f-34dc3037d80c"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Invoice number"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.slack_bot.bot_command_v2.parameters.number')}"
+  },
+  "uuid": "039535b8-a195-400d-8513-22d083e768d6",
+  "param": {}
+ }
+}

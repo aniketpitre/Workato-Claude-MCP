@@ -1,0 +1,279 @@
+{
+ "name": "eloqua",
+ "title": "Eloqua",
+ "requires_connection": true,
+ "categories": [
+  "Data Transfer"
+ ],
+ "aliases": [
+  "Eloqua"
+ ],
+ "triggers": [
+  {
+   "name": "new_objects",
+   "title": "New record",
+   "description": "New record in Eloqua",
+   "help": "Triggers when an object is created.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "new_trigger_object_list",
+     "extends_schema": true,
+     "hint": "Select the object. For example, Account ."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created one hour ago. Once recipe has been run or tested, value canno…"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "new_or_updated_objects",
+   "title": "New or updated record",
+   "description": "New or updated record in Eloqua",
+   "help": "Triggers when an object is created or updated.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "trigger_object_list",
+     "extends_schema": true,
+     "hint": "Select the object. For example, Account ."
+    },
+    {
+     "name": "since",
+     "type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "control_type": "date_time",
+     "hint": "When you start recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get records created or updated one hour ago. Once recipe has been run or tested, …"
+    }
+   ],
+   "output": []
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Eloqua (Custom)",
+   "help": "Build your own Eloqua action with a HTTP request. The request will be authorized with your Eloqua connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_object",
+   "title": "Create record",
+   "description": "Create record in Eloqua",
+   "help": "Create any standard or custom record in Eloqua. Select the object to create, then provide the data for creating the record.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "create_object_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "object",
+      "type": "string"
+     },
+     "hint": "Select an object. For example, account . A maximum of 1000 custom objects are returned. To retrieve other custom objects, toggle to Use object ID ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_object",
+   "title": "Delete record",
+   "description": "Delete record in Eloqua",
+   "help": "Delete any standard or custom record. For example, contact via its record ID .",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "update_delete_object_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "object",
+      "type": "string"
+     },
+     "hint": "Select an object. For example, account . A maximum of 1000 custom objects are returned. To retrieve other custom objects, toggle to Use object ID ."
+    }
+   ],
+   "output": [
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_object_by_id",
+   "title": "Get record details",
+   "description": "Get record details in Eloqua",
+   "help": "Retrieve the details of any standard or custom record. For example, account , via its Eloqua ID.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "get_object_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "object",
+      "type": "string"
+     },
+     "hint": "Select an object. For example, account . A maximum of 1000 custom objects are returned. To retrieve other custom objects, toggle to Use object ID ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "search_object",
+   "title": "Search records",
+   "description": "Search an object in Eloqua",
+   "help": "The Search records action returns results that match all your search criteria. Use the depth parameter when making the request to specify the record information returned in the response.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "search_object_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "object",
+      "type": "string"
+     },
+     "hint": "Select an object. For example, account . A maximum of 1000 custom objects are returned. To retrieve other custom objects, toggle to Use object ID ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_object",
+   "title": "Update record",
+   "description": "Update record in Eloqua",
+   "help": "Update any standard or custom record in Eloqua. For example, contact , via its ID.",
+   "input": [
+    {
+     "name": "object",
+     "type": "string",
+     "label": "Object",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "update_delete_object_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "object",
+      "type": "string"
+     },
+     "hint": "Select an object. For example, account . A maximum of 1000 custom objects are returned. To retrieve other custom objects, toggle to Use object ID ."
+    }
+   ],
+   "output": []
+  }
+ ]
+}

@@ -1,0 +1,4973 @@
+{
+ "name": "workday_rest",
+ "title": "Workday REST",
+ "requires_connection": true,
+ "categories": [
+  "HR management",
+  "ERP",
+  "Financial Management"
+ ],
+ "aliases": [
+  "Workday REST"
+ ],
+ "triggers": [
+  {
+   "name": "new_worker",
+   "title": "New worker",
+   "description": "New worker in Workday",
+   "help": "When first started, all existing workers will be processed as individual jobs. Subsequently, triggers when a worker is created. Checks for new workers every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "___poll_interval",
+     "type": "integer",
+     "label": "Trigger poll interval",
+     "control_type": "select",
+     "options": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      180,
+      240,
+      360,
+      480,
+      720,
+      1440,
+      2880,
+      10080,
+      43200
+     ],
+     "toggle_field": {
+      "name": "___poll_interval",
+      "type": "integer"
+     },
+     "hint": "How frequently to check for new events. Defaults to {{authUser.membership.poll_interval}} minutes if left blank. Minimum value allowed is {{authUser.membership.min_poll_interval}} minutes. Learn more …"
+    },
+    {
+     "name": "name_filter",
+     "type": "string",
+     "label": "Name filter",
+     "control_type": "text",
+     "hint": "Use this to filter workers by name. At least 3 consecutive characters are required. The search is case-insensitive and matches worker names that start with the provided text."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text"
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text"
+    },
+    {
+     "name": "primarySupervisoryOrganization",
+     "type": "object",
+     "label": "Primary supervisory organization",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "businessTitle",
+     "type": "string",
+     "label": "Business title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "primaryWorkEmail",
+     "type": "string",
+     "label": "Primary work email",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isManager",
+     "type": "boolean",
+     "label": "Is manager",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isManager",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "primaryWorkPhone",
+     "type": "string",
+     "label": "Primary work phone",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "location",
+     "type": "object",
+     "label": "Location",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "primaryWorkAddressText",
+     "type": "string",
+     "label": "Primary work address text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "supervisoryOrganizationsManaged",
+     "type": "string",
+     "label": "Supervisory organizations managed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "yearsOfService",
+     "type": "string",
+     "label": "Years of service",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "dateOfBirth",
+     "type": "date_time",
+     "label": "Date of birth",
+     "control_type": "date",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Workday REST (Custom)",
+   "help": "Build your own Workday action with a HTTP request. The request will be authorized with your Workday connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "cancel_business_process_event",
+   "title": "Cancel business process event",
+   "description": "Cancel business process event in Workday",
+   "help": "Cancels a business process event.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Business process event ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workday ID of the business process event."
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "required": true,
+     "hint": "Cancellation comment."
+    }
+   ],
+   "output": [
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text"
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "create_job_changes",
+   "title": "Create a job change",
+   "description": "Create job change for a worker in Workday",
+   "help": "You can only create a job change for a worker permitted by the security profile of the connected user.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "jobChangeReason",
+     "type": "string",
+     "label": "Job change reason",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "job_change_reason",
+     "toggle_field": {
+      "name": "jobChangeReason",
+      "type": "string"
+     },
+     "hint": "Select a reason for the job change"
+    },
+    {
+     "name": "supervisoryOrganization",
+     "type": "string",
+     "label": "Supervisory organization",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "supervisory_organization",
+     "toggle_field": {
+      "name": "supervisoryOrganization",
+      "type": "string"
+     },
+     "hint": "Select a supervisory organization"
+    },
+    {
+     "name": "effective",
+     "type": "date_time",
+     "label": "Effective date",
+     "control_type": "date",
+     "hint": "Effective date of the job change. If left blank, is set to current date."
+    },
+    {
+     "name": "moveManagersTeam",
+     "type": "boolean",
+     "label": "Move manager team?",
+     "control_type": "checkbox",
+     "toggle_field": {
+      "name": "moveManagersTeam",
+      "type": "boolean"
+     },
+     "hint": "If Yes, the manager’s team is transferred to the new organization."
+    },
+    {
+     "name": "proposedOrganizations",
+     "type": "array",
+     "label": "Proposed organizations",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ],
+     "hint": "Propose one or more organizations to assign the worker to."
+    }
+   ],
+   "output": [
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "jobChangeReason",
+     "type": "object",
+     "label": "Job change reason",
+     "required": true,
+     "properties": [
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "moveManagersTeam",
+     "type": "boolean",
+     "label": "Move managers team",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "moveManagersTeam",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "proposedOrganizations",
+     "type": "array",
+     "label": "Proposed organizations",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    },
+    {
+     "name": "supervisoryOrganization",
+     "type": "object",
+     "label": "Supervisory organization",
+     "required": true,
+     "properties": [
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "execute_wql",
+   "title": "Execute WQL",
+   "description": "Execute WQL in Workday",
+   "help": "Runs a WQL query against the Workday WQL REST API. Use the output fields widget to run the query and generate columns from the result.",
+   "input": [
+    {
+     "name": "query",
+     "type": "string",
+     "label": "WQL",
+     "control_type": "code",
+     "required": true,
+     "hint": "Provide a valid WQL SELECT statement."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    },
+    {
+     "name": "output_schema",
+     "type": "string",
+     "label": "Output fields",
+     "control_type": "schema-designer",
+     "extends_schema": true
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    }
+   ]
+  },
+  {
+   "name": "get_absence_balances",
+   "title": "Get absence balances",
+   "description": "Get absence balances in Workday",
+   "help": "Retrieves absence balances from the Absence Management service.",
+   "input": [
+    {
+     "name": "worker",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "The Workday ID of the worker for which to retrieve absence balances."
+    },
+    {
+     "name": "category",
+     "type": "string",
+     "label": "Category ID",
+     "control_type": "text",
+     "hint": "Workday ID of the category of the absence balances to retrieve."
+    },
+    {
+     "name": "effective",
+     "type": "date",
+     "label": "Effective date",
+     "control_type": "date",
+     "hint": "The absence balances as of the specified date."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Absence balances",
+     "of": "object",
+     "properties": [
+      {
+       "name": "category",
+       "type": "object",
+       "label": "Category",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "effectiveDate",
+       "type": "date",
+       "label": "Effective date",
+       "control_type": "date"
+      },
+      {
+       "name": "worker",
+       "type": "object",
+       "label": "Worker",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "position",
+       "type": "object",
+       "label": "Position",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "unit",
+       "type": "object",
+       "label": "Unit",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "absencePlan",
+       "type": "object",
+       "label": "Absence plan",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "timeoffs",
+         "type": "string",
+         "label": "Timeoffs",
+         "control_type": "text"
+        },
+        {
+         "name": "absenceTable",
+         "type": "array",
+         "label": "Absence table",
+         "of": "object",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Quantity",
+       "control_type": "number"
+      },
+      {
+       "name": "dateOfFirstAbsence",
+       "type": "date",
+       "label": "Date of first absence",
+       "control_type": "date"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_business_process_event",
+   "title": "Get business process event",
+   "description": "Get business process event in Workday",
+   "help": "Retrieves a single business process event by Workday ID.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Business process event ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workday ID of the business process event."
+    }
+   ],
+   "output": [
+    {
+     "name": "creationDate",
+     "type": "date",
+     "label": "Creation date",
+     "control_type": "date"
+    },
+    {
+     "name": "completedDate",
+     "type": "date",
+     "label": "Completed date",
+     "control_type": "date"
+    },
+    {
+     "name": "status",
+     "type": "object",
+     "label": "Status",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "effectiveDate",
+     "type": "date",
+     "label": "Effective date",
+     "control_type": "date"
+    },
+    {
+     "name": "dueDate",
+     "type": "date",
+     "label": "Due date",
+     "control_type": "date"
+    },
+    {
+     "name": "initiator",
+     "type": "object",
+     "label": "Initiator",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "subBusinessProcesses",
+     "type": "array",
+     "label": "Sub business processes",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "overallBusinessProcess",
+     "type": "object",
+     "label": "Overall business process",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "for",
+     "type": "object",
+     "label": "For",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_business_process_events",
+   "title": "Get business process events",
+   "description": "Get business process events in Workday",
+   "help": "Retrieves business process events.",
+   "input": [
+    {
+     "name": "worker",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workday ID of the worker."
+    },
+    {
+     "name": "businessProcess",
+     "type": "string",
+     "label": "Business process ID",
+     "control_type": "text",
+     "hint": "Workday ID of the business process to retrieve events for."
+    },
+    {
+     "name": "initiator",
+     "type": "string",
+     "label": "Initiator ID",
+     "control_type": "text",
+     "hint": "Workday ID of the initiator of the business process event."
+    },
+    {
+     "name": "initiatedOnOrAfter",
+     "type": "date",
+     "label": "Initiated on or after",
+     "control_type": "date",
+     "hint": "The date and time from which the business process events were initiated."
+    },
+    {
+     "name": "initiatedOnOrBefore",
+     "type": "date",
+     "label": "Initiated on or before",
+     "control_type": "date",
+     "hint": "The date and time until which the business process events were initiated."
+    },
+    {
+     "name": "completedOnOrAfter",
+     "type": "date",
+     "label": "Completed on or after",
+     "control_type": "date",
+     "hint": "The date and time from which the business process events were completed."
+    },
+    {
+     "name": "completedOnOrBefore",
+     "type": "date",
+     "label": "Completed on or before",
+     "control_type": "date",
+     "hint": "The date and time until which the business process events were completed."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status ID",
+     "control_type": "text",
+     "hint": "Workday ID of the status of the business process event."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Business process events",
+     "of": "object",
+     "properties": [
+      {
+       "name": "creationDate",
+       "type": "date",
+       "label": "Creation date",
+       "control_type": "date"
+      },
+      {
+       "name": "completedDate",
+       "type": "date",
+       "label": "Completed date",
+       "control_type": "date"
+      },
+      {
+       "name": "status",
+       "type": "object",
+       "label": "Status",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "effectiveDate",
+       "type": "date",
+       "label": "Effective date",
+       "control_type": "date"
+      },
+      {
+       "name": "dueDate",
+       "type": "date",
+       "label": "Due date",
+       "control_type": "date"
+      },
+      {
+       "name": "initiator",
+       "type": "object",
+       "label": "Initiator",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "subBusinessProcesses",
+       "type": "array",
+       "label": "Sub business processes",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "overallBusinessProcess",
+       "type": "object",
+       "label": "Overall business process",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "for",
+       "type": "object",
+       "label": "For",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_business_process_types",
+   "title": "Get business process types",
+   "description": "Get business process types in Workday",
+   "help": "Retrieves business process types from the Business Process REST API.",
+   "input": [
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Data",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "Business_Process_Type",
+       "type": "string",
+       "label": "Business process type",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_direct_reports",
+   "title": "Get direct reports",
+   "description": "Get direct reports of a worker in Workday",
+   "help": "Retrieves direct reports of a worker by the worker's Workday ID. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Direct reports",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      },
+      {
+       "name": "primarySupervisoryOrganization",
+       "type": "object",
+       "label": "Primary supervisory organization",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "businessTitle",
+       "type": "string",
+       "label": "Business title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "primaryWorkEmail",
+       "type": "string",
+       "label": "Primary work email",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isManager",
+       "type": "boolean",
+       "label": "Is manager",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "isManager",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "primaryWorkPhone",
+       "type": "string",
+       "label": "Primary work phone",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "location",
+       "type": "object",
+       "label": "Location",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "primaryWorkAddressText",
+       "type": "string",
+       "label": "Primary work address text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "supervisoryOrganizationsManaged",
+       "type": "string",
+       "label": "Supervisory organizations managed",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "yearsOfService",
+       "type": "string",
+       "label": "Years of service",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "dateOfBirth",
+       "type": "date_time",
+       "label": "Date of birth",
+       "control_type": "date",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_eligible_absence_types",
+   "title": "Get eligible absence types",
+   "description": "Get eligible absence types in Workday",
+   "help": "Retrieves absence types the worker may request. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "effective",
+     "type": "date",
+     "label": "Effective date",
+     "control_type": "date",
+     "hint": "The effective date for which to retrieve eligible absence types."
+    },
+    {
+     "name": "category",
+     "type": "string",
+     "label": "Category",
+     "control_type": "select",
+     "options": [
+      "17bd6531c90c100016d74f8dfae007d0",
+      "17bd6531c90c100016da3f5b554007d2",
+      "17bd6531c90c100016d4b06f2b8a07ce"
+     ],
+     "toggle_field": {
+      "name": "category",
+      "type": "string"
+     },
+     "hint": "Select the category of the absence types to retrieve."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Eligible absence types",
+     "of": "object",
+     "properties": [
+      {
+       "name": "unitOfTime",
+       "type": "object",
+       "label": "Unit of time",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "positionBased",
+       "type": "boolean",
+       "label": "Position based",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "positionBased",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "position",
+       "type": "array",
+       "label": "Positions",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "absenceReasons",
+       "type": "array",
+       "label": "Absence reasons",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "reasonRequired",
+       "type": "boolean",
+       "label": "Reason required",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "reasonRequired",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "displayStartAndEndTime",
+       "type": "boolean",
+       "label": "Display start and end time",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "displayStartAndEndTime",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "category",
+       "type": "object",
+       "label": "Category",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "additionalFields",
+       "type": "array",
+       "label": "Additional fields",
+       "of": "object",
+       "properties": [
+        {
+         "name": "required",
+         "type": "boolean",
+         "label": "Required",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "required",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "hideFromEmployeeSelfService",
+         "type": "boolean",
+         "label": "Hide from employee self service",
+         "control_type": "checkbox",
+         "toggle_field": {
+          "name": "hideFromEmployeeSelfService",
+          "type": "boolean"
+         }
+        },
+        {
+         "name": "labelOverride",
+         "type": "string",
+         "label": "Label override",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "dailyDefaultQuantity",
+       "type": "number",
+       "label": "Daily default quantity",
+       "control_type": "number"
+      },
+      {
+       "name": "absenceTypeGroup",
+       "type": "object",
+       "label": "Absence type group",
+       "properties": [
+        {
+         "name": "displayOrder",
+         "type": "string",
+         "label": "Display order",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "calculateQuantityBasedOnStartAndEndTime",
+       "type": "boolean",
+       "label": "Calculate quantity based on start and end time",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "calculateQuantityBasedOnStartAndEndTime",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "crossingOverMidnightEnabled",
+       "type": "boolean",
+       "label": "Crossing over midnight enabled",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "crossingOverMidnightEnabled",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "entryOption",
+       "type": "object",
+       "label": "Entry option",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "worktags",
+       "type": "array",
+       "label": "Worktags",
+       "of": "object",
+       "properties": [
+        {
+         "name": "worktagType",
+         "type": "object",
+         "label": "Worktag type",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "worktagEntryOption",
+         "type": "object",
+         "label": "Worktag entry option",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "startAndEndTimeRequired",
+       "type": "boolean",
+       "label": "Start and end time required",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "startAndEndTimeRequired",
+        "type": "boolean"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_event_completed_steps",
+   "title": "Get event completed steps",
+   "description": "Get completed steps for a business process event in Workday",
+   "help": "Retrieves completed steps for a business process event.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Business process event ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workday ID of the business process event."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Completed steps",
+     "of": "object",
+     "properties": [
+      {
+       "name": "event",
+       "type": "object",
+       "label": "Event",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "completedByPerson",
+       "type": "object",
+       "label": "Completed by",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "awaitingPersons",
+       "type": "array",
+       "label": "Awaiting persons",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "status",
+       "type": "object",
+       "label": "Status",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "creationDate",
+       "type": "date_time",
+       "label": "Creation date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "completedDate",
+       "type": "date_time",
+       "label": "Completed date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "stepType",
+       "type": "object",
+       "label": "Step type",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "businessProcessStep",
+       "type": "object",
+       "label": "Business process step",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "order",
+       "type": "string",
+       "label": "Order",
+       "control_type": "text"
+      },
+      {
+       "name": "anonymous",
+       "type": "boolean",
+       "label": "Anonymous",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "anonymous",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_event_in_progress_steps",
+   "title": "Get event in-progress steps",
+   "description": "Get in-progress steps for a business process event in Workday",
+   "help": "Retrieves in-progress steps for a business process event.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Business process event ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workday ID of the business process event."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "In-progress steps",
+     "of": "object",
+     "properties": [
+      {
+       "name": "awaitingPersons",
+       "type": "array",
+       "label": "Awaiting persons",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "parallelStepInboxOrder",
+       "type": "string",
+       "label": "Parallel step inbox order",
+       "control_type": "text"
+      },
+      {
+       "name": "status",
+       "type": "object",
+       "label": "Status",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "creationDate",
+       "type": "date_time",
+       "label": "Creation date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "delayedDate",
+       "type": "date_time",
+       "label": "Delayed date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "dueDate",
+       "type": "date_time",
+       "label": "Due date",
+       "control_type": "date_time"
+      },
+      {
+       "name": "anonymous",
+       "type": "boolean",
+       "label": "Anonymous",
+       "control_type": "checkbox",
+       "toggle_field": {
+        "name": "anonymous",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "order",
+       "type": "string",
+       "label": "Order",
+       "control_type": "text"
+      },
+      {
+       "name": "businessProcessStep",
+       "type": "object",
+       "label": "Business process step",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_inbox_tasks",
+   "title": "Get inbox task(s)",
+   "description": "Get inbox task(s) in Workday",
+   "help": "Retrieve all your inbox tasks. Only inbox tasks from the connected user will be returned.",
+   "input": [],
+   "output": [
+    {
+     "name": "inbox_tasks",
+     "type": "array",
+     "label": "Inbox tasks",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "subject",
+       "type": "object",
+       "label": "Subject",
+       "required": true,
+       "properties": [
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "overallProcess",
+       "type": "object",
+       "label": "Overall process",
+       "required": true,
+       "properties": [
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "status",
+       "type": "object",
+       "label": "Status",
+       "required": true,
+       "properties": [
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "stepType",
+       "type": "object",
+       "label": "Step type",
+       "required": true,
+       "properties": [
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text",
+         "required": true
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "assigned",
+       "type": "date_time",
+       "label": "Assigned",
+       "control_type": "date_time",
+       "required": true
+      },
+      {
+       "name": "due",
+       "type": "date_time",
+       "label": "Due",
+       "control_type": "date",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_staffing_worker",
+   "title": "Get worker (Staffing)",
+   "description": "Get worker from Staffing in Workday",
+   "help": "Retrieves worker details from the Staffing service. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    }
+   ],
+   "output": [
+    {
+     "name": "additionalJobs",
+     "type": "array",
+     "label": "Additional jobs",
+     "of": "object",
+     "properties": [
+      {
+       "name": "location",
+       "type": "object",
+       "label": "Location",
+       "properties": [
+        {
+         "name": "country",
+         "type": "object",
+         "label": "Country",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "ISO_3166-1_Alpha-3_Code",
+           "type": "string",
+           "label": "ISO 3166 - 1 alpha- 3 code",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Location_ID",
+         "type": "string",
+         "label": "Location ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "jobProfile",
+       "type": "object",
+       "label": "Job profile",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Job_Profile_ID",
+         "type": "string",
+         "label": "Job profile ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "workSpace",
+       "type": "object",
+       "label": "Work space",
+       "properties": [
+        {
+         "name": "locationChain",
+         "type": "string",
+         "label": "Location chain",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "businessTitle",
+       "type": "string",
+       "label": "Business title",
+       "control_type": "text"
+      },
+      {
+       "name": "jobType",
+       "type": "object",
+       "label": "Job type",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Job_Type_Name_ID",
+         "type": "string",
+         "label": "Job type name ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "supervisoryOrganization",
+       "type": "object",
+       "label": "Supervisory organization",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Organization_Reference_ID",
+         "type": "string",
+         "label": "Organization reference ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "workerType",
+     "type": "object",
+     "label": "Worker type",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "primaryJob",
+     "type": "object",
+     "label": "Primary job",
+     "properties": [
+      {
+       "name": "location",
+       "type": "object",
+       "label": "Location",
+       "properties": [
+        {
+         "name": "country",
+         "type": "object",
+         "label": "Country",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "ISO_3166-1_Alpha-3_Code",
+           "type": "string",
+           "label": "ISO 3166 - 1 alpha- 3 code",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Location_ID",
+         "type": "string",
+         "label": "Location ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "jobProfile",
+       "type": "object",
+       "label": "Job profile",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Job_Profile_ID",
+         "type": "string",
+         "label": "Job profile ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "workSpace",
+       "type": "object",
+       "label": "Work space",
+       "properties": [
+        {
+         "name": "locationChain",
+         "type": "string",
+         "label": "Location chain",
+         "control_type": "text"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "businessTitle",
+       "type": "string",
+       "label": "Business title",
+       "control_type": "text"
+      },
+      {
+       "name": "jobType",
+       "type": "object",
+       "label": "Job type",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Job_Type_Name_ID",
+         "type": "string",
+         "label": "Job type name ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "supervisoryOrganization",
+       "type": "object",
+       "label": "Supervisory organization",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "Organization_Reference_ID",
+         "type": "string",
+         "label": "Organization reference ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "person",
+     "type": "object",
+     "label": "Person",
+     "properties": [
+      {
+       "name": "phone",
+       "type": "string",
+       "label": "Phone",
+       "control_type": "text"
+      },
+      {
+       "name": "email",
+       "type": "string",
+       "label": "Email",
+       "control_type": "text"
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "workerId",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text"
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text"
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text"
+    }
+   ]
+  },
+  {
+   "name": "get_supervisory_organization",
+   "title": "Get supervisory organization by ID",
+   "description": "Get supervisory organization in Workday",
+   "help": "Retrieves details of a supervisory organization by its Workday ID. This action fails if a record with the provided ID does not exist.",
+   "input": [
+    {
+     "name": "supervisoryOrganization",
+     "type": "string",
+     "label": "Supervisory organization",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "supervisory_organization",
+     "toggle_field": {
+      "name": "supervisoryOrganization",
+      "type": "string"
+     },
+     "hint": "Select a supervisory organization"
+    }
+   ],
+   "output": [
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Name",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "workers",
+     "type": "string",
+     "label": "Workers",
+     "control_type": "url",
+     "required": true
+    },
+    {
+     "name": "manager",
+     "type": "object",
+     "label": "Manager",
+     "required": true,
+     "properties": [
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_time_off_details",
+   "title": "Get time off details",
+   "description": "Get time off details in Workday",
+   "help": "Retrieves time off details for a worker. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "fromDate",
+     "type": "date",
+     "label": "From date",
+     "control_type": "date",
+     "hint": "The date from which to retrieve time off details."
+    },
+    {
+     "name": "toDate",
+     "type": "date",
+     "label": "To date",
+     "control_type": "date",
+     "hint": "The date to which to retrieve time off details."
+    },
+    {
+     "name": "status",
+     "type": "string",
+     "label": "Status",
+     "control_type": "multiselect",
+     "pick_list": "time_off_statuses",
+     "toggle_field": {
+      "name": "status",
+      "type": "string"
+     },
+     "hint": "Select the statuses of the time off details to retrieve."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Time off details",
+     "of": "object",
+     "properties": [
+      {
+       "name": "timeOffEntryId",
+       "type": "string",
+       "label": "Time off entry ID",
+       "control_type": "text"
+      },
+      {
+       "name": "position",
+       "type": "object",
+       "label": "Position",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "comment",
+       "type": "string",
+       "label": "Comment",
+       "control_type": "text"
+      },
+      {
+       "name": "reason",
+       "type": "object",
+       "label": "Reason",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "timeOffType",
+       "type": "object",
+       "label": "Time off type",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "quantity",
+       "type": "number",
+       "label": "Quantity",
+       "control_type": "number"
+      },
+      {
+       "name": "status",
+       "type": "object",
+       "label": "Status",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "date",
+       "type": "date",
+       "label": "Date",
+       "control_type": "date"
+      },
+      {
+       "name": "unit",
+       "type": "object",
+       "label": "Unit",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "worktags",
+       "type": "array",
+       "label": "Worktags",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "worker",
+       "type": "object",
+       "label": "Worker",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_time_off_entry",
+   "title": "Get time off entry",
+   "description": "Get time off entry in Workday",
+   "help": "Retrieves a time off entry for a worker. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "timeOffEntryId",
+     "type": "string",
+     "label": "Time off entry ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workday ID of the time off entry."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text"
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text"
+    },
+    {
+     "name": "employee",
+     "type": "object",
+     "label": "Employee",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "timeOffRequest",
+     "type": "object",
+     "label": "Time off request",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      },
+      {
+       "name": "status",
+       "type": "string",
+       "label": "Status",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "unitOfTime",
+     "type": "object",
+     "label": "Unit of time",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "timeOff",
+     "type": "object",
+     "label": "Time off",
+     "properties": [
+      {
+       "name": "plan",
+       "type": "object",
+       "label": "Plan",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "date",
+     "type": "date",
+     "label": "Date",
+     "control_type": "date"
+    },
+    {
+     "name": "units",
+     "type": "number",
+     "label": "Units",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "get_time_off_request",
+   "title": "Get time off request",
+   "description": "Get time off request in Workday",
+   "help": "Retrieves a time off request by ID.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Time off request ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Workday ID of the time off request."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text"
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text"
+    },
+    {
+     "name": "timeOffEntry",
+     "type": "array",
+     "label": "Time off entries",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "unitOfTime",
+       "type": "object",
+       "label": "Unit of time",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "employee",
+       "type": "object",
+       "label": "Employee",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "units",
+       "type": "number",
+       "label": "Units",
+       "control_type": "number"
+      },
+      {
+       "name": "timeOff",
+       "type": "object",
+       "label": "Time off",
+       "properties": [
+        {
+         "name": "plan",
+         "type": "object",
+         "label": "Plan",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "timeOffRequest",
+       "type": "object",
+       "label": "Time off request",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        },
+        {
+         "name": "status",
+         "type": "string",
+         "label": "Status",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "date",
+       "type": "date_time",
+       "label": "Date",
+       "control_type": "date"
+      }
+     ]
+    },
+    {
+     "name": "transactionStatus",
+     "type": "object",
+     "label": "Transaction status",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "subject",
+     "type": "object",
+     "label": "Subject",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "due",
+     "type": "date_time",
+     "label": "Due",
+     "control_type": "date"
+    },
+    {
+     "name": "eventRecordsAwaitingAction",
+     "type": "array",
+     "label": "Event records awaiting action",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      },
+      {
+       "name": "assignedToWorkers",
+       "type": "array",
+       "label": "Assigned to workers",
+       "of": "object",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        },
+        {
+         "name": "primaryWorkEmail",
+         "type": "string",
+         "label": "Primary work email",
+         "control_type": "text"
+        },
+        {
+         "name": "primarySupervisoryOrganization",
+         "type": "object",
+         "label": "Primary supervisory organization",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "workersCompletedMostRecentStep",
+     "type": "object",
+     "label": "Workers completed most recent step",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      },
+      {
+       "name": "businessTitle",
+       "type": "string",
+       "label": "Business title",
+       "control_type": "text"
+      },
+      {
+       "name": "primaryWorkEmail",
+       "type": "string",
+       "label": "Primary work email",
+       "control_type": "text"
+      },
+      {
+       "name": "primarySupervisoryOrganization",
+       "type": "object",
+       "label": "Primary supervisory organization",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_time_off_status_values",
+   "title": "Get time off status values",
+   "description": "Get time off status values in Workday",
+   "help": "Retrieves allowed values for time off status.",
+   "input": [
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Data",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_valid_time_off_dates",
+   "title": "Get valid time off dates",
+   "description": "Get valid time off dates in Workday",
+   "help": "Returns valid time off dates for a worker for a given date. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "dates",
+     "type": "array",
+     "label": "Dates",
+     "of": "string",
+     "hint": "The dates being requested for which to validate. It should be in the yyyy-mm-dd format."
+    },
+    {
+     "name": "timeOff",
+     "type": "string",
+     "label": "Time off type",
+     "control_type": "select",
+     "pick_list": "time_off_types",
+     "toggle_field": {
+      "name": "timeOff",
+      "type": "string"
+     },
+     "hint": "Select the time off type to filter by."
+    },
+    {
+     "name": "position",
+     "type": "string",
+     "label": "Position",
+     "control_type": "text",
+     "hint": "The Workday ID of the position to filter by."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Valid time off dates",
+     "of": "object",
+     "properties": [
+      {
+       "name": "unit",
+       "type": "object",
+       "label": "Unit",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "dailyDefaultQuantity",
+       "type": "number",
+       "label": "Daily default quantity",
+       "control_type": "number"
+      },
+      {
+       "name": "date",
+       "type": "date",
+       "label": "Date",
+       "control_type": "date"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "get_worker",
+   "title": "Get worker by ID",
+   "description": "Get worker in Workday",
+   "help": "Retrieves details of a worker by its Workday ID. This action fails if a record with the provided ID does not exist. Use the literal me as Worker ID to retrieve the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "view",
+     "type": "string",
+     "label": "View",
+     "control_type": "select",
+     "options": [
+      "workerProfile",
+      "workerSummary",
+      "timeOffSummary"
+     ],
+     "toggle_field": {
+      "name": "view",
+      "type": "string"
+     },
+     "hint": "Select the view to retrieve the worker details."
+    }
+   ],
+   "output": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text"
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text"
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text"
+    },
+    {
+     "name": "primarySupervisoryOrganization",
+     "type": "object",
+     "label": "Primary supervisory organization",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "businessTitle",
+     "type": "string",
+     "label": "Business title",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "primaryWorkEmail",
+     "type": "string",
+     "label": "Primary work email",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "isManager",
+     "type": "boolean",
+     "label": "Is manager",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "isManager",
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "primaryWorkPhone",
+     "type": "string",
+     "label": "Primary work phone",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "location",
+     "type": "object",
+     "label": "Location",
+     "required": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "primaryWorkAddressText",
+     "type": "string",
+     "label": "Primary work address text",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "supervisoryOrganizationsManaged",
+     "type": "string",
+     "label": "Supervisory organizations managed",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "yearsOfService",
+     "type": "string",
+     "label": "Years of service",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "dateOfBirth",
+     "type": "date_time",
+     "label": "Date of birth",
+     "control_type": "date",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "get_worker_service_dates",
+   "title": "Get worker service dates",
+   "description": "Get service dates for a worker in Workday",
+   "help": "Retrieves service dates from the Staffing service. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Service dates",
+     "of": "object",
+     "properties": [
+      {
+       "name": "hireDate",
+       "type": "date",
+       "label": "Hire date",
+       "control_type": "date"
+      },
+      {
+       "name": "continuousServiceDate",
+       "type": "date",
+       "label": "Continuous service date",
+       "control_type": "date"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "list_time_off_entries",
+   "title": "List time off entries",
+   "description": "List time off entries in Workday",
+   "help": "Lists time off entries for a worker. Use the literal me as Worker ID for the signed-in worker.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of records to return."
+    },
+    {
+     "name": "offset",
+     "type": "integer",
+     "label": "Offset",
+     "control_type": "integer",
+     "hint": "Offset for pagination."
+    }
+   ],
+   "output": [
+    {
+     "name": "total",
+     "type": "integer",
+     "label": "Total",
+     "control_type": "integer"
+    },
+    {
+     "name": "data",
+     "type": "array",
+     "label": "Time off entries",
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      },
+      {
+       "name": "employee",
+       "type": "object",
+       "label": "Employee",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "timeOffRequest",
+       "type": "object",
+       "label": "Time off request",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        },
+        {
+         "name": "status",
+         "type": "string",
+         "label": "Status",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "unitOfTime",
+       "type": "object",
+       "label": "Unit of time",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "timeOff",
+       "type": "object",
+       "label": "Time off",
+       "properties": [
+        {
+         "name": "plan",
+         "type": "object",
+         "label": "Plan",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "date",
+       "type": "date",
+       "label": "Date",
+       "control_type": "date"
+      },
+      {
+       "name": "units",
+       "type": "number",
+       "label": "Units",
+       "control_type": "number"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "request_time_off",
+   "title": "Request time off",
+   "description": "Create time off request in Workday",
+   "help": "Submits a time off request for a worker. Use the literal me as Worker ID for the signed-in worker. Map the request body to the Workday REST API shape.",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Worker ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide a worker WID or the literal me for the signed-in user."
+    },
+    {
+     "name": "days",
+     "type": "array",
+     "label": "Days",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "reason",
+       "type": "object",
+       "label": "Reason",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "dailyQuantity",
+       "type": "number",
+       "label": "Daily quantity",
+       "control_type": "number",
+       "required": true
+      },
+      {
+       "name": "timeOffType",
+       "type": "object",
+       "label": "Time off type",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text",
+         "required": true
+        }
+       ]
+      },
+      {
+       "name": "comment",
+       "type": "string",
+       "label": "Comment",
+       "control_type": "text"
+      },
+      {
+       "name": "date",
+       "type": "date",
+       "label": "Date",
+       "control_type": "date",
+       "required": true
+      },
+      {
+       "name": "position",
+       "type": "object",
+       "label": "Position",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "days",
+     "type": "array",
+     "label": "Days",
+     "of": "object",
+     "properties": [
+      {
+       "name": "reason",
+       "type": "object",
+       "label": "Reason",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "end",
+       "type": "date_time",
+       "label": "End",
+       "control_type": "date_time"
+      },
+      {
+       "name": "dailyQuantity",
+       "type": "number",
+       "label": "Daily quantity",
+       "control_type": "number"
+      },
+      {
+       "name": "timeOffType",
+       "type": "object",
+       "label": "Time off type",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "comment",
+       "type": "string",
+       "label": "Comment",
+       "control_type": "text"
+      },
+      {
+       "name": "date",
+       "type": "date",
+       "label": "Date",
+       "control_type": "date"
+      },
+      {
+       "name": "start",
+       "type": "date_time",
+       "label": "Start",
+       "control_type": "date_time"
+      },
+      {
+       "name": "position",
+       "type": "object",
+       "label": "Position",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      }
+     ]
+    },
+    {
+     "name": "businessProcessParameters",
+     "type": "object",
+     "label": "Business process parameters",
+     "properties": [
+      {
+       "name": "warningValidations",
+       "type": "string",
+       "label": "Warning validations",
+       "control_type": "text"
+      },
+      {
+       "name": "attachments",
+       "type": "array",
+       "label": "Attachments",
+       "of": "object",
+       "properties": [
+        {
+         "name": "uploadDate",
+         "type": "date_time",
+         "label": "Upload date",
+         "control_type": "date_time"
+        },
+        {
+         "name": "fileLength",
+         "type": "string",
+         "label": "File length",
+         "control_type": "text"
+        },
+        {
+         "name": "fileName",
+         "type": "string",
+         "label": "File name",
+         "control_type": "text"
+        },
+        {
+         "name": "uploadedBy",
+         "type": "object",
+         "label": "Uploaded by",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "category",
+         "type": "object",
+         "label": "Category",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "description",
+         "type": "string",
+         "label": "Description",
+         "control_type": "text"
+        },
+        {
+         "name": "contentType",
+         "type": "object",
+         "label": "Content type",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "overallStatus",
+       "type": "string",
+       "label": "Overall status",
+       "control_type": "text"
+      },
+      {
+       "name": "for",
+       "type": "object",
+       "label": "For",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "criticalValidations",
+       "type": "string",
+       "label": "Critical validations",
+       "control_type": "text"
+      },
+      {
+       "name": "comment",
+       "type": "string",
+       "label": "Comment",
+       "control_type": "text"
+      },
+      {
+       "name": "action",
+       "type": "object",
+       "label": "Action",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "overallBusinessProcess",
+       "type": "object",
+       "label": "Overall business process",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "comments",
+       "type": "array",
+       "label": "Comments",
+       "of": "object",
+       "properties": [
+        {
+         "name": "person",
+         "type": "object",
+         "label": "Person",
+         "properties": [
+          {
+           "name": "id",
+           "type": "string",
+           "label": "ID",
+           "control_type": "text"
+          },
+          {
+           "name": "descriptor",
+           "type": "string",
+           "label": "Descriptor",
+           "control_type": "text"
+          },
+          {
+           "name": "href",
+           "type": "string",
+           "label": "Href",
+           "control_type": "text"
+          }
+         ]
+        },
+        {
+         "name": "comment",
+         "type": "string",
+         "label": "Comment",
+         "control_type": "text"
+        },
+        {
+         "name": "commentDate",
+         "type": "date_time",
+         "label": "Comment date",
+         "control_type": "date_time"
+        },
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "transactionStatus",
+       "type": "object",
+       "label": "Transaction status",
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "search_workers",
+   "title": "Search workers",
+   "description": "Search workers in Workday",
+   "help": "This action searches for workers by matching worker names to the provided text.",
+   "input": [
+    {
+     "name": "search_text",
+     "type": "string",
+     "label": "Name filter",
+     "control_type": "text",
+     "hint": "At least 3 characters are required. The search is case-insensitive and matches worker names that start with the provided text."
+    },
+    {
+     "name": "limit",
+     "type": "integer",
+     "label": "Limit",
+     "control_type": "integer",
+     "hint": "Maximum number of workers to return. Defaults to 100. Cannot exceed 100."
+    }
+   ],
+   "output": [
+    {
+     "name": "workers",
+     "type": "array",
+     "label": "Workers",
+     "required": true,
+     "of": "object",
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "label": "ID",
+       "control_type": "text"
+      },
+      {
+       "name": "descriptor",
+       "type": "string",
+       "label": "Descriptor",
+       "control_type": "text"
+      },
+      {
+       "name": "href",
+       "type": "string",
+       "label": "Href",
+       "control_type": "text"
+      },
+      {
+       "name": "primarySupervisoryOrganization",
+       "type": "object",
+       "label": "Primary supervisory organization",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        },
+        {
+         "name": "href",
+         "type": "string",
+         "label": "Href",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "businessTitle",
+       "type": "string",
+       "label": "Business title",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "primaryWorkEmail",
+       "type": "string",
+       "label": "Primary work email",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "isManager",
+       "type": "boolean",
+       "label": "Is manager",
+       "control_type": "checkbox",
+       "required": true,
+       "toggle_field": {
+        "name": "isManager",
+        "type": "boolean"
+       }
+      },
+      {
+       "name": "primaryWorkPhone",
+       "type": "string",
+       "label": "Primary work phone",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "location",
+       "type": "object",
+       "label": "Location",
+       "required": true,
+       "properties": [
+        {
+         "name": "id",
+         "type": "string",
+         "label": "ID",
+         "control_type": "text"
+        },
+        {
+         "name": "descriptor",
+         "type": "string",
+         "label": "Descriptor",
+         "control_type": "text"
+        }
+       ]
+      },
+      {
+       "name": "primaryWorkAddressText",
+       "type": "string",
+       "label": "Primary work address text",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "supervisoryOrganizationsManaged",
+       "type": "string",
+       "label": "Supervisory organizations managed",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "yearsOfService",
+       "type": "string",
+       "label": "Years of service",
+       "control_type": "text",
+       "required": true
+      },
+      {
+       "name": "dateOfBirth",
+       "type": "date_time",
+       "label": "Date of birth",
+       "control_type": "date",
+       "required": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "update_inbox_task",
+   "title": "Approve/reject an inbox task",
+   "description": "Approve/reject inbox task in Workday",
+   "input": [
+    {
+     "name": "id",
+     "type": "string",
+     "label": "Inbox task ID",
+     "control_type": "text",
+     "required": true,
+     "hint": "Provide WID of an existing inbox task."
+    },
+    {
+     "name": "type",
+     "type": "string",
+     "label": "Action",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "approval",
+      "denial"
+     ]
+    },
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "hint": "Optional comment."
+    }
+   ],
+   "output": [
+    {
+     "name": "comment",
+     "type": "string",
+     "label": "Comment",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "descriptor",
+     "type": "string",
+     "label": "Descriptor",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "id",
+     "type": "string",
+     "label": "ID",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "href",
+     "type": "string",
+     "label": "Href",
+     "control_type": "text",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

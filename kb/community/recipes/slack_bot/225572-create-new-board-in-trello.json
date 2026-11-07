@@ -1,0 +1,308 @@
+{
+ "id": 225572,
+ "name": "Create New Board in Trello",
+ "description": "1. Type the Workbot command **Trello create board** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will ask for the **board name** (e.g. Q2 SEO Project).\n3. Workbot will create a new Trello board with that name.\n\n**Notes**\nWorkbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "trello",
+  "workato_variable",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "trello",
+  "workato_variable",
+  "slack_bot"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "board",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "Artificial Intelligence",
+  "Sales Enablement",
+  "Project Management",
+  "Recipe Tools"
+ ],
+ "copy_count": 3565,
+ "curated": false,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2021-02-15T01:31:17.191-08:00",
+ "source_url": "https://app.workato.com/recipes/225572?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "trello.search_boards",
+  "trello.create_board",
+  "workato_variable.declare_variable",
+  "slack_bot.post_bot_reply_v2",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">trello create Board</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Trello"
+  },
+  "toggleCfg": {
+   "domain": true,
+   "name": true,
+   "scope": false
+  },
+  "input": {
+   "domain": "trello",
+   "name": "create",
+   "scope": "Board",
+   "parameters": "[{\"name\":\"boardname\",\"type\":\"string\",\"optional\":false,\"hint\":\"name of trello board\",\"sample\":\"account management\",\"control_type\":\"text\"}]",
+   "description": "Create a Trello Board"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Boardname",
+      "name": "boardname",
+      "type": "string",
+      "optional": false,
+      "hint": "name of trello board",
+      "sample": "account management"
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "trello",
+    "name": "search_boards",
+    "as": "search_boards",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "board_name": "#{_('data.slack_bot.bot_command_v2.parameters.boardname')}"
+    },
+    "uuid": "b73796bf-2f08-4b96-b17a-9af48960868f",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "blank",
+       "lhs": "#{_('data.trello.search_boards.boards.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 3,
+      "provider": "trello",
+      "name": "create_board",
+      "as": "create_board",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "name": "=_('data.slack_bot.bot_command_v2.parameters.boardname').gsub(/[@^%$]/,\"\")"
+      },
+      "uuid": "21761ddb-090e-4c17-b5df-f9cd6cafefb5",
+      "title": null,
+      "description": null
+     },
+     {
+      "number": 4,
+      "provider": "workato_variable",
+      "name": "declare_variable",
+      "as": "7b37ae9d",
+      "title": "  Create variable id",
+      "description": "Create variable <span class=\"provider\">id</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "variables": {
+        "schema": "[{\"name\":\"id\",\"type\":\"string\",\"optional\":true,\"label\":\"id\",\"control_type\":\"text\"}]",
+        "data": {
+         "id": "=_('data.slack_bot.bot_command_v2.parameters.boardname').titleize + \" Board created!\""
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "string",
+        "name": "id",
+        "control_type": "text",
+        "label": "id",
+        "optional": true
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "variables",
+        "control_type": "form-schema-builder",
+        "label": "Variables",
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "broadcast_change_event": true,
+          "type": "string",
+          "name": "schema",
+          "parent": "variables"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "id",
+            "name": "id",
+            "type": "string",
+            "optional": true,
+            "hint": "Defaults to nil if not supplied.",
+            "sticky": true,
+            "parent": "variables.data"
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data",
+          "parent": "variables"
+         }
+        ],
+        "exclude_fields": [
+         "hint"
+        ]
+       }
+      ],
+      "visible_config_fields": [
+       "variables.data.id"
+      ],
+      "uuid": "11053774-6f40-4c0c-a2da-1c6c4a0807d3"
+     },
+     {
+      "number": 5,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "message.color": true
+      },
+      "input": {
+       "message": {
+        "title": "=",
+        "color": "good"
+       },
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "Here you go"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "<#{_('data.trello.create_board.url')}|#{_('data.workato_variable.7b37ae9d.id')}>"
+        },
+        {
+         "block_type": "section_with_text",
+         "section_text": "Now you can start adding new lists & cards :smile:"
+        }
+       ]
+      },
+      "uuid": "5f40ccd7-e7e8-45b6-a41d-3ca7319fcf17",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     }
+    ],
+    "uuid": "eb9dbf2f-dafa-4b2c-ba99-9584728a9ee5"
+   },
+   {
+    "number": 6,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.trello.search_boards.boards.first.id')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 7,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2__1",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "message.color": true
+      },
+      "input": {
+       "text": "Board has already been created... :thinking_face:",
+       "message": {
+        "color": "warning"
+       },
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "<#{_('data.trello.search_boards.boards.first.url')}|#{_('data.slack_bot.bot_command_v2.parameters.boardname')}>"
+        }
+       ]
+      },
+      "uuid": "c5a70e74-c0d1-4632-9ec1-7766c3149710",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     }
+    ],
+    "uuid": "e700daa4-2f6b-42b1-bc1b-a3e381c5f0e1"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Board name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "URL"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.slack_bot.bot_command_v2.parameters.boardname')}",
+   "custom_column_2": "#{_('data.trello.create_board.url')}"
+  },
+  "uuid": "be17ca91-959f-45d3-a101-b00dc156ca5d",
+  "param": {}
+ }
+}

@@ -1,0 +1,281 @@
+{
+ "id": 382678,
+ "name": "Part 2: Update Salesforce Product Active state by Product ID with Slack Workbot",
+ "description": "1. Type or paste a **Salesforce Product URL** in the Workbot DM or in a channel Workbot is in.\n2. Workbot will search Salesforce and your Price Book entries to obtain information about the Product.\n3. Workbot will automatically reply with a message showing more information about that particular Product. \n4. Workbot will prompt you with a button to update the Salesforce Product Activity.\n5. Activate or deactivate your Product from within Slack with Workbot.\n\n**Notes**\n- This recipe works together with the [Slack Workbot shows Salesforce Product details when you post a URL in Slack](https://www.workato.com/recipes/382657-slack-workbot-shows-salesforce-product-details-when-you-post-a-url-in-slack#recipe) recipe. To use this recipe, copy and run both recipes.\n- Workbot must be invited to Slack channels before it can post messages in those channels.",
+ "applications": [
+  "slack_bot",
+  "salesforce",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "salesforce",
+  "slack_bot"
+ ],
+ "trigger_application": "slack_bot",
+ "business_objects": [
+  "command",
+  "product 2",
+  "message"
+ ],
+ "categories": [
+  "Bots",
+  "CRM",
+  "Marketing"
+ ],
+ "copy_count": 3925,
+ "curated": false,
+ "recipe_type": "chat_bot",
+ "trigger_type": "chat_bot",
+ "published_at": null,
+ "updated_at": "2018-06-28T23:43:55.003-07:00",
+ "source_url": "https://app.workato.com/recipes/382678?community=us",
+ "steps": [
+  "slack_bot.bot_command_v2",
+  "salesforce.update_sobject",
+  "slack_bot.post_bot_reply_v2",
+  "slack_bot.post_bot_reply_v2"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "slack_bot",
+  "name": "bot_command_v2",
+  "as": "bot_command_v2",
+  "title": null,
+  "description": "New <span class=\"provider\">salesforce update_by_product_activity product</span> command to <span class=\"provider\">Slack Workbot</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "domain": "Salesforce"
+  },
+  "toggleCfg": {
+   "domain": true,
+   "name": false,
+   "scope": false
+  },
+  "input": {
+   "domain": "salesforce",
+   "name": "update_by_product_activity",
+   "scope": "product",
+   "parameters": "[{\"name\":\"product_activity\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"},{\"name\":\"product_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"}]",
+   "description": "change product activity",
+   "allow_dialog": "true"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "parameters",
+    "label": "Parameters",
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "Product activity",
+      "name": "product_activity",
+      "type": "string",
+      "optional": false
+     },
+     {
+      "control_type": "text",
+      "label": "Product ID",
+      "name": "product_id",
+      "type": "string",
+      "optional": false
+     }
+    ]
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "try",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "provider": "salesforce",
+      "name": "update_sobject",
+      "as": "update_sobject",
+      "title": "Update Product",
+      "description": "Update <span class=\"provider\">Product</span> in <span class=\"provider\">Salesforce</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "sobject_name": "Product"
+      },
+      "toggleCfg": {
+       "IsActive": false
+      },
+      "input": {
+       "sobject_name": "Product2",
+       "id": "#{_('data.slack_bot.bot_command_v2.parameters.product_id')}",
+       "IsActive": "#{_('data.slack_bot.bot_command_v2.parameters.product_activity')}"
+      },
+      "extended_input_schema": [
+       {
+        "type": "string",
+        "name": "id",
+        "control_type": "text",
+        "label": "Product ID",
+        "hint": "Salesforce internal ID of Product to update",
+        "key_scope": "product2"
+       },
+       {
+        "type": "boolean",
+        "name": "IsActive",
+        "control_type": "checkbox",
+        "label": "Active",
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Active",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "boolean",
+         "name": "IsActive"
+        },
+        "render_input": {},
+        "parse_output": {},
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "ProductCode",
+        "control_type": "text",
+        "label": "Product Code",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Description",
+        "control_type": "text-area",
+        "label": "Product Description",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Family",
+        "control_type": "select",
+        "label": "Product Family",
+        "pick_list": [
+         [
+          "None",
+          "None"
+         ]
+        ],
+        "optional": true,
+        "custom": false,
+        "toggle_hint": "Select from list",
+        "toggle_field": {
+         "control_type": "text",
+         "label": "Product Family",
+         "toggle_hint": "Enter custom value",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": true,
+         "sfdc_updateable": true,
+         "type": "string",
+         "name": "Family"
+        },
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       },
+       {
+        "type": "string",
+        "name": "Name",
+        "control_type": "text",
+        "label": "Product Name",
+        "optional": true,
+        "custom": false,
+        "event_title": true,
+        "sfdc_createable": true,
+        "sfdc_updateable": true
+       }
+      ],
+      "visible_config_fields": [
+       "sobject_name",
+       "id",
+       "IsActive"
+      ],
+      "uuid": "fb0f8c38-4641-4cad-b111-ab4a2be04f2c"
+     },
+     {
+      "number": 3,
+      "provider": "slack_bot",
+      "name": "post_bot_reply_v2",
+      "as": "post_bot_reply_v2",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "text": "=_('data.slack_bot.bot_command_v2.parameters.product_activity') == \"true\" ? \":white_check_mark: Activated\" : \":x: De-activated\""
+      },
+      "uuid": "6f7c2603-6a77-43f8-aac4-52005ff85eaf",
+      "title": null,
+      "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+     },
+     {
+      "number": 4,
+      "as": "catch",
+      "keyword": "catch",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {},
+      "block": [
+       {
+        "number": 5,
+        "provider": "slack_bot",
+        "name": "post_bot_reply_v2",
+        "as": "post_bot_reply_v2__1",
+        "keyword": "action",
+        "dynamicPickListSelection": {},
+        "toggleCfg": {},
+        "input": {
+         "text": "Recipe Error",
+         "message": {
+          "attachment_text": "#{_('data.catch.catch.type')}\n#{_('data.catch.catch.message')}",
+          "color": "danger",
+          "title": ":x: Workbot ran into an error",
+          "title_link": "#{_('data.workato.job_context.recipe_url')}"
+         }
+        },
+        "uuid": "149b8fe6-95af-471c-9ffe-2f16deebbf81",
+        "title": null,
+        "description": "Post <span class=\"provider\">command reply</span> as <span class=\"provider\">Slack Workbot</span>"
+       }
+      ],
+      "uuid": "88d4b2b3-9219-4c71-affd-36446d28b6a5"
+     }
+    ],
+    "uuid": "d4d1c024-a472-4e52-8d57-bb4ef41435b4"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Product activity"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Product ID"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.slack_bot.bot_command_v2.parameters.product_activity')}",
+   "custom_column_2": "#{_('data.slack_bot.bot_command_v2.parameters.product_id')}"
+  },
+  "uuid": "247e135d-29c0-490a-b252-85709f25f429",
+  "param": {}
+ }
+}

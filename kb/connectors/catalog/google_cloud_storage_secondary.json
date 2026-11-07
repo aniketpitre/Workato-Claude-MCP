@@ -1,0 +1,573 @@
+{
+ "name": "google_cloud_storage_secondary",
+ "title": "Google Cloud Storage secondary",
+ "requires_connection": true,
+ "categories": [
+  "Directory Services",
+  "Cloud Platform"
+ ],
+ "aliases": [
+  "Google Cloud Storage"
+ ],
+ "triggers": [],
+ "actions": [
+  {
+   "name": "__adhoc_http_action",
+   "title": "Custom action",
+   "description": "Custom action in Google Cloud Storage secondary (Custom)",
+   "help": "Build your own Google Workspace action with a HTTP request. The request will be authorized with your Google Workspace connection.",
+   "input": [
+    {
+     "name": "mnemonic",
+     "type": "string",
+     "label": "Action name",
+     "control_type": "text",
+     "required": true,
+     "default": "Custom action",
+     "extends_schema": true,
+     "hint": "Give this action you're building a descriptive name, e.g. create record, get record"
+    },
+    {
+     "name": "verb",
+     "type": "string",
+     "label": "Method",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      "get",
+      "post",
+      "put",
+      "patch",
+      "delete",
+      "head"
+     ],
+     "extends_schema": true,
+     "hint": "Select HTTP method of the request"
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "create_bucket",
+   "title": "Create bucket",
+   "description": "Create bucket in Google Cloud Storage secondary",
+   "help": "Creates a new bucket in the Google Cloud Storage system. Bucket name must be unique in the system.",
+   "input": [
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "The name of the bucket to be created. Bucket name must be unique. For more information, see the bucket naming guidelines ."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "delete_bucket",
+   "title": "Delete bucket",
+   "description": "Delete bucket in Google Cloud Storage secondary",
+   "help": "Deletes a bucket in the Google Cloud Storage system. Ensure that the bucket does not contain any objects before deleting it.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "The name of the bucket which is to be deleted."
+    }
+   ],
+   "output": [
+    {
+     "name": "deletion_successful",
+     "type": "number",
+     "label": "Successfully deleted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "delete_object",
+   "title": "Delete Object",
+   "description": "Delete Object in Google Cloud Storage secondary",
+   "help": "Deletes an object and its metadata in the Google Cloud Storage system. Deletions are permanent if versioning is not enabled for the bucket.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "The name of the bucket the object is to be deleted from."
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "The name of the object which is to be deleted."
+    },
+    {
+     "name": "generation",
+     "type": "integer",
+     "label": "Generation",
+     "control_type": "number",
+     "hint": "If present, permanently deletes a specific revision of this object (as opposed to the latest version, the default)."
+    },
+    {
+     "name": "ifGenerationMatch",
+     "type": "integer",
+     "label": "If generation matches",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current generation matches the given value. Setting to 0 makes the operation succeed only if there are no live versions of the object."
+    },
+    {
+     "name": "ifGenerationNotMatch",
+     "type": "integer",
+     "label": "If generation does not match",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current generation does not match the given value. If no live object exists, the precondition fails. Setting to 0 makes the operation succeed on…"
+    },
+    {
+     "name": "ifMetagenerationMatch",
+     "type": "integer",
+     "label": "If Meta generation matches",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current metageneration matches the given value."
+    },
+    {
+     "name": "ifMetagenerationNotMatch",
+     "type": "integer",
+     "label": "If Meta generation does not match",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current metageneration does not match the given value."
+    }
+   ],
+   "output": [
+    {
+     "name": "deletion_successful",
+     "type": "number",
+     "label": "Successfully deleted",
+     "control_type": "number"
+    }
+   ]
+  },
+  {
+   "name": "download_object",
+   "title": "Download object",
+   "description": "Download Object from Google Cloud Storage secondary",
+   "help": "Downloads an object and its metadata in the Google Cloud Storage system.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "Enter the name of the bucket from which to download. The remaining part of the path should be specified in Object name ."
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter the name of the object to be downloaded. The name should include the full path relative to the bucket, including any folders and subfolders from which the object will be downloaded. For example,…"
+    },
+    {
+     "name": "encoding",
+     "type": "string",
+     "label": "Encoding of the file content",
+     "control_type": "select",
+     "pick_list": "supported_encodings_without_binary_global_pick_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "encoding",
+      "type": "string"
+     },
+     "hint": "Specify the encoding of the file to set it explicitly. By default, encoding will be set to UTF-8 if left blank. Click here to know more about the different encodings supported."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_bucket",
+   "title": "Get bucket",
+   "description": "Get details of a bucket in Google Cloud Storage secondary",
+   "help": "Get details of a bucket in the Google Cloud Storage system.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "The name of the bucket which is to be retrieved."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "get_object_metadata",
+   "title": "Get object metadata",
+   "description": "Get metadata of an Object Object from Google Cloud Storage secondary",
+   "help": "Get an object’s metadata without downloading the object contents in the Google Cloud Storage system.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "The name of the bucket to retrieve object metadata from."
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "The name of the object to be retrieve object metadata from."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_buckets",
+   "title": "List buckets",
+   "description": "List buckets within a project in Google Cloud Storage secondary",
+   "help": "List the details of all buckets within a project in the Google Cloud Storage system.",
+   "input": [
+    {
+     "name": "prefix",
+     "type": "string",
+     "label": "Prefix",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "Filter results to buckets whose names begin with this prefix."
+    },
+    {
+     "name": "pageToken",
+     "type": "string",
+     "label": "Page token",
+     "control_type": "text",
+     "extends_schema": true,
+     "hint": "A previously-returned page token representing part of the larger set of results to view."
+    },
+    {
+     "name": "maxResults",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "extends_schema": true,
+     "hint": "Maximum number of buckets to return in a single response. The service will use the smaller of this parameter or: 200 items if projection=full OR 1,000 items if projection=noAcl."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "list_objects",
+   "title": "List Objects",
+   "description": "List objects within a bucket in Google Cloud Storage secondary",
+   "help": "List the details of all objects within a bucket in the Google Cloud Storage system.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "The name of the bucket."
+    },
+    {
+     "name": "prefix",
+     "type": "string",
+     "label": "Folder path",
+     "control_type": "text",
+     "hint": "List files and folders in a particular folder. If blank, it will list all objects in the selected bucket. Define the full path, e.g. folder 1/subfolder 1. If your delimiter is not “/” please define th…"
+    },
+    {
+     "name": "delimiter",
+     "type": "string",
+     "label": "Delimiter",
+     "control_type": "text",
+     "hint": "Default Delimiter is set to “/”. If you have a customized delimiter, please add it here."
+    },
+    {
+     "name": "startOffset",
+     "type": "string",
+     "label": "Start offset",
+     "control_type": "text",
+     "hint": "Filter results to objects whose names are lexicographically equal to or after startOffset. If endOffset is also set, the objects listed have names between startOffset (inclusive) and endOffset (exclus…"
+    },
+    {
+     "name": "endOffset",
+     "type": "string",
+     "label": "End offset",
+     "control_type": "text",
+     "hint": "Filter results to objects whose names are lexicographically before endOffset. If startOffset is also set, the objects listed have names between startOffset (inclusive) and endOffset (exclusive)."
+    },
+    {
+     "name": "projection",
+     "type": "string",
+     "label": "Projection",
+     "control_type": "select",
+     "default": "noAcl",
+     "pick_list": "projection_picklist",
+     "toggle_field": {
+      "name": "projection",
+      "type": "string"
+     },
+     "hint": "Set of properties to return. Defaults to No ACL."
+    },
+    {
+     "name": "maxResults",
+     "type": "integer",
+     "label": "Max results",
+     "control_type": "number",
+     "hint": "Maximum results to be returned from API. Default value and maximum allowed value is 200"
+    },
+    {
+     "name": "pageToken",
+     "type": "string",
+     "label": "Page token",
+     "control_type": "text",
+     "hint": "Token to specify the next page in a query. This can be found from the output of an earlier List buckets action. If the page token is null, there are no more pages."
+    },
+    {
+     "name": "versions",
+     "type": "number",
+     "label": "Versions",
+     "control_type": "checkbox",
+     "default": "false",
+     "toggle_field": {
+      "name": "versions",
+      "type": "string"
+     },
+     "hint": "If ‘Yes’, lists all versions of an object as distinct results in order of increasing generation number. Set as ‘No’ by default."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_bucket",
+   "title": "Update bucket",
+   "description": "Update bucket in Google Cloud Storage secondary",
+   "help": "Updates an existing bucket in the Google Cloud Storage system. Make sure the bucket already exists within the project.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "The name of the bucket which is to be updated."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "update_object_metadata",
+   "title": "Update object metadata",
+   "description": "Update an object’s metadata in Google Cloud Storage secondary",
+   "help": "Update an object’s metadata in Google Cloud Storage. For uploading object content and metadata use upload object action.",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "The name of the bucket which contains the object metadata."
+    },
+    {
+     "name": "object_name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "The name of the object which is to be updated."
+    },
+    {
+     "name": "predefinedAcl",
+     "type": "string",
+     "label": "Pre-defined Access Controls",
+     "control_type": "select",
+     "pick_list": "predefined_access_controls_object_metadata",
+     "toggle_field": {
+      "name": "predefinedAcl",
+      "type": "string"
+     }
+    },
+    {
+     "name": "projection",
+     "type": "string",
+     "label": "Projection",
+     "control_type": "select",
+     "default": "noAcl",
+     "pick_list": "projection_picklist",
+     "toggle_field": {
+      "name": "projection",
+      "type": "string"
+     },
+     "hint": "Set of properties to return. Defaults to No ACL."
+    },
+    {
+     "name": "generation",
+     "type": "integer",
+     "label": "Generation",
+     "control_type": "number",
+     "hint": "If present, permanently deletes a specific revision of this object (as opposed to the latest version, the default)."
+    },
+    {
+     "name": "ifGenerationMatch",
+     "type": "integer",
+     "label": "If generation matches",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current generation matches the given value. Setting to 0 makes the operation succeed only if there are no live versions of the object."
+    },
+    {
+     "name": "ifGenerationNotMatch",
+     "type": "integer",
+     "label": "If generation does not match",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current generation does not match the given value. If no live object exists, the precondition fails. Setting to 0 makes the operation succeed on…"
+    },
+    {
+     "name": "ifMetagenerationMatch",
+     "type": "integer",
+     "label": "If Meta generation matches",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current metageneration matches the given value."
+    },
+    {
+     "name": "ifMetagenerationNotMatch",
+     "type": "integer",
+     "label": "If Meta generation does not match",
+     "control_type": "number",
+     "hint": "Makes the operation conditional on whether the object's current metageneration does not match the given value."
+    },
+    {
+     "name": "metadata",
+     "type": "array",
+     "label": "Metadata",
+     "control_type": "key_value",
+     "of": "object",
+     "properties": [
+      {
+       "name": "key",
+       "type": "string",
+       "label": "Key",
+       "control_type": "text"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "label": "Value",
+       "control_type": "text"
+      }
+     ],
+     "hint": "User-provided metadata, in key/value pairs."
+    }
+   ],
+   "output": []
+  },
+  {
+   "name": "upload_object_streaming",
+   "title": "Upload object",
+   "description": "Upload an object to Google Cloud Storage secondary using file streaming",
+   "help": "Uploads an object to the Google Cloud Storage system. This sets up parallel uploads for files of all sizes for faster uploads",
+   "input": [
+    {
+     "name": "bucket_name",
+     "type": "string",
+     "label": "Bucket name",
+     "control_type": "select",
+     "required": true,
+     "pick_list": "bucket_list",
+     "extends_schema": true,
+     "toggle_field": {
+      "name": "bucket_name",
+      "type": "string"
+     },
+     "hint": "Enter the name of the bucket to which the file will be uploaded. The remaining part of the path should be specified in Object name ."
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "label": "Object name",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Enter the name of the object to be uploaded. The name should include the full path relative to the bucket, including any folders and subfolders to which the object will be uploaded. For example, to up…"
+    },
+    {
+     "name": "file_content",
+     "type": "string",
+     "label": "Object content",
+     "control_type": "text",
+     "required": true,
+     "extends_schema": true,
+     "hint": "Content of object to be uploaded"
+    }
+   ],
+   "output": []
+  }
+ ]
+}

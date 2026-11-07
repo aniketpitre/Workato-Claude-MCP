@@ -1,0 +1,398 @@
+{
+ "id": 32162523,
+ "name": "Assign account rep to review subscription when product usage limit is exceeded",
+ "description": "1. Check for rows where expected limit is exceeded by actual usage\n2. Look up account rep for this user\n3. Create a follow up task in Salesforce to review subscription limits",
+ "applications": [
+  "snowflake",
+  "salesforce"
+ ],
+ "action_applications": [
+  "salesforce"
+ ],
+ "trigger_application": "snowflake",
+ "business_objects": [
+  "user",
+  "task"
+ ],
+ "categories": [
+  "Database",
+  "Marketing",
+  "CRM"
+ ],
+ "copy_count": 44,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2023-10-11T15:41:42.362-07:00",
+ "source_url": "https://app.workato.com/recipes/32162523?community=us",
+ "steps": [
+  "snowflake.new_row",
+  "salesforce.search_sobjects",
+  "salesforce.create_custom_object"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "snowflake",
+  "name": "new_row",
+  "as": "6a1a13b7",
+  "title": "New row in PUBLIC.CUSTOMER_PRODUCT_USAGE",
+  "description": "New <span class=\"provider\">row</span> in <span class=\"provider\">PUBLIC.CUSTOMER_PRODUCT_USAGE</span> table in <span class=\"provider\">Snowflake</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "table": "PUBLIC.CUSTOMER_PRODUCT_USAGE",
+   "primary_key": "ID",
+   "sort_column": "ACCOUNTING_PERIOD"
+  },
+  "toggleCfg": {
+   "table": true
+  },
+  "input": {
+   "table": "PUBLIC.CUSTOMER_PRODUCT_USAGE",
+   "primary_key": "ID",
+   "where": "usage_count > task_limit"
+  },
+  "block": [
+   {
+    "number": 1,
+    "provider": "salesforce",
+    "name": "search_sobjects",
+    "as": "127da8f9",
+    "title": "Search Users",
+    "description": "Search for <span class=\"provider\">Users</span> in <span class=\"provider\">Salesforce</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "sobject_name": "User",
+     "field_list": [
+      {
+       "label": "User ID",
+       "value": "Id"
+      }
+     ]
+    },
+    "toggleCfg": {},
+    "input": {
+     "sobject_name": "User",
+     "field_list": "Id",
+     "Email": "#{_('data.snowflake.6a1a13b7.account_rep_email')}"
+    },
+    "visible_config_fields": [
+     "sobject_name",
+     "field_list",
+     "Email"
+    ],
+    "hidden_config_fields": [
+     "Id"
+    ],
+    "requirements": {
+     "extended_input_schema": [
+      {
+       "type": "string",
+       "name": "Email",
+       "control_type": "text",
+       "label": "Email",
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true
+      }
+     ],
+     "extended_output_schema": [
+      {
+       "type": "array",
+       "name": "User",
+       "label": "Users",
+       "of": "object",
+       "properties": [
+        {
+         "control_type": "text",
+         "label": "User ID",
+         "optional": true,
+         "custom": false,
+         "sfdc_createable": false,
+         "sfdc_updateable": false,
+         "type": "string",
+         "name": "Id"
+        }
+       ]
+      }
+     ]
+    },
+    "comment": "Find account rep",
+    "uuid": "676a5ec1-4865-4518-9605-882718fad9a6"
+   },
+   {
+    "number": 2,
+    "provider": "salesforce",
+    "name": "create_custom_object",
+    "as": "2b25cd0b",
+    "title": "Create Task",
+    "description": "Create <span class=\"provider\">Task</span> in <span class=\"provider\">Salesforce</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "sobject_name": "Task",
+     "Priority": "High",
+     "Status": "Not Started"
+    },
+    "toggleCfg": {
+     "Priority": true,
+     "Status": true
+    },
+    "input": {
+     "sobject_name": "Task",
+     "OwnerId": "#{_('data.salesforce.127da8f9.User.first.Id')}",
+     "Description": "One of your accounts recently exceeded their product usage limit for the month. Reach out to check if they require an upgrade or a review of their subscription limits.\n\nEmail: #{_('data.snowflake.6a1a13b7.user_email')}\nPricing plan: #{_('data.snowflake.6a1a13b7.subscription_plan')}\nUsage count: #{_('data.snowflake.6a1a13b7.usage_count')}\nUsage limit: #{_('data.snowflake.6a1a13b7.task_limit')}\nAccounting period: #{_('data.snowflake.6a1a13b7.accounting_period')}",
+     "Priority": "High",
+     "Status": "Not Started",
+     "Subject": "Account usage exceeded",
+     "WhatId": "#{_('data.snowflake.6a1a13b7.sfdc_id')}"
+    },
+    "visible_config_fields": [
+     "sobject_name",
+     "OwnerId",
+     "Description",
+     "Priority",
+     "Status",
+     "Subject",
+     "WhatId"
+    ],
+    "hidden_config_fields": [
+     "ActivityDate",
+     "WhoId"
+    ],
+    "requirements": {
+     "extended_input_schema": [
+      {
+       "type": "string",
+       "name": "OwnerId",
+       "control_type": "text",
+       "label": "Assigned To ID",
+       "sticky": true,
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true
+      },
+      {
+       "type": "string",
+       "name": "Description",
+       "control_type": "text-area",
+       "label": "Description",
+       "sticky": true,
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true
+      },
+      {
+       "type": "string",
+       "name": "Priority",
+       "control_type": "select",
+       "label": "Priority",
+       "sticky": true,
+       "pick_list": "sobject_field_values_list",
+       "pick_list_params": {
+        "sobject_name": "\"Task\""
+       },
+       "optional": true,
+       "custom": false,
+       "toggle_hint": "Select from list",
+       "toggle_field": {
+        "control_type": "text",
+        "label": "Priority",
+        "toggle_hint": "Enter custom value",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Priority"
+       },
+       "sfdc_createable": true,
+       "sfdc_updateable": true
+      },
+      {
+       "type": "string",
+       "name": "WhatId",
+       "control_type": "text",
+       "label": "Related To ID",
+       "sticky": true,
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true
+      },
+      {
+       "type": "string",
+       "name": "Status",
+       "control_type": "select",
+       "label": "Status",
+       "sticky": true,
+       "pick_list": "sobject_field_values_list",
+       "pick_list_params": {
+        "sobject_name": "\"Task\""
+       },
+       "optional": true,
+       "custom": false,
+       "toggle_hint": "Select from list",
+       "toggle_field": {
+        "control_type": "text",
+        "label": "Status",
+        "toggle_hint": "Enter custom value",
+        "optional": true,
+        "custom": false,
+        "sfdc_createable": true,
+        "sfdc_updateable": true,
+        "type": "string",
+        "name": "Status"
+       },
+       "sfdc_createable": true,
+       "sfdc_updateable": true
+      },
+      {
+       "type": "string",
+       "name": "Subject",
+       "control_type": "text",
+       "label": "Subject",
+       "sticky": true,
+       "optional": true,
+       "custom": false,
+       "sfdc_createable": true,
+       "sfdc_updateable": true
+      }
+     ],
+     "extended_output_schema": []
+    },
+    "uuid": "e7af079b-f634-4585-b4a6-20eae27739c7"
+   }
+  ],
+  "requirements": {
+   "extended_input_schema": [],
+   "extended_output_schema": [
+    {
+     "type": "string",
+     "name": "subscription_plan",
+     "control_type": "text",
+     "label": "SUBSCRIPTION_PLAN",
+     "hint": "varchar, max length 25",
+     "optional": true,
+     "parse_output": "fix_encoding",
+     "details": {
+      "primary_key": false,
+      "data_type": "varchar",
+      "column_name": "SUBSCRIPTION_PLAN",
+      "length": 25,
+      "precision": 25,
+      "scale": null
+     }
+    },
+    {
+     "type": "integer",
+     "name": "usage_count",
+     "control_type": "integer",
+     "label": "USAGE_COUNT",
+     "hint": "number",
+     "optional": true,
+     "parse_output": "parse_integer_output",
+     "details": {
+      "primary_key": false,
+      "data_type": "number",
+      "column_name": "USAGE_COUNT",
+      "length": null,
+      "precision": 38,
+      "scale": 0
+     }
+    },
+    {
+     "type": "date_time",
+     "name": "accounting_period",
+     "control_type": "date_time",
+     "label": "ACCOUNTING_PERIOD",
+     "hint": "timestamp_ntz, max length 9",
+     "optional": true,
+     "render_input": "convert_to_datetime",
+     "parse_output": "parse_date_time_local",
+     "details": {
+      "primary_key": false,
+      "data_type": "timestamp_ntz",
+      "column_name": "ACCOUNTING_PERIOD",
+      "length": 9,
+      "precision": 9,
+      "scale": null
+     }
+    },
+    {
+     "type": "string",
+     "name": "user_email",
+     "control_type": "text",
+     "label": "USER_EMAIL",
+     "hint": "varchar, max length 50",
+     "optional": true,
+     "parse_output": "fix_encoding",
+     "details": {
+      "primary_key": false,
+      "data_type": "varchar",
+      "column_name": "USER_EMAIL",
+      "length": 50,
+      "precision": 50,
+      "scale": null
+     }
+    },
+    {
+     "type": "integer",
+     "name": "task_limit",
+     "control_type": "integer",
+     "label": "TASK_LIMIT",
+     "hint": "number",
+     "optional": true,
+     "parse_output": "parse_integer_output",
+     "details": {
+      "primary_key": false,
+      "data_type": "number",
+      "column_name": "TASK_LIMIT",
+      "length": null,
+      "precision": 38,
+      "scale": 0
+     }
+    },
+    {
+     "type": "string",
+     "name": "account_rep_email",
+     "control_type": "text",
+     "label": "ACCOUNT_REP_EMAIL",
+     "hint": "varchar, max length 50",
+     "optional": true,
+     "parse_output": "fix_encoding",
+     "details": {
+      "primary_key": false,
+      "data_type": "varchar",
+      "column_name": "ACCOUNT_REP_EMAIL",
+      "length": 50,
+      "precision": 50,
+      "scale": null
+     }
+    },
+    {
+     "type": "string",
+     "name": "sfdc_id",
+     "control_type": "text",
+     "label": "SFDC_ID",
+     "hint": "varchar, max length 16777216",
+     "optional": true,
+     "parse_output": "fix_encoding",
+     "details": {
+      "primary_key": false,
+      "data_type": "varchar",
+      "column_name": "SFDC_ID",
+      "length": 16777216,
+      "precision": 16777216,
+      "scale": null
+     }
+    }
+   ]
+  },
+  "uuid": "6e01b7ae-a88e-4408-81a2-4341a116b931",
+  "param": {}
+ }
+}

@@ -1,0 +1,824 @@
+{
+ "id": 1490625,
+ "name": "Snowflake recipe pagination example",
+ "description": "When there is a trigger event, do action",
+ "applications": [
+  "clock",
+  "clock",
+  "snowflake",
+  "workato_variable",
+  "workato_list",
+  "mssql"
+ ],
+ "action_applications": [
+  "clock",
+  "snowflake",
+  "workato_variable",
+  "workato_list",
+  "mssql"
+ ],
+ "trigger_application": "clock",
+ "business_objects": [],
+ "categories": [
+  "Recipe Tools",
+  "Marketing",
+  "Database"
+ ],
+ "copy_count": 42,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "scheduler",
+ "published_at": null,
+ "updated_at": "2021-04-08T23:14:21.411-07:00",
+ "source_url": "https://app.workato.com/recipes/1490625?community=us",
+ "steps": [
+  "clock.scheduled_event",
+  "clock.get_time",
+  "snowflake.search_rows_sql",
+  "workato_variable.declare_variable",
+  "workato_list.create_list",
+  "snowflake.search_rows",
+  "workato_variable.update_variable",
+  "mssql.insert_rows_batch",
+  "clock.get_time"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "clock",
+  "name": "scheduled_event",
+  "as": "40f34a7a",
+  "title": null,
+  "description": "<span class=\"provider\">Trigger</span> every 5 minutes",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "time_unit": "minutes",
+   "trigger_every": "5"
+  },
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "trigger_every",
+    "control_type": "integer",
+    "label": "Trigger every",
+    "hint": "Define repeating schedule. Enter whole numbers only.\n                        This field can be set to a minimum of 5 minutes.",
+    "default": "5",
+    "optional": false,
+    "extends_schema": true
+   },
+   {
+    "type": "date_time",
+    "name": "start_after",
+    "control_type": "date_time",
+    "label": "Start after",
+    "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+    "optional": true,
+    "extends_schema": true,
+    "since_field": true,
+    "render_input": "date_time_conversion",
+    "parse_output": "date_time_conversion"
+   }
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "clock",
+    "name": "get_time",
+    "as": "4d5dd587",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "uuid": "e63ae2f5-4fac-4bf7-ae21-f7d243cf5c8d",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 2,
+    "provider": "snowflake",
+    "name": "search_rows_sql",
+    "as": "de6f7127",
+    "title": "Select rows using custom SQL",
+    "description": "Select <span class=\"provider\">rows</span> using <span class=\"provider\">custom SQL</span> in <span class=\"provider\">Snowflake</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {
+     "table": "WORKATO.ADAPTERS"
+    },
+    "toggleCfg": {},
+    "input": {
+     "limit": "100",
+     "offset": "0",
+     "sql": "select count(*) as count\nfrom WORKATO.FOLDERS"
+    },
+    "extended_output_schema": [
+     {
+      "type": "array",
+      "name": "rows",
+      "label": "Rows",
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "integer",
+        "label": "COUNT",
+        "parse_output": "parse_integer_output",
+        "details": {
+         "primary_key": false,
+         "data_type": "number",
+         "column_name": "COUNT",
+         "length": 18,
+         "precision": 18,
+         "scale": 0
+        },
+        "hint": "number, max length 18",
+        "optional": true,
+        "type": "integer",
+        "name": "count"
+       }
+      ],
+      "order_by_hint": false
+     }
+    ],
+    "comment": "Get the total number of rows from the table or query",
+    "uuid": "8c3bf6d6-d918-4e24-9f99-5c3f91d368f3"
+   },
+   {
+    "number": 3,
+    "provider": "workato_variable",
+    "name": "declare_variable",
+    "as": "53468c53",
+    "title": "  Create variables batch_size, offset",
+    "description": "Create variables <span class=\"provider\">batch_size</span>, <span class=\"provider\">offset</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "variables": {
+      "schema": "[{\"name\":\"batch_size\",\"type\":\"integer\",\"optional\":true,\"label\":\"batch_size\",\"control_type\":\"integer\"},{\"name\":\"offset\",\"type\":\"number\",\"optional\":true,\"label\":\"offset\",\"control_type\":\"number\"}]",
+      "data": {
+       "batch_size": "20000",
+       "offset": "0"
+      }
+     }
+    },
+    "extended_output_schema": [
+     {
+      "type": "integer",
+      "name": "batch_size",
+      "control_type": "integer",
+      "label": "batch_size",
+      "optional": true,
+      "parse_output": "integer_conversion"
+     },
+     {
+      "type": "number",
+      "name": "offset",
+      "control_type": "number",
+      "label": "offset",
+      "optional": true,
+      "parse_output": "float_conversion"
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "object",
+      "name": "variables",
+      "control_type": "form-schema-builder",
+      "label": "Variables",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "broadcast_change_event": true,
+        "type": "string",
+        "name": "schema",
+        "parent": "variables"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "integer",
+          "label": "batch_size",
+          "parse_output": "integer_conversion",
+          "name": "batch_size",
+          "type": "integer",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true,
+          "parent": "variables.data"
+         },
+         {
+          "control_type": "number",
+          "label": "offset",
+          "parse_output": "float_conversion",
+          "name": "offset",
+          "type": "number",
+          "optional": true,
+          "hint": "Defaults to nil if not supplied.",
+          "sticky": true,
+          "parent": "variables.data"
+         }
+        ],
+        "label": "Data",
+        "type": "object",
+        "name": "data",
+        "parent": "variables"
+       }
+      ],
+      "exclude_fields": [
+       "hint"
+      ]
+     }
+    ],
+    "visible_config_fields": [
+     "variables.data.batch_size",
+     "variables",
+     "variables.schema",
+     "variables.data",
+     "variables.data.offset"
+    ],
+    "comment": "Configure your batch size here. Offset will be used later on.",
+    "uuid": "ab932b8b-b224-44ad-8b5d-0c1fd5c7b9bb"
+   },
+   {
+    "number": 4,
+    "provider": "workato_list",
+    "name": "create_list",
+    "as": "3308c8d4",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "size": "=(_('data.snowflake.de6f7127.rows.first.count')/_('data.workato_variable.53468c53.batch_size')).ceil + 1"
+    },
+    "comment": "Create the list with the identified number of batches",
+    "uuid": "e93dda3a-64c9-4990-93bb-61e3f87c9ff7",
+    "title": null,
+    "description": null
+   },
+   {
+    "number": 5,
+    "as": "1db22d65",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "repeat_mode": "simple",
+    "clear_scope": "false",
+    "input": {},
+    "block": [
+     {
+      "number": 6,
+      "provider": "snowflake",
+      "name": "search_rows",
+      "as": "a6a3115b",
+      "title": "Select rows in WORKATO.FOLDERS",
+      "description": "Select <span class=\"provider\">rows</span> in <span class=\"provider\">WORKATO.FOLDERS</span> table in <span class=\"provider\">Snowflake</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "table": "WORKATO.FOLDERS"
+      },
+      "toggleCfg": {
+       "table": true
+      },
+      "input": {
+       "limit": "#{_('data.workato_variable.53468c53.batch_size')}",
+       "offset": "#{_('data.workato_variable.53468c53.offset')}",
+       "table": "WORKATO.FOLDERS"
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "rows",
+        "label": "Rows",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "date_time",
+          "label": "CREATED_AT",
+          "render_input": "convert_to_datetime",
+          "parse_output": "parse_date_time_local",
+          "details": {
+           "primary_key": false,
+           "data_type": "timestamp_ntz",
+           "column_name": "CREATED_AT",
+           "length": 9,
+           "precision": 9,
+           "scale": null
+          },
+          "optional": true,
+          "hint": "timestamp_ntz, max length 9",
+          "type": "date_time",
+          "name": "created_at"
+         },
+         {
+          "control_type": "integer",
+          "label": "FLOW_COUNT",
+          "parse_output": "parse_integer_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "number",
+           "column_name": "FLOW_COUNT",
+           "length": null,
+           "precision": 38,
+           "scale": 0
+          },
+          "optional": true,
+          "hint": "number",
+          "type": "integer",
+          "name": "flow_count"
+         },
+         {
+          "control_type": "text",
+          "label": "ID",
+          "details": {
+           "primary_key": true,
+           "data_type": "varchar",
+           "column_name": "ID",
+           "length": 16777216,
+           "precision": 16777216,
+           "scale": null
+          },
+          "optional": true,
+          "event_title": true,
+          "hint": "varchar, max length 16777216, primary key",
+          "type": "string",
+          "name": "id"
+         },
+         {
+          "control_type": "integer",
+          "label": "SHARED_ACCOUNT_COUNT",
+          "parse_output": "parse_integer_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "number",
+           "column_name": "SHARED_ACCOUNT_COUNT",
+           "length": null,
+           "precision": 38,
+           "scale": 0
+          },
+          "optional": true,
+          "hint": "number",
+          "type": "integer",
+          "name": "shared_account_count"
+         },
+         {
+          "control_type": "date_time",
+          "label": "UPDATED_AT",
+          "render_input": "convert_to_datetime",
+          "parse_output": "parse_date_time_local",
+          "details": {
+           "primary_key": false,
+           "data_type": "timestamp_ntz",
+           "column_name": "UPDATED_AT",
+           "length": 9,
+           "precision": 9,
+           "scale": null
+          },
+          "optional": true,
+          "hint": "timestamp_ntz, max length 9",
+          "type": "date_time",
+          "name": "updated_at"
+         },
+         {
+          "control_type": "text",
+          "label": "USER_ID",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "USER_ID",
+           "length": 16777216,
+           "precision": 16777216,
+           "scale": null
+          },
+          "optional": true,
+          "hint": "varchar, max length 16777216",
+          "type": "string",
+          "name": "user_id"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "parameters",
+        "control_type": "form-schema-builder",
+        "label": "Parameters",
+        "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. <b>id</b>\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the <b>closest corresponding data type</b> that your database is expecting for the bind variable\n                    ",
+        "sticky": true,
+        "optional": true,
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "type": "string",
+          "name": "schema",
+          "parent": "parameters"
+         },
+         {
+          "properties": [],
+          "label": "Data",
+          "optional": true,
+          "type": "object",
+          "name": "data",
+          "parent": "parameters"
+         }
+        ],
+        "override": true
+       }
+      ],
+      "visible_config_fields": [
+       "table",
+       "where",
+       "parameters",
+       "limit",
+       "offset"
+      ],
+      "comment": "Retrieve the 1st, 2nd, 3rd .. batch of rows from the table. Replace this with the select rows using custom SQL if you're pulling a custom SQL query instead of a table.",
+      "uuid": "163d637b-0599-4646-af55-06c0fdc04af4",
+      "skip": false
+     },
+     {
+      "number": 7,
+      "provider": "workato_variable",
+      "name": "update_variable",
+      "as": "0717662d",
+      "title": null,
+      "description": "Update variable <span class=\"provider\">offset</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "name": "offset (step 3)"
+      },
+      "toggleCfg": {},
+      "input": {
+       "name": "ab932b8b-b224-44ad-8b5d-0c1fd5c7b9bb:53468c53:offset",
+       "value": "=_('data.foreach.1db22d65.seq_no') * _('data.workato_variable.53468c53.batch_size')"
+      },
+      "extended_input_schema": [
+       {
+        "type": "number",
+        "name": "value",
+        "control_type": "number",
+        "label": "Value",
+        "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+        "sticky": true,
+        "optional": true,
+        "parse_output": "float_conversion",
+        "strip_interpolation": true
+       }
+      ],
+      "comment": "Update the offset variable to get the next page",
+      "uuid": "51f9974d-4986-4b54-a153-e6127648b118",
+      "skip": false
+     },
+     {
+      "number": 8,
+      "provider": "mssql",
+      "name": "insert_rows_batch",
+      "as": "8b3a74f0",
+      "title": "Insert rows in db_shane_test.performance_test",
+      "description": "Insert <span class=\"provider\">batch of rows</span> in <span class=\"provider\">db_shane_test.performance_test</span> table in <span class=\"provider\">SQL Server</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "table": "db_shane_test.performance_test"
+      },
+      "toggleCfg": {
+       "table": true
+      },
+      "input": {
+       "table": "db_shane_test.performance_test",
+       "rows": {
+        "country": "#{_('data.snowflake.a6a3115b.rows.first.created_at')}",
+        "itemtype": "#{_('data.snowflake.a6a3115b.rows.first.flow_count')}",
+        "orderid": "#{_('data.snowflake.a6a3115b.rows.first.updated_at')}",
+        "orderpriority": "#{_('data.snowflake.a6a3115b.rows.first.user_id')}",
+        "region": "#{_('data.snowflake.a6a3115b.rows.first.id')}",
+        "____source": "#{_('data.snowflake.a6a3115b.rows')}"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "keys",
+        "label": "Keys",
+        "of": "object",
+        "properties": []
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "array",
+        "name": "rows",
+        "label": "Rows",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "country",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "country",
+           "precision": null,
+           "scale": null,
+           "length": 255
+          },
+          "optional": true,
+          "hint": "varchar, max length 255",
+          "type": "string",
+          "name": "country",
+          "parent": "rows"
+         },
+         {
+          "control_type": "text",
+          "label": "itemtype",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "itemtype",
+           "precision": null,
+           "scale": null,
+           "length": 255
+          },
+          "optional": true,
+          "hint": "varchar, max length 255",
+          "type": "string",
+          "name": "itemtype",
+          "parent": "rows"
+         },
+         {
+          "control_type": "text",
+          "label": "orderdate",
+          "details": {
+           "primary_key": false,
+           "data_type": "date",
+           "column_name": "orderdate",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "date",
+          "type": "string",
+          "name": "orderdate",
+          "parent": "rows"
+         },
+         {
+          "control_type": "number",
+          "label": "orderid",
+          "parse_output": "parse_integer_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "int",
+           "column_name": "orderid",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "int",
+          "type": "integer",
+          "name": "orderid",
+          "parent": "rows"
+         },
+         {
+          "control_type": "text",
+          "label": "orderpriority",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "orderpriority",
+           "precision": null,
+           "scale": null,
+           "length": 255
+          },
+          "optional": true,
+          "hint": "varchar, max length 255",
+          "type": "string",
+          "name": "orderpriority",
+          "parent": "rows"
+         },
+         {
+          "control_type": "text",
+          "label": "region",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "region",
+           "precision": null,
+           "scale": null,
+           "length": 255
+          },
+          "optional": true,
+          "hint": "varchar, max length 255",
+          "type": "string",
+          "name": "region",
+          "parent": "rows"
+         },
+         {
+          "control_type": "text",
+          "label": "saleschannel",
+          "details": {
+           "primary_key": false,
+           "data_type": "varchar",
+           "column_name": "saleschannel",
+           "precision": null,
+           "scale": null,
+           "length": 255
+          },
+          "optional": true,
+          "hint": "varchar, max length 255",
+          "type": "string",
+          "name": "saleschannel",
+          "parent": "rows"
+         },
+         {
+          "control_type": "text",
+          "label": "shipdate",
+          "details": {
+           "primary_key": false,
+           "data_type": "date",
+           "column_name": "shipdate",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "date",
+          "type": "string",
+          "name": "shipdate",
+          "parent": "rows"
+         },
+         {
+          "control_type": "number",
+          "label": "totalcost",
+          "parse_output": "parse_numeric_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "decimal",
+           "column_name": "totalcost",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "decimal",
+          "type": "number",
+          "name": "totalcost",
+          "parent": "rows"
+         },
+         {
+          "control_type": "number",
+          "label": "totalprofit",
+          "parse_output": "parse_numeric_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "decimal",
+           "column_name": "totalprofit",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "decimal",
+          "type": "number",
+          "name": "totalprofit",
+          "parent": "rows"
+         },
+         {
+          "control_type": "number",
+          "label": "totalrevenue",
+          "parse_output": "parse_numeric_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "decimal",
+           "column_name": "totalrevenue",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "decimal",
+          "type": "number",
+          "name": "totalrevenue",
+          "parent": "rows"
+         },
+         {
+          "control_type": "number",
+          "label": "unitcost",
+          "parse_output": "parse_numeric_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "decimal",
+           "column_name": "unitcost",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "decimal",
+          "type": "number",
+          "name": "unitcost",
+          "parent": "rows"
+         },
+         {
+          "control_type": "number",
+          "label": "unitprice",
+          "parse_output": "parse_numeric_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "decimal",
+           "column_name": "unitprice",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "decimal",
+          "type": "number",
+          "name": "unitprice",
+          "parent": "rows"
+         },
+         {
+          "control_type": "number",
+          "label": "unitssold",
+          "parse_output": "parse_integer_output",
+          "details": {
+           "primary_key": false,
+           "data_type": "int",
+           "column_name": "unitssold",
+           "precision": null,
+           "scale": null,
+           "length": null
+          },
+          "optional": true,
+          "hint": "int",
+          "type": "integer",
+          "name": "unitssold",
+          "parent": "rows"
+         }
+        ]
+       }
+      ],
+      "visible_config_fields": [
+       "table",
+       "rows.country",
+       "rows.itemtype",
+       "rows.orderdate",
+       "rows.orderid",
+       "rows.orderpriority",
+       "rows.region",
+       "rows.saleschannel",
+       "rows.shipdate",
+       "rows.totalcost",
+       "rows.totalprofit",
+       "rows.totalrevenue",
+       "rows.unitcost",
+       "rows.unitprice",
+       "rows.unitssold"
+      ],
+      "comment": "Send this data somewhere!",
+      "uuid": "5f1dcebf-f390-41ff-a1fa-3a22ae8e434f",
+      "skip": false
+     }
+    ],
+    "source": "#{_('data.workato_list.3308c8d4.list')}",
+    "uuid": "29b41a24-33bf-4523-91f4-e38a04e4c9bd",
+    "skip": false
+   },
+   {
+    "number": 9,
+    "provider": "clock",
+    "name": "get_time",
+    "as": "a23116e6",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "uuid": "394bc88a-ce75-474e-89e2-445bc861bb5d",
+    "title": null,
+    "description": null
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Batch size"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Duration"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.workato_variable.53468c53.batch_size')}",
+   "custom_column_2": "=_('data.clock.a23116e6.time').to_i - _('data.clock.4d5dd587.time').to_i"
+  },
+  "uuid": "da13d710-95bd-4cde-9a46-dd38c40bfdbc",
+  "param": {}
+ }
+}

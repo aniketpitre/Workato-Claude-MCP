@@ -1,0 +1,283 @@
+{
+ "name": "clock",
+ "title": "Scheduler by Workato",
+ "requires_connection": false,
+ "categories": [
+  "Recipe Tools",
+  "Marketing",
+  "Workato"
+ ],
+ "aliases": [
+  "Scheduler by Workato",
+  "clock",
+  "timer",
+  "utilities",
+  "utility"
+ ],
+ "triggers": [
+  {
+   "name": "scheduled_event",
+   "title": "New recurring event",
+   "description": "Trigger on a specified schedule",
+   "help": "Run your recipe on a regular interval (e.g. every 15 minutes), or on a set schedule (e.g. at 9:00AM every week on Monday). Users may also specify a cron expression by selecting Custom schedule in the \"Time unit\" dropdown. The minimum accepted interval is every 5 minutes.",
+   "input": [
+    {
+     "name": "time_unit",
+     "type": "string",
+     "label": "Time unit",
+     "control_type": "select",
+     "required": true,
+     "default": "minutes",
+     "pick_list": "time_units",
+     "extends_schema": true,
+     "hint": "Select an interval or custom schedule to specify cron expression."
+    }
+   ],
+   "output": [
+    {
+     "name": "scheduled_time",
+     "type": "date_time",
+     "label": "Scheduled time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "scheduled_day",
+     "type": "string",
+     "label": "Scheduled day",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "scheduled_week",
+     "type": "integer",
+     "label": "Scheduled week",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "scheduled_month",
+     "type": "string",
+     "label": "Scheduled month",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_job_time",
+     "type": "date_time",
+     "label": "Last job time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "on_demand",
+     "type": "boolean",
+     "label": "On demand",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "on_demand",
+      "type": "boolean"
+     },
+     "hint": "True when the job was triggered via the on-demand API."
+    }
+   ]
+  },
+  {
+   "name": "scheduled_event_v2",
+   "title": "New recurring event (V2)",
+   "help": "Checks for new events every {{authUser.membership.poll_interval}} minutes.",
+   "input": [
+    {
+     "name": "time_unit",
+     "type": "string",
+     "label": "Time unit",
+     "control_type": "select",
+     "required": true,
+     "default": "minutes",
+     "options": [
+      "minutes",
+      "hours"
+     ]
+    },
+    {
+     "name": "trigger_every",
+     "type": "integer",
+     "label": "Trigger every",
+     "control_type": "integer",
+     "required": true,
+     "default": 5,
+     "hint": "Enter a whole number. The minimum interval is 5 minutes or 1 hour."
+    },
+    {
+     "name": "interval_alignment",
+     "type": "integer",
+     "label": "At minute",
+     "control_type": "integer",
+     "hint": "Enter a minute from 0 to 59 to align the schedule in your timezone. Leave blank to start one interval after activation."
+    },
+    {
+     "name": "on_overlap",
+     "type": "string",
+     "label": "When all concurrency slots are busy",
+     "control_type": "select",
+     "required": true,
+     "default": "queue",
+     "options": [
+      "queue",
+      "skip"
+     ]
+    },
+    {
+     "name": "on_schedule_apply",
+     "type": "string",
+     "label": "When the schedule starts or changes",
+     "control_type": "select",
+     "required": true,
+     "default": "wait_for_next",
+     "options": [
+      "wait_for_next",
+      "run_once"
+     ]
+    }
+   ],
+   "output": [
+    {
+     "name": "scheduled_time",
+     "type": "date_time",
+     "label": "Scheduled time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "scheduled_day",
+     "type": "string",
+     "label": "Scheduled day",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "scheduled_week",
+     "type": "integer",
+     "label": "Scheduled week",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "scheduled_month",
+     "type": "string",
+     "label": "Scheduled month",
+     "control_type": "text",
+     "required": true
+    },
+    {
+     "name": "last_job_time",
+     "type": "date_time",
+     "label": "Last job time",
+     "control_type": "date_time",
+     "required": true
+    },
+    {
+     "name": "on_demand",
+     "type": "boolean",
+     "label": "On demand",
+     "control_type": "checkbox",
+     "required": true,
+     "toggle_field": {
+      "name": "on_demand",
+      "type": "boolean"
+     },
+     "hint": "True when the job was triggered via the on-demand API."
+    },
+    {
+     "name": "next_scheduled_time",
+     "type": "date_time",
+     "label": "Next scheduled time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "name": "get_time",
+   "title": "Get current time",
+   "description": "Get the current time in workspace timezone",
+   "help": "Action will return the time when it was executed in (GMT-08:00) Pacific Time (US & Canada) timezone. This action is useful for testing triggers.",
+   "input": [],
+   "output": [
+    {
+     "name": "time",
+     "type": "date_time",
+     "label": "Time",
+     "control_type": "date_time",
+     "required": true,
+     "hint": "The current time in ISO 8601 (YYYYMMDDTHHMMSS+/-HHMM) format"
+    }
+   ]
+  },
+  {
+   "name": "wait_for_interval",
+   "title": "Wait for time duration",
+   "description": "Wait for specified length of time",
+   "help": "The job pauses for the specified length of time before carrying out subsequent actions in the recipe. Maximum time a job can be configured to remain paused is 732 days. Learn more .",
+   "input": [
+    {
+     "name": "interval",
+     "type": "number",
+     "label": "Interval",
+     "control_type": "select",
+     "required": true,
+     "options": [
+      300,
+      900,
+      1800,
+      2700,
+      3600,
+      86400,
+      604800,
+      2592000
+     ],
+     "toggle_field": {
+      "name": "interval",
+      "type": "number"
+     }
+    }
+   ],
+   "output": [
+    {
+     "name": "resumed_at",
+     "type": "date_time",
+     "label": "Resumed at",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  },
+  {
+   "name": "wait_until_time",
+   "title": "Wait until specified time",
+   "description": "Wait until the specified time",
+   "help": "The job pauses until the specified time before carrying out subsequent actions in the recipe. The specified time will be in the workspace's timezone, {{authUser.account_timezone}} . Maximum time a job can be configured to remain paused is 732 days. Learn more .",
+   "input": [
+    {
+     "name": "time",
+     "type": "date_time",
+     "label": "Time",
+     "control_type": "date_time",
+     "required": true
+    }
+   ],
+   "output": [
+    {
+     "name": "resumed_at",
+     "type": "date_time",
+     "label": "Resumed at",
+     "control_type": "date_time",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

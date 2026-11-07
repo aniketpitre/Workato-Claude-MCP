@@ -1,0 +1,1489 @@
+{
+ "id": 55344098,
+ "name": "Shopify - Draft Order",
+ "description": "",
+ "applications": [
+  "shopify",
+  "workato_variable",
+  "workato_db_table",
+  "coax_connector_3082925_1699932125"
+ ],
+ "action_applications": [
+  "workato_variable",
+  "workato_db_table",
+  "coax_connector_3082925_1699932125"
+ ],
+ "trigger_application": "shopify",
+ "business_objects": [
+  "draft order",
+  "53617"
+ ],
+ "categories": [
+  "Ecommerce",
+  "Sales Enablement",
+  "Recipe Tools",
+  "Workato"
+ ],
+ "copy_count": 12,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2026-05-22T00:51:08.111-07:00",
+ "source_url": "https://app.workato.com/recipes/55344098?community=us",
+ "steps": [
+  "shopify.new_updated_draft_order_batch",
+  "workato_variable.declare_variable",
+  "workato_db_table.get_records",
+  "workato_variable.update_variables",
+  "workato_variable.update_variables",
+  "workato_variable.update_variables",
+  "coax_connector_3082925_1699932125.parse_phone_number",
+  "workato_variable.declare_variable",
+  "coax_connector_3082925_1699932125.upsert_contact",
+  "coax_connector_3082925_1699932125.generate_shortlink",
+  "coax_connector_3082925_1699932125.create_activity",
+  "coax_connector_3082925_1699932125.send_message",
+  "workato_db_table.add_record"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "shopify",
+  "name": "new_updated_draft_order_batch",
+  "as": "308ba86b",
+  "keyword": "trigger",
+  "input": {
+   "batch_size": "50"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "not_contains",
+     "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"status\"]}')}",
+     "rhs": "completed",
+     "uuid": "351e1221-af31-4673-97d4-54306b687d46"
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "block": [
+   {
+    "number": 1,
+    "as": "56523232",
+    "keyword": "foreach",
+    "repeat_mode": "simple",
+    "clear_scope": "false",
+    "input": {},
+    "block": [
+     {
+      "number": 2,
+      "keyword": "if",
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "equals_to",
+         "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"status\"]}')}",
+         "rhs": "invoice_sent",
+         "uuid": "28fd6b92-fc48-4bdb-a6c5-2fb3f5a257a7"
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 3,
+        "provider": "workato_variable",
+        "name": "declare_variable",
+        "as": "824e381b",
+        "keyword": "action",
+        "input": {
+         "variables": {
+          "schema": "[{\"control_type\":\"text\",\"label\":\"Phone\",\"name\":\"Phone\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Phone\"}},{\"control_type\":\"text\",\"label\":\"Name\",\"name\":\"Name\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Name\"}},{\"control_type\":\"text\",\"label\":\"Address\",\"name\":\"Address\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Address\"}}]"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "control_type": "text",
+          "label": "Phone",
+          "name": "Phone",
+          "optional": true,
+          "type": "string",
+          "details": {
+           "real_name": "Phone"
+          }
+         },
+         {
+          "control_type": "text",
+          "label": "Name",
+          "name": "Name",
+          "optional": true,
+          "type": "string",
+          "details": {
+           "real_name": "Name"
+          }
+         },
+         {
+          "control_type": "text",
+          "label": "Address",
+          "name": "Address",
+          "optional": true,
+          "type": "string",
+          "details": {
+           "real_name": "Address"
+          }
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "add_field_label": "Add a variable",
+          "control_type": "form-schema-builder",
+          "empty_schema_title": "Add variables by giving them a name, type and default value",
+          "exclude_fields": [
+           "hint"
+          ],
+          "item_label": "variable",
+          "label": "Variables",
+          "mark_as_required": true,
+          "name": "variables",
+          "ngIf": "!input.name",
+          "optional": true,
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Schema",
+            "extends_schema": true,
+            "broadcast_change_event": true,
+            "type": "string",
+            "name": "schema"
+           },
+           {
+            "properties": [
+             {
+              "control_type": "text",
+              "label": "Phone",
+              "name": "Phone",
+              "type": "string",
+              "optional": true,
+              "details": {
+               "real_name": "Phone"
+              },
+              "hint": "Defaults to nil if not supplied.",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Name",
+              "name": "Name",
+              "type": "string",
+              "optional": true,
+              "details": {
+               "real_name": "Name"
+              },
+              "hint": "Defaults to nil if not supplied.",
+              "sticky": true
+             },
+             {
+              "control_type": "text",
+              "label": "Address",
+              "name": "Address",
+              "type": "string",
+              "optional": true,
+              "details": {
+               "real_name": "Address"
+              },
+              "hint": "Defaults to nil if not supplied.",
+              "sticky": true
+             }
+            ],
+            "label": "Data",
+            "type": "object",
+            "name": "data"
+           }
+          ],
+          "type": "object"
+         }
+        ],
+        "visible_config_fields": [
+         "variables.data.Phone",
+         "variables",
+         "variables.schema",
+         "variables.data.Name",
+         "variables.data.Address",
+         "variables.data.Email"
+        ],
+        "uuid": "68bab474-edf8-4bb3-a31a-5eebb4069696",
+        "title": "  Create variables Phone, Name, Address",
+        "description": "Create variables <span class=\"provider\">Phone</span>, <span class=\"provider\">Name</span>, <span class=\"provider\">Address</span>"
+       },
+       {
+        "number": 4,
+        "provider": "workato_db_table",
+        "name": "get_records",
+        "as": "5a9e4761",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "table_id": "Shopify Data Table",
+         "filters.0.field_id": "Order ID",
+         "filters.1.field_id": "SMS Status"
+        },
+        "input": {
+         "order_direction": "asc",
+         "limit": "100",
+         "table_id": "53617",
+         "211a6b10-d6b6-4cd8-8cc0-5cce2b9652f8": "string",
+         "47aef481-340d-4e33-844d-f96aa4b3089e": "string",
+         "e4d39e27-24e9-4797-a6e3-70df18ed2f6d": "string",
+         "5b3ca04b-f6dc-4a79-a9b7-e8ebd86ab369": "string",
+         "8d8664fa-94ba-497a-9c80-10f3d99203b0": "string",
+         "f1d1a777-86bb-4791-bcd8-759ebffc2e02": "string",
+         "5c19f896-e4e2-4c6a-9978-16b17ea7dc8c": "string",
+         "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+         "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+         "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+         "filters": [
+          {
+           "field_id": "47aef481-340d-4e33-844d-f96aa4b3089e",
+           "op_default": "eq",
+           "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"id\"]}')}"
+          },
+          {
+           "field_id": "f1d1a777-86bb-4791-bcd8-759ebffc2e02",
+           "op_default": "eq",
+           "value_default": "Draft"
+          }
+         ]
+        },
+        "extended_output_schema": [
+         {
+          "label": "Records",
+          "name": "records",
+          "of": "object",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Record ID",
+            "type": "string",
+            "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+           },
+           {
+            "control_type": "text",
+            "label": "Platform",
+            "type": "string",
+            "name": "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8"
+           },
+           {
+            "control_type": "text",
+            "label": "Order ID",
+            "type": "string",
+            "name": "47aef481_340d_4e33_844d_f96aa4b3089e"
+           },
+           {
+            "control_type": "text",
+            "label": "Name",
+            "type": "string",
+            "name": "e4d39e27_24e9_4797_a6e3_70df18ed2f6d"
+           },
+           {
+            "control_type": "text",
+            "label": "Phone",
+            "type": "string",
+            "name": "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369"
+           },
+           {
+            "control_type": "text",
+            "label": "Status",
+            "type": "string",
+            "name": "8d8664fa_94ba_497a_9c80_10f3d99203b0"
+           },
+           {
+            "control_type": "text",
+            "label": "SMS Status",
+            "type": "string",
+            "name": "f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+           },
+           {
+            "control_type": "text",
+            "label": "SMS Sent",
+            "type": "string",
+            "name": "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c"
+           },
+           {
+            "control_type": "date_time",
+            "label": "Created at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+           },
+           {
+            "control_type": "date_time",
+            "label": "Updated at",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+           }
+          ],
+          "type": "array"
+         },
+         {
+          "control_type": "text",
+          "label": "Next Page Token",
+          "name": "continuation_token",
+          "type": "string"
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_211a6b10-d6b6-4cd8-8cc0-5cce2b9652f8",
+          "name": "211a6b10-d6b6-4cd8-8cc0-5cce2b9652f8",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_47aef481-340d-4e33-844d-f96aa4b3089e",
+          "name": "47aef481-340d-4e33-844d-f96aa4b3089e",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_e4d39e27-24e9-4797-a6e3-70df18ed2f6d",
+          "name": "e4d39e27-24e9-4797-a6e3-70df18ed2f6d",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_5b3ca04b-f6dc-4a79-a9b7-e8ebd86ab369",
+          "name": "5b3ca04b-f6dc-4a79-a9b7-e8ebd86ab369",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_8d8664fa-94ba-497a-9c80-10f3d99203b0",
+          "name": "8d8664fa-94ba-497a-9c80-10f3d99203b0",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_f1d1a777-86bb-4791-bcd8-759ebffc2e02",
+          "name": "f1d1a777-86bb-4791-bcd8-759ebffc2e02",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "string",
+          "label": "$internal_value_5c19f896-e4e2-4c6a-9978-16b17ea7dc8c",
+          "name": "5c19f896-e4e2-4c6a-9978-16b17ea7dc8c",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "id",
+          "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+          "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "date_time",
+          "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+          "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         },
+         {
+          "control_type": "text",
+          "default": "date_time",
+          "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+          "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+          "ngIf": "false",
+          "optional": true,
+          "type": "string"
+         }
+        ],
+        "uuid": "e57eebfb-bc7b-410f-85f3-f1cc1b6c1575",
+        "title": null,
+        "description": "Search records in <span class=\"provider\">a data table</span>"
+       },
+       {
+        "number": 5,
+        "keyword": "if",
+        "input": {
+         "type": "compound",
+         "operand": "and",
+         "conditions": [
+          {
+           "operand": "equals_to",
+           "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"5a9e4761\",\"path\":[\"records\",{\"path_element_type\":\"size\"}]}')}",
+           "rhs": "0",
+           "uuid": "e647e2f5-b075-4935-9e73-9f7161086883"
+          }
+         ]
+        },
+        "block": [
+         {
+          "number": 6,
+          "keyword": "if",
+          "input": {
+           "type": "compound",
+           "operand": "and",
+           "conditions": [
+            {
+             "operand": "present",
+             "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"phone\"]}')}",
+             "rhs": "",
+             "uuid": "521abcfe-062c-42ec-9267-9f2a2da71ee2"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 7,
+            "provider": "workato_variable",
+            "name": "update_variables",
+            "as": "3d9168ee",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "name": [
+              {
+               "label": "Phone (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Phone"
+              },
+              {
+               "label": "Name (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Name"
+              },
+              {
+               "label": "Address (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Address"
+              }
+             ]
+            },
+            "input": {
+             "name": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Phone\n68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Name\n68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Address",
+             "Phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"phone\"]}')}",
+             "_cf_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"first_name\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"last_name\"]}')}",
+             "Address": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"default_address\",\"address1\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"default_address\",\"address2\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"default_address\",\"city\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"customer\",\"default_address\",\"province\"]}')}"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Phone",
+              "name": "Phone",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             },
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Name",
+              "name": "_cf_Name",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             },
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Address",
+              "name": "Address",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             }
+            ],
+            "uuid": "c3b9b369-35ff-473d-b890-583715f58b43",
+            "title": null,
+            "description": "Update variables <span class=\"provider\">Phone, Name, Address</span>"
+           }
+          ],
+          "uuid": "bfa25441-b6be-4955-b3c1-4cd2fc3b7658"
+         },
+         {
+          "number": 8,
+          "keyword": "if",
+          "input": {
+           "type": "compound",
+           "operand": "and",
+           "conditions": [
+            {
+             "operand": "present",
+             "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"phone\"]}')}",
+             "rhs": "",
+             "uuid": "521abcfe-062c-42ec-9267-9f2a2da71ee2"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 9,
+            "provider": "workato_variable",
+            "name": "update_variables",
+            "as": "f1cd9b0e",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "name": [
+              {
+               "label": "Phone (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Phone"
+              },
+              {
+               "label": "Name (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Name"
+              },
+              {
+               "label": "Address (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Address"
+              }
+             ]
+            },
+            "input": {
+             "name": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Phone\n68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Name\n68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Address",
+             "Phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"phone\"]}')}",
+             "_cf_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"first_name\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"last_name\"]}')}",
+             "Address": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"address1\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"address2\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"city\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"billing_address\",\"province\"]}')}"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Phone",
+              "name": "Phone",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             },
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Name",
+              "name": "_cf_Name",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             },
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Address",
+              "name": "Address",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             }
+            ],
+            "uuid": "1dca4936-e23a-4e74-b0a8-0c4aaf3095a0",
+            "skip": false,
+            "title": null,
+            "description": "Update variables <span class=\"provider\">Phone, Name, Address</span>"
+           }
+          ],
+          "uuid": "a2ddc6ec-a7a5-4da0-859f-ed502c508562",
+          "skip": false
+         },
+         {
+          "number": 10,
+          "keyword": "if",
+          "input": {
+           "type": "compound",
+           "operand": "and",
+           "conditions": [
+            {
+             "operand": "present",
+             "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"phone\"]}')}",
+             "rhs": "",
+             "uuid": "521abcfe-062c-42ec-9267-9f2a2da71ee2"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 11,
+            "provider": "workato_variable",
+            "name": "update_variables",
+            "as": "8c44de40",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "name": [
+              {
+               "label": "Phone (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Phone"
+              },
+              {
+               "label": "Name (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Name"
+              },
+              {
+               "label": "Address (step 7)",
+               "value": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Address"
+              }
+             ]
+            },
+            "input": {
+             "name": "68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Phone\n68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Name\n68bab474-edf8-4bb3-a31a-5eebb4069696:824e381b:Address",
+             "Phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"phone\"]}')}",
+             "_cf_Name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"first_name\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"last_name\"]}')}",
+             "Address": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"address1\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"address2\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"city\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"shipping_address\",\"province\"]}')}"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Phone",
+              "name": "Phone",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             },
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Name",
+              "name": "_cf_Name",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             },
+             {
+              "control_type": "text",
+              "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+              "label": "Address",
+              "name": "Address",
+              "optional": true,
+              "sticky": true,
+              "type": "string",
+              "strip_interpolation": true
+             }
+            ],
+            "uuid": "524bcac3-c406-4853-8e0d-760bc845e26a",
+            "skip": false,
+            "title": null,
+            "description": "Update variables <span class=\"provider\">Phone, Name, Address</span>"
+           }
+          ],
+          "uuid": "3fb7f909-f62c-4908-9668-a9485dd26e2d",
+          "skip": false
+         },
+         {
+          "number": 12,
+          "keyword": "if",
+          "input": {
+           "type": "compound",
+           "operand": "or",
+           "conditions": [
+            {
+             "operand": "present",
+             "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Phone\"]}')}",
+             "rhs": "",
+             "uuid": "condition-d208038f-e93e-4f9e-aa29-44c8aaa6040e"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 13,
+            "keyword": "try",
+            "input": {},
+            "block": [
+             {
+              "number": 14,
+              "provider": "coax_connector_3082925_1699932125",
+              "name": "parse_phone_number",
+              "as": "8208200a",
+              "title": null,
+              "description": null,
+              "keyword": "action",
+              "input": {
+               "number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Phone\"]}')}"
+              },
+              "extended_input_schema": [
+               {
+                "control_type": "phone",
+                "label": "Phone Number",
+                "name": "number",
+                "optional": false,
+                "type": "string"
+               },
+               {
+                "control_type": "text",
+                "label": "Country Code (ISO2 or ISO3)",
+                "name": "country_code",
+                "optional": true,
+                "type": "string"
+               }
+              ],
+              "uuid": "0368c0c3-731c-4103-bfc5-13a57d418105"
+             },
+             {
+              "number": 15,
+              "provider": "workato_variable",
+              "name": "declare_variable",
+              "as": "51080b80",
+              "keyword": "action",
+              "input": {
+               "variables": {
+                "schema": "[{\"name\":\"parsed_phone\",\"type\":\"string\",\"optional\":true,\"label\":\"Parsed Phone\",\"details\":{\"real_name\":\"Parsed Phone\"},\"control_type\":\"text\",\"parent\":[\"variables\",\"data\"]}]",
+                "data": {
+                 "parsed_phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"8208200a\",\"path\":[\"body\",\"code\"]}')}#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"8208200a\",\"path\":[\"body\",\"phone\"]}')}"
+                }
+               }
+              },
+              "extended_output_schema": [
+               {
+                "control_type": "text",
+                "label": "Parsed Phone",
+                "name": "parsed_phone",
+                "optional": true,
+                "type": "string",
+                "details": {
+                 "real_name": "Parsed Phone"
+                }
+               }
+              ],
+              "extended_input_schema": [
+               {
+                "add_field_label": "Add a variable",
+                "control_type": "form-schema-builder",
+                "empty_schema_title": "Add variables by giving them a name, type and default value",
+                "exclude_fields": [
+                 "hint"
+                ],
+                "item_label": "variable",
+                "label": "Variables",
+                "mark_as_required": true,
+                "name": "variables",
+                "ngIf": "!input.name",
+                "optional": true,
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "Schema",
+                  "extends_schema": true,
+                  "broadcast_change_event": true,
+                  "type": "string",
+                  "name": "schema"
+                 },
+                 {
+                  "properties": [
+                   {
+                    "control_type": "text",
+                    "label": "Parsed Phone",
+                    "name": "parsed_phone",
+                    "type": "string",
+                    "optional": true,
+                    "details": {
+                     "real_name": "Parsed Phone"
+                    },
+                    "parent": [
+                     "variables",
+                     "data"
+                    ],
+                    "hint": "Defaults to nil if not supplied.",
+                    "sticky": true
+                   }
+                  ],
+                  "label": "Data",
+                  "type": "object",
+                  "name": "data"
+                 }
+                ],
+                "type": "object"
+               }
+              ],
+              "visible_config_fields": [
+               "variables.data.parsed_phone"
+              ],
+              "uuid": "57ed4def-0b1f-4a1e-846f-616cca706fa9",
+              "title": "  Create variable Parsed Phone",
+              "description": "Create variable <span class=\"provider\">Parsed Phone</span>"
+             },
+             {
+              "number": 16,
+              "as": "127ceeb5",
+              "keyword": "catch",
+              "input": {
+               "max_retry_count": "0",
+               "retry_interval": "2"
+              },
+              "block": [],
+              "uuid": "22e4cb39-66da-4fdf-b244-091f0f25146d"
+             }
+            ],
+            "uuid": "fb5872b3-c1ad-47f7-a18d-e017ddeea7ca"
+           }
+          ],
+          "uuid": "064df355-14f2-4e1a-adb0-58b6a75e4e4a"
+         },
+         {
+          "number": 17,
+          "keyword": "if",
+          "input": {
+           "type": "compound",
+           "operand": "or",
+           "conditions": [
+            {
+             "operand": "present",
+             "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Phone\"]}')}",
+             "rhs": "",
+             "uuid": "0bab340d-12fa-4cce-ac80-c9d1a1697e6b"
+            },
+            {
+             "operand": "present",
+             "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"customer\",\"email\"]}')}",
+             "rhs": "",
+             "uuid": "e21952e7-403e-4b12-8ddf-b35adb23c184"
+            }
+           ]
+          },
+          "block": [
+           {
+            "number": 18,
+            "provider": "coax_connector_3082925_1699932125",
+            "name": "upsert_contact",
+            "as": "1d0089bb",
+            "title": null,
+            "description": null,
+            "keyword": "action",
+            "input": {
+             "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Name\"]}')}",
+             "address": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Address\"]}')}",
+             "phone": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51080b80\",\"path\":[\"parsed_phone\"]}').presence",
+             "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"customer\",\"email\"]}')}",
+             "added_tags": "=[\"Via Shopify\"]",
+             "do_not_update": "true"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "text",
+              "label": "Contact Name",
+              "name": "name",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Address",
+              "name": "address",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "email",
+              "label": "Contact Email",
+              "name": "email",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "phone",
+              "label": "Receiving Phone Number",
+              "name": "phone",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Company Name",
+              "name": "company_name",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "checkbox",
+              "label": "Skip Update",
+              "name": "do_not_update",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "hint": "This will replace all existing tags on the contact. Please use following format: [\"tag1\", \"tag2\"]",
+              "label": "Add Tags",
+              "name": "tags",
+              "of": "string",
+              "optional": true,
+              "type": "array"
+             },
+             {
+              "hint": "This will append the provided tags to existing tags on a contact. Please use following format: [\"tag1\", \"tag2\"]",
+              "label": "Update To Tags",
+              "name": "added_tags",
+              "of": "string",
+              "optional": true,
+              "type": "array"
+             },
+             {
+              "control_type": "text",
+              "label": "Enquiry ID",
+              "name": "enquiry_id",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "select",
+              "label": "Location",
+              "name": "location_id",
+              "optional": true,
+              "pick_list": "locations",
+              "type": "string"
+             }
+            ],
+            "visible_config_fields": [
+             "added_tags",
+             "company_name",
+             "phone",
+             "email",
+             "name",
+             "address",
+             "do_not_update"
+            ],
+            "uuid": "a7a76b94-d393-4eb1-a43c-2b7845f9548b",
+            "skip": false
+           },
+           {
+            "number": 19,
+            "provider": "coax_connector_3082925_1699932125",
+            "name": "generate_shortlink",
+            "as": "c1284298",
+            "title": null,
+            "description": null,
+            "keyword": "action",
+            "input": {
+             "url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"invoice_url\"]}')}"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "url",
+              "label": "URL",
+              "name": "url",
+              "optional": false,
+              "type": "string"
+             }
+            ],
+            "uuid": "bffef6ea-66c4-458b-bd24-c1b2ec0eaf0b"
+           },
+           {
+            "number": 20,
+            "provider": "coax_connector_3082925_1699932125",
+            "name": "create_activity",
+            "as": "1ed964b6",
+            "title": null,
+            "description": null,
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "type": "Order Drafted"
+            },
+            "input": {
+             "type": "order_draft",
+             "description": "Draft order ##{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"id\"]}')} sent to #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Name\"]}')}",
+             "phone": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51080b80\",\"path\":[\"parsed_phone\"]}').presence",
+             "meta": [
+              {
+               "key": "platform",
+               "value": "Shopify"
+              },
+              {
+               "key": "view_customer",
+               "value": "https://admin.shopify.com/store/#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Shopify Store\"}')}/customers/#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"customer\",\"id\"]}')}\n"
+              },
+              {
+               "value": "https://admin.shopify.com/store/#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Shopify Store\"}')}/draft_orders/#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"id\"]}')}",
+               "key": "view_order"
+              }
+             ],
+             "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+             "job_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+             "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"customer\",\"email\"]}')}"
+            },
+            "extended_input_schema": [
+             {
+              "control_type": "text",
+              "label": "Recipe ID",
+              "name": "recipe_id",
+              "optional": false,
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Job ID",
+              "name": "job_id",
+              "optional": false,
+              "type": "string"
+             },
+             {
+              "control_type": "select",
+              "label": "Activity Type",
+              "name": "type",
+              "optional": false,
+              "pick_list": "activity_type",
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Activity Description",
+              "name": "description",
+              "optional": false,
+              "type": "string"
+             },
+             {
+              "control_type": "email",
+              "label": "Customer Email",
+              "name": "email",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "phone",
+              "label": "Receiving Phone Number",
+              "name": "phone",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Tracking Number",
+              "name": "tracking_number",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "select",
+              "label": "Location",
+              "name": "location_id",
+              "optional": true,
+              "pick_list": "locations",
+              "type": "string"
+             },
+             {
+              "control_type": "key_value",
+              "empty_list_title": "Add metadata",
+              "item_label": "Metadata",
+              "label": "Metadata",
+              "name": "meta",
+              "of": "object",
+              "optional": true,
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Key",
+                "optional": true,
+                "type": "string",
+                "name": "key"
+               },
+               {
+                "control_type": "text",
+                "label": "Value",
+                "optional": true,
+                "type": "string",
+                "name": "value"
+               }
+              ],
+              "type": "array"
+             },
+             {
+              "control_type": "text",
+              "label": "Enquiry ID",
+              "name": "enquiry_id",
+              "optional": true,
+              "type": "string"
+             },
+             {
+              "control_type": "text",
+              "label": "Metadata JSON",
+              "name": "meta_text",
+              "optional": true,
+              "type": "string"
+             }
+            ],
+            "visible_config_fields": [
+             "type",
+             "description",
+             "phone",
+             "meta",
+             "tracking_number",
+             "recipe_id",
+             "job_id",
+             "email"
+            ],
+            "uuid": "4fbcedea-2b41-413d-b65c-c5a42150d975"
+           },
+           {
+            "number": 21,
+            "keyword": "if",
+            "input": {
+             "type": "compound",
+             "operand": "and",
+             "conditions": [
+              {
+               "operand": "present",
+               "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51080b80\",\"path\":[\"parsed_phone\"]}')}",
+               "rhs": "",
+               "uuid": "76f61034-d776-46db-91d9-996f13ec5542"
+              },
+              {
+               "operand": "equals_to",
+               "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"8208200a\",\"path\":[\"body\",\"type\"]}')}",
+               "rhs": "MOBILE",
+               "uuid": "2002bb6b-ae24-4d54-a335-6ebb38f3d498"
+              }
+             ]
+            },
+            "block": [
+             {
+              "number": 22,
+              "provider": "coax_connector_3082925_1699932125",
+              "name": "send_message",
+              "as": "d869c2b7",
+              "title": null,
+              "description": null,
+              "keyword": "action",
+              "input": {
+               "message": "=\"Hi #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Name\"]}').split(' ').first},\n\nWe've just sent you a quote. Click on the link below to accept it and make a payment.\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"coax_connector_3082925_1699932125\",\"line\":\"c1284298\",\"path\":[\"body\",\"short_link\"]}')}\n\nAny questions? Reply to this text.\n\n- {{ business_name }}\"",
+               "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Name\"]}')}",
+               "phone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51080b80\",\"path\":[\"parsed_phone\"]}')}"
+              },
+              "extended_input_schema": [
+               {
+                "control_type": "text",
+                "label": "Message",
+                "name": "message",
+                "optional": false,
+                "type": "string"
+               },
+               {
+                "control_type": "text",
+                "label": "Receiver Name",
+                "name": "name",
+                "optional": true,
+                "type": "string"
+               },
+               {
+                "control_type": "phone",
+                "label": "Receiving Phone Number",
+                "name": "phone",
+                "optional": true,
+                "type": "string"
+               },
+               {
+                "control_type": "text",
+                "label": "Enquiry ID",
+                "name": "enquiry_id",
+                "optional": true,
+                "type": "string"
+               },
+               {
+                "control_type": "checkbox",
+                "label": "Skip Update",
+                "name": "do_not_update",
+                "optional": true,
+                "type": "string"
+               },
+               {
+                "control_type": "select",
+                "label": "Activity Type",
+                "name": "activity_type",
+                "optional": true,
+                "pick_list": "activity_type",
+                "type": "string"
+               },
+               {
+                "control_type": "text",
+                "label": "Activity Description",
+                "name": "activity_description",
+                "optional": true,
+                "type": "string"
+               },
+               {
+                "label": "Attachment URLs",
+                "name": "attachment_urls",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                 {
+                  "control_type": "url",
+                  "label": "URL",
+                  "optional": true,
+                  "type": "string",
+                  "name": "url"
+                 }
+                ],
+                "type": "array"
+               },
+               {
+                "control_type": "select",
+                "label": "Location",
+                "name": "location_id",
+                "optional": true,
+                "pick_list": "locations",
+                "type": "string"
+               },
+               {
+                "control_type": "key_value",
+                "empty_list_title": "Add metadata",
+                "item_label": "Metadata",
+                "label": "Metadata",
+                "name": "meta",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                 {
+                  "control_type": "text",
+                  "label": "Key",
+                  "optional": true,
+                  "type": "string",
+                  "name": "key"
+                 },
+                 {
+                  "control_type": "text",
+                  "label": "Value",
+                  "optional": true,
+                  "type": "string",
+                  "name": "value"
+                 }
+                ],
+                "type": "array"
+               }
+              ],
+              "visible_config_fields": [
+               "phone",
+               "name"
+              ],
+              "uuid": "311b867b-b3db-4f2b-afc9-f89e67bd9643",
+              "skip": false
+             }
+            ],
+            "uuid": "367fa2fa-f077-44e7-980d-b0b17e4062b7"
+           },
+           {
+            "number": 23,
+            "provider": "workato_db_table",
+            "name": "add_record",
+            "as": "40b91e6f",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+             "table_id": "Shopify Data Table"
+            },
+            "input": {
+             "table_id": "53617",
+             "parameters": {
+              "8d8664fa_94ba_497a_9c80_10f3d99203b0": "Draft",
+              "f1d1a777_86bb_4791_bcd8_759ebffc2e02": "Draft",
+              "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c": "=now.to_date()",
+              "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8": "Shopify",
+              "47aef481_340d_4e33_844d_f96aa4b3089e": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"56523232\",\"path\":[\"id\"]}')}",
+              "e4d39e27_24e9_4797_a6e3_70df18ed2f6d": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"824e381b\",\"path\":[\"Name\"]}')}",
+              "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"51080b80\",\"path\":[\"parsed_phone\"]}')}"
+             }
+            },
+            "extended_output_schema": [
+             {
+              "label": "Record",
+              "name": "record",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Record ID",
+                "type": "string",
+                "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+               },
+               {
+                "control_type": "text",
+                "label": "Platform",
+                "type": "string",
+                "name": "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8"
+               },
+               {
+                "control_type": "text",
+                "label": "Order ID",
+                "type": "string",
+                "name": "47aef481_340d_4e33_844d_f96aa4b3089e"
+               },
+               {
+                "control_type": "text",
+                "label": "Name",
+                "type": "string",
+                "name": "e4d39e27_24e9_4797_a6e3_70df18ed2f6d"
+               },
+               {
+                "control_type": "text",
+                "label": "Phone",
+                "type": "string",
+                "name": "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369"
+               },
+               {
+                "control_type": "text",
+                "label": "Status",
+                "type": "string",
+                "name": "8d8664fa_94ba_497a_9c80_10f3d99203b0"
+               },
+               {
+                "control_type": "text",
+                "label": "SMS Status",
+                "type": "string",
+                "name": "f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+               },
+               {
+                "control_type": "text",
+                "label": "SMS Sent",
+                "type": "string",
+                "name": "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c"
+               },
+               {
+                "control_type": "date_time",
+                "label": "Created at",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "type": "date_time",
+                "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+               },
+               {
+                "control_type": "date_time",
+                "label": "Updated at",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "type": "date_time",
+                "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "extended_input_schema": [
+             {
+              "hint": "Fill the fields for the new record",
+              "label": "New record fields",
+              "name": "parameters",
+              "properties": [
+               {
+                "control_type": "text",
+                "label": "Platform",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8"
+               },
+               {
+                "control_type": "text",
+                "label": "Order ID",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "47aef481_340d_4e33_844d_f96aa4b3089e"
+               },
+               {
+                "control_type": "text",
+                "label": "Name",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "e4d39e27_24e9_4797_a6e3_70df18ed2f6d"
+               },
+               {
+                "control_type": "text",
+                "label": "Phone",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369"
+               },
+               {
+                "control_type": "text",
+                "label": "Status",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "name": "8d8664fa_94ba_497a_9c80_10f3d99203b0"
+               },
+               {
+                "control_type": "text",
+                "label": "SMS Status",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+               },
+               {
+                "control_type": "text",
+                "label": "SMS Sent",
+                "optional": true,
+                "sticky": false,
+                "type": "string",
+                "name": "5c19f896_e4e2_4c6a_9978_16b17ea7dc8c"
+               }
+              ],
+              "type": "object"
+             }
+            ],
+            "visible_config_fields": [
+             "table_id",
+             "parameters.211a6b10_d6b6_4cd8_8cc0_5cce2b9652f8",
+             "parameters.47aef481_340d_4e33_844d_f96aa4b3089e",
+             "parameters.e4d39e27_24e9_4797_a6e3_70df18ed2f6d",
+             "parameters.5b3ca04b_f6dc_4a79_a9b7_e8ebd86ab369",
+             "parameters.8d8664fa_94ba_497a_9c80_10f3d99203b0",
+             "parameters.5c19f896_e4e2_4c6a_9978_16b17ea7dc8c",
+             "parameters.f1d1a777_86bb_4791_bcd8_759ebffc2e02"
+            ],
+            "uuid": "54086ba9-2a2e-4f29-89de-595ceed4fdfa",
+            "title": null,
+            "description": "Create a new record in <span class=\"provider\">a data table</span>"
+           }
+          ],
+          "uuid": "a051658e-8bfe-4380-a876-d41e6c81b3fc",
+          "skip": false
+         }
+        ],
+        "uuid": "12d4d0a5-5ded-4dbb-8307-7170a6e2bf32"
+       }
+      ],
+      "uuid": "11da6ae1-2c6f-45ca-b7d7-45b5876c2fc9",
+      "skip": false
+     }
+    ],
+    "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"shopify\",\"line\":\"308ba86b\",\"path\":[\"records\"]}')}",
+    "uuid": "29803429-9363-4cce-aa42-5ff936141970"
+   }
+  ],
+  "uuid": "99af9e82-f7b7-42d5-a6c2-0d1deb33e68a",
+  "unfinished": false,
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}
