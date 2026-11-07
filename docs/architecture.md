@@ -313,6 +313,7 @@ endpoints with defined response codes; Genie skills with clear descriptions and 
 | **M5** | Proof in **Test** project: (1) scheduler → data table; (2) API endpoint with try/catch; (3) recipe function → skill → MCP server → Genie | All three reach `deployed` via the loop with full audit trail |
 | **M6** | Operate: workspace snapshot and drift, health job, incident flow, rollback runbook | Weekly health report; drift detected in a seeded test; rollback rehearsed |
 | **M7** | Enterprise extensions: multi-env promotion (RLCM/packages), role-separated tokens, team workflow (PR review of specs and designs) | Dry-run promotion documented; ready to activate when environments exist |
+| **M8** (later) | Distribution: (A) Claude Code plugin packaging the team; (B) built automations published as Workato-hosted MCP servers; (C) optional "Builder for Workato" MCP connector for any AI client (knowledge, validation, role prompts; no customer credentials; pairs with Workato's official MCP). Decisions pending: audience, hosting, content rights, branding | Design approved before build |
 
 ---
 
