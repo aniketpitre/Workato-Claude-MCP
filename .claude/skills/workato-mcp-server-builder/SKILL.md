@@ -1,6 +1,6 @@
 ---
 name: workato-mcp-server-builder
-description: Create and manage Workato-hosted MCP servers (from project recipes/skills, API collections, Genies or prebuilt MCP servers), design their tools, auth and access policies, using the official AIRO MCP server and the local Workato docs knowledge base. Use when the user wants to expose Workato capabilities to AI agents via MCP.
+description: Create and manage Workato-hosted MCP servers (from project recipes/skills, API collections, Genies or prebuilt MCP servers), design their tools, auth and access policies, using Workato's official hosted MCP server (`workato`) and the local Workato docs knowledge base. Use when the user wants to expose Workato capabilities to AI agents via MCP.
 ---
 
 # Build a Workato MCP server
@@ -27,8 +27,9 @@ Must-read pages:
 Design each tool as one clear business action with a precise description and typed, minimal
 inputs and outputs (see the tool design guide).
 
-## 3. Build (AIRO MCP)
-1. Call `docs_get` for the skill and MCP tool guides.
+## 3. Build (Workato MCP)
+1. Read `kb/docs/en/workato-api/mcp-servers.md` for payloads. Tools: `get_mcp_mcp_servers`,
+   `post_mcp_mcp_servers`, `post_mcp_mcp_servers_assign_tools`, `post_mcp_mcp_servers_tokens`, `post_agentic_skills`.
 2. Create or convert the underlying recipes into skills, using the workato-recipe-builder skill where needed.
 3. Confirm the plan with the user, then create the MCP server in the project folder and assign the tools.
 4. Configure auth (hashed token by default, or verified user access) and user-group access.

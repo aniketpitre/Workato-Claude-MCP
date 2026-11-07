@@ -1,6 +1,6 @@
 ---
 name: workato-genie-builder
-description: Design and build Workato Agent Studio Genies (AI agents) with skills, knowledge bases, guardrails, chat triggers and MCP tools via the official AIRO MCP server, grounded in the local Workato docs. Use when the user asks for a Genie, AI agent, skill or knowledge base in Workato.
+description: Design and build Workato Agent Studio Genies (AI agents) with skills, knowledge bases, guardrails, chat triggers and MCP tools via Workato's official hosted MCP server (`workato`), grounded in the local Workato docs. Use when the user asks for a Genie, AI agent, skill or knowledge base in Workato.
 ---
 
 # Build a Workato Genie
@@ -27,8 +27,10 @@ Must-read pages:
 - **Knowledge bases**: data sources and their ingestion recipes
 - **Chat interface**: Workato GO, Slack, Teams, or an API client. Also user access and guardrails.
 
-## 3. Build (AIRO MCP)
-1. Call `docs_get` for the Genie, knowledge base, and skill tool guides.
+## 3. Build (Workato MCP)
+1. Read `kb/docs/en/workato-api/agent-studio.md` for payloads. Tools: `post_agentic_genies`,
+   `post_agentic_skills`, `post_agentic_knowledge_bases`, `post_agentic_genies_assign_skills`,
+   `post_agentic_genies_assign_knowledge_bases`, `post_agentic_genies_start`.
 2. Build the skill recipes (workato-recipe-builder), then create the skills.
 3. Create the knowledge bases and assign their sources.
 4. Create the Genie in the project folder, then assign the skills and knowledge bases.

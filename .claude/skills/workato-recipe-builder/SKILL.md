@@ -1,6 +1,6 @@
 ---
 name: workato-recipe-builder
-description: Design and build Workato recipes (triggers, actions, conditions, loops, formulas, error handling, recipe functions) in the connected workspace via the official AIRO MCP server, grounded in the local Workato docs knowledge base. Use when the user asks to create, fix, explain or improve a Workato recipe or automation.
+description: Design and build Workato recipes (triggers, actions, conditions, loops, formulas, error handling, recipe functions) in the connected workspace via Workato's official hosted MCP server (`workato`), grounded in the local Workato docs knowledge base. Use when the user asks to create, fix, explain or improve a Workato recipe or automation.
 ---
 
 # Build a Workato recipe
@@ -25,8 +25,9 @@ python3 kb/search.py "<concept, e.g. repeat helper / monitor error / batch>"
 - Reusable logic: recipe functions in `kb/docs/en/features/callable-recipes.md`
 - Cost: `kb/docs/en/recipes/optimizing-task-usage.md`
 
-## 3. Check the workspace (AIRO MCP)
-- Call `docs_get` on the AIRO MCP server to learn the recipe tools available.
+## 3. Check the workspace (Workato MCP)
+- Recipe tools: `get_recipes`, `get_recipes_` (read existing code as a template), `post_recipes`,
+  `put_recipes_`, `post_recipe_validators_validate`, `get_recipes_jobs`, `get_recipes_test_cases`.
 - List projects and folders, existing connections, and similar recipes to reuse.
 - Note which connections are missing. The user must authorize new connections in the Workato UI.
 
@@ -34,8 +35,9 @@ python3 kb/search.py "<concept, e.g. repeat helper / monitor error / batch>"
 1. Present the plan: project or folder, recipe name (`kb/docs/en/recipes/naming-conventions.md`),
    trigger, numbered steps, data mappings, error handling, and connections used.
 2. Wait for the user to confirm.
-3. Build with the AIRO recipe tools step by step: trigger, then actions, then conditions or loops,
-   then the monitor/error block.
+3. Write the recipe `code` JSON (trigger, then actions, then conditions or loops, then the
+   monitor/error block). Base it on an existing recipe's code from `get_recipes_`. Validate it with
+   `post_recipe_validators_validate`, then create it with `post_recipes` in the project folder.
 4. Run recipe tests if available, inspect jobs, and fix errors (`kb/docs/en/recipes/recipe-job-errors.md`).
 5. Start the recipe only when the user says so.
 
