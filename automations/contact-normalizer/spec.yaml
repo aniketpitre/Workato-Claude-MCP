@@ -1,0 +1,167 @@
+# Automation spec: written by the Business Analyst (workato-analyst), confirmed by the requester.
+# Validate: python3 tools/spec_check.py automations/<name>/spec.yaml
+spec_version: 1
+name: contact-normalizer
+title: Contact normalizer recipe function
+summary: >
+  A reusable recipe function that any CRM or marketing flow can call to clean one contact record.
+  It takes first name, last name, email and phone (all optional), trims and standardises them
+  (title-cased names, lower-case email, phone as digits with an optional leading "+"), builds a
+  full name, and reports whether the record is usable (is_valid) plus a list of problems (issues).
+  It never fails on bad input: it always returns a result, with is_valid=false and issues instead.
+requester: aniketpitre
+status: draft                                 # draft | confirmed | changed
+
+business_goal: >
+  One consistent definition of a "clean contact" shared by every CRM/marketing flow, so data is
+  normalised the same way everywhere and bad records are flagged instead of breaking callers.
+
+trigger:
+  type: recipe_function                       # app_event | schedule | api_endpoint | recipe_function | genie_skill | webhook | manual
+  app: workato_recipe_function
+  event: New call for function                # called synchronously by other recipes ("Call a recipe function (synchronous)")
+  # later (out of scope now): exposed as a Genie skill / MCP server tool
+
+systems:                                      # every app touched; connection = logical name resolved per environment
+  - app: Recipe function by Workato
+    connector: workato_recipe_function        # trigger "New call for function" + action "Return data from a recipe function"
+    access: read_write                        # no connection: requires_connection is false in the catalog
+  - app: Logger by Workato
+    connector: logger                         # "Log message", only for unexpected errors (no raw PII in the message)
+    access: write                             # no connection: requires_connection is false in the catalog
+
+data:
+  objects: [Contact]                          # in-memory only: nothing is read from or written to an external app
+  inputs:                                     # parameters schema; every field optional, type string (may be omitted, null or "")
+    - first_name
+    - last_name
+    - email
+    - phone
+  outputs:                                    # result schema; always returned, even for bad input
+    - {name: first_name, type: string}
+    - {name: last_name, type: string}
+    - {name: full_name, type: string}
+    - {name: email, type: string}
+    - {name: phone, type: string}
+    - {name: is_valid, type: boolean}
+    - {name: issues, type: string}            # empty string when there are no problems
+  mappings:
+    - from: input.first_name
+      to: output.first_name
+      transform: trim; title-case each word (e.g. "  aNNA " -> "Anna"); missing/blank -> ""
+    - from: input.last_name
+      to: output.last_name
+      transform: trim; title-case each word (e.g. " SMITH  " -> "Smith"); missing/blank -> ""
+    - from: output.first_name + output.last_name
+      to: output.full_name
+      transform: join the non-empty parts with a single space; "" when both are empty
+    - from: input.email
+      to: output.email
+      transform: trim; lower-case; missing/blank -> "" (adds issue "missing email")
+    - from: output.email
+      to: output.is_valid / output.issues
+      transform: >
+        email "looks valid" = exactly one "@", non-empty part before it, a domain after it that
+        contains at least one "." with non-empty labels, and no whitespace; otherwise adds issue
+        "invalid email". The exact pattern is the Architect's call within this rule.
+    - from: input.phone
+      to: output.phone
+      transform: >
+        trim; keep only digits 0-9, plus a "+" only if it is the first non-space character;
+        missing/blank or no digits -> "" (e.g. " +1 (415) 555-0100 " -> "+14155550100")
+    - from: all checks
+      to: output.is_valid
+      transform: true only when issues is empty; false otherwise
+
+volumes:
+  per_day: 1000                               # up to 1,000 calls/day (requester)
+  peak_per_hour: 200                          # assumption, not stated by the requester; confirm (see open_questions)
+
+sla:
+  latency: synchronous; under 2 seconds per call (end-to-end, as seen by the calling recipe)
+
+error_policy:
+  retries: 0                                  # pure computation: nothing transient to retry
+  notify: job log (Logger by Workato) only    # no alert channel requested
+  on_failure: >
+    Bad or missing input is not a failure: the function returns normally with is_valid=false and
+    the problems listed in issues. Any unexpected error inside the function is caught, written to
+    the job log with Logger (error type/message only, no raw names, emails or phones), and the
+    function still returns is_valid=false with issues containing "internal error", so the caller
+    never sees a failed call.
+
+security:
+  pii: true                                   # names, emails, phone numbers: needs a security review before go-live
+  data_classification: internal
+  persistence: >
+    Inputs are not persisted by the function: no data tables, lookup tables, files or external
+    apps. Workato job history still records step input/output by default (see open_questions on
+    data masking / job data retention).
+  logging: Logger messages must not contain raw input values
+
+acceptance_tests:                             # at least one; QA runs these in the Test stage (synthetic data only)
+  - id: AT-1
+    given: >
+      first_name "  aNNA  ", last_name " SMITH  ", email "  Anna.Smith@Example.COM ",
+      phone "(415) 555-0100"
+    when: a test recipe calls the function synchronously
+    expect: >
+      first_name "Anna", last_name "Smith", full_name "Anna Smith",
+      email "anna.smith@example.com", phone "4155550100", is_valid true, issues "" (empty);
+      the job succeeds
+  - id: AT-2
+    given: first_name "Ben", last_name "Lee", email "ben.lee(at)example.com", phone "4155550101"
+    when: a test recipe calls the function synchronously
+    expect: >
+      first_name "Ben", last_name "Lee", full_name "Ben Lee", email "ben.lee(at)example.com",
+      phone "4155550101", is_valid false, issues contains "invalid email" and nothing else;
+      the job succeeds (no error raised to the caller)
+  - id: AT-3
+    given: all four inputs empty — once with every field omitted, once with every field "" and once with every field "   "
+    when: a test recipe calls the function synchronously
+    expect: >
+      first_name "", last_name "", full_name "", email "", phone "", is_valid false,
+      issues contains "missing email" (and does not contain "invalid email"); in every variant
+      both the function job and the calling job succeed
+  - id: AT-4
+    given: first_name "Cara", last_name "Diaz", email "cara.diaz@example.com", phone " +1 (415) 555-0100 "
+    when: a test recipe calls the function synchronously
+    expect: >
+      phone "+14155550100", full_name "Cara Diaz", email "cara.diaz@example.com",
+      is_valid true, issues ""
+  - id: AT-5
+    given: first_name "", last_name "  o'neil-SMITH ", email "DEV.TEST@EXAMPLE.ORG", phone "415.555.0102 ext 7"
+    when: a test recipe calls the function synchronously
+    expect: >
+      full_name has no leading/trailing or double spaces and equals last_name; email
+      "dev.test@example.org"; phone "41555501027"; the job succeeds. Exact last_name casing and
+      whether is_valid is true depend on open questions Q1 and Q3 (to be fixed before confirmation)
+  - id: AT-6
+    given: first_name "Dan", last_name "Ng", email "dan.ng@example.com", phone "555+0103"
+    when: a test recipe calls the function synchronously
+    expect: phone "5550103" (a "+" that is not the first character is dropped), is_valid true, issues ""
+  - id: AT-7
+    given: 20 sequential synchronous calls with the AT-1 input
+    when: timed from the calling recipe
+    expect: every call returns the AT-1 output and each completes in under 2 seconds
+
+out_of_scope:
+  - Writing or updating contacts in any CRM or marketing app (callers do that)
+  - Phone validation by country/length or E.164 conversion (no country code is added)
+  - Email deliverability checks (MX/DNS lookups, mailbox verification)
+  - Deduplication or enrichment
+  - Exposing the function as a Genie skill or MCP tool (later phase)
+
+open_questions:
+  - "Q1: Should a missing first_name and/or last_name make is_valid false (with issues like 'missing first name' / 'missing last name'), or is email the only required field?"
+  - "Q2: Issues format: separator (proposal: '; ' e.g. 'invalid email; missing phone') and fixed wording/order of messages? Or should issues be a list instead of text?"
+  - "Q3: Title-case rule for names with apostrophes, hyphens or particles (O'Neil, Smith-Jones, van der Berg, McDonald): simple capitalise-each-word, or keep letters after ' and - capitalised? Default title-case gives \"O'neil-smith\"."
+  - "Q4: Should a missing or digit-less phone add an issue (e.g. 'missing phone') and/or make is_valid false? Any minimum digit count for a valid phone? Extensions ('ext 7') are currently merged into the digits (AT-5 -> '41555501027'): acceptable?"
+  - "Q5: When an input is missing, should the output field be \"\" (proposed) or null?"
+  - "Q6: Should an invalid email still be returned (normalised, as proposed in AT-2) or blanked?"
+  - "Q7: Peak calls per hour (200 assumed) and whether 1,000/day fits the Free plan's 50,000-credit one-time grant for the intended run period."
+  - "Q8: PII in job history: Workato stores step input/output by default. Is that acceptable in dev, or is data masking / reduced job data retention required (plan-dependent, may not be on Free)?"
+
+approvals:
+  spec_confirmed_by: null                     # filled in at the Spec gate
+  spec_confirmed_at: null
