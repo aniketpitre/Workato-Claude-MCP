@@ -1,0 +1,103 @@
+{
+ "id": 576966,
+ "name": "Slack notification for Quickbooks invoices over $5000",
+ "description": "1. A new invoice is created in Quickbooks.\n2. If the invoice total is more than $5000, post message in Slack channel containing invoice details.\n\n### Configurations\nIn the recipe setup, enter the name of the channel to post notifications to.",
+ "applications": [
+  "quickbooks",
+  "slack"
+ ],
+ "action_applications": [
+  "slack"
+ ],
+ "trigger_application": "quickbooks",
+ "business_objects": [
+  "message"
+ ],
+ "categories": [
+  "Accounting",
+  "Collaboration",
+  "Sales Enablement"
+ ],
+ "copy_count": 7,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2020-08-06T00:27:02.715-07:00",
+ "source_url": "https://app.workato.com/recipes/576966?community=us",
+ "steps": [
+  "quickbooks.new_invoice",
+  "slack.post_message_to_channel"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "quickbooks",
+  "name": "new_invoice",
+  "as": "new_invoice",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {
+   "filter_unused_lines": true
+  },
+  "input": {
+   "filter_unused_lines": "true",
+   "since": "=today"
+  },
+  "filter": {
+   "conditions": [
+    {
+     "operand": "greater_than",
+     "lhs": "#{_('data.quickbooks.new_invoice.TotalAmt')}",
+     "rhs": "5000"
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "extended_output_schema": [
+   {
+    "type": "string",
+    "name": "Custom_fields_custom",
+    "control_type": "text",
+    "label": "Custom fields",
+    "optional": true,
+    "custom": true,
+    "definition": {
+     "DefinitionId": "1",
+     "Name": "Custom fields",
+     "Type": "StringType"
+    }
+   }
+  ],
+  "parameters_schema": "[\n  {\n    \"label\": \"Channel name\",\n    \"name\": \"channel\",\n    \"type\": \"string\",\n    \"control_type\": \"text\",\n    \"hint\": \"Channel to receive notifications from this recipe\"\n  }\n]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "slack",
+    "name": "post_message_to_channel",
+    "as": "post_message_to_channel",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "channelSource2": true
+    },
+    "input": {
+     "color": "good",
+     "attachment_text": "=\"Due on: \" + (_('data.quickbooks.new_invoice.DueDate') ? _('data.quickbooks.new_invoice.DueDate').to_time.strftime(\"%-d %b %Y %l:%M%P %Z\") : \"none\") + \"\\n\" +\n\"Amount: \" + _('data.quickbooks.new_invoice.CurrencyRef.value') + \" \" + _('data.quickbooks.new_invoice.TotalAmt').to_s",
+     "text": "Hurray! You have a new invoice: #{_('data.quickbooks.new_invoice.Id')}",
+     "title_link": "https://qbo.intuit.com/app/invoice?txnId=#{_('data.quickbooks.new_invoice.Id')}",
+     "title": "New Invoice from #{_('data.quickbooks.new_invoice.CustomerRef.lookup_customer_by_id(value>id).DisplayName')}",
+     "channel": "='#' + _('data.workato.job_context.parameters.channel').gsub('#','')"
+    },
+    "uuid": "75a98a5f-316c-4af4-b40d-64eb3c764875",
+    "title": null,
+    "description": null
+   }
+  ],
+  "uuid": "2d3caad5-6c1e-4e9b-8b22-92e476ffc7cb"
+ }
+}

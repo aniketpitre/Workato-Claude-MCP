@@ -1,0 +1,137 @@
+{
+ "id": 577036,
+ "name": "Stripe new Charge notification",
+ "description": "When there is a new charge in Stripe, post notification to the specified Slack channel. If a customer is tied to the charge, use those details in the Slack notification.\n\n**Trigger**: New charge in Stripe\n**Actions**:\n- If the customer field is present, get details of the customer\n- Post a message in the specified Slack channel\n\n### Configurations\nDuring recipe setup, set the name of the channel to send notifications to.\n",
+ "applications": [
+  "stripe",
+  "stripe",
+  "slack"
+ ],
+ "action_applications": [
+  "stripe",
+  "slack"
+ ],
+ "trigger_application": "stripe",
+ "business_objects": [
+  "charge",
+  "customer",
+  "message"
+ ],
+ "categories": [
+  "Payment Processing/POS",
+  "Sales Enablement",
+  "Collaboration"
+ ],
+ "copy_count": 21,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2020-08-06T00:26:08.596-07:00",
+ "source_url": "https://app.workato.com/recipes/577036?community=us",
+ "steps": [
+  "stripe.new_charge",
+  "stripe.get_customer_by_id",
+  "slack.post_message_to_channel"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "stripe",
+  "name": "new_charge",
+  "as": "new_charge",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {
+   "since": "="
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "metadata",
+    "label": "Metadata",
+    "properties": []
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "field_names",
+    "control_type": "text",
+    "label": "Charge Metadata Fields",
+    "hint": "Metadata field names. One per line",
+    "default": "",
+    "optional": true,
+    "custom": true,
+    "extends_schema": true,
+    "change_on_blur": true
+   }
+  ],
+  "parameters_schema": "[\n  {\n    \"label\": \"Slack channel\",\n    \"name\": \"channel\",\n    \"type\": \"string\",\n    \"control_type\": \"text\",\n    \"hint\": \"slack channel to receive notifications from this recipe\"\n  }\n]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "present",
+       "lhs": "#{_('data.stripe.new_charge.source.customer')}",
+       "rhs": null
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "stripe",
+      "name": "get_customer_by_id",
+      "as": "get_customer_by_id",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "id": "#{_('data.stripe.new_charge.source.customer')}"
+      },
+      "uuid": "bbf8f658-cca5-4015-97ad-3c0e9cfee7dc",
+      "title": null,
+      "description": null
+     }
+    ],
+    "uuid": "ad3003ae-1429-44cf-bdd7-53cd157809e6"
+   },
+   {
+    "number": 3,
+    "provider": "slack",
+    "name": "post_message_to_channel",
+    "as": "post_message_to_channel",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "channel": false
+    },
+    "input": {
+     "color": "good",
+     "attachment_text": "=\"Amount: \" + (\"%.2f\" % (_('data.stripe.new_charge.amount').to_f/100)) + \"\\n\" +\n\"Currency: \" + _('data.stripe.new_charge.currency').upcase + \"\\n\" +\n\"Refunded: \" + (\"%.2f\" % (_('data.stripe.new_charge.amount_refunded').to_f/100)).to_s + \"\\n\" +\n\"Type: \" + _('data.stripe.new_charge.source.object') + \"\\n\" +\n\"Charge date: \" + _('data.stripe.new_charge.created').strftime(\"%d %b %Y %l:%M%P\") + \"\\n\" +\n\"Status: \" + (_('data.stripe.new_charge.paid') ? \"Paid\" : _('data.stripe.new_charge.failure_message'))",
+     "text": "New charge in Stripe!",
+     "title": "=_('data.stripe.get_customer_by_id.email') or \"No customer\"",
+     "title_link": "https://dashboard.stripe.com/payments/#{_('data.stripe.new_charge.id')}",
+     "channel": "='#' + _('data.workato.job_context.parameters.channel').gsub('#','')",
+     "parse": "false"
+    },
+    "uuid": "09567180-3ad3-4e1b-8cb1-ed97886ddf42",
+    "title": null,
+    "description": null
+   }
+  ],
+  "uuid": "fe81c7de-a5f9-44e9-90b3-0ab715fd8bdc"
+ }
+}

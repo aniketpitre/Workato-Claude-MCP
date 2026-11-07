@@ -1,0 +1,1271 @@
+{
+ "id": 671384,
+ "name": "Post Slack notifications when new leads are created in Salesforce",
+ "description": "1. New lead is created in Salesforce.\n2. Workato posts a message in Slack with the lead details.",
+ "applications": [
+  "salesforce",
+  "slack"
+ ],
+ "action_applications": [
+  "slack"
+ ],
+ "trigger_application": "salesforce",
+ "business_objects": [
+  "lead",
+  "message"
+ ],
+ "categories": [
+  "CRM",
+  "Marketing",
+  "Collaboration",
+  "Sales Enablement"
+ ],
+ "copy_count": 1061,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2020-08-04T00:42:31.358-07:00",
+ "source_url": "https://app.workato.com/recipes/671384?community=us",
+ "steps": [
+  "salesforce.new_custom_object",
+  "slack.post_message_to_channel"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "salesforce",
+  "name": "new_custom_object",
+  "as": "new_custom_object",
+  "title": "New Lead",
+  "description": "New <span class=\"provider\">Lead</span> in <span class=\"provider\">Salesforce</span>",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "sobject_name": "Lead"
+  },
+  "toggleCfg": {},
+  "input": {
+   "sobject_name": "Lead",
+   "since_offset": "-3600"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "Address",
+    "label": "Address",
+    "optional": true,
+    "custom": false,
+    "properties": [
+     {
+      "control_type": "text",
+      "label": "City",
+      "type": "string",
+      "name": "city"
+     },
+     {
+      "control_type": "text",
+      "label": "Country",
+      "type": "string",
+      "name": "country"
+     },
+     {
+      "control_type": "text",
+      "label": "Country code",
+      "type": "string",
+      "name": "countryCode"
+     },
+     {
+      "control_type": "text",
+      "label": "Geocode accuracy",
+      "type": "string",
+      "name": "geocodeAccuracy"
+     },
+     {
+      "control_type": "text",
+      "label": "Latitude",
+      "type": "string",
+      "name": "latitude"
+     },
+     {
+      "control_type": "text",
+      "label": "Longitude",
+      "type": "string",
+      "name": "longitude"
+     },
+     {
+      "control_type": "text",
+      "label": "Postal code",
+      "type": "string",
+      "name": "postalCode"
+     },
+     {
+      "control_type": "text",
+      "label": "State",
+      "type": "string",
+      "name": "state"
+     },
+     {
+      "control_type": "text",
+      "label": "State code",
+      "type": "string",
+      "name": "stateCode"
+     },
+     {
+      "control_type": "text",
+      "label": "Street",
+      "type": "string",
+      "name": "street"
+     }
+    ],
+    "sfdc_createable": false,
+    "sfdc_updateable": false,
+    "sdfc_address_attribute": true
+   },
+   {
+    "type": "number",
+    "name": "AnnualRevenue",
+    "control_type": "number",
+    "label": "Annual Revenue",
+    "optional": true,
+    "custom": false,
+    "parse_output": "float_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "City",
+    "control_type": "text",
+    "label": "City",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Company",
+    "control_type": "text",
+    "label": "Company",
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "boolean",
+    "name": "IsConverted",
+    "control_type": "checkbox",
+    "label": "Converted",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Converted",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "IsConverted"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": true,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "ConvertedAccountId",
+    "control_type": "text",
+    "label": "Converted Account ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Account",
+    "fetch_with": "get_custom_object(id, sobject_name: Account)",
+    "join_point_label": "Converted  account",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+ConvertedAccountId",
+    "label": "Converted  account",
+    "properties": [],
+    "fetch_with": "get_custom_object(ConvertedAccountId>id, sobject_name: Account)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "ConvertedContactId",
+    "control_type": "text",
+    "label": "Converted Contact ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Contact",
+    "fetch_with": "get_custom_object(id, sobject_name: Contact)",
+    "join_point_label": "Converted  contact",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+ConvertedContactId",
+    "label": "Converted  contact",
+    "properties": [],
+    "fetch_with": "get_custom_object(ConvertedContactId>id, sobject_name: Contact)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "ConvertedDate",
+    "control_type": "date",
+    "label": "Converted Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "ConvertedOpportunityId",
+    "control_type": "text",
+    "label": "Converted Opportunity ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Opportunity",
+    "fetch_with": "get_custom_object(id, sobject_name: Opportunity)",
+    "join_point_label": "Converted  opportunity",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+ConvertedOpportunityId",
+    "label": "Converted  opportunity",
+    "properties": [],
+    "fetch_with": "get_custom_object(ConvertedOpportunityId>id, sobject_name: Opportunity)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "Country",
+    "control_type": "text",
+    "label": "Country",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "CreatedById",
+    "control_type": "text",
+    "label": "Created By ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "User",
+    "fetch_with": "get_custom_object(id, sobject_name: User)",
+    "join_point_label": "Created  by",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+CreatedById",
+    "label": "Created  by",
+    "properties": [],
+    "fetch_with": "get_custom_object(CreatedById>id, sobject_name: User)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "CreatedDate",
+    "control_type": "date_time",
+    "label": "Created Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Jigsaw",
+    "control_type": "text",
+    "label": "Data.com Key",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "boolean",
+    "name": "IsDeleted",
+    "control_type": "checkbox",
+    "label": "Deleted",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Deleted",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": false,
+     "sfdc_updateable": false,
+     "type": "boolean",
+     "name": "IsDeleted"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Description",
+    "control_type": "text-area",
+    "label": "Description",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Email",
+    "control_type": "text",
+    "label": "Email",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "EmailBouncedDate",
+    "control_type": "date_time",
+    "label": "Email Bounced Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "EmailBouncedReason",
+    "control_type": "text",
+    "label": "Email Bounced Reason",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "integer",
+    "name": "NumberOfEmployees",
+    "control_type": "number",
+    "label": "Employees",
+    "optional": true,
+    "custom": false,
+    "parse_output": "integer_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Fax",
+    "control_type": "phone",
+    "label": "Fax",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "FirstName",
+    "control_type": "text",
+    "label": "First Name",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Name",
+    "control_type": "text",
+    "label": "Full Name",
+    "custom": false,
+    "event_title": true,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "GeocodeAccuracy",
+    "control_type": "select",
+    "label": "Geocode Accuracy",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Geocode Accuracy",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "GeocodeAccuracy"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "IndividualId",
+    "control_type": "text",
+    "label": "Individual ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Individual",
+    "fetch_with": "get_custom_object(id, sobject_name: Individual)",
+    "join_point_label": "Individual",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+IndividualId",
+    "label": "Individual",
+    "properties": [],
+    "fetch_with": "get_custom_object(IndividualId>id, sobject_name: Individual)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "Industry",
+    "control_type": "select",
+    "label": "Industry",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Industry",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Industry"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "JigsawContactId",
+    "control_type": "text",
+    "label": "Jigsaw Contact ID",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastActivityDate",
+    "control_type": "date",
+    "label": "Last Activity",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LastModifiedById",
+    "control_type": "text",
+    "label": "Last Modified By ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "User",
+    "fetch_with": "get_custom_object(id, sobject_name: User)",
+    "join_point_label": "Last  modified  by",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+LastModifiedById",
+    "label": "Last  modified  by",
+    "properties": [],
+    "fetch_with": "get_custom_object(LastModifiedById>id, sobject_name: User)",
+    "join_point": true
+   },
+   {
+    "type": "date_time",
+    "name": "LastModifiedDate",
+    "control_type": "date_time",
+    "label": "Last Modified Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LastName",
+    "control_type": "text",
+    "label": "Last Name",
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "LastReferencedDate",
+    "control_type": "date_time",
+    "label": "Last Referenced Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "date_time",
+    "name": "LastViewedDate",
+    "control_type": "date_time",
+    "label": "Last Viewed Date",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "number",
+    "name": "Latitude",
+    "control_type": "number",
+    "label": "Latitude",
+    "optional": true,
+    "custom": false,
+    "parse_output": "float_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Id",
+    "control_type": "text",
+    "label": "Lead ID",
+    "optional": true,
+    "custom": false,
+    "key_scope": "Lead",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "LeadSource",
+    "control_type": "select",
+    "label": "Lead Source",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Lead Source",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "LeadSource"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "number",
+    "name": "Longitude",
+    "control_type": "number",
+    "label": "Longitude",
+    "optional": true,
+    "custom": false,
+    "parse_output": "float_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "MasterRecordId",
+    "control_type": "text",
+    "label": "Master Record ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Lead",
+    "fetch_with": "get_custom_object(id, sobject_name: Lead)",
+    "join_point_label": "Master  record",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+MasterRecordId",
+    "label": "Master  record",
+    "properties": [],
+    "fetch_with": "get_custom_object(MasterRecordId>id, sobject_name: Lead)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "MobilePhone",
+    "control_type": "phone",
+    "label": "Mobile Phone",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "OwnerId",
+    "control_type": "text",
+    "label": "Owner ID",
+    "optional": true,
+    "custom": false,
+    "foreign_key": "Group",
+    "fetch_with": "get_custom_object(id, sobject_name: Group)",
+    "join_point_label": "Owner",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "get_custom_object+OwnerId",
+    "label": "Owner",
+    "properties": [],
+    "fetch_with": "get_custom_object(OwnerId>id, sobject_name: Group)",
+    "join_point": true
+   },
+   {
+    "type": "string",
+    "name": "Phone",
+    "control_type": "phone",
+    "label": "Phone",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "PhotoUrl",
+    "control_type": "url",
+    "label": "Photo URL",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Rating",
+    "control_type": "select",
+    "label": "Rating",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Rating",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Rating"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Salutation",
+    "control_type": "select",
+    "label": "Salutation",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Salutation",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Salutation"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "State",
+    "control_type": "text",
+    "label": "State/Province",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Status",
+    "control_type": "select",
+    "label": "Status",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Status",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Status"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Street",
+    "control_type": "text-area",
+    "label": "Street",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "SystemModstamp",
+    "control_type": "date_time",
+    "label": "System Modstamp",
+    "optional": true,
+    "custom": false,
+    "render_input": "render_iso8601_timestamp",
+    "parse_output": "parse_iso8601_timestamp",
+    "sfdc_createable": false,
+    "sfdc_updateable": false
+   },
+   {
+    "type": "string",
+    "name": "Title",
+    "control_type": "text",
+    "label": "Title",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "boolean",
+    "name": "IsUnreadByOwner",
+    "control_type": "checkbox",
+    "label": "Unread By Owner",
+    "optional": true,
+    "custom": false,
+    "toggle_hint": "Select from option list",
+    "toggle_field": {
+     "label": "Unread By Owner",
+     "control_type": "text",
+     "toggle_hint": "Use custom value",
+     "optional": true,
+     "custom": false,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "boolean",
+     "name": "IsUnreadByOwner"
+    },
+    "render_input": {},
+    "parse_output": {},
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Website",
+    "control_type": "url",
+    "label": "Website",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "PostalCode",
+    "control_type": "text",
+    "label": "Zip/Postal Code",
+    "optional": true,
+    "custom": false,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "CurrentGenerators__c",
+    "control_type": "text",
+    "label": "Current Generator(s)",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "Custom_date__c",
+    "control_type": "date",
+    "label": "Custom_date",
+    "optional": true,
+    "custom": true,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "Custom_date2__c",
+    "control_type": "date",
+    "label": "Custom_date2",
+    "optional": true,
+    "custom": true,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Customer_Type__c",
+    "control_type": "text",
+    "label": "Customer Type",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "number",
+    "name": "External_ID__c",
+    "control_type": "number",
+    "label": "External ID",
+    "optional": true,
+    "custom": true,
+    "parse_output": "float_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "ID_del__c",
+    "control_type": "text",
+    "label": "ID",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "number",
+    "name": "NumberofLocations__c",
+    "control_type": "number",
+    "label": "Number of Locations",
+    "optional": true,
+    "custom": true,
+    "parse_output": "float_conversion",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Primary__c",
+    "control_type": "select",
+    "label": "Primary",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": true,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Primary",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": true,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "Primary__c"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "ProductInterest__c",
+    "control_type": "select",
+    "label": "Product Interest",
+    "pick_list": "sobject_field_values_list",
+    "pick_list_params": {
+     "sobject_name": "\"Lead\""
+    },
+    "optional": true,
+    "custom": true,
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "text",
+     "label": "Product Interest",
+     "toggle_hint": "Enter custom value",
+     "optional": true,
+     "custom": true,
+     "sfdc_createable": true,
+     "sfdc_updateable": true,
+     "type": "string",
+     "name": "ProductInterest__c"
+    },
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "SICCode__c",
+    "control_type": "text",
+    "label": "SIC Code",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "Source__c",
+    "control_type": "text",
+    "label": "Source",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "SubmitterIP__c",
+    "control_type": "text",
+    "label": "Submitter IP",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "UnbouncePageID__c",
+    "control_type": "text",
+    "label": "Unbounce Page ID",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "UnbouncePageVariant__c",
+    "control_type": "text",
+    "label": "Unbounce Page Variant",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "date_time",
+    "name": "UnbounceSubmissionDate__c",
+    "control_type": "date",
+    "label": "Unbounce Submission Date",
+    "optional": true,
+    "custom": true,
+    "render_input": "render_iso8601_date",
+    "parse_output": "parse_iso8601_date",
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "UnbounceSubmissionTime__c",
+    "control_type": "text",
+    "label": "Unbounce Submission Time",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "User_Email_del__c",
+    "control_type": "text",
+    "label": "User Email",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "string",
+    "name": "User_ID__c",
+    "control_type": "text",
+    "label": "User ID",
+    "optional": true,
+    "custom": true,
+    "sfdc_createable": true,
+    "sfdc_updateable": true
+   },
+   {
+    "type": "object",
+    "name": "CombinedAttachments",
+    "label": "Combined attachments",
+    "properties": [
+     {
+      "control_type": "number",
+      "label": "Total size",
+      "parse_output": "integer_conversion",
+      "type": "integer",
+      "name": "totalSize"
+     },
+     {
+      "name": "records",
+      "type": "array",
+      "of": "object",
+      "label": "Files",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "ID",
+        "type": "string",
+        "name": "Id"
+       },
+       {
+        "control_type": "number",
+        "label": "Content size",
+        "parse_output": "integer_conversion",
+        "type": "integer",
+        "name": "ContentSize"
+       },
+       {
+        "control_type": "url",
+        "label": "Content URL",
+        "type": "string",
+        "name": "ContentUrl"
+       },
+       {
+        "control_type": "text",
+        "label": "File extension",
+        "type": "string",
+        "name": "FileExtension"
+       },
+       {
+        "control_type": "text",
+        "label": "File type",
+        "type": "string",
+        "name": "FileType"
+       },
+       {
+        "control_type": "text",
+        "label": "Parent ID",
+        "type": "string",
+        "name": "ParentId"
+       },
+       {
+        "control_type": "text",
+        "label": "Record type",
+        "type": "string",
+        "name": "RecordType"
+       },
+       {
+        "control_type": "text",
+        "label": "Title",
+        "type": "string",
+        "name": "Title"
+       }
+      ]
+     }
+    ],
+    "sfdc_field_type": "CombinedAttachment"
+   }
+  ],
+  "extended_input_schema": [
+   {
+    "type": "string",
+    "name": "since_offset",
+    "control_type": "select",
+    "label": "When first started, this recipe should pick up events from",
+    "hint": "When starting the recipe for the first time, picks up Salesforce records from the specified date and time. <b>Once the recipe has been run or tested, this value cannot be changed.</b>",
+    "default": -3600,
+    "pick_list": [
+     [
+      "Recipe start",
+      0
+     ],
+     [
+      "An hour ago",
+      -3600
+     ],
+     [
+      "Yesterday",
+      -86400
+     ],
+     [
+      "Last week",
+      -604800
+     ],
+     [
+      "Last month",
+      -2629746
+     ],
+     [
+      "Beginning of time",
+      "no_limit"
+     ]
+    ],
+    "toggle_hint": "Select from list",
+    "toggle_field": {
+     "control_type": "date_time",
+     "label": "When first started, this recipe should pick up events from",
+     "render_input": "convert_date_time",
+     "parse_output": "convert_date_time",
+     "toggle_hint": "Enter custom value",
+     "since_field": true,
+     "hint": "When starting the recipe for the first time, picks up Salesforce records from the specified date and time. <b>Once the recipe has been run or tested, this value cannot be changed.</b>",
+     "type": "date_time",
+     "name": "since"
+    },
+    "since_field": true
+   }
+  ],
+  "visible_config_fields": [
+   "sobject_name",
+   "since_offset"
+  ],
+  "block": [
+   {
+    "number": 1,
+    "provider": "slack",
+    "name": "post_message_to_channel",
+    "as": "post_message_to_channel",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "channel": false,
+     "color": true
+    },
+    "input": {
+     "channel": "#random",
+     "text": "New lead in Salesforce",
+     "color": "good",
+     "attachment_fields": "Name: #{_('data.salesforce.new_custom_object.Name')}\nEmail: #{_('data.salesforce.new_custom_object.Email')}\nRating: #{_('data.salesforce.new_custom_object.Rating')}",
+     "parse": "false"
+    },
+    "visible_config_fields": [
+     "color",
+     "attachment_fields"
+    ],
+    "hidden_config_fields": [
+     "title",
+     "title_link",
+     "attachment_text",
+     "thread_ts"
+    ],
+    "uuid": "a5afb087-b5be-45a1-ae16-aa93bfc6ea62"
+   }
+  ],
+  "job_report_schema": [
+   {
+    "name": "custom_column_1",
+    "label": "Name"
+   },
+   {
+    "name": "custom_column_2",
+    "label": "Email"
+   },
+   {
+    "name": "custom_column_3",
+    "label": "Rating"
+   }
+  ],
+  "job_report_config": {
+   "custom_column_1": "#{_('data.salesforce.new_custom_object.Name')}",
+   "custom_column_2": "#{_('data.salesforce.new_custom_object.Email')}",
+   "custom_column_3": "#{_('data.salesforce.new_custom_object.Rating')}"
+  },
+  "uuid": "3b7b6813-a13f-48b8-84af-64fba0a2ffca",
+  "param": {}
+ }
+}

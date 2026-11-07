@@ -14,6 +14,7 @@ connector, and then uses the same loop for skills, MCP servers, and Genies.
 | 3 | **Workato Labs `recipe-skills`** (github.com/workato-devs/recipe-skills, MIT) | Recipe JSON structure, datapill syntax, config section, control flow (if/else, try/catch, foreach, repeat/while, stop), triggers (API endpoint, recipe function, Genie skill, scheduler, data table), patterns, templates, per-connector allowed action lists for 7 connectors | Official and curated |
 | 4 | **Workato Labs `recipe-lint`** (79 rules, 4 tiers) | The precise rules a recipe must satisfy: structure, numbering, UUIDs, datapills, EIS/EOS, control-flow terminals, datapill resolution | Official |
 | 5 | **Real recipes**: 104 in Workato's sample repos (dewy-resort, dewy-bank, platform-cli examples) plus the workspace's own 8 | Working examples of API endpoint, recipe function, Genie skill, Slack bot, Salesforce, Stripe, scheduler, Python, and variables | Real, exported from Workato |
+| 5b | **Workato community library** (thousands of public recipes; 1,549 involve Slack alone). The listing comes from `app.workato.com/browse/recipes?q=app:<app>` (rendered page via Firecrawl); full code comes from public `app.trial.workato.com/recipes/<id>/code.json?community=us` | Real, popular, end-to-end recipes for almost every app, ranked by copy count | Real, community quality (curate by copies and "Workato Tutorial" or Featured authors) |
 | 6 | `kb/docs/en/**` (official docs) | Concepts and per-connector field docs | Official, but describes the UI, not JSON |
 | 7 | General web | Nothing better. Third-party pages describe the UI only. | Low |
 
@@ -45,6 +46,10 @@ connector, and then uses the same loop for skills, MCP servers, and Genies.
 - **A3. Example corpus.** Normalize the 104 Labs recipes and the workspace recipes into
   `kb/examples/`, indexed by trigger and action (for example `salesforce/search_sobjects`), and add
   `kb/search.py --examples <connector> [action]`.
+- **A3b. Community library.** `kb/community/harvest.py` (done; 12 Slack recipes harvested as a test).
+  Next: list the top recipes for each priority app through Firecrawl, harvest about 25–50 per app
+  (sorted by copy count, about 1 request per second), and index them by step. Author details aren't
+  stored, and email addresses in steps are redacted.
 - **A4. One-page recipe JSON spec** (`kb/patterns/RECIPE_JSON_SPEC.md`) distilled from A1–A3: top-level
   shape, block keywords, numbering, UUIDs, aliases, both datapill forms, formulas, config, control
   flow, EIS/EOS, API endpoint and Genie skill return rules, and known pitfalls.

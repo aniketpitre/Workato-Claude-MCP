@@ -1,0 +1,180 @@
+{
+ "id": 96211,
+ "name": "New email in Gmail will conditionally post message to channel in Slack",
+ "description": "When there is a new email in Gmail, conditionally post message to channel in Slack",
+ "applications": [
+  "gmail",
+  "slack"
+ ],
+ "action_applications": [
+  "slack"
+ ],
+ "trigger_application": "gmail",
+ "business_objects": [
+  "email",
+  "message"
+ ],
+ "categories": [
+  "Utilities",
+  "Social, Utilities"
+ ],
+ "copy_count": 175,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2016-03-23T16:52:52.511-07:00",
+ "source_url": "https://app.workato.com/recipes/96211?community=us",
+ "steps": [
+  "gmail.new_email",
+  "slack.post_message_to_channel",
+  "slack.post_message_to_channel",
+  "slack.post_message_to_channel"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "gmail",
+  "name": "new_email",
+  "as": "new_email",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "label_ids": "INBOX"
+  },
+  "toggleCfg": {},
+  "input": {
+   "label_ids": "INBOX"
+  },
+  "visible_config_fields": [],
+  "block": [
+   {
+    "number": 1,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.gmail.new_email.from_email')}",
+       "rhs": "user@example.com"
+      },
+      {
+       "operand": "contains",
+       "lhs": "=_('data.gmail.new_email.body_html') or _('data.gmail.new_email.subject') or _('data.gmail.new_email.body_plain')",
+       "rhs": "=\"meeting\" or \"status\""
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 2,
+      "provider": "slack",
+      "name": "post_message_to_channel",
+      "as": "post_message_to_channel",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "channel": "meeting-alerts"
+      },
+      "toggleCfg": {},
+      "input": {
+       "channel": "C0LRT6F0U",
+       "username": "meetingbot",
+       "title": "#{_('data.gmail.new_email.subject')}",
+       "text": "=(_('data.gmail.new_email.body_plain') + \" \" + \"grace\")"
+      },
+      "visible_config_fields": []
+     }
+    ]
+   },
+   {
+    "number": 3,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.gmail.new_email.from_email')}",
+       "rhs": "user@example.com"
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 4,
+      "provider": "slack",
+      "name": "post_message_to_channel",
+      "as": "post_message_to_channel1",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "channel": "meeting-alerts"
+      },
+      "toggleCfg": {},
+      "input": {
+       "channel": "C0LRT6F0U",
+       "title": "#{_('data.gmail.new_email.subject')}",
+       "text": "#{_('data.gmail.new_email.body_plain')}"
+      },
+      "visible_config_fields": []
+     }
+    ]
+   },
+   {
+    "number": 5,
+    "keyword": "if",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "type": "compound",
+     "operand": "and",
+     "conditions": [
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.gmail.new_email.from_email')}",
+       "rhs": "user@example.com"
+      },
+      {
+       "operand": "contains",
+       "lhs": "#{_('data.gmail.new_email.subject')}",
+       "rhs": "=\"Demo\" || \"General\" || \"Minute\""
+      }
+     ]
+    },
+    "block": [
+     {
+      "number": 6,
+      "provider": "slack",
+      "name": "post_message_to_channel",
+      "as": "post_message_to_channel2",
+      "title": null,
+      "description": null,
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "channel": "meeting-alerts"
+      },
+      "toggleCfg": {},
+      "input": {
+       "channel": "C0LRT6F0U",
+       "title": "NOTE",
+       "text": "=_('data.gmail.new_email.subject') + \" \" + \"https://calendar.google.com/calendar/\""
+      },
+      "visible_config_fields": []
+     }
+    ]
+   }
+  ],
+  "param": {}
+ }
+}

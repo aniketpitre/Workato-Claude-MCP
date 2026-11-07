@@ -1,0 +1,1479 @@
+{
+ "id": 845812,
+ "name": "New comment in Wrike with @mentioned user will send Slack message to the user",
+ "description": "When a user is @mentioned in a comment in Wrike, a Slack message will be sent to this user.\n\n### Trigger\n\n- Whenever a person is @mentioned in a comment in Wrike.\n\n### Actions\n\n- Search for the Wrike comment in which user(s) were @mentioned.\n- To map the user details between Wrike and Slack so that we can send the Slack message to relevant users:\n\n  - Create a list of all users @mentioned in the Wrike comment\n  - Create/Update a table of all Wrike users' usernames and their associated email ids.\n  - Create/Update a table of all Slack users' email ids and their associated user ids.\n- For each @mentioned user in Wrike, post a Slack message to the user using their Slack user id retrieved from these two tables.\n\nNote: This recipe uses lookup tables.\n\n",
+ "applications": [
+  "wrike",
+  "wrike",
+  "logger",
+  "workato_list",
+  "lookup_table",
+  "slack",
+  "slack_bot"
+ ],
+ "action_applications": [
+  "wrike",
+  "logger",
+  "workato_list",
+  "lookup_table",
+  "slack",
+  "slack_bot"
+ ],
+ "trigger_application": "wrike",
+ "business_objects": [
+  "message"
+ ],
+ "categories": [
+  "Project Management",
+  "Marketing",
+  "Recipe Tools",
+  "Collaboration",
+  "Sales Enablement",
+  "Bots",
+  "Artificial Intelligence"
+ ],
+ "copy_count": 125,
+ "curated": true,
+ "recipe_type": "regular",
+ "trigger_type": "regular",
+ "published_at": null,
+ "updated_at": "2020-08-05T22:37:40.822-07:00",
+ "source_url": "https://app.workato.com/recipes/845812?community=us",
+ "steps": [
+  "wrike.new_comment_v2",
+  "wrike.__adhoc_http_action",
+  "logger.log_message",
+  "workato_list.create_list",
+  "workato_list.accumulate_list_items",
+  "wrike.list_users",
+  "lookup_table.search_entries",
+  "lookup_table.add_entry",
+  "slack.__adhoc_http_action",
+  "lookup_table.search_entries",
+  "lookup_table.add_entry",
+  "lookup_table.search_entries",
+  "lookup_table.search_entries",
+  "slack_bot.post_bot_message"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "wrike",
+  "name": "new_comment_v2",
+  "as": "d2188ce5",
+  "keyword": "trigger",
+  "dynamicPickListSelection": {
+   "account_id": "Workato Wrike’s Team"
+  },
+  "toggleCfg": {},
+  "input": {},
+  "filter": {
+   "conditions": [
+    {
+     "operand": "is_true",
+     "lhs": "=_('data.wrike.d2188ce5.text').match?(/@\\w+/)",
+     "rhs": null
+    }
+   ],
+   "operand": "and",
+   "type": "compound"
+  },
+  "block": [
+   {
+    "number": 1,
+    "provider": "wrike",
+    "name": "__adhoc_http_action",
+    "as": "4efaad97",
+    "title": "Get comment",
+    "description": "Get <span class=\"provider\">comment</span> in <span class=\"provider\">Wrike</span> (Custom)",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "path",
+      "control_type": "text",
+      "label": "Path",
+      "hint": "Base URI is <b>https://www.wrike.com/api/v4/</b> - path will be appended to this URI. Use absolute URI to override this base URI.",
+      "optional": false
+     },
+     {
+      "type": "string",
+      "name": "response_type",
+      "control_type": "select",
+      "label": "Response type",
+      "default": "json",
+      "sticky": false,
+      "pick_list": [
+       [
+        "JSON response",
+        "json"
+       ],
+       [
+        "Raw response",
+        "raw"
+       ]
+      ],
+      "optional": true,
+      "extends_schema": true
+     },
+     {
+      "type": "object",
+      "name": "input",
+      "control_type": "form-schema-builder",
+      "label": "Request URL parameters",
+      "sticky": true,
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "sticky": true,
+        "optional": true,
+        "type": "string",
+        "name": "schema",
+        "parent": "input"
+       }
+      ]
+     },
+     {
+      "type": "array",
+      "name": "request_headers",
+      "control_type": "key_value",
+      "label": "Request headers",
+      "optional": true,
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "type": "string",
+        "name": "name",
+        "parent": "request_headers"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value",
+        "parent": "request_headers"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "output",
+      "control_type": "schema-designer",
+      "label": "Response body",
+      "sticky": true,
+      "optional": true,
+      "extends_schema": true,
+      "schema_neutral": true
+     },
+     {
+      "type": "string",
+      "name": "response_headers",
+      "control_type": "schema-designer",
+      "label": "Response headers",
+      "sticky": false,
+      "optional": true,
+      "extends_schema": true,
+      "schema_neutral": true
+     }
+    ],
+    "visible_config_fields": [
+     "mnemonic",
+     "verb",
+     "input",
+     "input.schema",
+     "output",
+     "input.data.plain_text"
+    ],
+    "comment": "searching for the Wrike comment in which user(s) were @mentioned",
+    "uuid": "712ff824-fd6b-4b48-a311-c89831cd4597"
+   },
+   {
+    "number": 2,
+    "provider": "logger",
+    "name": "log_message",
+    "as": "1b86037c",
+    "title": null,
+    "description": "Log <span class=\"provider\">message</span> to <span class=\"provider\">Job report</span>",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "message": "=_('data.wrike.d2188ce5.text').scan(/@\\w+ \\w+/)"
+    },
+    "comment": "retrieving users' names from the comment",
+    "uuid": "c767ee04-d4a2-4f0a-8cb8-91962e0d58ac"
+   },
+   {
+    "number": 3,
+    "provider": "workato_list",
+    "name": "create_list",
+    "as": "4b0575f4",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {
+     "size": "=_('data.logger.1b86037c.message').length"
+    },
+    "comment": "creating a list of the Wrike usernames",
+    "uuid": "30c6a35e-b01c-44c9-adac-bff4c7f00cb0"
+   },
+   {
+    "number": 4,
+    "as": "4a223a0b",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 5,
+      "provider": "workato_list",
+      "name": "accumulate_list_items",
+      "as": "697ceb27",
+      "title": "Accumulate items to Username list",
+      "description": "Accumulate <span class=\"provider\">items</span> to <span class=\"provider\">Username</span> list",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "name": "Username",
+       "list_item": {
+        "schema": "[{\"name\":\"username\",\"type\":\"string\",\"optional\":true,\"label\":\"Username\",\"control_type\":\"text\"}]",
+        "data": {
+         "username": "=_('data.logger.1b86037c.message')[_('data.foreach.4a223a0b.seq_no')-1].gsub(\"@\",\"\")"
+        }
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "list_items",
+        "label": "Items",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Username",
+          "name": "username",
+          "type": "string",
+          "optional": true
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "list_item",
+        "control_type": "form-schema-builder",
+        "label": "List item fields",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Schema",
+          "extends_schema": true,
+          "type": "string",
+          "name": "schema"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Username",
+            "name": "username",
+            "type": "string",
+            "optional": true
+           }
+          ],
+          "label": "Data",
+          "type": "object",
+          "name": "data"
+         }
+        ],
+        "override": true
+       }
+      ],
+      "visible_config_fields": [
+       "name",
+       "list_item.data.username"
+      ],
+      "comment": "inputting Wrike usernames into newly created list",
+      "uuid": "108d233d-97f6-4546-a783-f9a3b75c0341"
+     }
+    ],
+    "source": "#{_('data.workato_list.4b0575f4.list')}",
+    "uuid": "e58ad98e-13e8-4dbb-a809-beaeb8e84088"
+   },
+   {
+    "number": 6,
+    "provider": "wrike",
+    "name": "list_users",
+    "as": "9e698d13",
+    "title": null,
+    "description": null,
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "comment": "steps 6-10 create a table of all Wrike users' usernames and their corresponding email ids",
+    "uuid": "f890b296-9caa-48c4-8771-786f7c9f4316"
+   },
+   {
+    "number": 7,
+    "as": "effda135",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 8,
+      "provider": "lookup_table",
+      "name": "search_entries",
+      "as": "4ea4cc89",
+      "title": null,
+      "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">Wrike Username_Email</span> lookup table",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "lookup_table_id": "Wrike Username_Email"
+      },
+      "toggleCfg": {},
+      "input": {
+       "lookup_table_id": "20719",
+       "parameters": {
+        "col2": "#{_('data.foreach.effda135.profiles.first.email')}"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "entries",
+        "label": "Entries",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Entry ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "id"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Wrike Username",
+            "name": "col1",
+            "type": "string",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "Wrike Email",
+            "name": "col2",
+            "type": "string",
+            "sticky": true
+           }
+          ],
+          "label": "Entry",
+          "type": "object",
+          "name": "entry"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "parameters",
+        "label": "Search by",
+        "hint": "Provide one or more entry fields to search the entry",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Wrike Username",
+          "name": "col1",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Wrike Email",
+          "name": "col2",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         }
+        ]
+       }
+      ],
+      "uuid": "a8bc6882-b311-4959-8f57-144ff2c7ff1c"
+     },
+     {
+      "number": 9,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "blank",
+         "lhs": "#{_('data.lookup_table.4ea4cc89.entries.first.entry.col2')}",
+         "rhs": null
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 10,
+        "provider": "lookup_table",
+        "name": "add_entry",
+        "as": "b581ee74",
+        "title": null,
+        "description": "Add <span class=\"provider\">an entry</span> to <span class=\"provider\">Wrike Username_Email</span> lookup table",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "lookup_table_id": "Wrike Username_Email"
+        },
+        "toggleCfg": {},
+        "input": {
+         "lookup_table_id": "20719",
+         "parameters": {
+          "col1": "=_('data.foreach.effda135.firstName')+\" \"+_('data.foreach.effda135.lastName')",
+          "col2": "#{_('data.foreach.effda135.profiles.first.email')}"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "type": "integer",
+          "name": "id",
+          "control_type": "number",
+          "label": "Entry ID",
+          "parse_output": "integer_conversion"
+         },
+         {
+          "type": "object",
+          "name": "entry",
+          "label": "Entry",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Wrike Username",
+            "name": "col1",
+            "type": "string",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "Wrike Email",
+            "name": "col2",
+            "type": "string",
+            "sticky": true
+           }
+          ]
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "type": "object",
+          "name": "parameters",
+          "label": "Entry fields",
+          "hint": "Fill the fields for the new entry",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Wrike Username",
+            "name": "col1",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Wrike Email",
+            "name": "col2",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           }
+          ]
+         }
+        ],
+        "uuid": "ee6abf47-9954-41bc-81ca-3f4836d8bcf3"
+       }
+      ],
+      "uuid": "a33b0f53-8986-4a88-820c-ca9d873c81b8"
+     }
+    ],
+    "source": "#{_('data.wrike.9e698d13.data')}",
+    "uuid": "cfe28fdd-5645-4957-937a-b7cb1e2e40c1"
+   },
+   {
+    "number": 11,
+    "provider": "slack",
+    "name": "__adhoc_http_action",
+    "as": "639499db",
+    "title": "Get all users",
+    "description": "Get <span class=\"provider\">all users</span> in <span class=\"provider\">Slack</span> (Custom)",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "input": {},
+    "extended_output_schema": [
+     {
+      "type": "number",
+      "name": "ok",
+      "control_type": "text",
+      "label": "Ok",
+      "optional": true,
+      "toggle_hint": "Select from option list",
+      "toggle_field": {
+       "label": "Ok",
+       "control_type": "text",
+       "toggle_hint": "Use custom value",
+       "type": "boolean",
+       "name": "ok"
+      },
+      "render_input": {},
+      "parse_output": {}
+     },
+     {
+      "type": "array",
+      "name": "members",
+      "label": "Members",
+      "optional": true,
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "ID",
+        "optional": true,
+        "type": "string",
+        "name": "id"
+       },
+       {
+        "control_type": "text",
+        "label": "Team ID",
+        "optional": true,
+        "type": "string",
+        "name": "team_id"
+       },
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       },
+       {
+        "control_type": "text",
+        "label": "Deleted",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Deleted",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "deleted"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "deleted"
+       },
+       {
+        "control_type": "text",
+        "label": "Color",
+        "optional": true,
+        "type": "string",
+        "name": "color"
+       },
+       {
+        "control_type": "text",
+        "label": "Real name",
+        "optional": true,
+        "type": "string",
+        "name": "real_name"
+       },
+       {
+        "control_type": "text",
+        "label": "Tz",
+        "optional": true,
+        "type": "string",
+        "name": "tz"
+       },
+       {
+        "control_type": "text",
+        "label": "Tz label",
+        "optional": true,
+        "type": "string",
+        "name": "tz_label"
+       },
+       {
+        "control_type": "number",
+        "label": "Tz offset",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "type": "number",
+        "name": "tz_offset"
+       },
+       {
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Avatar hash",
+          "optional": true,
+          "type": "string",
+          "name": "avatar_hash"
+         },
+         {
+          "control_type": "text",
+          "label": "Status text",
+          "optional": true,
+          "type": "string",
+          "name": "status_text"
+         },
+         {
+          "control_type": "text",
+          "label": "Status emoji",
+          "optional": true,
+          "type": "string",
+          "name": "status_emoji"
+         },
+         {
+          "control_type": "text",
+          "label": "Real name",
+          "optional": true,
+          "type": "string",
+          "name": "real_name"
+         },
+         {
+          "control_type": "text",
+          "label": "Display name",
+          "optional": true,
+          "type": "string",
+          "name": "display_name"
+         },
+         {
+          "control_type": "text",
+          "label": "Real name normalized",
+          "optional": true,
+          "type": "string",
+          "name": "real_name_normalized"
+         },
+         {
+          "control_type": "text",
+          "label": "Display name normalized",
+          "optional": true,
+          "type": "string",
+          "name": "display_name_normalized"
+         },
+         {
+          "control_type": "text",
+          "label": "Email",
+          "optional": true,
+          "type": "string",
+          "name": "email"
+         },
+         {
+          "control_type": "text",
+          "label": "Image 24",
+          "optional": true,
+          "type": "string",
+          "name": "image_24"
+         },
+         {
+          "control_type": "text",
+          "label": "Image 32",
+          "optional": true,
+          "type": "string",
+          "name": "image_32"
+         },
+         {
+          "control_type": "text",
+          "label": "Image 48",
+          "optional": true,
+          "type": "string",
+          "name": "image_48"
+         },
+         {
+          "control_type": "text",
+          "label": "Image 72",
+          "optional": true,
+          "type": "string",
+          "name": "image_72"
+         },
+         {
+          "control_type": "text",
+          "label": "Image 192",
+          "optional": true,
+          "type": "string",
+          "name": "image_192"
+         },
+         {
+          "control_type": "text",
+          "label": "Image 512",
+          "optional": true,
+          "type": "string",
+          "name": "image_512"
+         },
+         {
+          "control_type": "text",
+          "label": "Team",
+          "optional": true,
+          "type": "string",
+          "name": "team"
+         }
+        ],
+        "label": "Profile",
+        "optional": true,
+        "type": "object",
+        "name": "profile"
+       },
+       {
+        "control_type": "text",
+        "label": "Is admin",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is admin",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "is_admin"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "is_admin"
+       },
+       {
+        "control_type": "text",
+        "label": "Is owner",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is owner",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "is_owner"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "is_owner"
+       },
+       {
+        "control_type": "text",
+        "label": "Is primary owner",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is primary owner",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "is_primary_owner"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "is_primary_owner"
+       },
+       {
+        "control_type": "text",
+        "label": "Is restricted",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is restricted",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "is_restricted"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "is_restricted"
+       },
+       {
+        "control_type": "text",
+        "label": "Is ultra restricted",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is ultra restricted",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "is_ultra_restricted"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "is_ultra_restricted"
+       },
+       {
+        "control_type": "text",
+        "label": "Is bot",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is bot",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "is_bot"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "is_bot"
+       },
+       {
+        "control_type": "number",
+        "label": "Updated",
+        "parse_output": "float_conversion",
+        "optional": true,
+        "type": "number",
+        "name": "updated"
+       },
+       {
+        "control_type": "text",
+        "label": "Is app user",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Is app user",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "is_app_user"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "is_app_user"
+       },
+       {
+        "control_type": "text",
+        "label": "Has 2 fa",
+        "parse_output": {},
+        "render_input": {},
+        "toggle_hint": "Select from option list",
+        "toggle_field": {
+         "label": "Has 2 fa",
+         "control_type": "text",
+         "toggle_hint": "Use custom value",
+         "type": "boolean",
+         "name": "has_2fa"
+        },
+        "optional": true,
+        "type": "number",
+        "name": "has_2fa"
+       }
+      ]
+     },
+     {
+      "type": "number",
+      "name": "cache_ts",
+      "control_type": "number",
+      "label": "Cache ts",
+      "optional": true,
+      "parse_output": "float_conversion"
+     },
+     {
+      "type": "object",
+      "name": "response_metadata",
+      "label": "Response metadata",
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Next cursor",
+        "optional": true,
+        "type": "string",
+        "name": "next_cursor"
+       }
+      ]
+     }
+    ],
+    "extended_input_schema": [
+     {
+      "type": "string",
+      "name": "path",
+      "control_type": "text",
+      "label": "Path",
+      "hint": "Base URI is <b>https://slack.com/api/</b> - path will be appended to this URI. Use absolute URI to override this base URI.",
+      "optional": false
+     },
+     {
+      "type": "string",
+      "name": "response_type",
+      "control_type": "select",
+      "label": "Response type",
+      "default": "json",
+      "sticky": false,
+      "pick_list": [
+       [
+        "JSON response",
+        "json"
+       ],
+       [
+        "Raw response",
+        "raw"
+       ]
+      ],
+      "optional": true,
+      "extends_schema": true
+     },
+     {
+      "type": "object",
+      "name": "input",
+      "control_type": "form-schema-builder",
+      "label": "Request URL parameters",
+      "sticky": true,
+      "optional": true,
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Schema",
+        "extends_schema": true,
+        "sticky": true,
+        "optional": true,
+        "type": "string",
+        "name": "schema"
+       }
+      ]
+     },
+     {
+      "type": "array",
+      "name": "request_headers",
+      "control_type": "key_value",
+      "label": "Request headers",
+      "optional": true,
+      "of": "object",
+      "properties": [
+       {
+        "control_type": "text",
+        "label": "Name",
+        "optional": true,
+        "type": "string",
+        "name": "name"
+       },
+       {
+        "control_type": "text",
+        "label": "Value",
+        "optional": true,
+        "type": "string",
+        "name": "value"
+       }
+      ]
+     },
+     {
+      "type": "string",
+      "name": "output",
+      "control_type": "schema-designer",
+      "label": "Response body",
+      "sticky": true,
+      "optional": true,
+      "extends_schema": true,
+      "schema_neutral": true
+     },
+     {
+      "type": "string",
+      "name": "response_headers",
+      "control_type": "schema-designer",
+      "label": "Response headers",
+      "sticky": false,
+      "optional": true,
+      "extends_schema": true,
+      "schema_neutral": true
+     }
+    ],
+    "comment": "steps 11-15 create a table of all Slack user's email ids and their corresponding user ids",
+    "uuid": "e88be961-d7a2-497f-a404-3f6e0b0482da"
+   },
+   {
+    "number": 12,
+    "as": "06e3df2c",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 13,
+      "provider": "lookup_table",
+      "name": "search_entries",
+      "as": "f0337f3f",
+      "title": null,
+      "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">Slack Email_UserID</span> lookup table",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "lookup_table_id": "Slack UserName_UserID"
+      },
+      "toggleCfg": {},
+      "input": {
+       "lookup_table_id": "20713",
+       "parameters": {
+        "col1": "#{_('data.foreach.06e3df2c.profile.email')}"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "entries",
+        "label": "Entries",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Entry ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "id"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Slack Email",
+            "name": "col1",
+            "type": "string",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "Slack Userid",
+            "name": "col2",
+            "type": "string",
+            "sticky": true
+           }
+          ],
+          "label": "Entry",
+          "type": "object",
+          "name": "entry"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "parameters",
+        "label": "Search by",
+        "hint": "Provide one or more entry fields to search the entry",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Slack Email",
+          "name": "col1",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Slack Userid",
+          "name": "col2",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         }
+        ]
+       }
+      ],
+      "uuid": "013569a5-3a75-43b3-9937-70a8d1fb2305"
+     },
+     {
+      "number": 14,
+      "keyword": "if",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {},
+      "input": {
+       "type": "compound",
+       "operand": "and",
+       "conditions": [
+        {
+         "operand": "blank",
+         "lhs": "#{_('data.lookup_table.f0337f3f.entries.first.entry.col1')}",
+         "rhs": null
+        }
+       ]
+      },
+      "block": [
+       {
+        "number": 15,
+        "provider": "lookup_table",
+        "name": "add_entry",
+        "as": "127fbeba",
+        "title": null,
+        "description": "Add <span class=\"provider\">an entry</span> to <span class=\"provider\">Slack Email_UserID</span> lookup table",
+        "keyword": "action",
+        "dynamicPickListSelection": {
+         "lookup_table_id": "Slack UserName_UserID"
+        },
+        "toggleCfg": {},
+        "input": {
+         "lookup_table_id": "20713",
+         "parameters": {
+          "col1": "#{_('data.foreach.06e3df2c.profile.email')}",
+          "col2": "#{_('data.foreach.06e3df2c.id')}"
+         }
+        },
+        "extended_output_schema": [
+         {
+          "type": "integer",
+          "name": "id",
+          "control_type": "number",
+          "label": "Entry ID",
+          "parse_output": "integer_conversion"
+         },
+         {
+          "type": "object",
+          "name": "entry",
+          "label": "Entry",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Slack Email",
+            "name": "col1",
+            "type": "string",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "Slack Userid",
+            "name": "col2",
+            "type": "string",
+            "sticky": true
+           }
+          ]
+         }
+        ],
+        "extended_input_schema": [
+         {
+          "type": "object",
+          "name": "parameters",
+          "label": "Entry fields",
+          "hint": "Fill the fields for the new entry",
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Slack Email",
+            "name": "col1",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           },
+           {
+            "control_type": "text",
+            "label": "Slack Userid",
+            "name": "col2",
+            "type": "string",
+            "sticky": true,
+            "optional": true
+           }
+          ]
+         }
+        ],
+        "uuid": "d1321bb4-9c76-4a3f-b8f1-964f06494fec"
+       }
+      ],
+      "uuid": "0aa48247-6bdd-4da3-b130-9bd5f4b3f8d5"
+     }
+    ],
+    "source": "#{_('data.slack.639499db.members')}",
+    "uuid": "a45787cb-5013-41ae-a61a-9b7fe1971deb"
+   },
+   {
+    "number": 16,
+    "as": "5f28f11c",
+    "keyword": "foreach",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {},
+    "clear_scope": false,
+    "input": {},
+    "block": [
+     {
+      "number": 17,
+      "provider": "lookup_table",
+      "name": "search_entries",
+      "as": "927af8a8",
+      "title": null,
+      "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">Wrike Username_Email</span> lookup table",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "lookup_table_id": "Wrike Username_Email"
+      },
+      "toggleCfg": {},
+      "input": {
+       "lookup_table_id": "20719",
+       "parameters": {
+        "col1": "=_('data.foreach.5f28f11c.username')"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "entries",
+        "label": "Entries",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Entry ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "id"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Wrike Username",
+            "name": "col1",
+            "type": "string",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "Wrike Email",
+            "name": "col2",
+            "type": "string",
+            "sticky": true
+           }
+          ],
+          "label": "Entry",
+          "type": "object",
+          "name": "entry"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "parameters",
+        "label": "Search by",
+        "hint": "Provide one or more entry fields to search the entry",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Wrike Username",
+          "name": "col1",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Wrike Email",
+          "name": "col2",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         }
+        ]
+       }
+      ],
+      "uuid": "98da4bfe-deb8-4f17-bbb6-c9e374c135e4"
+     },
+     {
+      "number": 18,
+      "provider": "lookup_table",
+      "name": "search_entries",
+      "as": "87513f59",
+      "title": null,
+      "description": "Search <span class=\"provider\">entries</span> in <span class=\"provider\">Slack Email_UserID</span> lookup table",
+      "keyword": "action",
+      "dynamicPickListSelection": {
+       "lookup_table_id": "Slack Email_UserID"
+      },
+      "toggleCfg": {},
+      "input": {
+       "lookup_table_id": "20713",
+       "parameters": {
+        "col1": "#{_('data.lookup_table.927af8a8.entries.first.entry.col2')}"
+       }
+      },
+      "extended_output_schema": [
+       {
+        "type": "array",
+        "name": "entries",
+        "label": "Entries",
+        "of": "object",
+        "properties": [
+         {
+          "control_type": "number",
+          "label": "Entry ID",
+          "parse_output": "integer_conversion",
+          "type": "integer",
+          "name": "id"
+         },
+         {
+          "properties": [
+           {
+            "control_type": "text",
+            "label": "Slack Email",
+            "name": "col1",
+            "type": "string",
+            "sticky": true
+           },
+           {
+            "control_type": "text",
+            "label": "Slack Userid",
+            "name": "col2",
+            "type": "string",
+            "sticky": true
+           }
+          ],
+          "label": "Entry",
+          "type": "object",
+          "name": "entry"
+         }
+        ]
+       }
+      ],
+      "extended_input_schema": [
+       {
+        "type": "object",
+        "name": "parameters",
+        "label": "Search by",
+        "hint": "Provide one or more entry fields to search the entry",
+        "properties": [
+         {
+          "control_type": "text",
+          "label": "Slack Email",
+          "name": "col1",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         },
+         {
+          "control_type": "text",
+          "label": "Slack Userid",
+          "name": "col2",
+          "type": "string",
+          "sticky": true,
+          "optional": true
+         }
+        ]
+       }
+      ],
+      "uuid": "c6a0c75f-8441-4905-b88b-7dd288eb9fa2"
+     },
+     {
+      "number": 19,
+      "provider": "slack_bot",
+      "name": "post_bot_message",
+      "as": "6a99ccd5",
+      "title": null,
+      "description": "Post <span class=\"provider\">message</span> as <span class=\"provider\">Slack Workbot</span>",
+      "keyword": "action",
+      "dynamicPickListSelection": {},
+      "toggleCfg": {
+       "channel": true,
+       "message.color": true
+      },
+      "input": {
+       "channel": "=\"@\"+_('data.lookup_table.87513f59.entries.first.entry.col2')",
+       "message": {
+        "color": "good"
+       },
+       "blocks": [
+        {
+         "block_type": "section_with_text",
+         "section_text": "New Comment in Wrike!"
+        },
+        {
+         "block_type": "section_with_image",
+         "section_text": "#{_('data.wrike.d2188ce5.text')}",
+         "image_url": "https://is2-ssl.mzstatic.com/image/thumb/Purple118/v4/46/7f/16/467f16ef-15b0-91ec-f39a-4b3ace7754cc/source/100x100bb.jpg",
+         "alt_text": "Wrike Logo"
+        },
+        {
+         "block_type": "section_with_fields",
+         "attachment_fields": [
+          {
+           "title": "*Author ID:*",
+           "value": "=\"\\n\"+ _('data.wrike.d2188ce5.authorId') or \"No author ID\""
+          },
+          {
+           "title": "*Comment ID:*",
+           "value": "=\"\\n\"+ _('data.wrike.d2188ce5.id') or \"No comment found\""
+          },
+          {
+           "title": "*Folder ID:*",
+           "value": "=\"\\n\"+ _('data.wrike.d2188ce5.folderId') or \"No folder found\""
+          },
+          {
+           "title": "*Task ID:*",
+           "value": "=\"\\n\"+ _('data.wrike.d2188ce5.taskId') or \"No task found\""
+          }
+         ],
+         "section_text": "---------------------------------"
+        }
+       ]
+      },
+      "visible_config_fields": [
+       "channel",
+       "text",
+       "message",
+       "message.title",
+       "message.title_link",
+       "message.attachment_text",
+       "message.color",
+       "attachment_fields",
+       "attachment_buttons",
+       "attachment_buttons.params",
+       "attachment_pick_list.options.params",
+       "attachment_items.message.title",
+       "attachment_items.message.title_link",
+       "attachment_items.message.attachment_text",
+       "attachment_items.message.color",
+       "attachment_items.attachment_fields",
+       "attachment_items.attachment_buttons",
+       "attachment_items.attachment_buttons.params",
+       "attachment_items.attachment_pick_list.options.params",
+       "advanced.ts",
+       "message.thumb_url",
+       "attachment_items.message.thumb_url"
+      ],
+      "uuid": "147a6a4c-b93a-42f2-90a6-251ddc528797"
+     }
+    ],
+    "source": "#{_('data.workato_list.697ceb27.list_items')}",
+    "comment": "steps 16-19 send a Slack message to every @mentioned user in Wrike",
+    "uuid": "628c4438-89e9-45b5-ad2e-ba44ee9f5638"
+   }
+  ],
+  "comment": "triggers when a person is @mentioned in a comment in Wrike",
+  "uuid": "fbc7da82-52b8-4526-a380-2aedcd463751",
+  "title": null,
+  "description": null,
+  "param": {}
+ }
+}

@@ -1,0 +1,109 @@
+{
+ "id": 576969,
+ "name": "Zendesk new/update Ticket notification",
+ "description": "Send notification message to slack channel for Zendesk `Tickets` with a particular **priority** level\n\nConfigurable during installation process:\n- Slack channel to receive notifications\n- Zendesk `Tickets` **priority** level (Picks up all `Tickets` if specified)",
+ "applications": [
+  "zendesk",
+  "slack"
+ ],
+ "action_applications": [
+  "slack"
+ ],
+ "trigger_application": "zendesk",
+ "business_objects": [
+  "ticket",
+  "message"
+ ],
+ "categories": [
+  "Customer Service",
+  "Collaboration",
+  "Sales Enablement"
+ ],
+ "copy_count": 58,
+ "curated": false,
+ "recipe_type": "regular",
+ "trigger_type": "webhook",
+ "published_at": null,
+ "updated_at": "2020-05-28T01:32:11.626-07:00",
+ "source_url": "https://app.workato.com/recipes/576969?community=us",
+ "steps": [
+  "zendesk.updated_ticket_webhook",
+  "slack.post_message_to_channel"
+ ],
+ "config": [],
+ "code": {
+  "number": 0,
+  "provider": "zendesk",
+  "name": "updated_ticket_webhook",
+  "as": "updated_ticket",
+  "title": null,
+  "description": null,
+  "keyword": "trigger",
+  "dynamicPickListSelection": {},
+  "toggleCfg": {},
+  "input": {},
+  "filter": {
+   "conditions": [
+    {
+     "operand": "equals_to",
+     "lhs": "=_('data.zendesk.updated_ticket.priority').downcase",
+     "rhs": "#{_('data.workato.job_context.parameters.priority_level')}"
+    }
+   ],
+   "operand": "or",
+   "type": "compound"
+  },
+  "extended_output_schema": [
+   {
+    "type": "object",
+    "name": "custom_fields",
+    "label": "Ticket custom fields",
+    "properties": []
+   }
+  ],
+  "parameters_schema": "[\n  {\n    \"label\": \"Slack channel\",\n    \"name\": \"channel\",\n    \"type\": \"string\",\n    \"control_type\": \"text\",\n    \"hint\": \"slack channel to receive notifications from this recipe\"\n  },\n  {\n    \"label\": \"Priority Level\",\n    \"name\": \"priority_level\",\n    \"type\": \"string\",\n    \"control_type\": \"select\",\n    \"hint\": \"Only Tickets with this Priority will be picked up\",\n    \"pick_list\": [\n      [\"All\",\"all\"],\n      [\"Urgent\",\"urgent\"],\n      [\"High\",\"high\"],\n      [\"Normal\",\"normal\"],\n      [\"Low\",\"low\"]\n    ],\n    \"default\": \"all\"\n  }\n]",
+  "param": {},
+  "block": [
+   {
+    "number": 1,
+    "provider": "slack",
+    "name": "post_message_to_channel",
+    "as": "post_message_to_channel",
+    "keyword": "action",
+    "dynamicPickListSelection": {},
+    "toggleCfg": {
+     "channel": false,
+     "color": true
+    },
+    "input": {
+     "color": "warning",
+     "attachment_text": "=\"*Description*: \" + _('data.zendesk.updated_ticket.description') + \"\\n\" +\n\"*Type*: \" + (_('data.zendesk.updated_ticket.type') or \"none\") + \"\\n\" +\n\"*Priority*: \" + (_('data.zendesk.updated_ticket.priority') or \"none\") + \"\\n\" +\n\"*Status*: \" + _('data.zendesk.updated_ticket.status') + \"\\n\" +\n\"*Requester*: \" + (_('data.zendesk.updated_ticket.get_user_by_id(requester_id>id).name') or \"none\")",
+     "text": "New urgent ticket!",
+     "title": "<#{_('data.zendesk.updated_ticket.url')}|#{_('data.zendesk.updated_ticket.subject')}>",
+     "channel": "='#' + _('data.workato.job_context.parameters.channel').gsub('#','')",
+     "parse": "true"
+    },
+    "visible_config_fields": [
+     "channel",
+     "text",
+     "title",
+     "title_link",
+     "attachment_text",
+     "color",
+     "parse",
+     "thread_ts",
+     "username",
+     "icon_url"
+    ],
+    "uuid": "6f6efb85-009b-4866-9c9b-de2235619d09",
+    "title": null,
+    "description": null
+   }
+  ],
+  "comment": "Only process tickets with specified priority",
+  "uuid": "93b9b370-3c82-4be2-8c6f-334abc35c865",
+  "collapsed_conditions": [
+   "72a98fe6-b032-49bf-a6c2-b41f64713064"
+  ]
+ }
+}
