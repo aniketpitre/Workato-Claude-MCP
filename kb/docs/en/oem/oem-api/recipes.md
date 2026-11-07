@@ -1,0 +1,1147 @@
+---
+url: 'https://docs.workato.com/en/oem/oem-api/recipes.md'
+description: >-
+  Reference for Embedded API endpoints to list, create, update, copy, delete,
+  start, stop, and version recipes in customer workspaces.
+---
+
+# Embedded API - Recipes
+
+Use these resources to programmatically manage customer recipes.
+
+## Rate limits
+
+Recipe resources have the following rate limits:
+
+| Type | Resource | Quota |
+| --- | --- | --- |
+| POST | Force an on-demand run of a recipe: [/api/managed\_users/:managed\_user\_id /recipes/:recipe\_id/force\_run](/en/oem/oem-api/recipes.html#force-run-a-recipe) | 1 request per second |
+| GET | List recipes in a customer workspace: [/api/managed\_users/:id/recipes](/en/oem/oem-api/recipes.html#list-recipes-in-a-customer-account) | 2,000 requests per minute |
+| GET | Get recipe in a customer workspace: [/api/managed\_users/:id/recipes /:recipe\_id](/en/oem/oem-api/recipes.html#get-recipe-in-a-customer-account) | 2,000 requests per minute |
+| All | All [Recipe versions](/en/oem/oem-api/recipes.html#get-recipe-versions-in-a-customer-workspace) endpoints | 60 requests per minute |
+| All | All other [Recipes](/en/oem/oem-api/recipes.html) endpoints | 1,000 requests per minute |
+
+### Quick reference
+
+| Type | Resource | Description |
+| --- | --- | --- |
+| GET | [/api/managed\_users/:managed\_user\_id/recipes](#list-recipes-in-a-customer-account) | List recipes belonging to a customer. |
+| GET | [/api/managed\_users/:managed\_user\_id/recipes/job\_counts](#get-recipe-job-counts-in-a-customer-workspace) | Get job counts for one or more recipes belonging to a customer. |
+| GET | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id](#get-recipe-in-a-customer-account) | Get details of a recipe belonging to a customer. |
+| POST | [/api/managed\_users/:managed\_user\_id/recipes](#create-a-recipe) | Create a recipe in a customer workspace. |
+| PUT | [/api/managed\_users/:id/recipes/:recipe\_id](#update-a-recipe) | Update a recipe in a customer workspace. |
+| POST | [/api/managed\_users/:id/recipes/:recipe\_id/copy](#copy-recipe-in-a-customer-account) | Copy a recipe in a customer workspace. |
+| DELETE | [/api/managed\_users/:id/recipes/:recipe\_id](#delete-recipe-in-a-customer-account) | Delete a recipe in a customer workspace. |
+| PUT | [/api/managed\_users/:id/recipes/:recipe\_id/start](#start-recipe-in-a-customer-account) | Start a recipe in a customer workspace. |
+| PUT | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/stop](#stop-recipe-in-a-customer-account) | Stop a recipe in a customer workspace. |
+| POST | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/reset\_trigger](#reset-recipe-trigger) | Reset recipe trigger. |
+| POST | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/poll\_now](#start-poll-now-recipe) | Start a poll-now recipe. |
+| POST | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/force\_run](#force-run-a-recipe) | Force a recipe to run on demand in a customer workspace. |
+| GET | [/api/v2/managed\_users/:managed\_user\_id/recipes/:recipe\_id/versions](/en/oem/oem-api/recipes#get-recipe-versions-in-a-customer-workspace) | Get versions of a recipe belonging to a customer. |
+| GET | [/api/v2/managed\_users/:managed\_user\_id/recipes/:recipe\_id/versions/:id](/en/oem/oem-api/recipes#get-a-specific-recipe-version-in-a-customer-workspace) | Get details of a recipe version belonging to a customer. |
+| PATCH/PUT | [/api/v2/managed\_users/:managed\_user\_id/recipes/:recipe\_id/versions/:id](/en/oem/oem-api/recipes#update-a-recipe-version-comment-in-a-customer-workspace) | Update a recipe version comment in a customer workspace. |
+
+## List recipes in a customer workspace
+
+Returns a list of recipes belonging to the authenticated user. Recipes are returned in descending ID order. Lifetime task count has task data starting from March 19, 2021.
+
+Recipes can be filtered by state (running/stopped) and subsequently filtered by stopped date and reason.
+
+<api-code no-copy-method>
+
+```
+GET https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` and be URL encoded. For example, `EA2300`. |
+
+### Query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| adapter\_names\_all | **string** _optional_ | List of adapter names, separated by commas. Resulting recipes should use all of given adapters. |
+| adapter\_names\_any | **string** _optional_ | List of adapter names, separated by commas. Resulting recipes should use at least one of the given adapters. |
+| folder\_id | **string** _optional_ | Return the recipes in the specified folder. |
+| with\_subfolders | **boolean** _optional_ | If `true`, includes recipes from subfolders of the folder specified by `folder_id`. The default is `false`. |
+| page | **integer** _optional_ | Page number (defaults to 1). |
+| per\_page | **integer** _optional_ | Specifies the number of recipes to include per page. Defaults to 100. The maximum value is 100. |
+| running | **boolean** _optional_ | If `true`, returns running recipes. |
+| since\_id | **integer** _optional_ | Use this parameter to retrieve recipes with IDs lower than the ID you provided in the request. For example, if `since_id=15500`, Workato returns all recipes in the customer workspace with IDs lower than `15500` (`0`\-`14999`). |
+| stopped\_after | **string** _optional_ | Filter out recipes that were stopped after the date and time you specify. The date and time must be provided in ISO 8601 format according to the following pattern: `YYYY-MM-DDTHH:MM:SSZ`. |
+| stop\_cause | **string** _optional_ | Reason that the recipe stopped. Possible reasons include — `trigger_errors_limit`: Recipe was stopped due to consecutive trigger errors `action_quota_limit`: Customer exceeded plan's task quota `trial_expired`: Customer's trial expired `txn_quota_limit`: Customer exceeded plan's job quota |
+| updated\_after | **string** _optional_ | Filter the list of recipes to include only those updated after the date and time you specify. The date and time must be provided in ISO 8601 format according to the following pattern: `YYYY-MM-DDTHH:MM:SSZ`. |
+| includes\[\] | **array of strings** _optional_ | Specifies additional fields to include in the response. Accepts `tags` as a value. If `tags` is supplied in the request, the response includes a `tags` field for each recipe. This field contains an array of zero or more tag handles (strings). |
+| project\_id | **string** _optional_ | The ID of a specific project. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X GET 'https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes?folder_id=:folder_id&with_subfolders=:true_or_false&includes[]=tags' \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+    "result": [
+        {
+            "id": 66876978,
+            "user_id": 6471278,
+            "name": "Sync new contacts from HubSpot to Mailchimp",
+            "created_at": "2025-10-15T13:41:05.207-07:00",
+            "updated_at": "2025-10-15T13:41:05.207-07:00",
+            "copy_count": 1,
+            "trigger_application": "hubspot",
+            "action_applications": [
+                "mailchimp"
+            ],
+            "applications": [
+                "hubspot",
+                "mailchimp"
+            ],
+            "description": "When a new contact is created in HubSpot, add them to the newsletter list in Mailchimp.",
+            "project_id": 13595198,
+            "parameters_schema": [],
+            "parameters": {},
+            "webhook_url": null,
+            "folder_id": 27180381,
+            "running": false,
+            "job_succeeded_count": 0,
+            "job_failed_count": 0,
+            "lifetime_task_count": 0,
+            "last_run_at": null,
+            "stopped_at": null,
+            "version_no": 1,
+            "stop_cause": null,
+            "config": [
+                {
+                    "keyword": "application",
+                    "name": "hubspot",
+                    "provider": "hubspot",
+                    "account_id": 18253670,
+                    "skip_validation": false
+                },
+                {
+                    "keyword": "application",
+                    "name": "mailchimp",
+                    "provider": "mailchimp",
+                    "account_id": 18253671,
+                    "skip_validation": false
+                }
+            ],
+            "trigger_closure": null,
+            "code": "...truncated...",
+            "author_name": "Sales",
+            "version_author_name": "Alex",
+            "version_author_email": "alex@workato.com",
+            "version_comment": null,
+            "tags": [
+                "tag-Abx8kS7h-Rq6MtK-CD"
+            ]
+        },
+        {
+            "id": 66870000,
+            "user_id": 6471278,
+            "name": "Post Slack notifications when new leads are created in Salesforce",
+            "created_at": "2025-10-15T10:47:45.142-07:00",
+            "updated_at": "2025-10-15T10:57:36.857-07:00",
+            "copy_count": 1,
+            "trigger_application": "salesforce",
+            "action_applications": [
+                "slack"
+            ],
+            "applications": [
+                "salesforce",
+                "slack"
+            ],
+            "description": "1. New lead is created in Salesforce.\n2. Workato posts a message in Slack with the lead details.",
+            "project_id": 13595198,
+            "parameters_schema": [],
+            "parameters": {},
+            "webhook_url": null,
+            "folder_id": 27180380,
+            "running": false,
+            "job_succeeded_count": 1,
+            "job_failed_count": 0,
+            "lifetime_task_count": 3,
+            "last_run_at": "2025-10-15T10:51:29.528-07:00",
+            "last_job_started_at": "2025-10-15T10:50:00.000-07:00",
+            "stopped_at": "2025-10-15T10:54:29.298-07:00",
+            "version_no": 6,
+            "stop_cause": null,
+            "config": [
+                {
+                    "keyword": "application",
+                    "name": "salesforce",
+                    "provider": "salesforce",
+                    "account_id": 18253669,
+                    "skip_validation": false
+                },
+                {
+                    "keyword": "application",
+                    "name": "slack",
+                    "provider": "slack",
+                    "account_id": 18253665,
+                    "skip_validation": false
+                }
+            ],
+            "trigger_closure": null,
+            "code": "...truncated...",
+            "author_name": "Sales",
+            "version_author_name": "Alex",
+            "version_author_email": "alex@workato.com",
+            "version_comment": null,
+            "tags": [
+                "tag-Abx8kN3x-Dv9HsJ-CD",
+                "tag-Abx8kS4d-Gp2YvB-CD"
+            ]
+        }
+    ],
+    "count": 2,
+    "page": 1,
+    "per_page": 100
+}
+```
+
+  
+
+> **RESPONSE FIELDS**
+> 
+> The `last_run_at` field returns the timestamp when the recipe most recently started. The `last_job_started_at` field returns the timestamp when the most recent job for the recipe started. The `stopped_at` field returns the timestamp when the recipe most recently stopped.
+> 
+> These fields show when the recipe or its most recent job started or stopped. They don't include timestamps for earlier jobs.
+> 
+> The `code` field returns a JSON string describing the configuration of each recipe step. You can use `code` as an input for the [Create recipe](#create-a-recipe) and [Update recipe](#update-a-recipe) endpoints.
+
+## Get recipe job counts in a customer workspace
+
+Returns job success and failure counts for one or more recipes belonging to a customer. Statistics cover the most recent 90 days. Recipes that don't have jobs in the 90-day time period are excluded from the response.
+
+<api-code no-copy-method>
+
+```
+GET https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/job_counts
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | The Embedded customer ID or external ID. External IDs must be URL encoded and prefixed with an `E`, for example: `EA2300`. |
+
+### Query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| recipe\_ids\[\] | **array of integers** _required_ | Recipe IDs to retrieve job counts for. You can specify multiple recipe IDs, but the request URL can't exceed 10,240 characters. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X GET 'https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/job_counts?recipe_ids[]=56652213&recipe_ids[]=56652186' \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "result": {
+    "items": [
+      {
+        "recipe_id": 56652213,
+        "job_succeeded_count": 3084,
+        "job_failed_count": 12
+      },
+      {
+        "recipe_id": 56652186,
+        "job_succeeded_count": 246,
+        "job_failed_count": 0
+      }
+    ]
+  }
+}
+```
+
+## Get recipe in a customer workspace
+
+Returns details of a specified recipe.
+
+<api-code no-copy-method>
+
+```
+GET https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **integer** _required_ | Recipe ID. |
+
+### Query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| includes\[\] | **array of strings** _optional_ | Specifies additional fields to include in the response. Accepts `tags` as a value. If `tags` is supplied in the request, the response includes a `tags` field for the recipe. This field contains an array of zero or more tag handles (strings). |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X GET https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id?includes[]=tags&active=:true_or_false \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+    "result": [
+      {
+          "id": 281302,
+          "user_id": 4848,
+          "name": "New webhook call will get JIRA ticket information",
+          "created_at": "2016-08-03T11:06:23.950-07:00",
+          "updated_at": "2021-11-29T23:31:58.735-08:00",
+          "copy_count": 3,
+          "trigger_application": "workato_webhooks",
+          "action_applications": [
+              "jira"
+          ],
+          "applications": [
+              "workato_webhooks",
+              "jira"
+          ],
+          "description": "New webhook call will get JIRA ticket information",
+          "parameters_schema": [],
+          "parameters": {},
+          "folder_id": 4724,
+          "running": false,
+          "job_succeeded_count": 0,
+          "job_failed_count": 0,
+          "lifetime_task_count": 0,
+          "last_run_at": "2016-08-03T11:06:51.481-07:00",
+          "last_job_started_at": "2016-08-03T11:06:45.000-07:00",
+          "stopped_at": "2016-08-03T11:22:57.285-07:00",
+          "webhook_url": "https://www.workato.com/webhooks/rest/51b6a38f-0102-494d-8290-9d550aeeab3c/webhook_recipe",
+          "stop_cause": null,
+          "config": [
+              {
+                  "name": "jira",
+                  "provider": "jira",
+                  "keyword": "application",
+                  "skip_validation": false,
+                  "account_id": null
+              },
+              {
+                  "keyword": "application",
+                  "name": "workato_webhooks",
+                  "provider": "workato_webhooks",
+                  "skip_validation": false,
+                  "account_id": null
+              }
+          ],
+          "trigger_closure": null,
+          "code": "...truncated...",
+          "version_no": 2,
+          "version_author_name": "Jennifer Diaz",
+          "version_author_email": "jennifer.diaz@example.com",
+          "version_comment": "Refactored webhook logic to improve error handling and added support for custom JIRA fields",
+          "author_name": "Kevin Smith",
+          "tags": [
+                "tag-Abx8kN3x-Dv9HsJ-CD",
+                "tag-Abx8kS4d-Gp2YvB-CD"
+            ]
+      }
+    ]
+}
+```
+
+  
+
+> **RESPONSE FIELDS**
+> 
+> The `last_run_at` field returns the timestamp when the recipe most recently started. The `last_job_started_at` field returns the timestamp when the most recent job for the recipe started. The `stopped_at` field returns the timestamp when the recipe most recently stopped.
+> 
+> These fields show when the recipe or its most recent job started or stopped. They don't include timestamps for earlier jobs.
+> 
+> The `code` field returns a JSON string describing the configuration of each recipe step. You can use `code` as an input for the [Create recipe](#create-a-recipe) and [Update recipe](#update-a-recipe) endpoints.
+
+## Create recipe in a customer workspace
+
+Creates a recipe in Workato based on parameters in the request.
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+
+### Payload
+
+| Name | Type | Description |
+| --- | --- | --- |
+| recipe | **object** _required_ | The recipe object. |
+| recipe\[name\] | **string** _optional_ | Name of the recipe. |
+| recipe\[code\] | **string** _required_ | JSON string representing the recipe lines. You can retrieve the `code` for an existing recipe using the [Get recipe in a customer workspace](#get-recipe-in-a-customer-account) or [List recipes in a customer workspace](#list-recipes-in-a-customer-account) endpoint. |
+| recipe\[config\] | **string** _optional_ | JSON string representing the connection lines. |
+| recipe\[folder\_id\] | **string** _required_ | Folder for the recipe |
+| recipe\[description\] | **string** _optional_ | Description of the recipe. |
+|  |  |  |
+
+> **FOLDER\_ID REQUIRED STARTING MAY 7, 2026**
+> 
+> Starting **May 7, 2026**, the `folder_id` parameter is required on this endpoint. The value must reference a project or folder other than the **Home assets** folder. Requests that omit `folder_id` or target the **Home assets** folder will return an error.
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes \
+      -H 'Authorization: Bearer <api_token>' \
+      -H 'Content-Type: application/json' \
+      -d  '{
+             "recipe": {
+               "name": ":name",
+               "code": ":code",
+               "config": ":config",
+               "folder_id": ":folder_id"
+             }
+          }'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "success": true,
+  "id": 11613
+}
+```
+
+## Update recipe in a customer workspace
+
+Updates an existing recipe in Workato specified based on recipe ID. Recipe details are defined based on parameters in the request.
+
+<api-code no-copy-method>
+
+```
+PUT https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an`E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **integer** _required_ | Recipe ID. |
+
+### Payload
+
+| Name | Type | Description |
+| --- | --- | --- |
+| recipe | **object** _optional_ | The recipe object. |
+| recipe\[name\] | **string** _optional_ | Name of the recipe. |
+| recipe\[code\] | **string** _optional_ | JSON string representing the recipe lines. You can retrieve the `code` for an existing recipe using the [Get recipe in a customer workspace](#get-recipe-in-a-customer-account) or [List recipes in a customer workspace](#list-recipes-in-a-customer-account) endpoint. |
+| recipe\[config\] | **string** _optional_ | JSON string representing the connection lines. |
+| recipe\[folder\_id\] | **string** _optional_ | Folder for the recipe |
+| recipe\[description\] | **string** _optional_ | Description of the recipe. |
+|  |  |  |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X PUT 'https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id' \
+      -H 'Authorization: Bearer <api_token>' \
+      -H 'Content-Type: application/json' \
+      -d  '{
+            "recipe": {
+              "name": ":name",
+              "code": ":code",
+              "config": ":config",
+              "folder_id": ":folder_id"
+             }
+          }'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+> **You cannot update a running recipe**
+> 
+> Any update call to a running recipe will return an error.
+
+## Copy recipe in a customer workspace
+
+Copies an existing recipe in Workato based on its recipe ID.
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/copy
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an `E` (for example, `EA2300`). |
+| recipe\_id | **integer** _required_ | Recipe ID. |
+
+### Payload
+
+| Name | Type | Description |
+| --- | --- | --- |
+| folder\_id | **string** _required_ | ID of the folder you plan to copy the recipe to. |
+
+> **FOLDER\_ID REQUIRED STARTING MAY 7, 2026**
+> 
+> Starting **May 7, 2026**, the `folder_id` parameter is required on this endpoint. The value must reference a project or folder other than the **Home assets** folder. Requests that omit `folder_id` or target the **Home assets** folder will return an error.
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X POST 'https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/copy' \
+      -H 'Authorization: Bearer <api_token>' \
+      -H 'Content-Type: application/json' \
+      -d '{"folder_id": ":folder_id"}'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "success": true,
+  "new_flow_id": 345678
+}
+```
+
+## Delete recipe in a customer workspace
+
+Deletes an existing recipe in Workato specified based on recipe ID.
+
+<api-code no-copy-method>
+
+```
+DELETE https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **integer** _required_ | Recipe ID. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X DELETE 'https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id' \
+      -H 'Authorization: Bearer <api_token>' \
+      -H 'Content-Type: application/json'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+## Start recipe in a customer workspace
+
+Starts a recipe in a customer workspace specified by recipe ID.
+
+<api-code no-copy-method>
+
+```
+PUT https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/start
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **integer** _required_ | The ID of the recipe you plan to start. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X PUT https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/start \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+If the request is successful, the API returns:
+
+```json
+{
+  "success": true
+}
+```
+
+If the recipe can't be started due to errors, the API responds with `"success": false` and includes details in the `code_errors` or `config_errors` arrays:
+
+- `code_errors`: Issues found in the recipe logic, such as missing required fields or invalid attribute values.
+- `config_errors`: Issues in the recipe setup, such as missing or deleted connections.
+
+For example, the following recipe can't be started due to missing required fields (`code_errors`) and an unestablished connection (`config_errors`):
+
+```json
+{
+    "success": false,
+    "code_errors": [
+        [
+            1,
+            [
+                [
+                    "Hire Date",
+                    null,
+                    "can't be blank",
+                    "jobOffer_offerTerms_expectedStartDate"
+                ],
+                [
+                    "Last Name",
+                    null,
+                    "can't be blank",
+                    "applicant_person_legalName_familyName1"
+                ]
+            ]
+        ]
+    ],
+    "config_errors": [
+        [
+            1,
+            [
+                [
+                    "account_id",
+                    null,
+                    "can't be blank"
+                ]
+            ]
+        ]
+    ]
+}
+```
+
+## Stop recipe in a customer workspace
+
+Stops a recipe in a customer workspace specified by recipe ID.
+
+<api-code no-copy-method>
+
+```
+PUT https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/stop
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **integer** _required_ | The ID of the recipe you plan to stop. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X PUT https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/stop \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+## Reset recipe trigger
+
+Reset recipe trigger cursor by recipe ID for a customer. Use this endpoint to re-sync data from the source application. The recipe should be designed to handle duplicate records because a re-sync processes every record again. Using this endpoint outside data orchestration scenarios may result in unintended behaviors, including data loss or corruption. Resetting a recipe trigger retains job history and records an event in the recipe's Activity audit log.
+
+If the trigger is reset on an active recipe, running, deferred, and pending jobs run and complete before proceeding to the new jobs created by the reset trigger.
+
+> **Trigger compatibility**
+> 
+> This endpoint is only compatible with polling and scheduled triggers. Resetting other triggers may have no effect, or cause unintended behaviors. These triggers include:
+> 
+> - New CSV file in folder triggers
+> - Function triggers
+> - API triggers
+> - RecipeOps triggers
+> - Workbot triggers
+> - Kafka triggers
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/reset_trigger
+```
+
+</api-code>
+
+### Path parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **integer** _required_ | ID of the recipe to reset. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/reset_trigger \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+    "success": true
+}
+```
+
+## Start a poll-now recipe
+
+Start a poll-now recipe in real-time by providing the recipe ID.
+
+Use the [jobs APIs](/en/workato-api/jobs) to check the status of a particular recipe.
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/poll_now
+```
+
+</api-code>
+
+### Path parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| recipe\_id | **integer** _required_ | The ID of the recipe you plan to start. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/poll_now \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+- [Job started](#job-started)
+- [Job already in progress](#job-in-progress)
+- [Error codes](#error-codes)
+
+#### Job started
+
+```json
+{
+    "success": true
+}
+```
+
+#### Job already in progress
+
+```json
+{
+    "message": "Recipe is currently in trigger back off mode till 2023-06-23T23:02" }
+}
+```
+
+#### Error codes
+
+| Name | Description | Sample reply |
+| --- | --- | --- |
+| 404 | Not found | `{"success": false, "message": "Not Found"}` |
+| 429 | Too many requests. A [Retry-After header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After) specifies how long to wait before making a new request. | `{"message": "Recipe is currently in trigger back off mode till 2023-06-23T11:02"}`, or `{"message": "Not enough transaction credit"},` or `{"message": "Not enough action quota"}` |
+| 400 | Bad request | `{"message":"Trial has expired"}` |
+
+## Force an on-demand run of a recipe
+
+Manually triggers an on-demand job for a recipe in a customer workspace, independent of its normal schedule. The recipe's schedule isn't affected. This call adds a one-time job without rescheduling the recipe's future runs.
+
+This endpoint only supports recipes that are running and use the [New recurring event trigger](/en/features/scheduler/triggers/new-recurring-event) from the [Scheduler by Workato](/en/features/scheduler) connector. Calling this endpoint on a stopped recipe, or on a recipe using a different trigger, returns a `422` error.
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/force_run
+```
+
+</api-code>
+
+### Path parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External IDs must be URL encoded and prefixed with an `E`, for example: `EA2300`. |
+| recipe\_id | **string** _required_ | ID of the recipe to run. |
+
+#### Sample request
+
+<api-code>
+
+```shell
+curl  -X POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/force_run \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+- [Job enqueued](#force-run-job-enqueued)
+- [Error codes](#force-run-error-codes)
+
+#### Job enqueued
+
+```json
+{
+    "success": true,
+    "job_handles": [
+        "j-AagAcc43-6otazC-CD"
+    ]
+}
+```
+
+`job_handles` contains the handle of the on-demand job.
+
+#### Error codes
+
+| Code | Description | Sample reply |
+| --- | --- | --- |
+| 404 | Not found. The recipe doesn't exist. | `{"message": "Not found"}` |
+| 422 | Unprocessable entity. The recipe isn't running. | `{"message": "Recipe is not running. Start the recipe before triggering an on-demand run."}` |
+| 422 | Unprocessable entity. The recipe's trigger isn't the **New recurring event** trigger. | `{"message": "On-demand runs are only supported for recipes with the Workato Scheduler trigger."}` |
+| 429 | Too many requests. The workspace's quota is exceeded, or the [rate limit](#rate-limits) is exceeded. A [Retry-After header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After) specifies how long to wait before making a new request. | `{"message": "Too many requests"}` |
+
+## Get recipe versions in a customer workspace
+
+Retrieve detailed information about all versions of a specified recipe in a customer workspace.
+
+<api-code no-copy-method>
+
+```
+GET https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/recipes/:recipe_id/versions
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **string** _required_ | The ID of the recipe for which you plan to retrieve version details. |
+
+### Query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| page | **integer** _optional_ | Page number. Defaults to 1. |
+| per\_page | **integer** _optional_ | Page size. Defaults to 100. The maximum is 100. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl  -X GET 'https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/recipes/:recipe_id/versions' \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+    "data": [
+        {
+            "id": 397103,
+            "comment": "Updated the recipe to include new Slack channels for onboarding new employees based on their roles",
+            "version_no": 2,
+            "author_name": "Alex",
+            "author_email": "alex@example.com",
+            "created_at": "2024-08-03T11:06:23.950-07:00",
+            "updated_at": "2024-08-04T23:31:58.735-07:00"
+        },
+        {
+            "id": 392814,
+            "comment": "Initial setup of Slack channels for onboarding new employees, including creating channels based on department and role",
+            "version_no": 1,
+            "author_name": "Alex",
+            "author_email": "alex@example.com",
+            "created_at": "2024-08-03T11:06:23.950-07:00",
+            "updated_at": "2024-08-03T11:06:23.950-07:00"
+        }
+    ]
+}
+```
+
+## Get a specific recipe version in a customer workspace
+
+Retrieve detailed information about a specific recipe version in a customer workspace.
+
+<api-code no-copy-method>
+
+```
+GET https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/recipes/:recipe_id/versions/:id
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **string** _required_ | The ID of the recipe for which you plan to retrieve version details. |
+| id | **string** _required_ | The ID of the recipe version for which you plan to retrieve details. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl  -X GET 'https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/recipes/:recipe_id/versions/:id' \
+      -H 'Authorization: Bearer <api_token>'
+```
+
+</api-code>
+
+### Responses
+
+200 OK
+
+If successful, the API returns a `200 OK` status and a JSON response with the recipe version details:
+
+```json
+{
+    "data": [
+        {
+            "id": 397103,
+            "comment": "Updated the recipe to include new Slack channels for onboarding new employees based on their roles",
+            "version_no": 2,
+            "author_name": "Alex",
+            "author_email": "alex@example.com",
+            "created_at": "2024-08-04T23:31:58.735-07:00",
+            "updated_at": "2024-08-04T23:31:58.735-07:00"
+        }
+    ]
+}
+```
+
+404 NOT FOUND
+
+The API returns a `404 Not Found` error when you provide a non-existent or mismatched value, such as an incorrect recipe ID or version ID.
+
+```json
+{
+    "message": "Not found"
+}
+```
+
+## Update a recipe version comment in a customer workspace
+
+Updates the comment on a specific recipe version in a customer workspace. This endpoint modifies only the comment associated with the version, not the version itself.
+
+<api-code no-copy-method>
+
+```
+PATCH https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/recipes/:recipe_id/versions/:id
+```
+
+</api-code>
+
+<api-code no-copy-method>
+
+```
+PUT https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/recipes/:recipe_id/versions/:id
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. External ID must be prefixed with an `E` (for example, `EA2300`) and the resulting ID should be URL encoded. |
+| recipe\_id | **string** _required_ | The ID of the recipe for which you plan to retrieve version details. |
+| id | **string** _required_ | The ID of the recipe version for which you plan to update the comment. |
+
+### Payload
+
+| Name | Type | Description |
+| --- | --- | --- |
+| comment | **string** _required_ | The new comment for the recipe version. Must be 255 characters or fewer. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl  -X PATCH 'https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/recipes/:recipe_id/versions/:id' \
+      -H 'Authorization: Bearer <api_token>' \
+      -H 'Content-Type: application/json' \
+      -d  '{
+                "comment": ":comment"
+           }'
+```
+
+</api-code>
+
+### Responses
+
+200 OK
+
+If successful, the API returns a `200 OK` status and a JSON response with the updated recipe version details:
+
+```json
+{
+    "data": [
+        {
+            "id": 397103,
+            "comment": "Refined the Slack channel setup for onboarding to ensure channels are created accurately based on employee roles and departments",
+            "version_no": 2,
+            "author_name": "Alex",
+            "author_email": "alex@example.com",
+            "created_at": "2024-08-04T23:31:58.735-07:00",
+            "updated_at": "2024-08-07T23:31:58.735-07:00"
+        }
+    ]
+}
+```
+
+404 NOT FOUND
+
+The API returns a `404 Not Found` error when you provide a non-existent or mismatched value, such as an incorrect recipe ID or version ID:
+
+```json
+{
+    "message": "Not found"
+}
+```
+
+422 UNPROCESSABLE ENTITY
+
+The API returns a `422 Unprocessable Entity` error in the following scenarios:
+
+#### Comment exceeds 255 characters
+
+This error occurs when the recipe version comment exceeds 255 characters:
+
+```json
+{
+  "errors": [
+        {
+            "code": "validation_error",
+            "title": "Comment is too long (maximum is 255 characters)",
+            "detail": null
+        }
+    ]
+}
+```
+
+#### Missing comment
+
+This error occurs when the recipe version comment is missing from the request payload:
+
+```json
+{
+  "errors": [
+        {
+            "code": "validation_error",
+            "title": "Missing parameter comment",
+            "detail": null
+        }
+    ]
+}
+```
+
+---

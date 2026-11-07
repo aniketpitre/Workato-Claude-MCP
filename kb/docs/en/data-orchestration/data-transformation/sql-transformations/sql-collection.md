@@ -1,0 +1,173 @@
+---
+url: >-
+  https://docs.workato.com/en/data-orchestration/data-transformation/sql-transformations/sql-collection.md
+description: >-
+  Use SQL Collection by Workato to create temporary tables and run SQL queries
+  that manipulate and synchronize data across multiple systems.
+---
+
+# SQL Collection
+
+SQL Collection by Workato is a robust native application that provides you with the tools to manipulate table data. You can use SQL Collection to synchronize related data across multiple systems, such as databases, web services, and more.
+
+![SQL Collection by Workato](/assets/query-list-in-collection-export.4NYfkeYG.png)_SQL Collection by Workato_
+
+## Why use SQL Collection
+
+SQL Collection allows you to run SQL statements with data from multiple sources. You can create temporary tables from a list input or CSV file. Subsequently, you can perform a variety of SQL queries to arrive at the required output for your use case.
+
+SQL Collection tables (also called **SQL Collection lists**) are temporary. This means they exist only for the duration of the job and do not persist across multiple jobs. Load the data directly to your target system after you complete data processing.
+
+## SQL Collection quotas
+
+SQL Collection has the following quota:
+
+| Description | Quota |
+| --- | --- |
+| Recommended maximum number of records | 50,000 |
+
+### Transformation
+
+SQL Collection is built on SQL lite and functions like any database. You can create lists and query them using standard SQL syntax. Use common SQL keywords like `WHERE`, `GROUP BY`, and `JOIN` to manipulate data from tables into your planned format.
+
+Subsequently, load them directly into your target system with the SQL Collection output or export the data as a CSV file.
+
+### Handle large datasets with SQL Collection
+
+SQL Collection supports large datasets, but performance depends on the structure of your data, including row size and column count. We recommend that you use datasets that don't exceed **50,000 records** per SQL Collection list to ensure reliable performance.
+
+SQL Collection can handle larger datasets, such as 100,000 to 200,000 records, if the rows are small and have fewer columns. Datasets that exceed the recommended quotas may impact performance or stability. Split tables into smaller chunks or use parallel recipes to process larger datasets efficiently.
+
+SQL Collection integrates seamlessly with Workato, allowing you to load and process data directly without third-party tools.
+
+## Connection setup
+
+No connection setup is required. Simply select **App** > **SQL Collection by Workato** to get started.
+
+## Actions
+
+### Create list in SQL Collection action
+
+This action creates a SQL Collection list in the recipe from a list input. The SQL Collection list contains the column headers according to the schema of the list.
+
+Note that the **List source** field must be in [formula mode](/en/formulas/formula-mode) when you add a list datapill.
+
+For example, you can take a list of all workers from **Workday**.
+
+![Create list in SQL Collection](/assets/create-list-in-collection.WjQjW1Oj.png)_Create list in SQL Collection_
+
+| Input field | Description |
+| --- | --- |
+| List source | Select a list `datapill`. **Ensure that this field is in formula mode.** |
+| List name | The name of the list. |
+| Index primary | Select one or more columns as the primary index of your list. |
+| Index secondary | Select one or more columns as the secondary index of your list. |
+
+> **COLLECTION DATE ERROR**
+> 
+> You may receive an invalid format error for the `Date` field when using **SQL Collection**. This error occurs because SQLite does not provide a storage class for dates and times. To correct this error, you must use [Mapper by Workato](/en/connectors/mapper#mapper-by-workato) to do one of the following:
+> 
+> - Update the date to the following format: `YYYY-MM-DD HH:MM:SS.SSS`
+> - Skip the date fields if the date is not required in downstream applications
+
+> **COLLECTION BOOLEAN VALUES**
+> 
+> SQL Collection stores `Boolean` field values as the text values `t` (true) and `f` (false), not as native booleans. A `WHERE` clause that compares a boolean column to `true` or `false` (for example, `WHERE is_active = true`) matches no rows, because the column holds the string `t` or `f` rather than a boolean literal. Compare boolean columns to the string values instead: `WHERE is_active = 't'` or `WHERE is_active = 'f'`.
+
+### Insert rows in SQL Collection action
+
+This action inserts rows into a SQL Collection list in the recipe from a list input. The SQL Collection list contains the column headers according to the schema of the list. You can use this in a repeat loop.
+
+![Insert rows into list in SQL Collection](/assets/insert-rows-into-collection.Ca3PsK5a.png)_Insert rows into SQL Collection_
+
+| Input field | Description |
+| --- | --- |
+| List source | Select a list `datapill`. Ensure that this field is in formula mode. |
+| List name | The name of the list. |
+| Create table if table doesn't exist? | Creates a table if table does not exist. |
+| Index primary | Select one or more columns as the primary index of your list. |
+| Index secondary | Select one or more columns as the secondary index of your list. |
+
+### Create list in SQL Collection from CSV
+
+This action creates a SQL Collection list from a CSV input. The newly-created list contains the column headers according to the schema of the CSV string.
+
+For example, if you plan to retrieve files from your **on-prem** systems, you can download a CSV file and use it directly with SQL Collection.
+
+![Create list in SQL Collection from CSV](/assets/create-list-in-collection-from-csv.BKt32Skk.png)_Create list in SQL Collection from CSV_
+
+| Input field | Description |
+| --- | --- |
+| CSV source | Select a CSV string as source input. |
+| List name | The name of the list. |
+| File encoded type | Select the file encoded type. The default value is UTF-8. |
+| Column names | The column headers in your CSV source input. Select **use a sample CSV file** to define your schema with a CSV file. |
+| Ignore CSV header row | Select `Yes` if the CSV source has a header row, otherwise select `No`. |
+| Column delimiter | Select the character used to separate value in each line of the CSV. |
+| Index primary | Select one or more columns as the primary index of your list. |
+| Index secondary | Select one or more columns as the secondary index of your list. |
+
+### Insert rows in SQL Collection from CSV file action
+
+This action inserts rows into a SQL Collection list in the recipe from a CSV file. It will contain the column headers according to the schema of the CSV string.
+
+![Insert rows into list in SQL Collection from CSV file](/assets/insert-rows-into-collection-from-csv.Ybbs7zX-.png)_Insert rows into SQL Collection from CSV file_
+
+| Input field | Description |
+| --- | --- |
+| CSV source | Select a CSV string as source input. |
+| List name | The name of the list. |
+| File encoded type | Select the file encoded type. The default value is UTF-8. |
+| Column names | The column headers in your CSV source input. Select **use a sample CSV file** to define your schema with a CSV file. |
+| Ignore CSV header row | Select `Yes` if the CSV source has a header row, otherwise select `No`. |
+| Column delimiter | Select the character used to separate value in each line of the CSV. |
+| Index primary | Select one or more columns as the primary index of your list. |
+| Index secondary | Select one or more columns as the secondary index of your list. |
+
+### Query list in SQL Collection
+
+This action allows you to perform standard SQL queries on your lists.
+
+![Query list in SQL Collection](/assets/query-list-in-collection.BkO29mTl.png)_Query list in SQL Collection_
+
+| Input field | Description |
+| --- | --- |
+| SQL query | Write your SQL query. Normal SQL syntax applies. |
+| Output list schema | Define the schema according to your column headers in your output list. Select **use sample JSON** to define your schema with JSON. |
+| Write to CSV | Select `Yes` to convert the query results to a CSV string, this will display the input fields below. To use this query output in further SQL queries, select `No`. |
+| Add CSV header | Select `Yes` to use the column names as a CSV header row, otherwise select `No`. |
+| Column delimiter | Select the character used to separate values in each line of the CSV. |
+
+Here are some commonly used SQL keywords that can be used in the **Query list** action.
+
+| SQL keywords | Description |
+| --- | --- |
+| SELECT | Use the SQL wildcard `*` to call all the columns in this list. |
+| WHERE | Define conditions that specify what data you want to retrieve from the list. |
+| JOIN | Use `JOIN`, `LEFT JOIN`, `INNER JOIN` to combine lists. |
+| INSERT INTO | Define new entries for your list. |
+| DELETE | Define rows to remove from your list. |
+
+Remember to query the full list before exporting or loading it into your target systems. Some SQL keywords (for example, `INSERT INTO`, `DELETE`) do not return list outputs. Therefore, datapills from these actions do not contain all the rows/columns in your SQL Collection list.
+
+A `WHERE` clause on a boolean column requires a string comparison, not a boolean literal. Refer to [Create list in SQL Collection action](#create-list-in-sql-collection-action) for the required syntax.
+
+#### Example query: delete rows from list
+
+For example, you can tailor your workers list from **Workday** to exclude certain groups of people.
+
+![Delete rows with Query list in SQL Collection](/assets/query-list-in-collection-delete.D937v_Gx.png)_Delete rows with Query list in SQL Collection_
+
+Since a `DELETE` query does not return a list output, datapills from this step **should not be used** to export your list.
+
+#### Example query: Export SQL collection as CSV
+
+![Export rows as CSV](/assets/query-list-in-collection-export.4NYfkeYG.png)_Export rows as CSV_
+
+Run a `SELECT` query to retrieve all rows from that SQL collection.
+
+```sql
+SELECT * FROM workers_list
+```
+
+Next, select **Write to CSV** in the action configuration. The output of this action can be directly exported as a CSV file.

@@ -1,0 +1,41 @@
+---
+url: >-
+  https://docs.workato.com/en/on-prem/agents/opa-troubleshooting/troubleshoot-upgrade.md
+description: >-
+  Troubleshoot Workato on-prem agent upgrade and configuration issues, including
+  service accounts, keys, and connection profiles.
+---
+
+# On-prem upgrade and configuration issues
+
+This guide explains common issues you may encounter when you upgrade the on-prem agent (OPA) or reconfigure its settings. These problems often result from changes to service behavior, configuration paths, or connection logic across OPA versions.
+
+## Back up `config.yml` before the upgrade
+
+Create a copy of your current `config.yml` file before you start the upgrade. This ensures you can restore your authentication and connection settings if the upgrade overwrites the configuration. If your file includes encrypted passwords, you must re-encrypt them after the upgrade. Encrypted values are tied to the agent's private key and don't transfer between agents.
+
+## Activate firewall ports
+
+Open outbound TCP port 443 to `sg3.workato.com` and `sg4.workato.com` before you upgrade from OPA version 2.10.0 or earlier.
+
+## Restore the original service account if the upgrade resets it
+
+Upgrades may reset the OPA service to use a local account instead of the previously configured user account. This change can disrupt existing connections, such as SQL server connections with `integrated security=true` or file connections to shared drives.
+
+![Connection error](/assets/opa-connection-error.CLWfGPGi.png)_Connection error_
+
+You can change the Windows service configuration back to the previously configured user account to resolve the issue.
+
+## Use separate keys for each agent
+
+Assign a unique set of key files to each agent on the same server. Sharing files like `cert`, `key`, or `cert.pem` can cause authentication failures.
+
+## Reconnect HA agents after the upgrade
+
+Re-establish configuration between upgraded agents in high-availability (HA) setups. Copy the `config.yml` file to each new or restored agent, and confirm the service account can access all mounted paths. If the file contains encrypted passwords, you must re-encrypt them for each agent. Encrypted values rely on agent-specific keys and don't work across different agents.
+
+## Connection profiles with new versions
+
+Create a new on-prem group when you use OPA version 2.15.0 or higher and avoid assigning cloud connection profiles to the same group used by older agents. You can use the **Directly in Workato** option to create the group, then add a new agent to manage those profiles.
+
+![Set up connections](data:image/png;base64,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)_Set up connections_

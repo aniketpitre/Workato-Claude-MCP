@@ -1,0 +1,106 @@
+---
+url: 'https://docs.workato.com/en/connectors/shopify/get-order-by-id.md'
+description: >-
+  The Get order by ID action in the Shopify connector lets you retrieve a single
+  order by its ID.
+---
+
+# Shopify - Get order by ID action
+
+This action retrieves an order by ID in Shopify. An order is a customer's request to purchase one or more products from a shop.
+
+Refer to the [Shopify documentation](https://shopify.dev/api/admin-rest/2022-01/resources/order) for more information on the order resource.
+
+## Input
+
+| Field | Description |
+| --- | --- |
+| Order ID | Provide the order ID. |
+
+## Output
+
+| Field | Description |
+| --- | --- |
+| Order ID | The order ID. |
+| Send receipt | Whether a confirmation was sent to the customer. |
+| Send fulfillment receipt | Whether a fulfillment confirmation was sent to the customer. |
+| Email | Customer's email address |
+| Name | Order name. For example, #1001 |
+| Note | Notes about the order. |
+| Fulfillment status | Valid values: `fulfilled`, `null`, `partial` |
+| Tax lines | A list of tax line objects, each of which details a tax applied to the item. Each tax line includes: - Title - Price - Price set - Rate |
+| Currency code | The currency code. |
+| Referring site | For example, `http://www.example.com` |
+| Taxes included | Whether taxes are included. |
+| Closed at | The date and time when this order was closed. |
+| Financial status | Valid values: `pending`, `authorized`, `partially_paid`, `paid`, `partially_refunded`, `refunded`, `voided` |
+| Note attributes | Additional information on order, including: - Name - Value |
+| Tags | Tags attached to the order, formatted as a string of comma-separated values. Tags are additional short descriptors, commonly used for filtering and searching. Each individual tag is limited to 40 characters in length. |
+| Billing address | The mailing address associated with the payment method. |
+| Shipping address | The mailing address to where the order will be shipped. |
+| Total discounts | Total amount of the discounts to be applied to the price of the order. |
+| Discount codes | A list of discounts applied to the order. Each discount object includes the following properties: - Amount - Discount name - Type |
+| Buyer accepts marketing | Whether the customer consented to receive email updates from the shop. |
+| Discount applications | A list of discount applications. Each discount application object includes the following properties: - Type - Value - Value type - Allocation method - Target selection - Target type - Description - Title |
+| Current total duties set | The current total duties charged on the order in shop and presentment currencies. The amount values associated with this field reflect order edits, returns, and refunds. |
+| Original total duties set | The original total duties charged on the order in shop and presentment currencies. |
+| Total line items price set | The total of all line item prices in shop and presentment currencies. |
+| Total discounts set | The total amount allocated to the line item in the presentment currency. Instead of using this field, Shopify recommends using discount\_allocations, which provides the same information. |
+| Total shipping price set | The total shipping price of the order, excluding discounts and returns, in shop and presentment currencies. If taxes\_included is set to true, then total\_shipping\_price\_set includes taxes. |
+| Total price set | The total price of the order in shop and presentment currencies. |
+| Subtotal price set | The subtotal price of the order in shop and presentment currencies. |
+| Total tax set | The total tax of the order in shop and presentment currencies. |
+| Line items | A list of line item objects, each containing information about an item in the order. - Includes ID - Variant ID - Title - Quantity - Current quantity - Price - Grams - Sku - Variant title - Admin GraphQL API ID - Vendor - Fulfillment service - Product ID - Requires shipping - Taxable - Gift card - Name - Variant inventory management - Product exists - Fulfillable quantity - Total discount - Fulfillment status - Line item tax lines - Duties - Line item properties - Price set - Total discount set - Discount allocations |
+| Created at | The date and time when the order was created. |
+| Updated at | The date and time when the order was last updated. |
+| Canceled at | The date and time when the order was canceled. |
+| Cancel reason | The cancellation reason. |
+| Customer locale | The two or three-letter language code, optionally followed by a region modifier. |
+| Presentment currency | The presentment currency that was used to display prices to the customer. |
+| Total tip received | The total tip received. |
+| Admin GraphQL API ID | A unique admin GraphQL API ID. |
+| Total price USD (deprecated) | The total price in USD. |
+| Checkout token | The checkout token. |
+| Reference | An order reference. |
+| User\_ID | The ID of the user logged into Shopify POS who processed the order, if applicable. |
+| Location ID | The ID of the physical location where the order was processed. This property refers to the POS location. location\_id is set to null for online orders by default. |
+| App ID | The ID of the app that created the order. |
+| Source identifier | A reference to the source. |
+| Source URL | A URL of the source. |
+| Processed at | The date and time when this order was processed. |
+| device\_ID | Information about the device used to create the order. |
+| Browser ip | The browser IP when the order was created. |
+| Landing site ref | A URL of the landing site. |
+| Order number | The order 's position in the shop's count of orders starting at 1001. Order numbers are sequential and start at 1001. |
+| Number | The order's position in the shop's count of orders. Numbers are sequential and start at 1. |
+| Note | Notes about this order. |
+| Token | A unique token for the order. |
+| Gateway (deprecated) | The payment gateway used. |
+| Test | Whether this is a test order. |
+| Total price | The total price. |
+| Subtotal price | The subtotal price. |
+| Total weight | The total weight. |
+| Total tax | The total tax. |
+| Confirmed | Whether the order has been confirmed. |
+| Total discounts | The total discounts applied to the price of the order in the shop currency. |
+| Total line items price | The sum of all line item prices in the shop currency. |
+| Cart token | The ID of the cart that's associated with the order. |
+| Name | The name of the customer. |
+| Landing site | The URL for the page where the buyer landed when they entered the shop. |
+| Payment gateway names | The list of payment gateways used for the order. |
+| Processing method (deprecated) | How the payment was processed. |
+| Checkout ID | The checkout ID. |
+| Source name | Where the order originated. Can be set only during order creation, and is not writeable afterwards. |
+| Tax lines | A list of tax line objects, each of which details a tax applied to the item. Each tax line includes: - Title - Price - Price set - Rate |
+| Contact email | The contact email. |
+| Order status URL | The URL for the order status. |
+| Shipping lines | An array of objects, each of which details a shipping method used. Each shipping line includes: - ID - Carrier identifier - Shipping name - Discounted price - Discounted price set - Phone - Price - Price set - Requested fulfillment service ID - Source - Title - Tax lines - Discount allocations - Is removed |
+| Fulfillments | A list of fulfillments associated with the order. |
+| Client details | Information about the browser that the customer used when they placed their order. |
+| Refunds | A list of refunds applied to the order. |
+| Payment details (deprecated) | An object containing information about the payment. |
+| Transactions | A list of order transactions. |
+| Customer | Information about the customers. |
+| Metafields | Information about metafields. |
+
+---

@@ -1,0 +1,59 @@
+---
+url: >-
+  https://docs.workato.com/en/connectors/microsoft-graph-api/new-mail-message-trigger.md
+description: >-
+  The New mail message trigger checks for new events on a polling interval you
+  specify.
+---
+
+# Microsoft Graph API - New mail message trigger
+
+The **New mail message** trigger checks for new events on a polling interval you specify.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Trigger poll interval | Select how frequently to check for new events. |
+| When first started, this recipe should pick up events from | When you start the recipe for the first time, it picks up trigger events from this specified date and time. Leave empty to get events created one hour ago. |
+| User ID or principal name | Provide the user ID or name. If left blank, the messages will be retrieved from the connected user. |
+| Mail folder ID | Mail folder ID for the account whose messages are to be retrieved. |
+
+## Output
+
+| Output field | Description |
+| --- | --- |
+| OData ETag | Entity tag for concurrency control. |
+| Message ID | Unique identifier for the message. |
+| Created DateTime | Date and time when the message was created. |
+| Last Modified DateTime | Date and time when the message was last modified. |
+| Change Key | Identifies a specific version of the message. |
+| Categories | List of categories associated with the message. |
+| Received DateTime | Date and time when the message was received. |
+| Sent DateTime | Date and time when the message was sent. |
+| Has Attachments | Indicates whether the message has attachments (`Yes`/`No`). |
+| Internet Message ID | Unique identifier for the message in internet format. |
+| Subject | Subject of the message. |
+| Body Preview | Preview text of the message body. |
+| Importance | Importance level of the message. For example, `Low`, `Normal`, `High`. |
+| Parent Folder ID | ID of the parent folder containing the message. |
+| Conversation ID | ID of the conversation thread. |
+| Conversation Index | Position of the message in the conversation thread. |
+| Delivery Receipt Requested | Indicates if a delivery receipt was requested (`Yes`/`No`). |
+| Read Receipt Requested | Indicates if a read receipt was requested (`Yes`/`No`). |
+| Is Read | Indicates if the message has been read (`Yes`/`No`). |
+| Is Draft | Indicates if the message is a draft (`Yes`/`No`). |
+| Web Link | URL to access the message in a web browser. |
+| Inference Classification | Classification of the message. For example, `Focused`, `Other`. |
+| Body Content Type | Type of content in the message body. For example, `Text`, `HTML`. |
+| Body Content | Actual content of the message body. |
+| Sender Name | Name of the sender. |
+| Sender Email Address | Email address of the sender. |
+| From Name | Name of the person who sent the message. |
+| From Email Address | Email address of the sender. |
+| To Recipient Name | Name of the recipient. |
+| To Recipient Email Address | Email address of the recipient. |
+| CC Recipients | List of CC recipients. |
+| BCC Recipients | List of BCC recipients. |
+| Reply To | List of reply-to email addresses. |
+| Flag Status | Status of the message flag. For example, `Not Flagged`, `Complete`, `Flagged`. |

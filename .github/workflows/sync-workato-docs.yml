@@ -1,0 +1,44 @@
+name: Sync Workato docs knowledge base
+
+on:
+  schedule:
+    - cron: "17 3 * * *"   # daily, 03:17 UTC
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Re-download every page"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kb-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync docs.workato.com
+        run: python3 kb/sync.py ${{ inputs.full && '--full' || '' }}
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- kb/docs kb/index kb/INDEX.md kb/manifest.json kb/CHANGELOG.md && \
+             [ -z "$(git ls-files --others --exclude-standard kb/)" ]; then
+            echo "Docs unchanged."; exit 0
+          fi
+          git config user.name  "workato-kb-bot"
+          git config user.email "workato-kb-bot@users.noreply.github.com"
+          git add kb/
+          summary=$(python3 -c "import json;r=json.load(open('kb/last_sync.json'));print(f\"+{r['added_count']} ~{len(r['changed'])} -{len(r['removed'])}\")")
+          git commit -m "kb: sync Workato docs ($summary)"
+          git push

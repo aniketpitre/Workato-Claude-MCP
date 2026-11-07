@@ -1,0 +1,927 @@
+---
+url: 'https://docs.workato.com/en/oem/oem-api/environment-management.md'
+description: >-
+  Reference for the Embedded API environment management endpoints to manage tags
+  and read activity audit logs in customer workspaces.
+---
+
+# Embedded API - Environment management
+
+You can use the Environment management endpoints to create, retrieve, update, and delete [tags](/en/recipes/tags). You can also use these endpoints to monitor user activities in a customer workspace through [activity audit log](/en/features/activity-audit-log) records.
+
+## Rate limits
+
+Environment management resources have the following rate limit:
+
+| Type | Resource | Quota |
+| --- | --- | --- |
+| All | All [Environment management](/en/oem/oem-api/environment-management.html) endpoints | 60 requests per minute |
+
+### Quick reference
+
+| Type | Resource | Description |
+| --- | --- | --- |
+| GET | [/api/managed\_users/:id/activity\_logs](#get-audit-log) | Retrieves activity audit log records in a customer workspace. |
+| GET | [/api/v2/managed\_users/:id/tags](#list-tags) | Retrieves a list of tags in a customer workspace. |
+| POST | [/api/v2/managed\_users/:id/tags](#create-a-tag) | Creates a tag in a customer workspace. |
+| PUT | [/api/v2/managed\_users/:id/tags/:handle](#update-a-tag) | Updates a tag in a customer workspace. |
+| DELETE | [/api/v2/managed\_users/:id/tags/:handle](#delete-a-tag) | Deletes a tag in a customer workspace. |
+
+## Get activity audit log
+
+Retrieves detailed information about activities within a specific environment of a customer workspace. You can use query parameters to filter the activity audit log by resource types, such as recipes and connections, or event types, such as creating or deleting recipes.
+
+For a complete list of supported resource and event types, refer to the [Activity audit log API reference](/en/oem/oem-api/activity-reference).
+
+<api-code no-copy-method>
+
+```
+GET https://YOUR_DATA_CENTER/api/managed_users/:id/activity_logs
+```
+
+</api-code>
+
+The response includes two primary elements:
+
+| Element | Description |
+| --- | --- |
+| `data` | An array of objects, each representing a log entry. These entries include the event's unique identifier, timestamp, type, and details about the customer workspace, user, and resource involved. |
+| `total` | The total number of log entries returned. |
+
+Each log entry in the `data` array contains the following objects:
+
+| Object | Description |
+| --- | --- |
+| `workspace` | This object includes the customer workspace ID, name, email, and environment. In the **Development** environment, `workspace.name` corresponds to the customer's workspace name. In the **Test** and **Production** environments, `workspace.name` is `Environment Test` or `Environment Production`, respectively. |
+| `user` | This object includes the user ID, name, and email. |
+| `details` | This object provides additional information about the request. The `request` object contains the IP address and user agent. The `activity` field describes the specific action performed. |
+| `resource` | This object describes the resource involved, including its ID, name, type, email, and `email_confirmed_at` timestamp if applicable. |
+
+> **USE WORKSPACE ID TO ACCESS DIFFERENT ENVIRONMENT LOGS**
+> 
+> You must specify the relevant [workspace ID](/en/workspace#workspace-admin-settings) for each environment in the `id` URL parameter to obtain logs from different customer environments.
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an E (for example, EA2300). |
+
+### Query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| page\[after\] | **integer** _optional_ | Specify the starting point for the next set of results based on the last result of the current page. |
+| page\[size\] | **integer** _optional_ | Specify the number of results per page. The default and maximum number of records is 100. |
+| from | **string** _optional_ | Specify the start of the time range for which to retrieve audit logs. Provide in ISO 8601 format (`YYYY-MM-DDTHH:mm:ss.SSSZ`). |
+| to | **string** _optional_ | Specify the end of the time range for which to retrieve audit logs. Provide in ISO 8601 format (`YYYY-MM-DDTHH:mm:ss.SSSZ`). |
+| users\_ids\[\] | **array of integers** _optional_ | Filter logs to include activities performed by specified user IDs. |
+| include\_resource\_types\[\] | **array of strings** _optional_ | Filter logs to include activities related to specified resource types. |
+| exclude\_resource\_types\[\] | **array of strings** _optional_ | Exclude activities related to specified resource types. |
+| include\_event\_types\[\] | **array of strings** _optional_ | Filter logs to include activities of specified event types. |
+| exclude\_event\_types\[\] | **array of strings** _optional_ | Exclude activities of the specified event types. |
+
+> **TIMEZONE**
+> 
+> All data centers use the system timezone, Pacific Daylight Time (PDT). When you specify a timezone in the `from` and `to` query parameters, the system converts it to and displays it as PDT.
+
+### Sample requests
+
+- [Request 1: Without query parameters](/en/workato-api/environment-management#request-1)
+- [Request 2: Get the last three records](/en/workato-api/environment-management#request-2)
+- [Request 3: Get the activities of one day for two users](/en/workato-api/environment-management#request-3)
+- [Request 4: Include activities with specific resource\_types and event\_types](/en/workato-api/environment-management#request-4)
+- [Request 5: Exclude activities with specific resource\_types and event\_types](/en/workato-api/environment-management#request-5)
+- [Request 6: Get activities with a non-existent event type or customer workspace ID](/en/workato-api/environment-management#request-6)
+
+#### Request 1: Without query parameters
+
+The following example request returns a list of all activities for the customer workspace associated with the `id` URL parameter:
+
+<api-code>
+
+```shell
+curl  -X GET "https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/activity_logs" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+Response 1: Without query parameters
+
+```json
+{
+    "data": [
+        {
+            "id": 1234567,
+            "timestamp": "2024-06-18 19:17:31 UTC",
+            "event_type": "user_login",
+            "workspace": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                },
+                "activity": "password_login"
+            },
+            "resource": {
+                "id": 12345,
+                "name": "Alex",
+                "type": "Workspace",
+                "email": "alex@example.com",
+                "email_confirmed_at": "2024-04-24 14:23:03 -0700"
+            }
+        },
+        {...}
+    ],
+    "total": 65
+}
+```
+
+#### Request 2: Get the last three records
+
+The following example request retrieves the three most recent activity log entries. This request returns activities for the customer workspace associated with the `id` URL parameter:
+
+<api-code>
+
+```shell
+curl  -X GET "https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/activity_logs?page%5Bsize%5D=:page_size_value" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+Response 2: Get the last three records
+
+```json
+{
+    "data": [
+        {
+            "id": 3674006,
+            "timestamp": "2024-06-26 15:56:07 UTC",
+            "event_type": "user_login",
+            "workspace": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                },
+                "activity": "password_login"
+            },
+            "resource": {
+                "id": 12345,
+                "name": "Alex",
+                "type": "Workspace",
+                "email": "alex@example.com",
+                "email_confirmed_at": "2024-04-24 14:23:03 -0700"
+            }
+        },
+        {
+            "id": 3670909,
+            "timestamp": "2024-06-25 16:38:11 UTC",
+            "event_type": "recipe_created",
+            "workspace": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 289287,
+                "name": "My new recipe",
+                "path": "Home/Demos",
+                "type": "Flow",
+                "folder_id": 46319
+            }
+        },
+        {
+            "id": 3668492,
+            "timestamp": "2024-06-24 15:52:23 UTC",
+            "event_type": "user_login",
+            "workspace": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                },
+                "activity": "password_login"
+            },
+            "resource": {
+                "id": 12345,
+                "name": "Alex",
+                "type": "Workspace",
+                "email": "alex@example.com",
+                "email_confirmed_at": "2024-04-24 14:23:03 -0700"
+            }
+        }
+    ],
+    "total": 65
+}
+```
+
+#### Request 3: Get the activities of one day for two users
+
+The following example request retrieves the activities of two users on June 30, 2024. This request returns activities for the customer workspace associated with the `id` URL parameter:
+
+<api-code>
+
+```shell
+curl  -X GET "https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/activity_logs?from=:from_value&to=:to_value&users_ids[]=:users_ids_1&users_ids[]=:users_ids_2" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+  
+
+> **DATE AND TIME FORMAT**
+> 
+> Ensure that the `from` and `to` query parameters use the `YYYY-MM-DD` format, in which the month is listed before the day. Using the `YYYY-DD-MM` format causes a `500 Server error`.
+
+Response 3: Get the activities of one day for two users
+
+```json
+{
+    "data": [
+        {
+            "id": 3649152,
+            "timestamp": "2024-06-30 23:09:51 UTC",
+            "event_type": "connector_deleted",
+            "workspace": {
+                "id": 19029,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 7321,
+                "name": "New Connector 1",
+                "type": "CustomAdapter"
+            }
+        },
+        {
+            "id": 3649149,
+            "timestamp": "2024-06-30 23:07:33 UTC",
+            "event_type": "connector_created",
+            "workspace": {
+                "id": 19029,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 7321,
+                "name": "New Connector 1",
+                "type": "CustomAdapter"
+            }
+        },
+        {
+            "id": 3649129,
+            "timestamp": "2024-06-30 22:34:36 UTC",
+            "event_type": "user_logout",
+            "workspace": {
+                "id": 19029,
+                "name": "Jie",
+                "email": "jie@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 54321,
+                "name": "Jie",
+                "email": "jie@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "192.0.2.1",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                },
+                "activity": "switch_team"
+            },
+            "resource": {
+                "id": 19029,
+                "name": "Alex",
+                "type": "Workspace",
+                "email": "alex@example.com",
+                "email_confirmed_at": "2024-04-24 14:23:03 -0700"
+            }
+        },
+        {
+            "id": 3649127,
+            "timestamp": "2024-06-30 22:32:43 UTC",
+            "event_type": "user_login",
+            "workspace": {
+                "id": 19029,
+                "name": "Jie",
+                "email": "jie@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 54321,
+                "name": "Jie",
+                "email": "jie@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "192.0.2.1",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                },
+                "activity": "switch_team"
+            },
+            "resource": {
+                "id": 19029,
+                "name": "Alex",
+                "type": "Workspace",
+                "email": "alex@example.com",
+                "email_confirmed_at": "2024-04-24 14:23:03 -0700"
+            }
+        },
+        {
+            "id": 3649124,
+            "timestamp": "2024-06-30 22:32:16 UTC",
+            "event_type": "user_logout",
+            "workspace": {
+                "id": 19029,
+                "name": "Jie",
+                "email": "jie@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 54321,
+                "name": "Jie",
+                "email": "jie@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "192.0.2.1",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                },
+                "activity": "switch_team"
+            },
+            "resource": {
+                "id": 19029,
+                "name": "Alex",
+                "type": "Workspace",
+                "email": "alex@example.com",
+                "email_confirmed_at": "2024-04-24 14:23:03 -0700"
+            }
+        },
+        {
+            "id": 3649123,
+            "timestamp": "2024-06-30 22:32:00 UTC",
+            "event_type": "user_login",
+            "workspace": {
+                "id": 19029,
+                "name": "Jie",
+                "email": "jie@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 54321,
+                "name": "Jie",
+                "email": "jie@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "192.0.2.1",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                },
+                "activity": "switch_team"
+            },
+            "resource": {
+                "id": 19029,
+                "name": "Alex",
+                "type": "Workspace",
+                "email": "alex@example.com",
+                "email_confirmed_at": "2024-04-24 14:23:03 -0700"
+            }
+        }
+    ],
+    "total": 6
+}
+```
+
+#### Request 4: Include activities with specific resource\_types and event\_types
+
+The following example request includes activities with the `resource_type` `ApiPrivilegeGroup` and `event_type` `api_privilege_group_updated`. This request returns activities for the customer workspace associated with the `id` URL parameter:
+
+<api-code>
+
+```shell
+curl  -X GET "https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/activity_logs?include_resource_types[]=:include_resource_types_1&include_event_types[]=:include_event_types_1" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+Response 4: Include activities with specific resource\_types and event\_types
+
+```json
+{
+    "data": [
+        {
+            "id": 3661175,
+            "timestamp": "2024-06-18 17:38:33 UTC",
+            "event_type": "api_privilege_group_updated",
+            "workspace": {
+                "id": 19029,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 40327,
+                "name": "Recipe Operator",
+                "type": "ApiPrivilegeGroup"
+            }
+        },
+        {
+            "id": 3644097,
+            "timestamp": "2024-06-04 21:37:12 UTC",
+            "event_type": "api_privilege_group_updated",
+            "workspace": {
+                "id": 19029,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 40327,
+                "name": "Recipe Operator",
+                "type": "ApiPrivilegeGroup"
+            }
+        },
+        {
+            "id": 3643744,
+            "timestamp": "2024-06-04 16:24:44 UTC",
+            "event_type": "api_privilege_group_updated",
+            "workspace": {
+                "id": 19029,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 40327,
+                "name": "Recipe Operator",
+                "type": "ApiPrivilegeGroup"
+            }
+        }
+    ],
+    "total": 3
+}
+```
+
+#### Request 5: Exclude activities with specific resource\_types and event\_types
+
+The following example request excludes activities with the `resource_type` `User` and `event_type` `user_logout`. This request returns activities for the customer workspace associated with the `id` URL parameter:
+
+<api-code>
+
+```shell
+curl  -X GET "https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/activity_logs?exclude_resource_types[]=:exclude_resource_types_1&exclude_event_types[]=:exclude_event_types_1" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+Response 5: Exclude activities with specific resource\_types and event\_types
+
+```json
+{
+    "data": [
+        {
+            "id": 3670909,
+            "timestamp": "2024-06-25 16:38:11 UTC",
+            "event_type": "recipe_created",
+            "workspace": {
+                "id": 19029,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 289287,
+                "name": "My new recipe",
+                "path": "Home/Demos",
+                "type": "Flow",
+                "folder_id": 46319
+            }
+        },
+        {
+            "id": 3665078,
+            "timestamp": "2024-06-20 20:00:36 UTC",
+            "event_type": "connection_updated",
+            "workspace": {
+                "id": 19029,
+                "name": "Alex",
+                "email": "alex@example.com",
+                "environment": "dev"
+            },
+            "user": {
+                "id": 12345,
+                "name": "Alex",
+                "email": "alex@example.com"
+            },
+            "details": {
+                "request": {
+                    "ip_address": "60.160.90.91",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+                }
+            },
+            "resource": {
+                "id": 66196,
+                "name": "My RecipeOps by Workato account",
+                "path": "Home/Demos",
+                "type": "SharedAccount",
+                "provider": "workato_app",
+                "folder_id": 46319,
+                "authorized": true
+            }
+        },
+        {...}
+    ],
+    "total": 42
+}
+```
+
+#### Request 6: Get activities with a non-existent event type or customer workspace ID
+
+The following example request attempts to retrieve the activities of a non-existent event type and customer workspace ID. Filtering activities by a non-existent event type or customer workspace ID results in an empty array:
+
+<api-code>
+
+```shell
+curl  -X GET "https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/activity_logs?users_ids[]=:users_ids_1&include_event_types[]=nonexistent_event_type" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+Response 6: Get activities with a non-existent event type or customer workspace ID
+
+```json
+{
+    "data": [],
+    "total": 0
+}
+```
+
+## List tags
+
+Retrieves a list of tags within a customer workspace. Each tag in the response includes a `handle`, which is the value that the [Manage tag assignments](/en/oem/oem-api/tag-assignments#manage-tag-assignments) endpoint requires.
+
+<api-code no-copy-method>
+
+```
+GET https://YOUR_DATA_CENTER/api/v2/managed_users/:id/tags
+```
+
+</api-code>
+
+  
+
+> **APPLY OR REMOVE TAGS PROGRAMMATICALLY**
+> 
+> Use the [Manage tag assignments](/en/oem/oem-api/tag-assignments) (`POST /api/v2/managed_users/:id/tags_assignments`) endpoint to apply or remove asset tags.
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an `E` (for example, `EA2300`). |
+
+### Query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| page | **number** _optional_ | The page number of the tags to retrieve. Defaults to `1`. |
+| per\_page | **number** _optional_ | The number of tags to return in a single page. Defaults to `100`. Maximum value is `100`. |
+| q\[title\_or\_description\_cont\] | **string** _optional_ | Filters results to include tags where the title or description contains the specified string. **Example**: `...?q[title_or_description_cont]=hr` |
+| q\[handle\_in\] | **array of strings** _optional_ | Filters results to include only tags with handles that match the specified values. Each handle must be provided as a separate parameter instance. **Example**: `...?q[handle_in][]=tag-Abx8kP5n-Lw3ZrC-CD&q[handle_in][]=tag-Abx8kP8q-Fc7TxN-CD` |
+| q\[author\_id\_eq\] | **number** _optional_ | Filters results to include only tags created by the specified author (user ID). **Example**: `...?q[author_id_eq]=30482` |
+| q\[recipe\_id\_eq\] | **number** _optional_ | Filters results to include only tags associated with the specified recipe ID. **Example**: `...?q[recipe_id_eq]=54525313` |
+| q\[connection\_id\_eq\] | **number** _optional_ | Filters results to include only tags associated with the specified connection ID. **Example**: `...?q[connection_id_eq]=1571346` |
+| q\[only\_assigned\] | **boolean** _optional_ | Filters results to include only tags that are assigned to an asset. **Example**: `...?q[only_assigned]=true` |
+| sort\_by | **string** _optional_ | Specifies the field to sort the response by. Accepts `title`, `assignment_count`, `updated_at`, or `last_assigned_at`. **Example**: `...?sort_by=assignment_count` |
+| sort\_direction | **string** _optional_ | Specifies the sort order for the response. Accepts `asc` or `desc`. **Example**: `...?sort_direction=asc` |
+| includes\[\] | **array of strings** _optional_ | Specifies additional fields to include in the response. Accepts `assignment_count` and `author`. **Example**: `...?includes[]=author` |
+
+This request retrieves a list of tags and uses the `includes[]` query parameter to return both the author (the user who created the tag) and the number of times the tag has been assigned to an asset.
+
+<api-code>
+
+```shell
+curl  -X GET "https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/tags?includes[]=author&includes[]=assignment_count" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "data": {
+    "tags": [
+      {
+        "handle": "tag-Abx8kQ2e-Tn4WzR-CD",
+        "title": "Accounting",
+        "description": "Accounting tag",
+        "color": "orange",
+        "created_at": "2024-08-29T14:09:13-07:00",
+        "updated_at": "2024-08-29T14:09:13-07:00",
+        "author": {
+            "id": 12345,
+            "name": "Charlie",
+            "avatar_url": ""
+        },
+        "assignment_count": 6
+      },
+      {
+        "handle": "tag-Abx8kQ9b-Hs7LpD-CD",
+        "title": "Business development",
+        "description": "Business development tag",
+        "color": "green",
+        "created_at": "2024-08-29T15:20:44-07:00",
+        "updated_at": "2024-08-29T15:20:44-07:00",
+        "author": {
+            "id": 30482,
+            "name": "Jie",
+            "avatar_url": ""
+        },
+        "assignment_count": 3
+      },
+      {
+        "handle": "tag-Abx8kRa3-Jm5XcV-CD",
+        "title": "Finance",
+        "description": "Finance tag",
+        "color": "gold",
+        "created_at": "2024-08-29T15:20:57-07:00",
+        "updated_at": "2024-08-29T15:20:57-07:00",
+        "author": {
+            "id": 73913,
+            "name": "Alex",
+            "avatar_url": ""
+        },
+        "assignment_count": 4
+      }
+    ]
+  }
+}
+```
+
+## Create a tag
+
+Creates a new tag in a customer workspace. The response returns the tag `handle`. Pass this handle, not the title, in `add_tags` of the [Manage tag assignments](/en/oem/oem-api/tag-assignments#manage-tag-assignments) (`POST /api/v2/managed_users/:id/tags_assignments`) endpoint to apply the tag to a recipe or connection.
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/v2/managed_users/:id/tags
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an `E` (for example, `EA2300`). |
+
+### Payload
+
+| Name | Type | Description |
+| --- | --- | --- |
+| title | **string** _required_ | The title of the tag. Maximum of 30 characters. |
+| description | **string** _optional_ | The description of the tag. Maximum of 150 characters. |
+| color | **string** _optional_ | The color of the tag. Accepted values include `blue`, `violet`, `green`, `red`, `orange`, `gold`, `indigo`, `brown`, `teal`, `plum`, `slate`, and `neutral`. If this field is not specified, Workato assigns the tag a random color. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl  -X POST "https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/tags" \
+      -H "Authorization: Bearer <api_token>" \
+      -H "Content-Type: application/json" \
+      -d '{
+            "title": ":title",
+            "description": ":description",
+            "color": ":color"
+          }'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "data": {
+    "handle": "tag-Abx8mT1c-Ew8NqF-CD",
+    "title": "HR",
+    "description": "HR tag",
+    "color": "green"
+  }
+}
+```
+
+## Update a tag
+
+Updates an existing tag in a customer workspace.
+
+<api-code no-copy-method>
+
+```
+PUT https://YOUR_DATA_CENTER/api/v2/managed_users/:id/tags/:handle
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an `E` (for example, `EA2300`). |
+| handle | **string** _required_ | The handle of the tag to update. |
+
+### Payload
+
+| Name | Type | Description |
+| --- | --- | --- |
+| title | **string** _required_ | The updated tag title. Maximum of 30 characters. |
+| description | **string** _optional_ | The updated tag description. Maximum of 150 characters. |
+| color | **string** _optional_ | The updated tag color. Accepted values include `blue`, `violet`, `green`, `red`, `orange`, `gold`, `indigo`, `brown`, `teal`, `plum`, `slate`, and `neutral`. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl  -X PUT "https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/tags/:handle" \
+      -H "Authorization: Bearer <api_token>" \
+      -H "Content-Type: application/json" \
+      -d '{
+            "title": ":title",
+            "description": ":description",
+            "color": ":color"
+          }'
+```
+
+</api-code>
+
+### Response
+
+```json
+{
+  "data": {
+    "handle": "tag-Abx8mT1c-Ew8NqF-CD",
+    "title": "Updated tag name",
+    "description": "Updated the tag name",
+    "color": "red"
+  }
+}
+```
+
+## Delete a tag
+
+Deletes an existing tag in a customer workspace.
+
+<api-code no-copy-method>
+
+```
+DELETE https://YOUR_DATA_CENTER/api/v2/managed_users/:id/tags/:handle
+```
+
+</api-code>
+
+### URL parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an `E` (for example, `EA2300`). |
+| handle | **string** _required_ | The handle of the tag to delete. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl  -X DELETE "https://YOUR_DATA_CENTER/api/v2/managed_users/:managed_user_id/tags/:handle" \
+      -H "Authorization: Bearer <api_token>"
+```
+
+</api-code>
+
+### Response
+
+If the request returns a `200 OK` status code, the tag was successfully deleted. No content is returned in the response body.
+
+---

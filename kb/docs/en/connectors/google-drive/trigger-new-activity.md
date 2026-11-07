@@ -1,0 +1,41 @@
+---
+url: 'https://docs.workato.com/en/connectors/google-drive/trigger-new-activity.md'
+description: >-
+  The New activity trigger in the Google Drive connector fires when selected
+  activities, such as edits or moves, occur in a parent folder and its
+  subfolders.
+---
+
+# Google Drive - New activity trigger
+
+The **New activity** trigger allows you to monitor one or more activities within a parent folder.
+
+![Google Drive New activity trigger](/assets/google-drive-new-activity.RzlPLec8.png) _Google Drive New activity trigger_
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Parent folder | The folder to monitor for new activity. Subfolders are also monitored. Select a folder from the picklist or enter the folder ID directly. If entering the folder ID for a shared drive (formerly Team Drive), this value must be in the form `folder_id/shared_drive_id` (for example, `1fm6iCMYrN7roZZ-ynpVFRTVq9mellrWp/0AB6ZFCw3XdamUk9PAA`). IDs can be found at the end of folder and drive URLs. |
+| Start time | When you start the recipe for the first time, it picks up activity from the specified date and time. Defaults to fetching activity an hour ago if left blank. After the recipe has been run or tested, the value cannot be changed. Refer to [Triggers](/en/recipes/triggers#since-from) for more information. |
+| Activity to monitor | Select one or more activities to monitor. |
+
+## Output
+
+Note that in Google Drive API, the terms `folder` and `file` are used interchangeably. A `folder` is technically a special `file`. As a result, whenever the field name or field description mentions `file`, it also applies to `folder`.
+
+| Output field | Description |
+| --- | --- |
+| ID | ID of the changed Google Drive item. |
+| Title | Title of the changed Google Drive item. |
+| MIME | MIME type of the changed Google Drive item, as stated in [Google Drive's documentation](https://developers.google.com/drive/api/v3/mime-types). |
+| Owner | Owner of the Google Drive item. Contains the following output fields: Team Drive: Team Drive containing the item. Contains the following output fields:, Name: Name of the Team Drive., Title: Title of the Team Drive. |
+| Domain | Domain: Domain of the Team Drive containing the item. Contains the following output fields: Name: Name of the domain., Legacy ID: Legacy ID of the domain.li> |
+| Drive | Drive: Shared drive containing the item. Contains the following output fields: Name: Name of the shared drive., Title: Title of the shared drive. |
+| Actions | A list of actions that occurred. Contains the following output fields, in addition to **List size** and **List index**: Detail:Description of the action type and additional information about it. Contains the following output fields: Rename: Details about the renamed item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/rename) for more information.; Permission change: Details about the permission change, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/permissionchange); Comment: Details about the comment change, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/comment) for more information.; Settings change: Details about the changed settings, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/settingschange#SettingsChange) for more information.; Edit: An item was edited.; DLP change: Details about a change that happened in data leak prevention status, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/dataleakpreventionchange#DataLeakPreventionChange) for more information.; Create: Details about the created item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/create#Create) for more information.; Delete: Details about the deleted item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/delete#Delete) for more information.; Restore: Details about the restored item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/restore#Restore) for more information. |
+| Actors | A list of actors who performed the activity. Contains the following output fields, in addition to **List size** and **List index**: User: Details about the end user. Contains the following input fields: Known user:Details about the known user, if applicable. Refer to the [Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/user#KnownUserGoogle) for more information.; Deleted user: Details about the deleted user, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/user#DeletedUser) for more information.; Unknown user: Details about the unknown user, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/user#UnknownUser) for more information. |
+| Primary action detail | Details about the primary action for this activity. This is either representative, or the most important, of all actions in the activity. Contains the following output fields: Rename: Details about the renamed item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/rename) for more information.; Move: Details about the moved item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/move) for more information.; Permission change: Details about the permission change, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/permissionchange) for more information.; Comment: Details about the comment change, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/comment) for more information.; Reference: Details about the item that was referenced in an application outside of Drive, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/applicationreference#ApplicationReference) for more information.; Settings change: Details about the changed settings, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/settingschange#SettingsChange) for more information.; Edit: An item was edited.; DLP change: Details about a change that happened in data leak prevention status, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/dataleakpreventionchange#DataLeakPreventionChange) for more information.; Create: Details about the created item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/create#Create) for more information.; Delete: Details about the deleted item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/delete#Delete) for more information.; Restore: Details about the restored item, if applicable. Refer to the [Google Drive Activity API Reference](https://developers.google.com/drive/activity/v2/reference/rest/v2/activity/restore#Restore) for more information. |
+| Drive file | Details about the shared drive file. Contains the following output field: Type: Type of the shared drive file. |
+| Timestamp | Date and time of when the activity occurred. |
+
+---

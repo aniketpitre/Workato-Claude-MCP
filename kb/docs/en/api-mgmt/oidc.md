@@ -1,0 +1,95 @@
+---
+url: 'https://docs.workato.com/en/api-mgmt/oidc.md'
+description: >-
+  Configure OpenID Connect authentication so the API platform verifies JWTs
+  issued by your identity provider for cross-domain access.
+---
+
+# OpenID Connect
+
+Identity providers streamline the process of maintaining verified access to multiple applications. The end user only needs to authenticate with the identity provider (IdP). Subsequently, the end user can access multiple applications and services without needing to remember additional sets of credentials. For example, the identity provider will issue JSON Web Tokens (JWT) that allow the end user to make authenticated requests with Workato API platform.
+
+API platform integrates fully with your IdP using the [OpenID Connect](https://openid.net/connect/) specification to manage cross-domain authentication.
+
+![Identity provider issues a JWT to the end user, who uses it to obtain verified access to Workato API platform](/assets/jwt-flow.CuiLZgx5.png) _Identity provider issues a JWT to the end user, who uses it to obtain verified access to Workato API platform_
+
+> **DYNAMIC CLIENT REGISTRATION**
+> 
+> You can use a DCR provider to reuse your OpenID Connect configuration across multiple API clients. Refer to [Dynamic client registration](/en/api-mgmt/api-dynamic-client) for more information.
+
+## API key claim
+
+When Workato receives an incoming request, the JWT is checked to see if it contains a valid token. This is done to determine that the request is coming from a valid API client. If no valid token value is found, the API request will return a `401 Unauthorized` error.
+
+This token can be included in the JWT in a number of ways. Including the list of default claims described in [Supported claims](/en/api-mgmt/jwt-workato-claim). In some cases, these claims may be required for other purposes. If so, you may provide a **Custom claim for API key** to pass this token.
+
+## How to configure OpenID Connect
+
+Workato claim works with most identity providers, including [ADFS](https://docs.microsoft.com/en-us/windows-server/identity/active-directory-federation-services), [OneLogin](https://www.onelogin.com/), and [Okta](https://www.okta.com/).
+
+The following example shows how to configure OpenID Connect with Okta.
+
+> **STANDARDS-COMPLIANT ALTERNATIVE**
+> 
+> Use [custom validation](/en/api-mgmt/custom-validation) instead if your identity provider can't embed your application's Workato-issued API key as a claim. Custom validation matches incoming tokens against claim and scope rules you define on the application, so you don't need to configure your authorization server to inject a Workato-specific claim.
+
+## Configure Authorization server
+
+Create an application in Okta and obtain the discovery URL:
+
+1. Go to **Security** > **API**, then **Add Authorization Server**:
+   
+   ![Create Okta API](/assets/okta-configure-create-api.CCconHiF.png)_Create Okta API_
+   
+2. Define the name, audience, and provide a useful description.
+   
+3. When the authorization server is created, obtain the [Discovery URL](https://developer.okta.com/docs/reference/api/oidc/#well-known-openid-configuration).
+   
+   You will need this in the next section. It should look like this `https://acme.okta.com/oauth2/aushqgufq8Ir4qSrw357/.well-known/openid-configuration`.
+   
+
+## Create a Workato API client and API key
+
+Configure an API client in Workato with OpenID Connect authentication, then generate an API key to use as the claim value.
+
+1. Go to **Platform > API platform** > **Clients**. Learn more about [API clients](/en/api-mgmt/api-client-mgmt#api-clients).
+   
+   ![Open Workato API platform](/assets/open-api-platform.DNw7wyGq.png)_Open Workato API platform_
+   
+2. Create a new client, or select an existing client, and select **OpenID Connect** as the authentication method.
+   
+   ![Choose OpenID Connect](/assets/choose-oidc.C4DJrWSo.png)_Choose OpenID Connect_
+   
+3. Paste the Discovery URL that you obtained in the previous section.
+   
+   ![Provide Discovery URL](/assets/provide-discovery-url.CP1H-jbg.png)_Provide Discovery URL_
+   
+4. Optionally, apply [advanced settings](/en/api-mgmt/jwt-workato-claim#advanced-settings), then click **Next**.
+   
+5. [Create a new API key](/en/api-mgmt/api-client-mgmt#create-a-new-application) for the client and copy it:
+   
+   ![Copy key](/assets/copy-access-profile-key.DaSd_TEF.png)_Copy_
+   
+
+## Configure JWT claim
+
+Configure the Okta authorization server to include the API key.
+
+1. Go back to the Authorization server in Okta and find the Claims tab:
+   
+   ![Configure custom claim value](/assets/okta-add-custom-claim.6a5tvanb.png)_Configure custom claim value_
+   
+2. Edit the claim that you chose for passing the API key.
+   
+3. Paste the API key in the **Value** field. Ensure that it is wrapped in single quotes `'`:
+   
+   ![Paste access profile key](/assets/okta-paste-access-profile-key.DSvxGVrP.png)_Paste API key_
+   
+
+Setup is now complete. All tokens generated by this authorization server will now be accepted and validated by API platform.
+
+## Signing key rotation
+
+IdPs often rotate signing keys to ensure a better security posture. This will be automatically reflected in the contents of the discovery URL. Workato will internally update the signing key and associated key IDs to ensure there is no disruption to API traffic.
+
+---

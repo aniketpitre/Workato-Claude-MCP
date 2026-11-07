@@ -1,0 +1,86 @@
+---
+url: 'https://docs.workato.com/en/api-mgmt/traffic-mirroring.md'
+description: >-
+  Configure API traffic mirroring to send Workato API request and response
+  payloads to a SIEM provider for anomaly detection and PII monitoring.
+---
+
+# API traffic mirroring
+
+API traffic mirroring allows you to mirror API traffic from your API collections to your external security information and event management (SIEM) provider for advanced analysis, including anomaly detection and PII monitoring. Enable this feature to send API request and response payloads, along with metadata, to your SIEM tool.
+
+> **PRIVATE RELEASE**
+> 
+> This feature is in private release. Private release features are available in production but only to selected customers. Contact your Customer Success Manager to enable this feature.
+
+## Supported destinations
+
+API traffic mirroring currently supports traffic mirroring to [SALT Security](https://salt.security/). Additional REST-based APIs may be supported in the future.
+
+## Configure API traffic monitoring
+
+Complete the following steps to configure API traffic mirroring with SALT Security:
+
+1. Go to **Platform > API Platform > Settings > Traffic mirroring**.
+   
+2. Click **Set up connection** to open the **Connect to HTTP** dialog.
+   
+   ![Set up your connection](/assets/traffic-connection.DP-jun7_.png)_Set up your connection_
+   
+   If you already have an existing HTTP connection, select it from the list. Otherwise, create a new connection by entering the required details.
+   
+3. Enter a **Connection name**, such as `SALT Security`.
+   
+   ![Set up your connection](/assets/traffic-connection-dialog.D9ejWh4x.png)_Set up your connection_
+   
+4. Select **Cloud** as the **Connection type**.
+   
+5. Select **Header auth** as the **Authentication type**.
+   
+6. Expand **Header authorization** and enter the following key-value pair:
+   
+   - **Key**: `Authorization`
+   - **Value**: `Basic {SALT_API_TRAFFIC_COLLECTOR_TOKEN}`
+   
+   For example, if your SALT API traffic collector token is `abc123XYZ`, enter `Basic abc123XYZ` in the header **Value** field.
+   
+   ![Enter header values](/assets/enter-header-values.Bbd-bhQf.png)_Enter header values_
+   
+   > **TOKEN MANAGEMENT**
+   > 
+   > Retrieve the SALT API traffic collector token from your SALT Security instance or representative. Workato uses this token for authentication but does not manage or rotate it. You are responsible for ensuring its security and availability.
+   
+7. Optional. Use the **Endpoint has case-sensitive headers?** drop-down menu to specify whether your endpoint requires exact case matching for headers. Select **Yes** if exact matching is required, or **No** if case sensitivity is not required. The default is **No**.
+   
+8. Optional. Enter the **Base URL** for your mirroring service. This URL applies to all requests and cannot be overridden by recipes.
+   
+9. Click **Connect** to establish the connection.
+   
+10. Enter the endpoint for mirroring API request data in the **Request destination URL** field.
+    
+    ![Specify your destination URLs](/assets/specify-destination.CGMUNDKn.png)_Specify your destination URLs_
+    
+11. Enter the endpoint for mirroring API response data in the **Response destination URL** field.
+    
+    > **SEPARATE ENDPOINTS**
+    > 
+    > Workato mirrors API requests and responses separately to two distinct endpoints specified in the URL fields.
+    
+12. Verify that the provided endpoints are valid and accessible to your mirroring service.
+    
+13. Click **Save** to apply the configuration.
+    
+
+### Mirroring retry
+
+If API traffic fails to mirror, Workato retries three times within a 10-minute period.
+
+### Email notifications
+
+Workato sends email notifications to your workspace's error notification recipients for the following events:
+
+- Connection disconnected voluntarily
+- Connection lost
+- Traffic mirroring errors, such as a **401 Unauthorized** error
+
+---

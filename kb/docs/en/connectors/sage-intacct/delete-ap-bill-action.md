@@ -1,0 +1,205 @@
+---
+url: 'https://docs.workato.com/en/connectors/sage-intacct/delete-ap-bill-action.md'
+description: The Delete AP bill action deletes the AP bill entry from Sage Intacct.
+---
+
+# Sage Intacct (Custom) - Delete AP bill action
+
+The **Delete AP bill** action deletes the AP bill entry from Sage Intacct.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Record number | Provide the record number for the AP bill to delete. |
+
+## Output
+
+| Output fields | Description |
+| --- | --- |
+| Status | Returns the status of the action. |
+
+---
+
+---
+url: >-
+  https://docs.workato.com/en/connectors/sage-intacct/get-ap-bill-by-record-number-action.md
+description: >-
+  The Get AP bill by record number action retrieves AP bill details based on the
+  provided record number from Sage Intacct.
+---
+
+# Sage Intacct (Custom) - Get AP bill by record number action
+
+The **Get AP bill by record number** action retrieves AP bill details based on the provided record number from Sage Intacct.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Record number | Provide the record number for the AP bill to retrieve. |
+
+## Output
+
+| Output fields | Description |
+| --- | --- |
+| Record number | Unique identifier for the AP bill record. |
+| Record type | Type of record. |
+| Bill number | The bill invoice number. |
+| Contact tax group | Tax grouping related to the contact/vendor. |
+| Financial entity | The financial entity involved in the transaction. |
+| State | Payment state or status of the bill. |
+| Raw state | Raw status code of the bill. |
+| Vendor entity | The vendor's entity reference. |
+| Vendor ID | Unique identifier for the vendor. |
+| Vendor name | Name of the vendor. |
+| Vendor key | Internal key for the vendor. |
+| Form 1099 type | 1099 tax form type associated with the vendor. |
+| Form 1099 box | Specific box on the 1099 form. |
+| Vendor type form 1099 type | Vendor classification for 1099 reporting. |
+| Vendor due | Total amount due to the vendor. |
+| Reference number | Reference number for the bill. |
+| Description | Description or memo of the bill. |
+| Document ID | Identifier for the related document. |
+| Term | Payment terms. |
+| Term key | Internal key for payment terms. |
+| Term value | Detailed value of terms. |
+| Date | Date of the bill document. |
+| GL posting date | Date the transaction posts to the General Ledger. |
+| Discount date | Date by which payment discounts apply. |
+| Due date | Payment due date. |
+| Date fully paid | Date when bill was fully paid. |
+| Recommended to pay on | Recommended payment date. |
+| Payment priority | Priority for payment. |
+| Place this bill on hold | Indicates if the bill is on hold (true/false). |
+| Base currency | Base currency of the transaction. |
+| Transaction currency | Currency used in transaction. |
+| Exchange rate date | Date used for exchange rate. |
+| Exchange rate type | Type of exchange rate applied. |
+| Exchange rate | Actual exchange rate value. |
+| Total amount | Total amount of the bill. |
+| Total selected | Total amount selected for payment. |
+| Total paid | Total amount paid. |
+| Total due | Total amount still due. |
+| Total transaction amount | Total amount in transaction currency. |
+| Total transaction amount selected | Amount selected in transaction currency. |
+| Total transaction amount paid | Amount paid in transaction currency. |
+| Total transaction amount due | Amount due in transaction currency. |
+| Pay to | Vendor name to pay. |
+| Return to | Vendor name to return goods/services. |
+| Pay-to contact key | Internal contact key for payment. |
+| Return-to contact key | Internal contact key for returns. |
+| Summary | Summary description or batch info. |
+| Summary key | Internal key for summary. |
+| Module key | Module identifier. |
+| Recurring schedule key | Key for recurring billing schedule. |
+| System generated | Flag indicating if record was system generated (T/F). |
+| Audit when created | Timestamp when the bill was created. |
+| When modified | Timestamp when the bill was last modified. |
+| Created by | User ID who created the bill. |
+| Modified by | User ID who last modified the bill. |
+| Due in | Number of days until due. |
+| Record number | A unique number belonging to the AP bill record. |
+| Inclusive taxes | Indicates if taxes are included in amounts. |
+| Tax solution | Tax solution applied. |
+| Default retainage percentage | Default retainage % for the bill. |
+| Total txn amount retained | Amount retained from transaction. |
+| Total txn amount released | Amount released from retainage. |
+| Total retained amount | Total amount retained. |
+| Attachment | Attachment information or link. |
+| Bill back template | Template used for bill backs. |
+| Bill back template use IET offset | Use of IET offset for bill back template. |
+| Modified by | User who last modified. |
+| Created by | User who created. |
+| Source | Source of the bill data. |
+| Import exceptions | Exceptions encountered during import. |
+| Recipient email | Email address of recipient. |
+| Sender email | Email address of sender. |
+| Source module | Module from which the record originates. |
+| Retainage release | Indicates if retainage has been released (true/false). |
+| Invoice key | Key of the invoice related to the bill. |
+| Retainage invoice type | Type of retainage invoice. |
+| Created at - entity key | Entity key where the bill was created. |
+| Created at - entity ID | Entity ID where the bill was created. |
+| Created at - entity name | Name of the entity where bill was created. |
+| Record URL | URL to access the record in Sage Intacct. |
+
+---
+
+---
+url: >-
+  https://docs.workato.com/en/connectors/sage-intacct/search-bank-feed-entries-action.md
+description: >-
+  The Search bank feed entries action retrieves the bank feed entries matching
+  the search criteria from Sage Intacct.
+---
+
+# Sage Intacct (Custom) - Search bank feed entries action
+
+The **Search bank feed entries** action retrieves the bank feed entries matching the search criteria from Sage Intacct.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Record number | Provide the record number of the bank feed entry to search for. |
+| Bank account ID | Provide the bank account ID to search for. |
+| Bank account name | Provide the bank account name to search for. |
+| Description | Provide the description to search for. |
+
+## Output
+
+| Output fields | Description |
+| --- | --- |
+| Record number | Unique identifier for the individual bank feed entry record. |
+| Bank account ID | The unique identifier or code of the bank account linked to the feed entry. |
+| Bank account name | The name or label of the bank account associated with the transaction. |
+| Account transaction feed key | Internal system key identifying the bank feed transaction. |
+| Transaction ID | External or internal transaction identifier (often from the bank). |
+| Bank account reconciliation key | Internal key for the reconciliation batch the transaction belongs to. |
+| Posting date | The date the transaction is posted to the general ledger or bank account. |
+| Transaction type | Type of transaction. |
+| Document type | Type of source document. |
+| Document number | Identifier of the document linked to the transaction. |
+| Payee | The name of the entity or individual associated with the transaction. |
+| Transaction amount | The total amount of the bank transaction. |
+| Description | Textual description or memo associated with the transaction. |
+| Cleared | Indicates if the transaction has been cleared during bank reconciliation. |
+| Amount to match | The portion of the transaction amount that remains to be matched or reconciled. |
+| Record data | Raw or structured data details captured from the bank feed. |
+| When created | Timestamp when the feed entry was created in Intacct. |
+| When modified | Timestamp of the most recent modification to the entry. |
+| Created by | User ID or system that created the feed record. |
+| Modified by | User ID who last modified the feed record. |
+| Feed type | Indicates how the data was fed into Intacct. |
+| Currency | The currency in which the transaction was made. |
+
+---
+
+---
+url: >-
+  https://docs.workato.com/en/connectors/sage-intacct/update-sales-purchase-order-custom-fields-action.md
+description: >-
+  The Update sales/purchase order custom fields action updates the custom fields
+  of a sales order/purchase order document in Sage Intacct.
+---
+
+# Sage Intacct (Custom) - Update sales/purchase order custom fields action
+
+The **Update sales/purchase order custom fields** action updates the custom fields of a sales order/purchase order document in Sage Intacct.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Object | Select the object from the drop-down menu. |
+| Record number | Provide the record number of the object to update. |
+| Custom fields | Provide comma-separated custom field names. |
+
+## Output
+
+| Output fields | Description |
+| --- | --- |
+| Record number | Returns the record number of updated record. |
+
+---

@@ -1,0 +1,66 @@
+---
+url: 'https://docs.workato.com/en/recipes/optimizing-task-usage.md'
+description: >-
+  Learn strategies to reduce Workato task usage, including poll frequency,
+  scheduled jobs, and batch or bulk triggers and actions.
+---
+
+# Optimizing task usage
+
+There are many different ways of building recipes and some strategies can be adopted to handle task usage. The document below suggests a few strategies customers can adopt if they want to adjust their task usage and which strategy they can implement is up to their business use cases.
+
+The considerable practices in this article are summarized to the following, which recipe developers can review while building recipes ;
+
+- How often the recipe needs to be triggered
+- Can batch/bulk actions be utilized
+- Efficient use of Workato tools
+
+## Adjust poll trigger frequency
+
+To know how often a recipe needs to be triggered depends on the business use case. Some recipes simply have to run in real-time for critical updates, others that sync data for storage and other purposes may not have this requirement. In these instances, it is possible to reduce the number of jobs and hence, tasks processed, by configuring the polling interval.
+
+A recipe’s default polling interval occurs every 5 minutes. Most Workato triggers are poll-based triggers. This means that it checks the trigger application for the trigger events it is monitoring at regular intervals of 5 minutes.
+
+To adjust trigger frequency, a customer can use the `Trigger Poll Interval` field. It is available as an optional configuration in the trigger setup. This field allows a customer to either choose from a set of options, for example, every 6 hours / 1 day / 30 days, or define their own poll interval in minutes.
+
+![Modifying the polling interval](/assets/optimizing-task-manage-1.BdcJ8C4B.png)_Modifying the polling interval_
+
+From modifying the polling interval, a customer can manage the number of times the recipe has to process each step and improve task usage. This strategy can be used in conjunction with batch or bulk triggers and actions.
+
+## Implement scheduled jobs
+
+Similar to customizing polling frequency as described above, using the `Scheduler by Workato` or other scheduled batch triggers to schedule jobs can be adopted to adjust the number of jobs that have to be processed in a certain time period.
+
+Using a scheduled trigger (eg. run once a day, run every hour) as opposed to using regular polls every 5 minutes to check for new events will help to manage the number of jobs required to process the same number of records in larger batches.
+
+## Use batch/bulk triggers and actions
+
+Batch and bulk triggers and actions are available on all connectors that support these operations via API. Since these triggers and actions can process hundreds to millions of records with a single action, using them, as opposed to single record operations, can substantially help to manage task usage in a job.
+
+Instead of processing 1 record (1 task) at a time, you can process 100 record batches (counts as 1 task). This would reduce task usage by a factor of 100.
+
+![Batch/bulk triggers and actions](/assets/optimizing-task-manage-2.BD5KQNge.png)_Using batch/bulk triggers and actions_
+
+Most batch and bulk triggers allow the specification of a batch size (eg. process 100 records in a batch), which usually translates to the number of records processed in a single job. Using larger batch sizes will help cut down the number of jobs and correspondingly, the number of tasks.
+
+To use batch and bulk actions, first ensure that your workspace has the **ELT/ETL Bulk data processing** capability. This allows access to batch and bulk actions.
+
+Secondly, check that the applications in the recipe support batch/bulk [triggers](/en/recipes/triggers) and [actions](/en/recipes/actions). Find supported triggers and actions in certain connectors, such as database connectors (SQL Server, MySQL, etc.), cloud storage connectors that work with CSV files (for example, Box, Amazon S3), Salesforce connector, etc. We recommend matching a batch/bulk trigger with batch/bulk actions.
+
+## Use streaming actions
+
+Streaming is the concept of reading and writing a file in smaller parts (chunks) in sequence. This allows Workato to transfer large files between apps or file systems without worrying about hitting the size limit of the sending and receiving systems. A common example is transferring records from a shared file system (SFTP) to a file hosting platform for analysis (Amazon S3).
+
+Streaming actions allow a single action to process large amounts of data without the need to break it up into multiple jobs for processing. Note that both the download source and upload destination actions have to support streaming.
+
+## Declare multiple variables
+
+![Declare multiple variables](/assets/optimizing-task-manage-3.D1xmmJiO.png)_Declare multiple variables_
+
+Multiple variables can be declared in a single step where possible to cut down on tasks. To do so, use the ‘Create variables’ action and the ‘+ Add variable’ button to declare multiple variables at once.
+
+> **TIP**
+> 
+> The ability to declare multiple variables in a single step was added in Spring 2021. Workato recommends all admins to revisit existing recipes where many variables are created to consolidate them into a single step if possible.
+
+---

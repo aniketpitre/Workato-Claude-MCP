@@ -1,0 +1,79 @@
+---
+url: 'https://docs.workato.com/en/developing-connectors/sdk/sdk-reference/methods.md'
+description: >-
+  Reference for the methods key in the Workato connector SDK, used to define
+  reusable functions callable from any lambda in your connector.
+---
+
+# SDK Reference - `methods`
+
+Reusable methods are supported in Workato. Reusable methods help keep your custom adapter code DRY and may be used in any lambda function in your connector.
+
+> **Quick Overview**
+> 
+> Reusable methods are the same as custom functions that can be called in any portion of the code. Use them to keep your code concise and maintainable.
+
+## Structure
+
+```ruby
+    methods: {
+
+      [Unique_method_name]: lambda do |[unique_argument_name]|
+        Array, Hash, String, Int, Boolean
+      end,
+
+      [Another_unique_method_name]: lambda do |[unique_argument_name], [another_unique_argument_name]|
+        Array, Hash, String, Int, Boolean
+      end
+    },
+```
+
+* * *
+
+| Attribute | Description |
+| --- | --- |
+| Key | `[Unique_method_name]` |
+| Type | lambda function |
+| Required | True |
+| Description | This lambda function can be invoked anywhere in the connector code such as actions, triggers, object\_definitions, or even other methods. This is done by the using the special syntax `call('unique_method_name', input)` |
+| Possible Arguments | Arguments can be defined by you. There can be any number of arguments. Splat operators are not allowed. |
+| Expected Output | Variable |
+
+Example - methods: - Using a reusable method
+
+Use the `call()` method to reference a method. This method takes in two parameters:
+
+1. The method name - You can use either "method\_name" (string) or :method\_name (symbol) representations.
+2. Input fields - This is mapped to the arguments defined in the method definition.
+
+Here we have the definition of a recursive method which returns the factorial of a number.
+
+```ruby
+    methods: {
+      factorial: lambda do |input|
+        number = input['number']
+        if number > 1
+          number * call('factorial', { number: number - 1 })
+        else
+          number
+        end
+      end
+    }
+```
+
+```ruby
+    actions: {
+      factorial: {
+        input_fields: lambda do
+          [
+            { name: "number", type: :integer }
+          ]
+        end,
+
+        execute: lambda do |connection, input|
+          { factorial: call(:factorial, { number: input['number'] }) }
+        end
+    },
+```
+
+---

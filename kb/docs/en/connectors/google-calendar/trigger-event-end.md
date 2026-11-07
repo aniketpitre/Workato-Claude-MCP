@@ -1,0 +1,60 @@
+---
+url: 'https://docs.workato.com/en/connectors/google-calendar/trigger-event-end.md'
+description: The Event end trigger monitors a calendar you specify for ending events.
+---
+
+# Google Calendar - Event end trigger
+
+The **Event end** trigger monitors a calendar you specify for ending events. When you first run the recipe, it fetches events that ended in the past hour. It then retrieves new events as soon as they end.
+
+> **ENSURE CALENDAR ACCESS**
+> 
+> Ensure the calendar you plan to monitor is accessible from your connected account and that you have the necessary permissions to access events.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Calendar | Select the calendar you plan to monitor for ending events. |
+| Search term | Enter search terms that the event must contain in order to trigger a job. This field searches the event's **Summary**, **Location**, **Description**, and the **Display name** and **Email** of attendees and organizers. |
+
+## Output
+
+| Output field | Description |
+| --- | --- |
+| Calendar ID | The Google ID of the calendar that contains the event. |
+| Kind | The type of the resource, such as `calendar#event`. |
+| Etag | The etag for the event. |
+| Color ID | The Google ID for the color attached to the event. |
+| Event import ID | The Google import ID for the event. |
+| ID | The Google ID for the event. |
+| Status | The status of the event, such as `confirmed` or `cancelled`. |
+| URL | The URL for the event. |
+| Created | A timestamp indicating when the event was created. |
+| Updated | A timestamp indicating when the event was last updated. |
+| Summary | The title of the event. |
+| Description | The description of the event. |
+| Location | The location of the event. |
+| Start | The start time of the event. |
+| End | The end time of the event. |
+| Recurrence | The recurrence rules for the event. |
+| Recurring event ID | The Google ID of the recurring event. |
+| Original start time | Contains information about the start time of the event, such as: **Date time:** The date and time of the event., **Time zone:** The time zone of the event. |
+| Visibility | The visibility of the event, such as `Public` or `Private`. |
+| Reminders | Contains information about the event's reminder settings, such as: **Use default:** Indicates whether the default reminder settings are used., **Overrides:** Contains specific reminder overrides for this event. |
+| Show me as | The availability to display during the event, such as `Busy` or `Available`. |
+| Hangout link | A link to the Google Hangout associated with the event. |
+| Sequence | The sequence number of the event. |
+| Guests can modify | Indicates whether guests can modify the event. |
+| Guests can see other guests | Indicates whether guests can see other guests. |
+| Attachments | Contains information about the event's attachments, such as: **File URL:** The URL of the attached file., **Title:** The title of the attachment., **Mime type:** MIME type of the file., **Icon link:** A link to the icon representing the file type., **File ID:** A unique identifier for the file., **List size:** The number of attachments., **List index:** The position of this attachment in the list. |
+| Attendees | Contains information about the event's attendees, such as: **ID:** A unique identifier for the attendee., **Email:** The email address of the attendee., **Name:** The name of the attendee., **Self:** Indicates whether the attendee is the user managing the calendar., **Response status:** The attendee's response status for the event invitation., **Comment:** Any comment provided by the attendee., **List size:** The number of attendees in the list., **List index:** The position of the current attendee in the list. |
+| Creator | Contains information about the event's creator, such as: **ID:** A unique identifier for the creator., **Email:** The email address of the creator., **Name:** The name of the creator., **Self:** Indicates whether the creator is the user managing the calendar. |
+| Organizer | Contains information about the event's organizer, such as: **ID:** A unique identifier for the organizer., **Email:** The email address of the organizer., **Name:** The name of the organizer., **Self:** Indicates whether the organizer is the user managing the calendar. |
+| Conference data | Contains details about conference data for the event, such as: **Create request:** Contains information on the conference creation request., **Entry points:** Contains information about entry points for the conference., **Conference solution:** Contains information about the conference solution., **Conference ID:** A unique identifier for the conference., **Signature:** A signature for the conference data., **Notes:** Any additional notes attached to the conference. |
+| Focus time properties | Contains details about the event's focus time properties, such as: **Auto decline mode:** Indicates whether to automatically decline meetings during focus time., **Decline message:** The message sent when meetings are automatically declined., **Chat status:** The status of chat during focus time. |
+| Out of office properties | Contains details about the event's out of office properties, such as: **Auto decline mode:** Indicates whether to automatically decline meetings during out of office events., **Decline message:** The message sent when an event is declined due to being out of office. |
+| Working location properties | Contains details about the event's working location properties, such as: **Type:** The type of working location., **Home office:** The home office location., **Custom location:** The custom working location., **Office location:** Contains information about the office location. |
+| Event type | The type of event. |
+
+---

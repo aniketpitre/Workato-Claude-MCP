@@ -1,0 +1,266 @@
+---
+url: >-
+  https://docs.workato.com/en/connectors/oracle-fusion-cloud/triggers/new-business-event.md
+description: >-
+  The New business event trigger monitors Oracle Fusion Cloud for new business
+  events and triggers immediately when they occur.
+---
+
+# Oracle Fusion Cloud - New business event trigger
+
+The **New business event** trigger monitors Oracle Fusion Cloud for new business events in real time.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Event | Select the business event to monitor. |
+
+What event types are supported?
+
+This trigger supports the following event types:
+
+- Item Create Event
+- Item Update Event
+- Item Bulk Load Event
+- Item Publication Event
+- Oracle Health Publication Event
+- Item CrossReference Relationship Create Event
+- Item CrossReference Relationship Update Event
+- Item CrossReference Relationship Delete Event
+- Trading Partner Item Relationship Create Event
+- Trading Partner Item Relationship Update Event
+- Trading Partner Item Relationship Delete Event
+- Related Item Relationship Create Event
+- Related Item Relationship Update Event
+- Related Item Relationship Delete Event
+- Source System Item Relationship Create Event
+- Source System Item Relationship Update Event
+- Source System Item Relationship Delete Event
+- GTIN Item CrossReference Relationship Create Event
+- GTIN Item CrossReference Relationship Update Event
+- GTIN Item CrossReference Relationship Delete Event
+- Data Pool Subscription Confirmation Sent Event
+- Data Pool Subscription Event
+- Product Upload Status Change Event
+- Item Catalog Category Assignment Change Event
+- Item Category Assignment Delete Event
+- New Item Request Opened
+- New Item Request Status Changed To Definition
+- New Item Request Status Changed To Approval
+- New Item Request Scheduled
+- New Item Request Completed
+- Bulk Delete Event
+- Item Level Multi Row EFF Delete Event
+- Item Revision Level Multi Row EFF Delete Event
+- Item Supplier Level Multi Row EFF Delete Event
+- Item Import Job Complete Event
+- Shipment Request Generate Event
+- Manifest Request Event
+- Advanced Shipment Notice Event
+- Pick Confirm Event
+- Create Transfer Order Line
+- Modify Transfer Order Line
+- Create Movement Request
+- Outbound Direct Work Order Transactions
+- ASN creation event
+- ASN cancellation event
+- Create Inbound ASN
+- Cancel Inbound ASN
+- Create Receiving Receipt event
+- Create Deliver Transaction event
+- Create Correction Transaction event
+- Create Return Transaction event
+- Receipt Advice Event Notification
+- Outbound Receipt Advice
+- Print Label Request Event
+- Work Order Create
+- Work Order Update
+- Print Product Label Event
+- Order Status Updated
+- Sales Order Notification
+- Sales Order Transportation Planning
+- Sales Order Trade Compliance Screening
+- Item Structure Create Event
+- Item Structure Update Event
+- Item Structure Component Create Event
+- Item Structure Component Update Event
+- Change Order Scheduled Event
+- Change Order Open Event
+- Change Order Interim Approval Event
+- Change Order Approval Event
+- Change Order Completed Event
+- Change Order Scheduled Event V2
+- Change Order Open Event V2
+- Change Order Interim Approval Event V2
+- Change Order Approval Event V2
+- Change Order Completed Event V2
+- Shipment Advice Event
+- Trade Screening Request Event
+- Backorder Line Event
+- Outbound Shipment Request
+- Standard Cost Published Event
+- Standard Cost Exported Event
+- Transfer Price Published Event
+- Financial Orchestration Transfer Price Business Event
+- Customer Asset Created
+- Customer Asset Updated
+- Customer Asset Relationship Created
+- Customer Asset Relationship Deleted
+- Maintenance Asset Created
+- Maintenance Asset Updated
+- Inspection Business Event
+- B2B Message Created
+- Manufacturer Create Event
+- Manufacturer Update Event
+- Debrief Header Updated
+- Estimate Header Created
+- Estimate Header Updated
+- Project Status Event
+- Publish Progress Event
+- Plan Change Event
+- Project Task Progress Status Changed
+- Project Milestone Completion
+- Project Deliverable Status Changed
+- Project Resource Request Status Changed
+- Project Gate Status Changed
+- Project Gate Approver Status Changed
+- Unplanned Project Cost Event
+- Project Change Order Status Changed
+- Project Work Plan Baseline Creation
+- Project Issue Status Changed
+- Plan Status Changed Event
+- Purchase Order Event
+- Supplier Created Event
+- Supplier Updated Event
+- Supplier Negotiation Invitation Event
+- Activity Created Event
+- Activity Updated Event
+- Activity Deleted Event
+- Recurrence Activity Created Event
+- Recurrence Activity Updated Event
+- Recurrence Activity Deleted Event
+- Activity Note Created Event
+- Activity Note Updated Event
+- Activity Note Deleted Event
+- Account Created Event
+- Account Updated Event
+- Account Deleted Event
+- Contact Created Event
+- Contact Updated Event
+- Contact Deleted Event
+- BusinessPlan Created Event
+- BusinessPlan Updated Event
+- BusinessPlan Deleted Event
+- Business Plan Note Created Event
+- Business Plan Note Updated Event
+- Business Plan Note Deleted Event
+- Opportunity Created Event
+- Opportunity Updated Event
+- Opportunity Deleted Event
+- Opportunity Note Created Event
+- Opportunity Note Updated Event
+- Opportunity Note Deleted Event
+- Lead Created Event
+- Lead Updated Event
+- Lead Deleted Event
+- Lead Note Created Event
+- Lead Note Updated Event
+- Lead Note Deleted Event
+- Deal Created Event
+- Deal Updated Event
+- Deal Note Created Event
+- Deal Note Updated Event
+- Deal Note Deleted Event
+- Service Request Created Event
+- Service Request Updated Event
+- Service Request Selected Attribute value Changed Event
+- Service Request Deleted Event
+- Service Request Message Created Event
+- Partner Created Event
+- Partner Updated Event
+- Partner Note Created Event
+- Partner Note Updated Event
+- Partner Note Deleted Event
+- Partner Contact Created Event
+- Partner Contact Updated Event
+- Work Order Created Event
+- Work Order Updated Event
+- Asset Created Event
+- Asset Updated Event
+- Asset Deleted Event
+- Resolution Request Updated
+- Loyalty Member Created Event
+- Loyalty Member Updated Event
+- Loyalty Member Voucher Created Event
+- Loyalty Member Voucher Updated Event
+- Contract Created Event
+- Contract Updated Event
+- Contract Deleted Event
+- Contract Status Changed Event
+- Loyalty Member Referral Event
+- Loyalty Transaction Created Event
+- Loyalty Transaction Updated Event
+- Loyalty Member Card Created Event
+- Loyalty Member Card Updated Event
+- Loyalty Member Tier Change Event
+- Loyalty Attribute Created Event
+- Loyalty Attribute Updated Event
+- Subscription Created Event
+- Subscription Updated Event
+- Subscription Deleted Event
+- Subscription AR Integration Event
+- Loyalty Member Promotion Enrollment Event
+- Loyalty Promotion Attribute Created Event
+- Loyalty Promotion Attribute Updated Event
+- ERP Integration Inbound event
+- ERP Integration Outbound event
+- Credit Case Folder Closure Event
+- Credit Case Folder Created
+- Credit Case Folder Refresh Requested
+- Receivables Invoice Completed
+- Receivables Invoice Paid
+- Standard Receipt Created
+- Standard Receipt Reversed
+- Standard Receipt Applied
+- Standard Receipt Unapplied
+- Standard Receipt Deleted
+- Receivables Invoice Incompleted
+- Receivables Credit Memo Applied
+- Receivables Credit Memo Completed
+- Receivables Credit Memo Incompleted
+- Receivables Lockbox Batch Completed
+- Receivables Autoinvoice Completed
+- Invoice Hold Applied
+- Invoice Hold Released
+- Payables Payment Created
+- Payables Invoice Approved
+- Payables Invoice Created
+- Payables Invoice Validated
+- Payables Invoice Cancelled
+- Payables Payment Voided
+- Strategy External Task opened
+- Strategy Closed
+- Payment File Created
+- Journal Batch Approved
+- Journal Batch Posting Completed
+- Accounting Period Opened
+- Accounting Period Closed
+- Accounting Period Reopened
+- Expenses Expense Report Submitted
+- Expenses Expense Report Manager Approved
+- Expenses Expense Report Auditor Approved
+- Expenses Expense Report Held
+- Expenses Expense Report Hold Released
+- Expenses Expense Report Paid
+- Revenue Contract Batch Created
+- CustomPO\_c\_Standard\_Create
+- CustomPO\_c\_Standard\_Update
+- CustomCustomer\_c\_Standard\_Create
+- CustomCustomer\_c\_Standard\_Update
+
+## Output
+
+| Output field | Description |
+| --- | --- |
+| Data | A SOAP-formatted XML payload that includes metadata such as the event destination, tracking identifiers, and user context in the header and event-specific details in the body. |

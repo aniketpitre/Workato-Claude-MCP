@@ -1,0 +1,29 @@
+---
+url: 'https://docs.workato.com/en/connectors/stripe/create-customer-action.md'
+description: >-
+  The Create customer action in the Stripe connector lets you create a new
+  customer record, including its description, email, and card details.
+---
+
+# Stripe - Create customer action
+
+This action creates a customer in Stripe.
+
+![Create customer action](/assets/create-customer-action.CvNMMKSL.png)_Create customer action_
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| Description | Enter a description for the customer. |
+| Email | Enter an email for the customer. |
+| Object | Click the **Card** drop-down menu and enter `card` as the payment source. This is the only object accepted. |
+| Expiration month | Enter the month that the card expires. This must be two digits, for example, `04` or `12`. |
+| Expiration year | Enter the year that the card expires. This can be either two or four digits, for example, `27` or `2027`. |
+| Card number | Enter the card number to which you plan to apply the charge. Do not use separators. |
+
+## Output
+
+The output of this action is a datatree that contains information about the [Stripe object](https://stripe.com/docs/api/customers/object).
+
+---

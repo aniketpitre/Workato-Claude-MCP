@@ -1,0 +1,80 @@
+---
+url: 'https://docs.workato.com/en/connectors/freshservice/create-agent-action.md'
+description: This action allows you to create a new agent in Freshservice.
+---
+
+# Freshservice - Create agent action
+
+The **Create agent** action allows you to create a new agent in Freshservice.
+
+## Input
+
+| Input field | Description |
+| --- | --- |
+| First name | Provide the first name of the agent. |
+| Last name | Provide the last name of the agent. |
+| Occasional | Select the boolean value from the drop-down menu. Set true if the agent is an occasional agent, and false if a full-time agent. |
+| Job title | Provide the agent's job title. |
+| Email | Provide the agent's email address. |
+| Work phone number | Provide the agent's work phone number. |
+| Mobile phone number | Provide the agent's mobile phone number. |
+| Department IDs | Provide the unique IDs of the departments associated with the agent |
+| Can see all tickets from associated departments | Select the boolean value from the drop-down menu. Set to true if the agent must be allowed to view tickets filed by other members of the department, and false otherwise |
+| Reporting manager ID | Provide the user ID of the agent's reporting manager. |
+| Address | Provide the agent's address. |
+| Time zone | Provide the agent's time zone. |
+| Time format | Provide the agent's time format. Possible values include: 12h (12 hour format) and 24h (24 hour format). |
+| Language | Specify the language used by the agent. |
+| Location ID | Provide the unique ID of the location associated with the agent. |
+| Background information | Provide the background information of the agent. |
+| Scoreboard level ID | Provide the unique ID of the agent's level in the arcade. Possible values include: 1 (Beginner), 2 (Intermediate), 3 (Professional), 4 (Expert), 5 (Master), and 6 (Guru) |
+| Member of | Provide the unique IDs of the groups that the agent is a member of. |
+| Observer of | Provide the unique IDs of the groups that the agent is an observer of. |
+| Roles | Each individual role is a hash in the roles array that contains attributes like role ID, assignment scope, and groups. Provide the appropriate values in the respective fields. |
+| Signature | Provide the signature of the agent in HTML format. |
+| Custom fields | Provide the key-value pair containing the names and values of the (custom) agent fields. |
+
+## Output
+
+| Field | Description |
+| --- | --- |
+| Agent ID | A unique identifier assigned to the agent. |
+| First name | First name of the agent. |
+| Last name | Last name of the agent. |
+| Occasional | Indicates whether the agent is an occasional user (true/false). |
+| Active | Indicates whether the agent is currently active (true/false). |
+| Job title | Job title of the agent. |
+| Email | Email address of the agent. |
+| Work phone number | Work phone number of the agent. |
+| Mobile phone number | Mobile phone number of the agent. |
+| Department IDs | Unique IDs of the departments associated with the agent. |
+| Can see all tickets from associated departments | Indicates whether the agent has access to all tickets within their department (true/false). |
+| Auto assign tickets | Indicates whether tickets are automatically assigned to the agent. |
+| External ID | A unique identifier for external system integrations. |
+| Department names | The names of the departments the agent is associated with. |
+| Auto assign status changed at | The timestamp when the auto-assign status was last changed. |
+| Reporting manager ID | User ID of the agent's reporting manager. |
+| Address | Address of the agent. |
+| Time zone | Time zone of the agent. |
+| Time format | Time format for the agent. |
+| Language | Language used by the agent. |
+| Location ID | Unique ID of the location associated with the agent. |
+| Background information | Background information of the agent. |
+| Scoreboard level ID | Unique ID of the level of the agent in the Arcade. |
+| Scopes | The permissions and access levels assigned to the agent. |
+| Member of | Unique IDs of the groups that the agent is a member of. |
+| Observer of | Unique IDs of the groups that the agent is an observer of. |
+| Roles | The roles assigned to the agent, defining their permissions. |
+| Last login at | The last recorded time the agent logged in. |
+| Last active at | The last recorded time the agent was active. |
+| Has logged in | Indicates whether the agent has ever logged into the system (true/false). |
+| Signature | Signature of the agent in HTML format. |
+| VIP user | Indicates whether the agent is considered a VIP user. |
+| Work schedule ID | The identifier for the agent’s assigned work schedule. |
+| Workspace IDs | The IDs of the workspaces the agent is associated with. |
+| Workspace info | Additional information about the agent’s workspace. |
+| Created at | The timestamp when the agent profile was created. |
+| Updated at | The timestamp when the agent profile was last updated. |
+| Custom fields | Key-value pair containing the names and values of the (custom) agent fields. |
+
+---

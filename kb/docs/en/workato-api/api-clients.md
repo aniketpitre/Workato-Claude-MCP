@@ -1,0 +1,172 @@
+---
+url: 'https://docs.workato.com/en/workato-api/api-clients.md'
+description: >-
+  Learn how Developer API clients scope endpoint, environment, and project
+  access at the workspace level and replace legacy full-access API keys.
+---
+
+# API clients and roles
+
+API clients allow you to enforce security best practices by creating multiple clients with configurable access to each endpoint. API client requests require a single header for authentication.
+
+API clients are scoped at the **workspace level**, not to individual users. This means that they operate with the permissions defined in their assigned client role, independent of the individual user who created them.
+
+> **LEGACY FULL ACCESS API KEYS**
+> 
+> Prior to API clients, Workato's API used a legacy full-access API key and email in **request headers** or the **query parameters** to authenticate requests. This legacy feature is still supported, however we strongly recommend that you migrate to API clients for authentication. [Learn more](/en/workato-api/moving-to-api-client-authentication-faq)
+> 
+> Note that migration is different from deletion. If you delete the legacy API client, your API key and email cannot be recovered and requests using this API key and email will be rejected.
+
+## API client benefits
+
+Workato's developer and embedded APIs allow you to automate your Workato workspace, including deploying recipe manifests from development to production and deploying new on-prem agents within your network landscape. API clients allow you to improve your organization's security by provisioning API access specific to each application's use case.
+
+API clients and assignable roles allow you to scope API access on different levels:
+
+- API clients are assigned roles that define the API endpoints they can interact with.
+- API clients are assigned environments, for example DEV, TEST, or PROD, that they are allowed to make API calls to. **Environments are available to customers on specific pricing plans and may not be available to your workspace**.
+- API clients are assigned projects. This limits API access to specific assets within those projects.
+
+You can create individual clients specific to API endpoints and to various projects within your workspace. Workato Developer API client tokens are integrated with [Github Secret Scanning](/en/workato-api/github-secret-scanning).
+
+## Create a client role
+
+You must create a client role before you create an API client. The client role allows you to configure which endpoints the API client can access.
+
+To create a client role:
+
+1. Sign in to your Workato account.
+   
+2. Go to **Workspace admin**.
+   
+3. Select **API clients > Client roles > Add client role**. _Creating a new client role_
+   
+4. Enter a **name** for the new client role. For example, "Recipe Operator" for a role that can interact with Recipe API endpoints.
+   
+5. Select the **required endpoints** for the role under each section. All API endpoints available to your workspace are listed under these sections. ![Select the endpoints you plan to enable](/assets/api-client-user-privileges.COmuq9OX.png)_Select the endpoints you plan to enable_
+   
+6. **Save** your role after you are done with your selections. You can [edit the client role](#edit-a-client-role) later if needed.
+   
+
+## Create an API client
+
+Complete the following steps to create an API client:
+
+1. Go to **Workspace admin**.
+   
+2. Select **API clients > Create API client**.
+   
+   _Creating a new API client_
+   
+3. Enter a **name** for the new client that reflects its purpose. For example, "Sales and Marketing - Recipe Operator" for an API client that will be used by the Sales and Marketing team to operate their recipes through the API.
+   
+4. Select the appropriate **client role**. The client role determines which endpoints the API client can access.
+   
+5. If your workspace has **environments** enabled, select the environment the API client is allowed to access.
+   
+6. Select the **projects** the API client is allowed to access. Choose only the projects that are related to the team that will use this API client. Project access rules apply to all assets that can be scoped to projects including: `connections`, `recipes`, `folders`, `lookup tables`, `properties`, `API Platform collections` and `API Platform API Clients`.
+   
+   > **WARNING**
+   > 
+   > API clients for Embedded partners with access to embedded APIs can access all customer workspaces and projects.
+   
+7. Optionally, add **allowed IP ranges** that API requests using this token can originate from. If you call our APIs from a static server, this further secures access to Workato's developer APIs.
+   
+8. **Store the API token** that displays after creating your API client in a secure location, such as AWS Secrets Manager. You will not be able to retrieve the API token again.
+   
+9. **Save** the API client when you done with your configurations. You can [edit the API client](#edit-an-api-client) later if needed.
+   
+
+![API Dashboard Tab](/assets/new-api-token.DGNAM_Dd.png)_New view-once API token_
+
+## Edit a client role
+
+Edits made to client roles are immediately enforced.
+
+To edit an API client role:
+
+1. Navigate to **Workspace admin**.
+   
+2. Select **API clients > Client roles >** select the client role you want to edit.
+   
+3. Add or remove privileges to the client role, and/or edit project access. This immediately impacts all incoming API requests from associated API clients.
+   
+4. **Save** your changes.
+   
+
+## Edit an API client
+
+Edits made to an API client are immediately enforced.
+
+To edit an API client:
+
+1. Navigate to **Workspace admin**.
+   
+2. Select **API clients >** select the API client you want to edit.
+   
+3. Change the client role, and/or edit project access. This immediately impacts all incoming API requests from associated API clients.
+   
+4. **Save** your changes.
+   
+
+## Refresh API client tokens
+
+After creating an API client, you can regenerate a new API token for the existing client. To refresh an API client token:
+
+1. Navigate to **Workspace admin**.
+   
+2. Select **API clients >** select the API client you want to edit.
+   
+3. Select the **refresh** icon located in the top right corner of the page.
+   
+   ![Image of the refresh icon located in the top right corner of the page, right of the cancel button.](/assets/api-client-refreshed.DSce97_k.png)_Selecting the refresh icon to refresh the API client token_
+   
+4. In the **Regenerate API token** modal, select **Regenerate token**. When you regenerate an API token, API calls using your previous API token will fail.
+   
+5. Store your new API token in a secure location, such as AWS Secrets Manager. You will not be able to retrieve this API token again.
+   
+6. Select **Done** to return to editing the API client.
+   
+
+Generating a new token invalidates the previous API token. **Legacy API client tokens cannot be regenerated.**
+
+User error can cause compromised tokens when dealing with custom scripts or applications that upload tokens in plain text to public websites, such as GitHub public repositories or documentation.
+
+## Delete an API client or client role
+
+Use caution when deleting an API client or client role.
+
+- **Deleted API client:** All incoming requests that use the API token of the deleted API client will be rejected.
+  
+- **Deleted client role:** All incoming requests from associated API clients will be rejected.
+  
+
+## FAQs for managing API clients and client roles
+
+1\. How should I configure client roles?
+
+Client roles should be configured with use cases in mind. For example, a "Recipe Operator" client role might have endpoint access to start/stop recipes whereas a "Project Deployment" client role might have access to Recipe Lifecycle Management and Environment Properties endpoints. This can be used in conjunction with project scoping on the API client level to achieve access scoped to both use cases and projects.
+
+As a best practice, the principle of least privilege should be employed when defining client roles.
+
+2\. How should I configure API clients?
+
+Configure API clients with the use case and project in mind. For example, a "Sales and Marketing - Recipe Operator" API client can be provisioned specifically for the Sales and Marketing team. API client configuration allows you to be specific when you define permissions as this increases security, however this also increases complexity as you have to manage more API tokens.
+
+3\. Where should I store my API client tokens?
+
+API client tokens are view-once, meaning that if they are misplaced, they are lost forever. To recover the API client, you must regenerate the token.
+
+Ensure that you store your API tokens in a secure location with controlled access. We recommend you consider tools like AWS Secrets Manager as a way to manage these tokens, especially if you are planning to generate multiple tokens for different teams.
+
+4\. Who has access to API clients and how do I control access?
+
+All environment admins in your workspace have access to API clients. **Environment admin** and legacy **Admin** roles have the **Developer API** and **API platform** privileges. Use caution when adding users as Admins as they have the ability to create, edit, and delete API clients which may impact existing automated workflows using Workato's APIs.
+
+When creating custom roles in your team, you can define access to API clients under the **Workspace admin** section and selecting API clients. Any user assigned this custom role will have full access to the API clients tool.
+
+5\. Why are some endpoints not compatible in my "TEST" and "PROD" environments?
+
+Certain API endpoints in Workato are only available in the "DEV" environment such as "Project deployments" and "Workspace Collaborators". This is because you can only manage these tools from your "DEV" environment.
+
+---
