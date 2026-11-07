@@ -1,7 +1,7 @@
 # Workato × Claude: system architecture and design
 
 Status: **DRAFT for review** · Owner: aniketpitre · Last updated: 2026-11-07
-Related: [lifecycle.md](lifecycle.md) (closed loop), [recipe-accuracy-plan.md](recipe-accuracy-plan.md) (research)
+Related: [agent-team.md](agent-team.md) (virtual Workato team), [lifecycle.md](lifecycle.md) (closed loop), [recipe-accuracy-plan.md](recipe-accuracy-plan.md) (research)
 
 ---
 
@@ -127,6 +127,12 @@ It does this through a repeatable, auditable, closed-loop lifecycle.
 ## 5. Components
 
 ### 5.1 Control plane
+
+The control plane is a **virtual Workato engineering team** of 12 specialised agents (Engagement
+Lead, Business Analyst, Solution Architect, Integration Developer, AI and Agentic Engineer, Connector
+Engineer, QA, Support, Release Manager, Platform Admin and Security, Operations, Knowledge
+Librarian), with separation of duties and per-role permissions. See **[agent-team.md](agent-team.md)**.
+The skills below are the procedures those agents follow.
 
 | Component | Responsibility |
 | --- | --- |
