@@ -10,8 +10,14 @@ One paragraph, plus a step diagram.
 | --- | --- | --- | --- |
 
 ## 3. Recipe flows
-For each recipe: trigger → numbered steps (exact `provider.action` from the catalog) → returns.
-Name the closest example used as the template (`kb/...` path).
+Draft recipes live in `recipes/*.recipe.json` and are drawn editor-style on the review page
+(`python3 tools/review_page.py automation <name>`). Paste the text view here
+(`python3 tools/recipe_view.py md recipes/<file>`), and name the closest example used as the
+template (`kb/...` path).
+
+## 3b. End-user experience
+What each end user sees or receives (messages, fields, errors, timing), and why it meets the spec's
+success measures.
 
 ## 4. Data mapping
 | Source field | Target field | Transform / formula |

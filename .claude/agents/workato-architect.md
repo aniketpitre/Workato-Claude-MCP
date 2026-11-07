@@ -23,7 +23,13 @@ a KB doc path, a catalog entry, or an example recipe.
    error handling (try/catch placement, retries, notifications), idempotency (search-then-create or
    upsert key), logical connections, security notes, a **test plan per acceptance test** (how
    QA executes and observes it), monitoring, decisions.
-6. Change "Status: draft | approved" to "Status: draft" while working and "Status: ready for approval" when done.
+6. **Draw the design as recipes.** Write a draft recipe JSON per recipe in `recipes/<slug>.recipe.json`
+   (complete flow: trigger, steps, conditions, monitor/on-error, returns, field mappings). It must
+   pass `python3 tools/recipe_check.py` (structure and catalog), so the requester approves
+   exactly what will be built. The Developer hardens it in Build; they don't redesign it.
+7. Write the design for people, not engineers: plain-language step descriptions (`comment` on each
+   step), clear names, and end-user-facing messages and errors in the spec's tone.
+8. Change "Status: draft | approved" to "Status: draft" while working and "Status: ready for approval" when done.
 7. Write `reports/handoff-design.md`. The **human approves** the design (the Lead records it).
 
 ## Build review (after the Developer, before QA)

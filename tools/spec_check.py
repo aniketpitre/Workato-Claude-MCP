@@ -105,12 +105,20 @@ def check(spec: dict, path: Path | None = None) -> list[dict]:
     if isinstance(sec, dict) and "pii" not in sec:
         err("security.pii", "state whether personal data is processed (true/false)")
 
+    if not spec.get("end_users"):
+        err("end_users", "who benefits and what they experience (design thinking)", "warn")
+    if not spec.get("success_measures"):
+        err("success_measures", "how the requester will judge success", "warn")
+    for i, q in enumerate(spec.get("open_questions") or []):
+        if isinstance(q, dict) and not q.get("question"):
+            err(f"open_questions[{i}]", "needs a question")
     if spec.get("status") == "confirmed":
         ap = spec.get("approvals") or {}
         if not ap.get("spec_confirmed_by") or not ap.get("spec_confirmed_at"):
             err("approvals", "confirmed spec needs spec_confirmed_by and spec_confirmed_at")
-        if spec.get("open_questions"):
-            err("open_questions", "confirmed spec still has open questions", "warn")
+        unanswered = [q for q in spec.get("open_questions") or [] if not (isinstance(q, dict) and q.get("answer"))]
+        if unanswered:
+            err("open_questions", f"{len(unanswered)} open question(s) without an answer", "warn")
     return out
 
 

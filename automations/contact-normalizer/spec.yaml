@@ -16,6 +16,27 @@ business_goal: >
   One consistent definition of a "clean contact" shared by every CRM/marketing flow, so data is
   normalised the same way everywhere and bad records are flagged instead of breaking callers.
 
+# --- Customer & end-user view
+end_users:
+  - who: Recipe builders (internal integration team)
+    need: One trusted way to clean contacts instead of re-writing formulas in every recipe
+    experience: Call one function, get clean fields plus a clear is_valid flag and readable issues
+  - who: Sales and marketing teams (indirect)
+    need: CRM and marketing lists without messy names, broken emails or odd phone formats
+    experience: Contacts look consistent everywhere; bad records are flagged, not silently synced
+  - who: Future Genie / MCP users (later phase)
+    need: Ask an AI assistant to clean or check a contact
+    experience: An instant answer with what was fixed and what is still wrong, in plain words
+success_measures:
+  - All acceptance tests pass, including bad and empty input, with zero failed jobs
+  - Responds in under 2 seconds per call
+  - Issues text is understandable by a non-technical user without documentation
+  - At least one other recipe reuses it within the first month (adoption)
+user_experience_notes: >
+  The function never breaks the caller: bad input gives is_valid=false and plain-language issues
+  ("invalid email", "missing email", "invalid phone"). Output field names match the input names
+  so builders can map them without guessing.
+
 trigger:
   type: recipe_function                       # app_event | schedule | api_endpoint | recipe_function | genie_skill | webhook | manual
   app: workato_recipe_function
@@ -152,15 +173,39 @@ out_of_scope:
   - Deduplication or enrichment
   - Exposing the function as a Genie skill or MCP tool (later phase)
 
-open_questions:
-  - "Q1: Should a missing first_name and/or last_name make is_valid false (with issues like 'missing first name' / 'missing last name'), or is email the only required field?"
-  - "Q2: Issues format: separator (proposal: '; ' e.g. 'invalid email; missing phone') and fixed wording/order of messages? Or should issues be a list instead of text?"
-  - "Q3: Title-case rule for names with apostrophes, hyphens or particles (O'Neil, Smith-Jones, van der Berg, McDonald): simple capitalise-each-word, or keep letters after ' and - capitalised? Default title-case gives \"O'neil-smith\"."
-  - "Q4: Should a missing or digit-less phone add an issue (e.g. 'missing phone') and/or make is_valid false? Any minimum digit count for a valid phone? Extensions ('ext 7') are currently merged into the digits (AT-5 -> '41555501027'): acceptable?"
-  - "Q5: When an input is missing, should the output field be \"\" (proposed) or null?"
-  - "Q6: Should an invalid email still be returned (normalised, as proposed in AT-2) or blanked?"
-  - "Q7: Peak calls per hour (200 assumed) and whether 1,000/day fits the Free plan's 50,000-credit one-time grant for the intended run period."
-  - "Q8: PII in job history: Workato stores step input/output by default. Is that acceptable in dev, or is data masking / reduced job data retention required (plan-dependent, may not be on Free)?"
+open_questions:                               # answered by the requester at the spec gate
+  - id: Q1
+    question: Should a missing first or last name make the contact invalid?
+    recommendation: No. Only the email decides is_valid; names are optional and never add issues.
+    answer: null
+  - id: Q2
+    question: How should issues be written?
+    recommendation: Short lowercase phrases joined with "; " in a fixed order (email first, then phone), e.g. "invalid email; invalid phone". "" when there are none.
+    answer: null
+  - id: Q3
+    question: How should names with apostrophes, hyphens or particles be capitalised?
+    recommendation: Capitalise the first letter after a space, hyphen or apostrophe ("o'neil-SMITH" -> "O'Neil-Smith"); no special Mc/van rules.
+    answer: null
+  - id: Q4
+    question: What counts as a phone problem, and what about extensions?
+    recommendation: A missing phone is fine (no issue). A phone with fewer than 7 digits adds "invalid phone" and makes is_valid false. Anything after "ext" or "x" is dropped ("415.555.0102 ext 7" -> "4155550102").
+    answer: null
+  - id: Q5
+    question: Should a missing field come back as "" or null?
+    recommendation: '"" (empty text), so callers never have to handle nulls.'
+    answer: null
+  - id: Q6
+    question: Should an invalid email be returned or blanked?
+    recommendation: Returned, trimmed and lower-cased, so callers can show it back to the user.
+    answer: null
+  - id: Q7
+    question: Peak volume of 200 calls/hour and fit within Free-plan credits?
+    recommendation: Accept for now; the Operate stage measures real usage and alerts if credits run low.
+    answer: null
+  - id: Q8
+    question: Workato keeps each job's inputs and outputs in job history, which would include personal data. Acceptable?
+    recommendation: Acceptable in dev with synthetic test data only. Before real customer data, decide on data masking or shorter job retention (plan-dependent).
+    answer: null
 
 approvals:
   spec_confirmed_by: null                     # filled in at the Spec gate

@@ -1,0 +1,104 @@
+<title>Excel Dump Sync</title><meta name="claude:viewport-fit-sides" content="cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@400;500;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one review column (~74ch) with a vertical recipe rail; summary first, detail after. */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#152033; --muted:#5b6678; --line:#dfe4ea;
+  --accent:#2d5bd2; --accent-ink:#ffffff; --ok:#1f7a4d; --warn:#9a5b00; --err:#b3261e;
+  --k-if:#6b3fb6; --k-try:#9a5b00; --k-loop:#1d6fa5; --k-stop:#b3261e;
+  --pill-l:93%; --pill-t:28%; --tile-l:46%;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141c; --surface:#161d28; --ink:#e6ebf2; --muted:#9aa6b8; --line:#2a3443;
+  --accent:#7aa2ff; --accent-ink:#0f141c; --ok:#5fd39a; --warn:#f0b35a; --err:#ff8a80;
+  --k-if:#c3a6ff; --k-try:#f0b35a; --k-loop:#7cc4f2; --k-stop:#ff8a80;
+  --pill-l:24%; --pill-t:86%; --tile-l:58%; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141c; --surface:#161d28; --ink:#e6ebf2; --muted:#9aa6b8; --line:#2a3443;
+  --accent:#7aa2ff; --accent-ink:#0f141c; --ok:#5fd39a; --warn:#f0b35a; --err:#ff8a80;
+  --k-if:#c3a6ff; --k-try:#f0b35a; --k-loop:#7cc4f2; --k-stop:#ff8a80;
+  --pill-l:24%; --pill-t:86%; --tile-l:58%; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:820px;margin:0 auto;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(1.7rem,4vw,2.3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.25rem;font-weight:650}
+h3{font-size:1.05rem;font-weight:650}
+p{margin:0;max-width:68ch}
+.eyebrow{font:600 .72rem/1 var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+header.top{display:grid;gap:10px}
+.status{display:inline-flex;gap:8px;align-items:center;font-weight:600;font-size:.85rem;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 12px;width:max-content;max-width:100%}
+.lede{font-size:1.08rem;color:var(--ink)}
+section{display:grid;gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px}
+.approve{border-color:var(--accent)}
+.approve ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.copy{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.copy code{font:500 .9rem var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere;min-width:0}
+button{font:600 .9rem var(--body);background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:9px 14px;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.users{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.user{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px;min-width:0}
+.user b{font-family:var(--display)}
+.user .muted{color:var(--muted);font-size:.93rem}
+ul.plain{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.tests{display:grid;gap:10px}
+.test{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;min-width:0}
+.test .id{font:700 .8rem var(--mono);color:var(--accent);grid-row:span 3;padding-top:2px}
+.test dt{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.test dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.qs{display:grid;gap:10px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px}
+.q .rec{color:var(--ok);font-weight:600}
+.q .rec::before{content:"Recommended: ";color:var(--muted);font-weight:500}
+.q .ans{color:var(--ink);font-weight:600}
+.q .ans::before{content:"Your answer: ";color:var(--muted);font-weight:500}
+.kv{display:grid;grid-template-columns:minmax(120px,max-content) 1fr;gap:6px 16px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+/* recipe editor view */
+.recipe{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:14px;min-width:0}
+.rhead{display:grid;gap:4px} .rhead p{color:var(--muted)}
+ol.flow,ol.children{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+ol.children{margin-top:10px;margin-left:15px;padding-left:16px;border-left:2px solid var(--line)}
+.step{min-width:0}
+.card{display:flex;gap:12px;align-items:flex-start;min-width:0}
+.num{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 .8rem var(--mono);
+  background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.app{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font:700 .9rem var(--display);
+  background:hsl(var(--h) 55% var(--tile-l));color:#fff}
+.what{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;min-width:0;padding-top:4px}
+.kind{font:700 .7rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.k-if>.card .kind,.k-elsif>.card .kind,.k-else>.card .kind{color:var(--k-if)}
+.k-try>.card .kind,.k-catch>.card .kind{color:var(--k-try)}
+.k-foreach>.card .kind,.k-repeat>.card .kind,.k-while_condition>.card .kind{color:var(--k-loop)}
+.k-stop>.card .kind{color:var(--k-stop)}
+.appname{color:var(--muted);font-size:.9rem}
+.cond{min-width:0;overflow-wrap:anywhere}
+.op{font-weight:600;color:var(--k-if)}
+.step dl{margin:8px 0 0 42px;display:grid;gap:6px}
+.frow{display:grid;grid-template-columns:minmax(110px,max-content) 1fr;gap:4px 12px;font-size:.93rem}
+.frow dt{color:var(--muted)} .frow dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.frow.nested dd dl{margin:0}
+.note{margin:6px 0 0 42px;color:var(--muted);font-style:italic;font-size:.92rem}
+.pill{display:inline-flex;gap:6px;align-items:baseline;border-radius:999px;padding:1px 9px;margin:1px 2px;
+  background:hsl(var(--h) 70% var(--pill-l));color:hsl(var(--h) 45% var(--pill-t));font-size:.86rem;white-space:nowrap}
+.pill i{font-style:normal;opacity:.75;font-size:.78rem}
+.formula{display:inline-flex;gap:6px;align-items:baseline;min-width:0}
+.formula em{font-style:normal;font-weight:700;color:var(--accent)}
+.formula code{font:.86rem var(--mono);overflow-wrap:anywhere}
+.fieldchip{display:inline-block;font:.8rem var(--mono);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin:2px 4px 2px 0}
+.codeinfo{font-size:.88rem;color:var(--muted)}
+.lit{font-family:var(--mono);font-size:.88rem}
+footer{color:var(--muted);font-size:.85rem}
+@media (max-width:480px){.step dl,.note{margin-left:0}.frow{grid-template-columns:1fr}.kv{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header class="top"><span class="eyebrow">Recipe view</span><h1>Excel Dump Sync</h1><p class="lede">How a recipe is shown for review: each step as in the Workato recipe editor, with the app, the action, and the fields it uses. Coloured chips are data from earlier steps; ƒ marks a formula.</p></header>
+<section class='recipe' aria-label='Sync Excel Data dump to File storage'><header class='rhead'><span class='eyebrow'>Recipe</span><h3>Sync Excel Data dump to File storage</h3><p>When there is a trigger event, do action</p></header><ol class='flow'><li class='step k-trigger'><div class='card'><span class='num'>⚡</span><div class='app' style='--h:115'>G</div><div class='what'><span class='kind'>Trigger</span><strong>New file or folder in folder hierarchy</strong><span class='appname'>in Google Drive</span></div></div><dl><div class='frow'><dt>Folder</dt><dd><span class='txt'>1lK5AKIV3PtVstoBx2G7-wBMMRGggE9X3</span></dd></div></dl><ol class='children'><li class='step k-action'><div class='card'><span class='num'>1</span><div class='app' style='--h:115'>G</div><div class='what'><span class='kind'>Action</span><strong>Custom action</strong><span class='appname'>in Google Drive</span></div></div><dl><div class='frow'><dt>Action name</dt><dd><span class='txt'>Get parent folder</span></dd></div><div class='frow'><dt>Method</dt><dd><span class='txt'>get</span></dd></div><div class='frow'><dt>Response type</dt><dd><span class='txt'>json</span></dd></div><div class='frow'><dt>Path</dt><dd><span class='txt'>files/<span class='pill' style='--h:115'><b>Id</b><i>trigger</i></span></span></dd></div><div class='frow'><dt>Output</dt><dd><span class='fieldchip'>kind (string)</span><span class='fieldchip'>id (string)</span><span class='fieldchip'>name (string)</span><span class='fieldchip'>mimeType (string)</span></dd></div></dl></li><li class='step k-action'><div class='card'><span class='num'>2</span><div class='app' style='--h:115'>G</div><div class='what'><span class='kind'>Action</span><strong>Download file</strong><span class='appname'>in Google Drive</span></div></div><dl><div class='frow'><dt>File</dt><dd><span class='txt'><span class='pill' style='--h:115'><b>Id</b><i>trigger</i></span></span></dd></div></dl></li><li class='step k-action'><div class='card'><span class='num'>3</span><div class='app' style='--h:149'>V</div><div class='what'><span class='kind'>Action</span><strong>Create variable</strong><span class='appname'>in Variables by Workato</span></div></div><dl><div class='frow nested'><dt>Variables</dt><dd><dl><div class='frow'><dt>Schema</dt><dd><span class='fieldchip'>todays_date (date)</span></dd></div><div class='frow nested'><dt>Data</dt><dd><dl><div class='frow'><dt>Todays date</dt><dd><span class='formula'><em title='Formula'>ƒ</em><code>today</code></span></dd></div></dl></dd></div></dl></dd></div></dl></li><li class='step k-action'><div class='card'><span class='num'>4</span><div class='app' style='--h:159'>W</div><div class='what'><span class='kind'>Action</span><strong>Search files</strong><span class='appname'>in Workato FileStorage</span></div></div><dl><div class='frow nested'><dt>File name</dt><dd><dl><div class='frow'><dt>Condition</dt><dd><span class='txt'>equals</span></dd></div><div class='frow'><dt>Value</dt><dd><span class='txt'><span class='pill' style='--h:115'><b>Name</b><i>step 1</i></span>-<span class='pill' style='--h:149'><b>Todays date</b><i>step 3</i></span></span></dd></div></dl></dd></div><div class='frow'><dt>Directory path</dt><dd><span class='txt'>/</span></dd></div></dl></li><li class='step k-if'><div class='card'><span class='num'>5</span><div class='what'><span class='kind'>If</span><span class='cond'><span class='txt'><span class='pill' style='--h:159'><b>Size</b><i>step 4</i></span></span> <span class='op'>equals</span> <span class='txt'>0</span></span></div></div><p class='note'>No files found for today</p><ol class='children'><li class='step k-action'><div class='card'><span class='num'>6</span><div class='app' style='--h:128'>P</div><div class='what'><span class='kind'>Action</span><strong>Execute code</strong><span class='appname'>in Python snippets by Workato</span></div></div><p class='note'>Create CSV with header row</p><dl><div class='frow'><dt>Code</dt><dd><span class='codeinfo'>15 lines of code; starts: import pandas as pd</span></dd></div><div class='frow nested'><dt>Input fields</dt><dd><dl><div class='frow'><dt>Schema</dt><dd><span class='fieldchip'>file_content (string)</span><span class='fieldchip'>sheet_name (string)</span></dd></div><div class='frow nested'><dt>Data</dt><dd><dl><div class='frow'><dt>File content</dt><dd><span class='formula'><em title='Formula'>ƒ</em><code><span class='pill' style='--h:115'><b>Payload</b><i>step 2</i></span>.to_s.encode_base64</code></span></dd></div><div class='frow'><dt>Sheet name</dt><dd><span class='txt'>Data</span></dd></div></dl></dd></div></dl></dd></div><div class='frow'><dt>Name</dt><dd><span class='txt'>Excel to CSV</span></dd></div><div class='frow'><dt>Output fields</dt><dd><span class='fieldchip'>csv (string)</span></dd></div></dl></li><li class='step k-action'><div class='card'><span class='num'>7</span><div class='app' style='--h:159'>W</div><div class='what'><span class='kind'>Action</span><strong>Append to file</strong><span class='appname'>in Workato FileStorage</span></div></div><dl><div class='frow'><dt>Select file</dt><dd><span class='txt'><span class='pill' style='--h:115'><b>Name</b><i>step 1</i></span>-<span class='pill' style='--h:149'><b>Todays date</b><i>step 3</i></span></span></dd></div><div class='frow'><dt>Content to append</dt><dd><span class='txt'><span class='pill' style='--h:128'><b>Csv</b><i>step 6</i></span></span></dd></div></dl></li><li class='step k-else'><div class='card'><span class='num'>8</span><div class='what'><span class='kind'>Else</span></div></div><ol class='children'><li class='step k-action'><div class='card'><span class='num'>9</span><div class='app' style='--h:128'>P</div><div class='what'><span class='kind'>Action</span><strong>Execute code</strong><span class='appname'>in Python snippets by Workato</span></div></div><dl><div class='frow'><dt>Code</dt><dd><span class='codeinfo'>17 lines of code; starts: import pandas as pd</span></dd></div><div class='frow nested'><dt>Input fields</dt><dd><dl><div class='frow'><dt>Schema</dt><dd><span class='fieldchip'>file_content (string)</span><span class='fieldchip'>sheet_name (string)</span></dd></div><div class='frow nested'><dt>Data</dt><dd><dl><div class='frow'><dt>File content</dt><dd><span class='formula'><em title='Formula'>ƒ</em><code><span class='pill' style='--h:115'><b>Payload</b><i>step 2</i></span>.to_s.encode_base64</code></span></dd></div><div class='frow'><dt>Sheet name</dt><dd><span class='txt'>Data</span></dd></div></dl></dd></div></dl></dd></div><div class='frow'><dt>Name</dt><dd><span class='txt'>Excel to CSV</span></dd></div><div class='frow'><dt>Output fields</dt><dd><span class='fieldchip'>csv (string)</span></dd></div></dl></li><li class='step k-action'><div class='card'><span class='num'>10</span><div class='app' style='--h:159'>W</div><div class='what'><span class='kind'>Action</span><strong>Append to file</strong><span class='appname'>in Workato FileStorage</span></div></div><dl><div class='frow'><dt>Select file</dt><dd><span class='txt'><span class='pill' style='--h:115'><b>Name</b><i>step 1</i></span>-<span class='pill' style='--h:149'><b>Todays date</b><i>step 3</i></span></span></dd></div><div class='frow'><dt>Content to append</dt><dd><span class='txt'><span class='pill' style='--h:128'><b>Csv</b><i>step 9</i></span></span></dd></div></dl></li></ol></li></ol></li></ol></li></ol></section>
+</div>

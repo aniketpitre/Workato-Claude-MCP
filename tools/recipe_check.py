@@ -44,7 +44,7 @@ RETURNING_TRIGGERS = {
 }
 CUSTOM_CONNECTOR_RE = re.compile(r"_connector_\d+_\d+$")
 DP_RE = re.compile(r"_dp\('(\{.*?\})'\)", re.S)
-LEGACY_RE = re.compile(r"_\('data\.([A-Za-z0-9_]+)\.([A-Za-z0-9_\-]+)((?:\.[^']*)?)'\)")
+LEGACY_RE = re.compile(r"_\('data\.([A-Za-z0-9_]+)\.([A-Za-z0-9_\-]+)((?:\.[^']*)?)'(?:\s*,\s*'[^']*')*\)")
 
 # rule -> (default level, description)
 RULES = {

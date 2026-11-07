@@ -33,6 +33,7 @@ skills, and knowledge bases directly in your Workato platform.
 | `kb/examples/`, `kb/community/` | 309 real recipes (Labs samples and templates, workspace, community library), indexed by step |
 | `.claude/agents/` | Virtual Workato team agents (see `docs/agent-team.md`) |
 | `tools/` | `recipe_check.py` (47-rule validator plus live-catalog checks), `spec_check.py`, `mutate.py`, tests |
+| `tools/recipe_view.py`, `tools/review_page.py` | Recipe flows drawn like the Workato editor; review pages for each approval gate |
 | `automations/_template/` | Spec (with acceptance tests) and design templates for the lifecycle |
 | `.github/workflows/ci.yml` | Unit, golden-corpus and mutation tests; spec and recipe validation; credential scan |
 | `docs/` | Architecture, lifecycle, team design, recipe-accuracy research |

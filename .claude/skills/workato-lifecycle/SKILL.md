@@ -24,7 +24,7 @@ Design references: `docs/lifecycle.md`, `docs/architecture.md` §6, `docs/agent-
 | # | Stage | Delegate to | Run | Exit (gate) |
 | --- | --- | --- | --- | --- |
 | 0 | Intent | `workato-analyst` | `tools/state.py new <name> --title ...` then the analyst fills spec.yaml | spec_check clean → **show the user the spec summary and acceptance tests; ask to confirm** → `approve spec` → `advance specified` |
-| 1 | Design | `workato-architect` | design.md, citing catalog ops and examples | **show the user the design summary; ask to approve** → `approve design` → `advance designed` |
+| 1 | Design | `workato-architect` | design.md + draft recipes in recipes/ (drawn on the review page), citing catalog ops and examples | **show the user the design summary; ask to approve** → `approve design` → `advance designed` |
 | 2 | Build | `workato-recipe-dev` (one per recipe, in parallel), then `workato-architect` review | recipes/*.recipe.json, review reports | recipe_check clean + review APPROVED → `advance built` |
 | 3 | Validate | `workato-qa` | spec_check, recipe_check, server validate_full → reports/validate.json | verdict pass → `advance validated` |
 | 4 | Push | `workato-recipe-dev` | recipe_payload → post/put (stopped) → read-back → recipe_diff → record-push | all diff_ok → `advance pushed` |
@@ -34,6 +34,15 @@ Design references: `docs/lifecycle.md`, `docs/architecture.md` §6, `docs/agent-
 
 Check where things stand at any time: `python3 tools/state.py show <name>` (it lists the blocked
 criteria for each next state).
+
+## Review pages (every human gate)
+At the spec, design and go-live gates, generate and publish the review page so the requester can
+judge it like a Workato user, on any device:
+`python3 tools/review_page.py automation <name>` → publish
+`automations/<name>/review/index.html` with the Artifact tool (same file path each time, which keeps
+the same link). The page shows purpose, end users, success measures, the recipe flow drawn
+editor-style (`tools/recipe_view.py`), test cases, decisions with recommendations, and the exact
+reply to approve. In chat, give the link plus a three-line summary; don't paste the whole spec.
 
 ## Work package format (what you send an agent)
 ```
