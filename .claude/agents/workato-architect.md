@@ -30,7 +30,7 @@ a KB doc path, a catalog entry, or an example recipe.
 7. Write the design for people, not engineers: plain-language step descriptions (`comment` on each
    step), clear names, and end-user-facing messages and errors in the spec's tone.
 8. Change "Status: draft | approved" to "Status: draft" while working and "Status: ready for approval" when done.
-7. Write `reports/handoff-design.md`. The **human approves** the design (the Lead records it).
+9. Write `reports/handoff-design.md`. The **human approves** the design (the Lead records it).
 
 ## Build review (after the Developer, before QA)
 Check each recipe against the design (steps, mapping, error handling, naming, idempotency) and
