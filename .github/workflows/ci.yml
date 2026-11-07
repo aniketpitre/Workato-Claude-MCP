@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, "claude/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Tooling tests (unit, golden corpus, mutation suite)
+        run: python3 -m unittest discover -s tools/tests -v
+
+      - name: Validate automation specs
+        run: |
+          specs=$(ls automations/*/spec.yaml 2>/dev/null | grep -v '^automations/_template/' || true)
+          if [ -z "$specs" ]; then echo "No automation specs yet."; exit 0; fi
+          python3 tools/spec_check.py $specs
+
+      - name: Validate automation recipes (author profile)
+        run: |
+          shopt -s nullglob globstar
+          recipes=(automations/*/recipes/**/*.json)
+          if [ ${#recipes[@]} -eq 0 ]; then echo "No automation recipes yet."; exit 0; fi
+          python3 tools/recipe_check.py --profile author "${recipes[@]}"
+
+      - name: Secret scan (generated artifacts must not contain credentials)
+        run: |
+          if grep -rEn '\b((sk|rk)_(live|test)_[A-Za-z0-9]{10,}|xox[abposr]-[A-Za-z0-9-]{10,}|gh[pousr]_[A-Za-z0-9]{30,}|wrk[a-z]*-[A-Za-z0-9-]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY)' \
+               automations tools kb/examples kb/community .mcp.json; then
+            echo "::error::Possible credential committed"; exit 1
+          fi
+          echo "No credentials found."

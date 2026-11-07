@@ -1,0 +1,74 @@
+# Automation spec: written by the Business Analyst (workato-analyst), confirmed by the requester.
+# Validate: python3 tools/spec_check.py automations/<name>/spec.yaml
+spec_version: 1
+name: example-salesforce-lead-to-slack        # kebab-case; also the folder name under automations/
+title: Notify sales in Slack about new Salesforce leads
+summary: >
+  When a new lead is created in Salesforce, post a short message with the lead's name,
+  company and email to the #sales Slack channel within 5 minutes.
+requester: aniketpitre
+status: draft                                 # draft | confirmed | changed
+
+business_goal: Sales reps follow up on new leads faster.
+
+trigger:
+  type: app_event                             # app_event | schedule | api_endpoint | recipe_function | genie_skill | webhook | manual
+  app: salesforce
+  event: new lead
+  # schedule: "every 15 minutes"              # when type: schedule
+
+systems:                                      # every app touched; connection = logical name resolved per environment
+  - app: salesforce
+    connector: salesforce
+    connection: crm
+    access: read
+  - app: slack
+    connector: slack
+    connection: chat
+    access: write
+
+data:
+  objects: [Lead]
+  mappings:
+    - from: Lead.Name
+      to: Slack message text
+    - from: Lead.Company
+      to: Slack message text
+    - from: Lead.Email
+      to: Slack message text
+      transform: none
+
+volumes:
+  per_day: 50
+  peak_per_hour: 20
+
+sla:
+  latency: 5 minutes
+
+error_policy:
+  retries: 2                                  # automatic retries for transient errors
+  notify: "#automation-alerts"                # where failures are reported
+  on_failure: log and notify; do not lose the lead event
+
+security:
+  pii: true                                   # emails, names: needs a security review before go-live
+  data_classification: internal
+
+acceptance_tests:                             # at least one; QA runs these in the Test stage
+  - id: AT-1
+    given: a new Salesforce lead "Test Lead" at company "Test Co" with email test@example.com
+    when: the recipe runs
+    expect: a message in #sales containing "Test Lead", "Test Co" and "test@example.com"
+  - id: AT-2
+    given: Slack is unavailable
+    when: the recipe runs
+    expect: the job fails with a clear error, and an alert is posted to #automation-alerts after retries
+
+out_of_scope:
+  - Lead assignment or updates in Salesforce
+
+open_questions: []
+
+approvals:
+  spec_confirmed_by: null                     # filled in at the Spec gate
+  spec_confirmed_at: null

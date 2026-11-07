@@ -38,11 +38,19 @@ copy of the official Workato documentation to build from.
    approval.
 4. **Build in a project folder**, never in Home assets (the API rejects it). Follow
    `kb/docs/en/recipes/naming-conventions.md`.
-   Validate recipe JSON with the `post_recipe_validators_validate` tools before you call
-   `post_recipes` or `put_recipes_`.
+   Validate before any push: `python3 tools/recipe_check.py automations/<name>/recipes/` must
+   show 0 errors (it checks names and required inputs against the live catalog, datapills, and
+   control flow). Then run Workato's `post_recipe_validators_validate_full`, which is advisory only
+   because it's lenient. Specs: `python3 tools/spec_check.py automations/<name>/spec.yaml`.
+   Templates: `automations/_template/` (spec.yaml, design.md).
 5. **Cite the docs you used** (KB path) when you explain a design decision.
 6. **Keep the KB fresh.** If `kb/last_sync.json` is more than a few days old, run
    `python3 kb/sync.py`. It's incremental and takes about 20 seconds.
+
+## Agents (virtual team, `.claude/agents/`, see `docs/agent-team.md`)
+
+- `workato-librarian`: owns `kb/` (refresh, audit, playbooks)
+- `workato-qa`: independent Validate and Test gate verdicts; never edits recipes
 
 ## Skills
 

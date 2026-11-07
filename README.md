@@ -32,6 +32,9 @@ skills, and knowledge bases directly in your Workato platform.
 | `kb/patterns/` | `RECIPE_JSON_SPEC.md` plus Workato Labs recipe skills and lint rules (MIT, attributed) |
 | `kb/examples/`, `kb/community/` | 309 real recipes (Labs samples and templates, workspace, community library), indexed by step |
 | `.claude/agents/` | Virtual Workato team agents (see `docs/agent-team.md`) |
+| `tools/` | `recipe_check.py` (47-rule validator plus live-catalog checks), `spec_check.py`, `mutate.py`, tests |
+| `automations/_template/` | Spec (with acceptance tests) and design templates for the lifecycle |
+| `.github/workflows/ci.yml` | Unit, golden-corpus and mutation tests; spec and recipe validation; credential scan |
 | `docs/` | Architecture, lifecycle, team design, recipe-accuracy research |
 | `kb/CHANGELOG.md`, `kb/last_sync.json` | What changed in the docs on each sync |
 | `.github/workflows/sync-workato-docs.yml` | Daily GitHub Action that keeps `kb/` current |

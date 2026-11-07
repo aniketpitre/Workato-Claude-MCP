@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import collections
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -74,7 +75,19 @@ def source_of(p: Path) -> str:
     return "labs-sample"
 
 
+def defect_checker():
+    """recipe_check in corpus profile; examples with errors are flagged so search ranks them last."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    try:
+        import recipe_check as rc
+    except Exception:
+        return None
+    ch = rc.Checker(rc.Catalog(rc.CATALOG_DIR), "corpus")
+    return lambda p: sorted({f.rule for f in rc.check_file(p, ch) if f.level == "error"})
+
+
 def main() -> None:
+    defects_of = defect_checker()
     files = (list((ROOT / "kb/examples/labs").rglob("*.json")) + list((ROOT / "kb/examples/workspace").rglob("*.json"))
              + list((ROOT / "kb/community/recipes").rglob("*.json"))
              + list((ROOT / "kb/patterns/workato-labs").rglob("templates/*.json")))
@@ -95,6 +108,7 @@ def main() -> None:
             "steps": list(dict.fromkeys(steps)),
             "features": sorted(features),
             "copies": d.get("copy_count") or 0,
+            "defects": defects_of(p) if defects_of else [],
         })
     OUT_JSON.write_text(json.dumps(rows, indent=1, ensure_ascii=False) + "\n")
 

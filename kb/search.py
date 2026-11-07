@@ -226,7 +226,7 @@ def find_examples(step: str | None, feature: str | None, limit: int) -> list[dic
             continue
         out.append(r)
     rank = {"labs-template": 0, "labs-sample": 1, "workspace": 2, "community": 3}
-    out.sort(key=lambda r: (rank.get(r["source"], 9), -r.get("copies", 0), len(r["steps"])))
+    out.sort(key=lambda r: (bool(r.get("defects")), rank.get(r["source"], 9), -r.get("copies", 0), len(r["steps"])))
     return out[:limit]
 
 
@@ -269,7 +269,8 @@ def main() -> None:
     if a.examples is not None:
         for r in find_examples(a.examples or None, a.feature, a.limit):
             print(f"[{r['source']}] {r['name']}  (copies {r.get('copies', 0)})\n   {r['path']}\n   "
-                  f"steps: {' > '.join(r['steps'][:8])}{' ...' if len(r['steps']) > 8 else ''}\n   features: {', '.join(r['features'])}")
+                  f"steps: {' > '.join(r['steps'][:8])}{' ...' if len(r['steps']) > 8 else ''}\n   features: {', '.join(r['features'])}"
+                  + (f"\n   ⚠ known defects (do not copy blindly): {', '.join(r['defects'])}" if r.get("defects") else ""))
         return
     if a.connector:
         print(json.dumps(connector(a.connector, a.op), indent=1, ensure_ascii=False))

@@ -41,8 +41,11 @@ python3 kb/search.py "<concept, e.g. repeat helper / monitor error / batch>"
    trigger, numbered steps, data mappings, error handling, and connections used.
 2. Wait for the user to confirm.
 3. Write the recipe `code` JSON (trigger, then actions, then conditions or loops, then the
-   monitor/error block). Base it on an existing recipe's code from `get_recipes_`. Validate it with
-   `post_recipe_validators_validate`, then create it with `post_recipes` in the project folder.
+   monitor/error block). Base it on the closest example (`kb/search.py --examples`). Save it as
+   `automations/<name>/recipes/<recipe>.recipe.json`.
+   Validate it with `python3 tools/recipe_check.py <file>` (0 errors required), then
+   `post_recipe_validators_validate_full`. Create it with `post_recipes` in the project folder,
+   stopped.
 4. Run recipe tests if available, inspect jobs, and fix errors (`kb/docs/en/recipes/recipe-job-errors.md`).
 5. Start the recipe only when the user says so.
 

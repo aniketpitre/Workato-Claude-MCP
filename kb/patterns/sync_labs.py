@@ -6,7 +6,8 @@ Only MIT-licensed repositories are copied, with their license and source commit 
   recipe-skills         -> kb/patterns/workato-labs/   (skills, patterns, templates, lint-rules)
   recipe-lint (docs)    -> kb/patterns/workato-labs/lint/  (rule reference, rule authoring)
   dewy-resort           -> kb/examples/labs/dewy-resort/   (*.recipe.json)
-  workato-platform-cli  -> kb/examples/labs/platform-cli/  (docs/examples/*.json)
+  (workato-platform-cli docs/examples are NOT imported: they are synthetic snippets that use
+   non-existent structures/providers and fail validation; importing them would teach wrong JSON.)
 
 Repositories without a license (for example dewy-bank, AgentOrch) are intentionally NOT copied.
 
@@ -54,7 +55,7 @@ def main() -> None:
     sources = []
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        for repo in ("recipe-skills", "recipe-lint", "dewy-resort", "workato-platform-cli"):
+        for repo in ("recipe-skills", "recipe-lint", "dewy-resort"):
             d = tmp / repo
             rev = clone(repo, d)
             lic = license_ok(d)
