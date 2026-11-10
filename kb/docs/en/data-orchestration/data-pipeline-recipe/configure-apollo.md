@@ -12,7 +12,7 @@ Set up Apollo.io as a data pipeline source to extract contact, account, deal, an
 
 Use this guide to generate an Apollo.io API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Apollo.io features supported
 
 The following features are supported when you use Apollo.io as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use Apollo.io as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Apollo.io prerequisites
 
 Connecting Apollo.io as a data pipeline source requires:
 
@@ -168,7 +168,7 @@ Complete the following steps to configure Apollo.io as your data pipeline source
        
     
 
-## Supported objects
+## Supported Apollo.io objects
 
 Apollo.io data pipelines sync data from the Apollo.io REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -277,7 +277,7 @@ Custom fields (`typed_custom_fields`) on `accounts`, `contacts`, `deals`, and `u
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Apollo.io limitations
 
 The following limitations apply when you use Apollo.io as a data pipeline source:
 

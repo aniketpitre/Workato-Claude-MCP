@@ -13,7 +13,7 @@ Set up Outreach as a data pipeline source to extract Outreach records, such as p
 
 Use this guide to connect Outreach as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Outreach features supported
 
 The following features are supported when you use Outreach as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Outreach as a pipeline source:
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Outreach prerequisites
 
 Complete the following requirements before you configure Outreach as a data pipeline source.
 
@@ -176,7 +176,7 @@ Complete the following steps to configure Outreach as your data pipeline source:
     This start date applies only to objects that support incremental sync. Full-sync objects extract their complete available record set.
     
 
-## Supported objects
+## Supported Outreach objects
 
 Outreach data pipelines sync data from Outreach REST API resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -288,7 +288,7 @@ The pipeline doesn't sync mailbox SMTP or IMAP credentials. Call recordings sync
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Outreach limitations
 
 The following limitations apply when you use Outreach as a data pipeline source:
 

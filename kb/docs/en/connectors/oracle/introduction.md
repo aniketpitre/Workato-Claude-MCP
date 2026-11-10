@@ -107,7 +107,23 @@ Complete the following steps to connect to Oracle using a Cloud connection:
     
 11. Optional. Expand [Advanced settings](#configure-advanced-settings) to configure additional connection options.
     
-12. Click **Connect**.
+12. Optional. Expand **SSL settings** to connect over TLS (TCPS) or mutual TLS (mTLS):
+    
+    | Field | Description |
+    | --- | --- |
+    | Server certificate | Provide the X.509 CA certificate of the database server in `.pem` format, such as the Amazon RDS certificate bundle. If left blank, the server certificate must be issued by a publicly trusted certificate authority. |
+    | SSL certificate | Provide the X.509 client certificate in `.pem` format for mTLS. Requires the **SSL certificate key**. |
+    | SSL certificate key | Provide the RSA client key in `.pem` format. Requires the **SSL certificate**. |
+    | Trust all | Specify whether the client should trust any certificate chain. Self-signed server certificates are supported. Workato ignores the **Server certificate** if you enable this setting. |
+    | Verify host | Specify whether to match the name in the server certificate against the database host. Enabled by default unless **Trust all** is enabled. |
+    
+    Workato connects over TLS if you set any SSL field and doesn't fall back to an unencrypted connection if TLS fails. Leave all SSL fields blank to connect without TLS. Enter the port of the database's TCPS listener in the **Database port** field when you use TLS.
+    
+    > **ORACLE AUTONOMOUS DATABASE**
+    > 
+    > Provide the **SSL certificate** and **SSL certificate key** and leave **Server certificate** blank to connect to Oracle Autonomous Database over mTLS. Its server certificate chains to a public certificate authority.
+    
+13. Click **Connect**.
     
 
 ### On-prem agent connection

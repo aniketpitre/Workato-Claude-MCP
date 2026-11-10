@@ -137,6 +137,10 @@ If you already assigned users to your Workato application for SAML SSO, you can 
 
 Users provisioned through SCIM exist in Workato immediately, but they don’t receive roles or collaborator group memberships until they log in through SAML.
 
+> **SCIM USERS ARE HIDDEN UNTIL EMAIL VERIFICATION**
+> 
+> SCIM-provisioned users don't appear on collaborator management screens until they accept a verification email from Workato. Unverified users are excluded from the collaborators list, the pending invitations screen, and group member lists and member counts. As a result, the collaborator count in Workato may be lower than the number of users provisioned in Okta if those users haven't verified their email addresses.
+
 1. In the **Assignments** interface, Okta denotes the users that existed before you configured SCIM with a red exclamation mark icon.
    
    _Existing users are not provisioned by SCIM_
@@ -195,9 +199,7 @@ SCIM provisions lifecycle changes such as user profile updates, status changes, 
    
 2. Click **Save**. This action triggers a user update call to Workato through SCIM.
    
-3. To verify new members on Workato after provisioning them through SCIM, you can check the collaborators team list.
-   
-   You can also examine the activity-audit logs dashboard.
+3. Examine the activity-audit logs dashboard to verify provisioning.
    
    We denote changes made through SCIM as `scim_auto_sync`.
    

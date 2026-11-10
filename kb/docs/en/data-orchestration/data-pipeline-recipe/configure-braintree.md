@@ -12,7 +12,7 @@ Set up Braintree as a data pipeline source to extract transaction, subscription,
 
 Use this guide to review the features and prerequisites, connect Braintree as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Braintree features supported
 
 The following features are supported when you use Braintree as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Braintree as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Braintree prerequisites
 
 Connecting Braintree as a data pipeline source requires:
 
@@ -190,7 +190,7 @@ Complete the following steps to configure Braintree as your data pipeline source
     The historical start date applies only to objects with an incremental cursor. Objects without an incremental cursor sync their complete current data set regardless of this field.
     
 
-## Supported objects
+## Supported Braintree objects
 
 Braintree data pipelines sync data from the Braintree GraphQL API and the legacy Braintree gateway API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -318,7 +318,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing email addresses, phone numbers, and billing and shipping address fields for pipelines operating under PCI-DSS, GDPR, or CCPA.
 
-## Limitations
+## Braintree limitations
 
 The following limitations apply when you use Braintree as a data pipeline source:
 

@@ -10,7 +10,7 @@ description: >-
 
 Set up Jira as a data pipeline source to extract issues, projects, users, and related records into your destination. Use this guide to set up a connection, configure your pipeline, add objects, and understand sync behavior and known limitations.
 
-## Features supported
+## Jira features supported
 
 The following features are supported when you use Jira as a pipeline source:
 
@@ -22,7 +22,7 @@ The following features are supported when you use Jira as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Jira prerequisites
 
 Complete the following requirements before you connect Jira as a data pipeline source.
 
@@ -453,7 +453,7 @@ Complete the following steps to configure Jira as your data pipeline source.
        
     
 
-## Supported objects
+## Supported Jira objects
 
 Jira data pipelines sync data from Jira REST API resources. Each object you select syncs as a separate table in your destination. The objects available for selection depend on your Jira instance configuration. For example, Jira Software products expose additional objects such as boards.
 
@@ -489,7 +489,7 @@ The pipeline automatically discovers custom fields configured on Jira objects an
 
 Each object has a primary key field that can't be deselected. For example, `id` is the primary key for the `Issues` object.
 
-## Limitations
+## Jira limitations
 
 The following limitations apply when you use Jira as a data pipeline source.
 

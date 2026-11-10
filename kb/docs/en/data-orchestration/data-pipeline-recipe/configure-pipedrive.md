@@ -12,7 +12,7 @@ Set up Pipedrive as a data pipeline source to extract and sync CRM data, such as
 
 Use this guide to get a Pipedrive API token, connect Pipedrive as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Pipedrive features supported
 
 The following features are supported when you use Pipedrive as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Pipedrive as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## Pipedrive prerequisites
 
 Connecting Pipedrive as a data pipeline source requires:
 
@@ -213,7 +213,7 @@ Complete the following steps to configure Pipedrive as your data pipeline source
     > The historical start date applies only to objects that support incremental sync. Objects that only support full sync extract all available records. Refer to [Supported objects](#supported-objects) to view the sync modes for each object.
     
 
-## Supported objects
+## Supported Pipedrive objects
 
 Pipedrive data pipelines sync data from the Pipedrive API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination and appears in the pipeline builder as **Label (object\_name)**, such as **Persons (persons)**. The sync mode column shows the modes an object supports. Incremental is the default for objects that support it. Pipedrive custom object types aren't supported.
 
@@ -378,7 +378,7 @@ The `content` field on `notes` and the `note` field on `activities` are free tex
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Pipedrive limitations
 
 The following limitations apply when you use Pipedrive as a data pipeline source:
 

@@ -6,10 +6,10 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 
 | Section | Pages | Index |
 | --- | ---: | --- |
-| Connectors | 2959 | [index/connectors.md](index/connectors.md) |
+| Connectors | 2965 | [index/connectors.md](index/connectors.md) |
 | Recipe design | 193 | [index/recipe-design.md](index/recipe-design.md) |
 | Other | 121 | [index/other.md](index/other.md) |
-| Data orchestration | 113 | [index/data-orchestration.md](index/data-orchestration.md) |
+| Data orchestration | 115 | [index/data-orchestration.md](index/data-orchestration.md) |
 | Connector SDK | 93 | [index/connector-sdk.md](index/connector-sdk.md) |
 | Prebuilt MCP servers | 92 | [index/prebuilt-mcp-servers.md](index/prebuilt-mcp-servers.md) |
 | Agent Studio | 77 | [index/agent-studio.md](index/agent-studio.md) |

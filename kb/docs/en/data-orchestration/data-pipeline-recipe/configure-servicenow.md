@@ -12,7 +12,7 @@ Set up ServiceNow as a data pipeline source to extract and sync records into you
 
 Workato uses the [ServiceNow REST Table API v2](https://www.servicenow.com/docs/r/api-reference/rest-apis/c_TableAPI.html) to extract and sync data from any accessible ServiceNow table, including standard ITSM tables, CMDB tables, and custom tables.
 
-## Features supported
+## ServiceNow features supported
 
 The following features are supported when you use ServiceNow as a data pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use ServiceNow as a data pipeline 
 | Schema drift detection and handling | Detects and applies schema changes automatically with **Auto-sync new fields**, or blocks changes for manual review. Refer to [Schema drift](/en/data-orchestration/data-pipeline-recipe/concepts#schema-drift). |
 | Field-level data masking | Apply hash-based masking to sensitive fields during pipeline configuration. Refer to [PII and sensitive data](#pii-and-sensitive-data). |
 
-## Prerequisites
+## ServiceNow prerequisites
 
 Complete the following requirements before you connect ServiceNow as a data pipeline source.
 
@@ -286,7 +286,7 @@ Complete the following steps to configure ServiceNow as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported ServiceNow objects
 
 ServiceNow stores all data in tables accessible through the REST Table API. The pipeline supports syncing any table accessible by your service account. This includes standard ITSM tables, CMDB tables, HR tables, custom tables, and application-scoped tables. A typical ServiceNow instance exposes over 1,000 tables, though the exact number varies based on the modules installed.
 
@@ -439,7 +439,7 @@ Key inheritance hierarchies include the following:
 - `cmdb_ci` is the parent of `cmdb_ci_server`, `cmdb_ci_computer`, `cmdb_ci_service`, `cmdb_ci_app_server`, `cmdb_ci_database`
 - `alm_asset` is the parent of `alm_hardware`, `alm_consumable`, `alm_license`
 
-## Limitations
+## ServiceNow limitations
 
 Review the following limitations when you configure a ServiceNow data pipeline:
 

@@ -10,7 +10,7 @@ description: >-
 
 Set up NetSuite2 as a data pipeline source to extract and sync records into your destination using the SuiteAnalytics Connect service. This guide includes connection setup, pipeline configuration, and key behavior for working with NetSuite2 as a source.
 
-## Features supported
+## NetSuite2 features supported
 
 The following features are supported when using NetSuite2 as a data pipeline source:
 
@@ -20,7 +20,7 @@ The following features are supported when using NetSuite2 as a data pipeline sou
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## NetSuite2 prerequisites
 
 You must have the following configuration and access:
 

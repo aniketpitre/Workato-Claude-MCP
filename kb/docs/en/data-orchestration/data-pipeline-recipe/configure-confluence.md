@@ -11,7 +11,7 @@ description: >-
 
 Set up Confluence as a data pipeline source to extract spaces, pages, blog posts, comments, and related content from Confluence and sync them to your destination. Use this guide to prepare your Confluence credentials, connect Confluence to Workato, configure the pipeline, and understand the supported objects, sync modes, and limitations.
 
-## Features supported
+## Confluence features supported
 
 The following features are supported when you use Confluence as a pipeline source:
 
@@ -23,7 +23,7 @@ The following features are supported when you use Confluence as a pipeline sourc
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Confluence prerequisites
 
 Complete the following requirements before you configure Confluence as a data pipeline source.
 
@@ -322,7 +322,7 @@ Complete the following steps to configure Confluence as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported Confluence objects
 
 Confluence data pipelines sync data from the Confluence Cloud REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -422,7 +422,7 @@ Workato adds the following synthetic column to destination tables for specific o
 | --- | --- | --- |
 | `_workato_is_deleted` | Boolean | Marks records that were trashed or deleted in Confluence. Applies to `Pages`, `Blog Posts`, `Page Attachments`, and `Blog Post Attachments`. For `Users`, this column marks accounts that are no longer active in Atlassian. |
 
-## Limitations
+## Confluence limitations
 
 The following limitations apply when you use Confluence as a data pipeline source:
 

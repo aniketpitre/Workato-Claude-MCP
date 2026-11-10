@@ -19,18 +19,18 @@ Refer to the Monday [documentation](https://support.monday.com/hc/en-us/articles
 
 Complete the following steps to retrieve your API token from Monday:
 
-1. Log in to your [Monday](https://auth.monday.com/auth/login_monday/) account.
+1. Log in to your [Monday.com](https://auth.monday.com/auth/login_monday/) account.
    
-2. Click your profile picture.
+2. Click your profile picture in the upper right corner of the screen.
    
-3. Go to **Administration > Connections > API**.
+3. Select **Developers**. The Developer Center opens in a new tab.
    
-   ![Monday Dashboard](/assets/monday-api-token.DlUq1Mp-.png)_Monday API Token_
+4. Click **API token**, then click **Show**.
    
-4. Copy your personal token and store it securely. This token is required to set up your Workato connection.
+5. Copy your personal API token and store it securely. You must provide this token when you create the connection in Workato.
    
 
-Refer to the [Monday authentication](https://developer.monday.com/api-reference/docs/authentication) documentation for more information.
+Monday.com admins can also copy the token from **Administration > Connections > Personal API token**. Refer to the Monday.com [Authentication](https://developer.monday.com/api-reference/docs/authentication) documentation for more information.
 
 ## Connection setup
 

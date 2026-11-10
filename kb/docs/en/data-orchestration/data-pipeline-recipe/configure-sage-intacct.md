@@ -13,7 +13,7 @@ Set up Sage Intacct as a data pipeline source to extract accounting and financia
 
 Use this guide to review the features and prerequisites, connect Sage Intacct as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Sage Intacct features supported
 
 The following features are supported when you use Sage Intacct as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Sage Intacct as a pipeline sou
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Sage Intacct prerequisites
 
 Complete the following requirements before you configure Sage Intacct as a data pipeline source:
 
@@ -184,7 +184,7 @@ Complete the following steps to configure Sage Intacct as your data pipeline sou
     This start date applies only to objects that support incremental sync. Full-sync objects extract their complete available record set.
     
 
-## Supported objects
+## Supported Sage Intacct objects
 
 Sage Intacct data pipelines sync data from the Sage Intacct XML API. The connector discovers the objects available in your company when you connect, so the exact set depends on your subscribed modules, your edition, and any custom objects your company defines. Standard objects come from a curated catalog and custom Platform Services objects appear alongside them. Each object syncs as a separate table in your destination.
 
@@ -307,7 +307,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing these fields for pipelines operating under SOC 2, GDPR, CCPA, or PCI-DSS.
 
-## Limitations
+## Sage Intacct limitations
 
 The following limitations apply when you use Sage Intacct as a data pipeline source:
 

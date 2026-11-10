@@ -7,7 +7,11 @@ description: >-
 
 # Salesforce - New PushTopic event trigger (real-time)
 
-This trigger uses the [Salesforce Streaming API](https://developer.salesforce.com/docs/atlas.en-us.202.0.api_streaming.meta/api_streaming/intro_stream.htm) to monitor Salesforce in real-time for new PushTopic events in subscribed channels. Any PushTopic events not picked up within 24 hours, for example, if the recipe was stopped for longer than 24 hours, are not be processed by the recipe. This trigger picks up events from the last 24 hours when you start the recipe, provided the PushTopic has been active for that duration.
+This trigger uses the [Salesforce Streaming API](https://developer.salesforce.com/docs/atlas.en-us.202.0.api_streaming.meta/api_streaming/intro_stream.htm) to monitor Salesforce in real-time for new PushTopic events in subscribed channels. The trigger also fetches past events by default when you start the recipe. It only fetches events that Salesforce published while the PushTopic remained active. Salesforce keeps PushTopic events for up to 24 hours, so the recipe doesn't process older events.
+
+> **FETCHING PAST EVENTS CAN USE YOUR SALESFORCE EVENT ALLOCATION**
+> 
+> Fetching past events can use a significant amount of your Salesforce event allocation. Set **Events to fetch on recipe start** to **Only new events** to skip them.
 
 ## Prerequisites
 
@@ -15,13 +19,14 @@ You must [create a PushTopic](https://developer.salesforce.com/docs/atlas.en-us.
 
 Workato fetches the output schema as defined in the PushTopic automatically. You can define a new schema by using a SOQL query or manually specifying the fields.
 
-![PushTopic trigger setup](/assets/pushtopic-trigger-setup.pHgIs1Kr.png)_The recipe receives data as specified in the schema_
+![PushTopic trigger setup](/assets/pushtopic-trigger-setup.xiCgqyyh.png)_The recipe receives data as specified in the schema_
 
 ## Input
 
 | Input fields | Description |
 | --- | --- |
 | Pushtopics | Select a PushTopic to subscribe to. |
+| Events to fetch on recipe start | Optional. Select whether to fetch events published in Salesforce while the recipe was inactive, on first start or restart. Defaults to **All available events (resume from last processed)** if left blank. **All available events (resume from last processed)** resumes from the last event the recipe processed. If the recipe hasn't processed any events, or the last processed event is no longer available, the trigger fetches all events Salesforce keeps. **Only new events** fetches only events published after the recipe starts. |
 | Output schema | Define a new schema by using a SOQL query or manually adding fields. |
 
 ## Output

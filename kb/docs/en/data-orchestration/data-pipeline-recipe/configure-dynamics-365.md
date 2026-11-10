@@ -13,7 +13,7 @@ Set up Microsoft Dynamics 365 as a data pipeline source to extract Sales, Custom
 
 Use this guide to register a Microsoft Entra ID app, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Microsoft Dynamics 365 features supported
 
 The following features are supported when you use Microsoft Dynamics 365 as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Microsoft Dynamics 365 as a pi
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Microsoft Dynamics 365 prerequisites
 
 Complete the following requirements before you connect Microsoft Dynamics 365 as a data pipeline source:
 
@@ -388,7 +388,7 @@ Complete the following steps to configure Microsoft Dynamics 365 as your data pi
        
     
 
-## Supported objects
+## Supported Microsoft Dynamics 365 objects
 
 Microsoft Dynamics 365 data pipelines sync data from Microsoft Dataverse, the shared data platform behind Sales, Customer Service, Field Service, and Marketing (Customer Insights – Journeys). Workato dynamically discovers every table your connection can read, including custom tables, so you're not limited to the objects listed below. The following tables list commonly synced objects, grouped by app area. Each object syncs as a separate table in your destination.
 
@@ -567,7 +567,7 @@ Microsoft Dynamics 365 objects can contain significant personally identifiable i
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Microsoft Dynamics 365 limitations
 
 The following limitations apply when you use Microsoft Dynamics 365 as a data pipeline source:
 

@@ -49,7 +49,7 @@ The [New PushTopic event](/en/connectors/salesforce/triggers/new-event) trigger 
 
 ## New platform event (real-time)
 
-The [New platform event](/en/connectors/salesforce/triggers/new-platform-event) trigger monitors Salesforce in real-time for new platform events. The trigger fetches platform events created in the last 24 hours when the recipe first starts.
+The [New platform event](/en/connectors/salesforce/triggers/new-platform-event) trigger monitors Salesforce in real-time for new platform events. The trigger also fetches past platform events available in Salesforce by default when the recipe starts. Salesforce keeps high-volume platform events for up to 72 hours.
 
 ## New record (real-time)
 

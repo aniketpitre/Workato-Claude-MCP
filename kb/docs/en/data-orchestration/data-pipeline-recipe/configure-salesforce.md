@@ -12,7 +12,7 @@ Set up Salesforce as a data pipeline source to extract and sync records into you
 
 Workato uses the [Salesforce Bulk API v2](https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/intro_bulk_api.htm) to extract and sync data efficiently at scale.
 
-## Features supported
+## Salesforce features supported
 
 The following features are supported when using Salesforce as a data pipeline source:
 
@@ -22,7 +22,7 @@ The following features are supported when using Salesforce as a data pipeline so
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Salesforce prerequisites
 
 You must have the following permissions to connect to and extract data from Salesforce:
 

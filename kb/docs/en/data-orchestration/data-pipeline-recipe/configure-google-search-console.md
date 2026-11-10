@@ -13,7 +13,7 @@ Set up Google Search Console as a data pipeline source to extract Search Analyti
 
 Use this guide to review the features and prerequisites, connect Google Search Console as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Google Search Console features supported
 
 The following features are supported when you use Google Search Console as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Google Search Console as a pip
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Google Search Console prerequisites
 
 Connecting Google Search Console as a data pipeline source requires:
 
@@ -198,7 +198,7 @@ Complete the following steps to configure Google Search Console as your data pip
        
     
 
-## Supported objects
+## Supported Google Search Console objects
 
 Google Search Console data pipelines sync data from the Google Search Console API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -289,7 +289,7 @@ Google Search Console reports are aggregated, and Workato delivers the values Go
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Google Search Console limitations
 
 The following limitations apply when you use Google Search Console as a data pipeline source:
 

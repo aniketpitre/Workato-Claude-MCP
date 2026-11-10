@@ -12,7 +12,7 @@ Set up Google Sheets as a data pipeline source to extract spreadsheet data into 
 
 Use this guide to set up a connection, configure your pipeline, and understand how objects sync, sync behavior, schema and data type handling, and known limitations.
 
-## Features supported
+## Google Sheets features supported
 
 The following features are supported when you use Google Sheets as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use Google Sheets as a pipeline so
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression.
 
-## Prerequisites
+## Google Sheets prerequisites
 
 Complete the following requirements before you connect Google Sheets as a data pipeline source.
 
@@ -349,7 +349,7 @@ Any column in any synced sheet can contain personally identifiable information (
 
 Before you sync a spreadsheet that contains sensitive data, review its columns and use the **Hash** option in field-level data protection to mask any column that shouldn't reach your destination as is. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Google Sheets limitations
 
 The following limitations apply when you use Google Sheets as a data pipeline source.
 

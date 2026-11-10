@@ -10,7 +10,7 @@ description: >-
 
 Set up HubSpot as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with HubSpot CRM objects.
 
-## Features supported
+## HubSpot features supported
 
 The following features are supported when using HubSpot as a data pipeline source:
 
@@ -20,7 +20,7 @@ The following features are supported when using HubSpot as a data pipeline sourc
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## HubSpot prerequisites
 
 You must have the following configuration and access:
 

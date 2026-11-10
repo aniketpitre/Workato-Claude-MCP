@@ -13,7 +13,7 @@ Set up Facebook as a data pipeline source to extract and sync ad account, campai
 
 Use this guide to review the features and prerequisites, connect Facebook as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Facebook features supported
 
 The following features are supported when you use Facebook as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Facebook as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Facebook prerequisites
 
 Complete the following requirements before you connect Facebook as a data pipeline source.
 
@@ -169,7 +169,7 @@ Complete the following steps to configure Facebook as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Facebook objects
 
 Facebook data pipelines sync data from the Meta Marketing API (v25.0). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination, except `Basic Ad Actions`, which merges Meta's `actions` and `action_values` arrays into a single child table of `Basic Ad`.
 
@@ -305,7 +305,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing `AdAccount.funding_source_details` in particular.
 
-## Limitations
+## Facebook limitations
 
 The following limitations apply when you use Facebook as a data pipeline source.
 

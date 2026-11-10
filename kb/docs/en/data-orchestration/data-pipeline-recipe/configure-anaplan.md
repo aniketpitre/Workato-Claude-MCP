@@ -12,7 +12,7 @@ Set up Anaplan as a data pipeline source to extract planning data from the expor
 
 Use this guide to review supported features, connect Anaplan, configure your pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations of the Anaplan source connector.
 
-## Features supported
+## Anaplan features supported
 
 The following features are supported when you use Anaplan as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Anaplan as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Anaplan prerequisites
 
 Connecting Anaplan as a data pipeline source requires:
 
@@ -264,7 +264,7 @@ Complete the following steps to configure Anaplan as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Anaplan objects
 
 Anaplan doesn't expose queryable domain objects through a REST API. Workato syncs data through two fixed metadata objects and a dynamic set of export result tables that mirror the export actions configured in your selected workspaces and models.
 
@@ -336,7 +336,7 @@ Hash any person-identifiable columns if you use workforce planning models and op
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Anaplan limitations
 
 The following limitations apply when you use Anaplan as a data pipeline source.
 

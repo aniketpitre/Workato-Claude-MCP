@@ -12,7 +12,7 @@ Set up OneDrive as a data pipeline source to extract and sync records into your 
 
 Use this guide to review connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in OneDrive folders.
 
-## Features supported
+## OneDrive features supported
 
 The following features are supported when you use OneDrive as a data pipeline source:
 
@@ -22,7 +22,7 @@ The following features are supported when you use OneDrive as a data pipeline so
 - **Field-level selection**: Choose which fields to extract and replicate to your destination.
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 
-## Prerequisites
+## OneDrive prerequisites
 
 Connecting OneDrive as a data pipeline source requires:
 
@@ -509,7 +509,7 @@ Complete the following steps to configure OneDrive as your data pipeline source:
        
     
 
-## Supported objects
+## Supported OneDrive objects
 
 OneDrive doesn't have a fixed object catalog. Instead, each folder and filename pattern configuration you add becomes an object that syncs as a separate table in your destination:
 
@@ -563,7 +563,7 @@ OneDrive files can contain arbitrary customer data, including personally identif
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## OneDrive limitations
 
 The following limitations apply when you use OneDrive as a data pipeline source:
 

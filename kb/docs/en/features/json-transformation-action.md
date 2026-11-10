@@ -434,6 +434,8 @@ Select a source application and follow its configuration guide to authenticate, 
 - [GitHub](/en/data-orchestration/data-pipeline-recipe/configure-github)
 - [Google Sheets](/en/data-orchestration/data-pipeline-recipe/configure-google-sheets)
 - [Jira](/en/data-orchestration/data-pipeline-recipe/configure-jira)
+- [Looker](/en/data-orchestration/data-pipeline-recipe/configure-looker)
+- [Monday.com](/en/data-orchestration/data-pipeline-recipe/configure-monday)
 - [Trello](/en/data-orchestration/data-pipeline-recipe/configure-trello)
 
 ### Support & service
@@ -460,7 +462,7 @@ Set up Airtable as a data pipeline source to extract and sync records from your 
 
 Use this guide to review the features and prerequisites, connect Airtable as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Airtable features supported
 
 The following features are supported when you use Airtable as a pipeline source:
 
@@ -472,7 +474,7 @@ The following features are supported when you use Airtable as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Airtable prerequisites
 
 Connecting Airtable as a data pipeline source requires:
 
@@ -676,7 +678,7 @@ Complete the following steps to configure Airtable as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Airtable objects
 
 Airtable bases and tables are entirely customer-defined, so Airtable data pipelines don't sync from a fixed object catalog. Workato discovers every table in your selected bases and exposes each table as a separate object you can sync, labeled `<Base name> / <Table name>` in the object picker when base names are available. Scoped discovery that supplies only base IDs may display `<Base ID> / <Table name>` instead.
 
@@ -751,7 +753,7 @@ Airtable tables are entirely customer-defined, so Workato can't predict which fi
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Airtable limitations
 
 The following limitations apply when you use Airtable as a data pipeline source:
 
@@ -783,7 +785,7 @@ Set up Algolia as a data pipeline source to extract index records, index configu
 
 Use this guide to prepare an Algolia API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Algolia features supported
 
 The following features are supported when you use Algolia as a pipeline source:
 
@@ -796,7 +798,7 @@ The following features are supported when you use Algolia as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## Algolia prerequisites
 
 Connecting Algolia as a data pipeline source requires:
 
@@ -956,7 +958,7 @@ Complete the following steps to configure Algolia as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Algolia objects
 
 Algolia data pipelines sync index content, index configuration, analytics, and API logs from your Algolia application. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination. Index-level objects appear once for each index in your application.
 
@@ -1081,7 +1083,7 @@ Deselecting a `Records` attribute doesn't keep its value out of your destination
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Algolia limitations
 
 The following limitations apply when you use Algolia as a data pipeline source:
 
@@ -1115,7 +1117,7 @@ description: >-
 
 Set up Amazon S3 as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files in S3 buckets.
 
-## Features supported
+## Amazon S3 features supported
 
 The following features are supported when using Amazon S3 as a data pipeline source:
 
@@ -1124,7 +1126,7 @@ The following features are supported when using Amazon S3 as a data pipeline sou
 - Field-level selection for object extraction
 - Field-level data masking
 
-## Prerequisites
+## Amazon S3 prerequisites
 
 You must have the following configuration and access:
 
@@ -1331,7 +1333,7 @@ Set up Anaplan as a data pipeline source to extract planning data from the expor
 
 Use this guide to review supported features, connect Anaplan, configure your pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations of the Anaplan source connector.
 
-## Features supported
+## Anaplan features supported
 
 The following features are supported when you use Anaplan as a pipeline source:
 
@@ -1344,7 +1346,7 @@ The following features are supported when you use Anaplan as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Anaplan prerequisites
 
 Connecting Anaplan as a data pipeline source requires:
 
@@ -1583,7 +1585,7 @@ Complete the following steps to configure Anaplan as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Anaplan objects
 
 Anaplan doesn't expose queryable domain objects through a REST API. Workato syncs data through two fixed metadata objects and a dynamic set of export result tables that mirror the export actions configured in your selected workspaces and models.
 
@@ -1655,7 +1657,7 @@ Hash any person-identifiable columns if you use workforce planning models and op
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Anaplan limitations
 
 The following limitations apply when you use Anaplan as a data pipeline source.
 
@@ -1702,7 +1704,7 @@ Set up Apollo.io as a data pipeline source to extract contact, account, deal, an
 
 Use this guide to generate an Apollo.io API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Apollo.io features supported
 
 The following features are supported when you use Apollo.io as a pipeline source:
 
@@ -1714,7 +1716,7 @@ The following features are supported when you use Apollo.io as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Apollo.io prerequisites
 
 Connecting Apollo.io as a data pipeline source requires:
 
@@ -1858,7 +1860,7 @@ Complete the following steps to configure Apollo.io as your data pipeline source
        
     
 
-## Supported objects
+## Supported Apollo.io objects
 
 Apollo.io data pipelines sync data from the Apollo.io REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -1967,7 +1969,7 @@ Custom fields (`typed_custom_fields`) on `accounts`, `contacts`, `deals`, and `u
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Apollo.io limitations
 
 The following limitations apply when you use Apollo.io as a data pipeline source:
 
@@ -2006,7 +2008,7 @@ Set up Asana as a data pipeline source to extract work-management data, such as 
 
 Use this guide to review the features and prerequisites, connect Asana as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Asana features supported
 
 The following features are supported when you use Asana as a pipeline source:
 
@@ -2018,7 +2020,7 @@ The following features are supported when you use Asana as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Asana prerequisites
 
 Complete the following requirements before you configure Asana as a data pipeline source.
 
@@ -2161,7 +2163,7 @@ Complete the following steps to configure Asana as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Asana objects
 
 Asana data pipelines sync data from the Asana REST API. The following tables list supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -2274,7 +2276,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing user email addresses and free-text description fields for pipelines operating under GDPR or CCPA.
 
-## Limitations
+## Asana limitations
 
 The following limitations apply when you use Asana as a data pipeline source:
 
@@ -2319,7 +2321,7 @@ description: >-
 
 Set up Azure Blob Storage as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in Azure Blob containers.
 
-## Features supported
+## Azure Blob Storage features supported
 
 The following features are supported when using Azure Blob Storage as a data pipeline source:
 
@@ -2328,7 +2330,7 @@ The following features are supported when using Azure Blob Storage as a data pip
 - Field-level selection for data extraction
 - Field-level data masking
 
-## Prerequisites
+## Azure Blob Storage prerequisites
 
 You must have the following configuration and access:
 
@@ -2550,7 +2552,7 @@ description: >-
 
 Set up BambooHR as a data pipeline source to extract employee records, job and compensation history, time off, time tracking, and custom table data into your destination. Use this guide to review the features supported, complete prerequisites, connect BambooHR to Workato, configure the pipeline, and understand sync behavior and known limitations.
 
-## Features supported
+## BambooHR features supported
 
 The following features are supported when you use BambooHR as a pipeline source:
 
@@ -2563,7 +2565,7 @@ The following features are supported when you use BambooHR as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## BambooHR prerequisites
 
 Obtain the following before you connect BambooHR as a data pipeline source:
 
@@ -2687,7 +2689,7 @@ Complete the following steps to configure BambooHR as your data pipeline source:
        
     
 
-## Supported objects
+## Supported BambooHR objects
 
 BambooHR data pipelines sync data from the BambooHR REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination. Some objects require specific BambooHR modules. Refer to [Module-gated objects](#module-gated-objects) for details.
 
@@ -2837,7 +2839,7 @@ BambooHR is an HR information system, and nearly every object contains employee 
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## BambooHR limitations
 
 The following limitations apply when you use BambooHR as a data pipeline source.
 
@@ -2885,7 +2887,7 @@ Set up Braintree as a data pipeline source to extract transaction, subscription,
 
 Use this guide to review the features and prerequisites, connect Braintree as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Braintree features supported
 
 The following features are supported when you use Braintree as a pipeline source:
 
@@ -2899,7 +2901,7 @@ The following features are supported when you use Braintree as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Braintree prerequisites
 
 Connecting Braintree as a data pipeline source requires:
 
@@ -3063,7 +3065,7 @@ Complete the following steps to configure Braintree as your data pipeline source
     The historical start date applies only to objects with an incremental cursor. Objects without an incremental cursor sync their complete current data set regardless of this field.
     
 
-## Supported objects
+## Supported Braintree objects
 
 Braintree data pipelines sync data from the Braintree GraphQL API and the legacy Braintree gateway API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -3191,7 +3193,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing email addresses, phone numbers, and billing and shipping address fields for pipelines operating under PCI-DSS, GDPR, or CCPA.
 
-## Limitations
+## Braintree limitations
 
 The following limitations apply when you use Braintree as a data pipeline source:
 
@@ -3223,7 +3225,7 @@ Set up Chargebee as a data pipeline source to extract subscription, billing, inv
 
 Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Chargebee features supported
 
 The following features are supported when you use Chargebee as a pipeline source:
 
@@ -3237,7 +3239,7 @@ The following features are supported when you use Chargebee as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Chargebee prerequisites
 
 Connecting Chargebee as a data pipeline source requires:
 
@@ -3390,7 +3392,7 @@ Complete the following steps to configure Chargebee as your data pipeline source
        
     
 
-## Supported objects
+## Supported Chargebee objects
 
 Chargebee data pipelines sync data from the Chargebee API v2. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination, unless noted otherwise.
 
@@ -3533,7 +3535,7 @@ Chargebee doesn't return full card numbers or CVV values through its API, so Wor
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Chargebee limitations
 
 The following limitations apply when you use Chargebee as a data pipeline source:
 
@@ -3572,7 +3574,7 @@ description: >-
 
 Set up Confluence as a data pipeline source to extract spaces, pages, blog posts, comments, and related content from Confluence and sync them to your destination. Use this guide to prepare your Confluence credentials, connect Confluence to Workato, configure the pipeline, and understand the supported objects, sync modes, and limitations.
 
-## Features supported
+## Confluence features supported
 
 The following features are supported when you use Confluence as a pipeline source:
 
@@ -3584,7 +3586,7 @@ The following features are supported when you use Confluence as a pipeline sourc
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Confluence prerequisites
 
 Complete the following requirements before you configure Confluence as a data pipeline source.
 
@@ -3883,7 +3885,7 @@ Complete the following steps to configure Confluence as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported Confluence objects
 
 Confluence data pipelines sync data from the Confluence Cloud REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -3983,7 +3985,7 @@ Workato adds the following synthetic column to destination tables for specific o
 | --- | --- | --- |
 | `_workato_is_deleted` | Boolean | Marks records that were trashed or deleted in Confluence. Applies to `Pages`, `Blog Posts`, `Page Attachments`, and `Blog Post Attachments`. For `Users`, this column marks accounts that are no longer active in Atlassian. |
 
-## Limitations
+## Confluence limitations
 
 The following limitations apply when you use Confluence as a data pipeline source:
 
@@ -4015,7 +4017,7 @@ Set up Cornerstone OnDemand as a data pipeline source to extract and sync learni
 
 Use this guide to register a Cornerstone OnDemand API client, connect Cornerstone OnDemand as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Cornerstone OnDemand features supported
 
 The following features are supported when you use Cornerstone OnDemand as a pipeline source:
 
@@ -4027,7 +4029,7 @@ The following features are supported when you use Cornerstone OnDemand as a pipe
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Cornerstone OnDemand prerequisites
 
 Connecting Cornerstone OnDemand as a data pipeline source requires:
 
@@ -4197,7 +4199,7 @@ Complete the following steps to configure Cornerstone OnDemand as your data pipe
     > The historical start date applies to all Data Exporter objects, including objects that support full sync only, and filters records by the `_last_touched_dt_utc` field. Reporting API objects extract all available records.
     
 
-## Supported objects
+## Supported Cornerstone OnDemand objects
 
 Cornerstone OnDemand data pipelines sync data from the Cornerstone OnDemand Data Exporter API and Reporting API. Each object syncs as a separate table in your destination. The **Delete tracking** column describes incremental sync for objects that support it. Refer to [Delete tracking](#delete-tracking) for how these objects track deletes in full sync:
 
@@ -4292,7 +4294,7 @@ Custom field objects, such as `users_cf_core` and `vw_rpt_transaction_cf`, can a
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Cornerstone OnDemand limitations
 
 The following limitations apply when you use Cornerstone OnDemand as a data pipeline source:
 
@@ -4318,7 +4320,7 @@ description: >-
 
 Set up Coupa as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with Coupa as a source.
 
-## Features supported
+## Coupa features supported
 
 The following features are supported when using Coupa as a data pipeline source:
 
@@ -4328,7 +4330,7 @@ The following features are supported when using Coupa as a data pipeline source:
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Coupa prerequisites
 
 You must have the following configuration and access:
 
@@ -4514,7 +4516,7 @@ description: >-
 
 Set up Ellucian Banner as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with your Banner environment.
 
-## Features supported
+## Ellucian Banner features supported
 
 The following features are supported when using Ellucian Banner as a data pipeline source:
 
@@ -4524,7 +4526,7 @@ The following features are supported when using Ellucian Banner as a data pipeli
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Ellucian Banner prerequisites
 
 Ensure you have completed the following tasks before you begin:
 
@@ -4674,7 +4676,7 @@ Set up Facebook as a data pipeline source to extract and sync ad account, campai
 
 Use this guide to review the features and prerequisites, connect Facebook as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Facebook features supported
 
 The following features are supported when you use Facebook as a pipeline source:
 
@@ -4687,7 +4689,7 @@ The following features are supported when you use Facebook as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Facebook prerequisites
 
 Complete the following requirements before you connect Facebook as a data pipeline source.
 
@@ -4830,7 +4832,7 @@ Complete the following steps to configure Facebook as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Facebook objects
 
 Facebook data pipelines sync data from the Meta Marketing API (v25.0). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination, except `Basic Ad Actions`, which merges Meta's `actions` and `action_values` arrays into a single child table of `Basic Ad`.
 
@@ -4966,7 +4968,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing `AdAccount.funding_source_details` in particular.
 
-## Limitations
+## Facebook limitations
 
 The following limitations apply when you use Facebook as a data pipeline source.
 
@@ -4998,7 +5000,7 @@ Set up Freshdesk as a data pipeline source to extract tickets, contacts, compani
 
 Use this guide to generate a Freshdesk API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Freshdesk features supported
 
 The following features are supported when you use Freshdesk as a pipeline source:
 
@@ -5010,7 +5012,7 @@ The following features are supported when you use Freshdesk as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Freshdesk prerequisites
 
 Complete the following requirements before you connect Freshdesk as a data pipeline source.
 
@@ -5166,7 +5168,7 @@ Complete the following steps to configure Freshdesk as your data pipeline source
        
     
 
-## Supported objects
+## Supported Freshdesk objects
 
 Freshdesk data pipelines sync data from the Freshdesk REST API v2. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -5280,7 +5282,7 @@ Freshdesk objects can contain significant PII, including customer support conver
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Freshdesk limitations
 
 The following limitations apply when you use Freshdesk as a data pipeline source:
 
@@ -5309,7 +5311,7 @@ Set up GitHub as a data pipeline source to extract repositories, issues, pull re
 
 Use this guide to review the features and prerequisites, connect GitHub as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations.
 
-## Features supported
+## GitHub features supported
 
 The following features are supported when you use GitHub as a pipeline source:
 
@@ -5322,7 +5324,7 @@ The following features are supported when you use GitHub as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## GitHub prerequisites
 
 Connecting GitHub as a data pipeline source requires:
 
@@ -5528,7 +5530,7 @@ Complete the following steps to configure GitHub as your data pipeline source:
        
     
 
-## Supported objects
+## Supported GitHub objects
 
 GitHub data pipelines sync data from the GitHub REST API, and from the GraphQL API for pull request reviews and releases. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -5649,7 +5651,7 @@ The `body` field on `Issue`, `IssueComment`, `PullRequest`, and `ReviewComment` 
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## GitHub limitations
 
 The following limitations apply when you use GitHub as a data pipeline source:
 
@@ -5691,7 +5693,7 @@ description: >-
 
 Set up Gong as a data pipeline source to extract call, scorecard, user, and workspace data from Gong and sync it to your destination. Use this guide to connect Gong, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations.
 
-## Features supported
+## Gong features supported
 
 The following features are supported when you use Gong as a pipeline source:
 
@@ -5704,7 +5706,7 @@ The following features are supported when you use Gong as a pipeline source:
 - **Field-level data protection**: Hash sensitive fields, such as participant names, emails, and phone numbers, before they sync to your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Gong prerequisites
 
 Complete the following requirements before you connect Gong as a data pipeline source.
 
@@ -5903,7 +5905,7 @@ Complete the following steps to configure Gong as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Gong objects
 
 Gong data pipelines sync data from Gong API v2 REST resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -6045,7 +6047,7 @@ Gong objects can contain personally identifiable information (PII) and verbatim 
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Gong limitations
 
 The following limitations apply when you use Gong as a data pipeline source:
 
@@ -6108,7 +6110,7 @@ Set up Google Analytics as a data pipeline source to extract prebuilt Google Ana
 
 Use this guide to review the features and prerequisites, connect Google Analytics as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Google Analytics features supported
 
 The following features are supported when you use Google Analytics as a pipeline source:
 
@@ -6121,7 +6123,7 @@ The following features are supported when you use Google Analytics as a pipeline
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Google Analytics prerequisites
 
 Complete the following requirements before you connect Google Analytics as a data pipeline source.
 
@@ -6305,7 +6307,7 @@ Complete the following steps to configure Google Analytics as your data pipeline
        
     
 
-## Supported objects
+## Supported Google Analytics objects
 
 Google Analytics data pipelines sync data from the Google Analytics Data API (prebuilt GA4 reports) and Admin API (account and property metadata). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -6484,7 +6486,7 @@ Google Analytics report data is aggregated. GA4's Data API doesn't expose indivi
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Google Analytics limitations
 
 The following limitations apply when you use Google Analytics as a data pipeline source.
 
@@ -6522,7 +6524,7 @@ description: >-
 
 Set up Google Cloud Storage as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in GCS buckets.
 
-## Features supported
+## Google Cloud Storage features supported
 
 The following features are supported when using Google Cloud Storage as a data pipeline source:
 
@@ -6531,7 +6533,7 @@ The following features are supported when using Google Cloud Storage as a data p
 - Field‑level selection for data extraction
 - Field‑level data masking
 
-## Prerequisites
+## Google Cloud Storage prerequisites
 
 You must have the following configuration and access:
 
@@ -6739,7 +6741,7 @@ description: >-
 
 Set up Google Drive as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in Google Drive folders.
 
-## Features supported
+## Google Drive features supported
 
 The following features are supported when using Google Drive as a data pipeline source:
 
@@ -6748,7 +6750,7 @@ The following features are supported when using Google Drive as a data pipeline 
 - Field-level selection for data extraction
 - Field-level data masking
 
-## Prerequisites
+## Google Drive prerequisites
 
 You must have the following configuration and access:
 
@@ -6969,7 +6971,7 @@ Set up Google Search Console as a data pipeline source to extract Search Analyti
 
 Use this guide to review the features and prerequisites, connect Google Search Console as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Google Search Console features supported
 
 The following features are supported when you use Google Search Console as a pipeline source:
 
@@ -6982,7 +6984,7 @@ The following features are supported when you use Google Search Console as a pip
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Google Search Console prerequisites
 
 Connecting Google Search Console as a data pipeline source requires:
 
@@ -7154,7 +7156,7 @@ Complete the following steps to configure Google Search Console as your data pip
        
     
 
-## Supported objects
+## Supported Google Search Console objects
 
 Google Search Console data pipelines sync data from the Google Search Console API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -7245,7 +7247,7 @@ Google Search Console reports are aggregated, and Workato delivers the values Go
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Google Search Console limitations
 
 The following limitations apply when you use Google Search Console as a data pipeline source:
 
@@ -7301,7 +7303,7 @@ Set up Google Sheets as a data pipeline source to extract spreadsheet data into 
 
 Use this guide to set up a connection, configure your pipeline, and understand how objects sync, sync behavior, schema and data type handling, and known limitations.
 
-## Features supported
+## Google Sheets features supported
 
 The following features are supported when you use Google Sheets as a pipeline source:
 
@@ -7313,7 +7315,7 @@ The following features are supported when you use Google Sheets as a pipeline so
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression.
 
-## Prerequisites
+## Google Sheets prerequisites
 
 Complete the following requirements before you connect Google Sheets as a data pipeline source.
 
@@ -7638,7 +7640,7 @@ Any column in any synced sheet can contain personally identifiable information (
 
 Before you sync a spreadsheet that contains sensitive data, review its columns and use the **Hash** option in field-level data protection to mask any column that shouldn't reach your destination as is. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Google Sheets limitations
 
 The following limitations apply when you use Google Sheets as a data pipeline source.
 
@@ -7675,7 +7677,7 @@ Set up Greenhouse as a data pipeline source to extract recruiting data, such as 
 
 Use this guide to review the prerequisites, connect Greenhouse as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Greenhouse features supported
 
 The following features are supported when you use Greenhouse as a pipeline source:
 
@@ -7688,7 +7690,7 @@ The following features are supported when you use Greenhouse as a pipeline sourc
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Greenhouse prerequisites
 
 Complete the following requirements before you connect Greenhouse as a data pipeline source:
 
@@ -7876,7 +7878,7 @@ Complete the following steps to configure Greenhouse as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported Greenhouse objects
 
 Greenhouse data pipelines sync data from Greenhouse Harvest v3 API resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -7998,7 +8000,7 @@ Workato recommends hashing the `Offers` object's `custom_fields` field to preven
 
 Greenhouse sets a candidate's `anonymized_at` timestamp and clears the candidate's PII fields when the candidate is anonymized, for example, after a GDPR or CCPA erasure request. The pipeline preserves the `anonymized_at` value in the destination. Anonymized candidate records sync with null PII fields, which is expected behavior.
 
-## Limitations
+## Greenhouse limitations
 
 The following limitations apply when you use Greenhouse as a data pipeline source.
 
@@ -8029,7 +8031,7 @@ description: >-
 
 Set up HiBob as a data pipeline source to extract employee data, historical people records, time off, compensation, and custom table objects into your destination. Use this guide to review the features supported, complete prerequisites, connect HiBob to Workato, configure the pipeline, and understand known limitations.
 
-## Features supported
+## HiBob features supported
 
 The following features are supported when you use HiBob as a pipeline source:
 
@@ -8040,7 +8042,7 @@ The following features are supported when you use HiBob as a pipeline source:
 - **Schema drift detection**: Configure per-tenant objects to auto-sync new fields, or lock the schema after the pipeline starts.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## HiBob prerequisites
 
 Complete the following requirements before you connect HiBob as a data pipeline source.
 
@@ -8211,7 +8213,7 @@ Complete the following steps to configure HiBob as your data pipeline source:
        
     
 
-## Supported objects
+## Supported HiBob objects
 
 The pipeline supports a curated set of HiBob objects, plus any custom tables defined in your workspace. Custom fields on `employees` and custom tables are discovered at pipeline setup time when you load the available objects and schemas in the object wizard. All other objects have fixed schemas.
 
@@ -8316,7 +8318,7 @@ HiBob objects can contain personally identifiable information (PII) and compensa
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## HiBob limitations
 
 The following limitations apply when you use HiBob as a data pipeline source.
 
@@ -8342,7 +8344,7 @@ description: >-
 
 Set up HubSpot as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with HubSpot CRM objects.
 
-## Features supported
+## HubSpot features supported
 
 The following features are supported when using HubSpot as a data pipeline source:
 
@@ -8352,7 +8354,7 @@ The following features are supported when using HubSpot as a data pipeline sourc
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## HubSpot prerequisites
 
 You must have the following configuration and access:
 
@@ -8500,7 +8502,7 @@ Set up Intercom as a data pipeline source to extract and sync customer engagemen
 
 The connector targets Intercom REST API version `2.15` and uses OAuth 2.0 for authentication.
 
-## Features supported
+## Intercom features supported
 
 The following features are supported when you use Intercom as a pipeline source:
 
@@ -8513,7 +8515,7 @@ The following features are supported when you use Intercom as a pipeline source:
 - **Configurable concurrency**: Cap the number of concurrent API operations the pipeline performs against Intercom.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Intercom prerequisites
 
 Complete the following prerequisites before you connect Intercom as a data pipeline source:
 
@@ -8662,7 +8664,7 @@ Complete the following steps to configure Intercom as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Intercom objects
 
 The Intercom source connector supports the following objects. The sync mode for each object depends on whether the Intercom API exposes an incremental update mechanism. The **When first started, this pipeline should pick up records from** field applies only to objects that support an API-level filter.
 
@@ -8795,7 +8797,7 @@ description: >-
 
 Set up Jira as a data pipeline source to extract issues, projects, users, and related records into your destination. Use this guide to set up a connection, configure your pipeline, add objects, and understand sync behavior and known limitations.
 
-## Features supported
+## Jira features supported
 
 The following features are supported when you use Jira as a pipeline source:
 
@@ -8807,7 +8809,7 @@ The following features are supported when you use Jira as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Jira prerequisites
 
 Complete the following requirements before you connect Jira as a data pipeline source.
 
@@ -9238,7 +9240,7 @@ Complete the following steps to configure Jira as your data pipeline source.
        
     
 
-## Supported objects
+## Supported Jira objects
 
 Jira data pipelines sync data from Jira REST API resources. Each object you select syncs as a separate table in your destination. The objects available for selection depend on your Jira instance configuration. For example, Jira Software products expose additional objects such as boards.
 
@@ -9274,7 +9276,7 @@ The pipeline automatically discovers custom fields configured on Jira objects an
 
 Each object has a primary key field that can't be deselected. For example, `id` is the primary key for the `Issues` object.
 
-## Limitations
+## Jira limitations
 
 The following limitations apply when you use Jira as a data pipeline source.
 
@@ -9305,7 +9307,7 @@ Set up Klaviyo as a data pipeline source to extract audience, campaign, flow, ca
 
 Use this guide to generate a Klaviyo private API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Klaviyo features supported
 
 The following features are supported when you use Klaviyo as a pipeline source:
 
@@ -9316,7 +9318,7 @@ The following features are supported when you use Klaviyo as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Klaviyo prerequisites
 
 Connecting Klaviyo as a data pipeline source requires:
 
@@ -9535,7 +9537,7 @@ Complete the following steps to configure Klaviyo as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Klaviyo objects
 
 Klaviyo data pipelines sync data from Klaviyo's REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination. Klaviyo custom objects and custom object records aren't currently supported.
 
@@ -9668,7 +9670,7 @@ Klaviyo objects can contain personally identifiable information (PII). The follo
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Klaviyo limitations
 
 The following limitations apply when you use Klaviyo as a data pipeline source:
 
@@ -9715,7 +9717,7 @@ Set up LinkedIn as a data pipeline source to extract ad account, campaign, creat
 
 Use this guide to prepare your LinkedIn credentials, connect LinkedIn to Workato, configure the pipeline, and understand the supported objects, sync modes, and limitations.
 
-## Features supported
+## LinkedIn features supported
 
 The following features are supported when you use LinkedIn as a pipeline source:
 
@@ -9728,7 +9730,7 @@ The following features are supported when you use LinkedIn as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## LinkedIn prerequisites
 
 Complete the following requirements before you configure LinkedIn as a data pipeline source:
 
@@ -9884,7 +9886,7 @@ Complete the following steps to configure LinkedIn as your data pipeline source.
     This field doesn't apply to Ad Analytics objects, which backfill from a fixed start date instead. Refer to [Incremental sync](#incremental-sync) for details.
     
 
-## Supported objects
+## Supported LinkedIn objects
 
 LinkedIn data pipelines sync data from the LinkedIn Marketing API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -10008,7 +10010,7 @@ LinkedIn objects can contain personally identifiable information (PII). The foll
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## LinkedIn limitations
 
 The following limitations apply when you use LinkedIn as a data pipeline source:
 
@@ -10036,6 +10038,328 @@ The minimum supported sync interval is 15 minutes.
 
 ---
 url: >-
+  https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-looker.md
+description: >-
+  Set up Looker as a data pipeline source to extract and sync content, user,
+  LookML, and query history metadata from your Looker instance to your
+  destination.
+---
+
+# Configure Looker as a data pipeline source
+
+Set up Looker as a data pipeline source to extract content, user, LookML, and query history metadata from your Looker instance into your destination.
+
+Use this guide to review the features and prerequisites, connect Looker as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
+
+## Looker features supported
+
+The following features are supported when you use Looker as a pipeline source:
+
+- **Cloud connectivity**: Connect to your Looker instance over HTTPS through Looker API version 4.0. On-prem groups aren't supported.
+- **Full sync and incremental sync**: `Query History` offers both sync modes and uses `history.created_time` as a cursor in either mode. All other objects support full sync only. Refer to [Sync modes](#sync-modes) for more information.
+- **Object-level selection**: Select Looker objects, such as `Looks`, `Dashboards`, `Users`, `Projects`, and `Query History`, to sync as separate tables in your destination. Refer to [Supported objects](#supported-objects) for the full list.
+- **Delete tracking**: Reflect records deleted in Looker on the next sync for full-sync objects except `Project Files`. Refer to [Delete tracking](#delete-tracking) for more information.
+- **Fixed object schemas**: Select fields from fixed schemas based on the Looker API 4.0. New Looker API fields become available after Workato updates the connector schemas.
+- **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
+- **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
+
+## Looker prerequisites
+
+Connecting Looker as a data pipeline source requires:
+
+- A Looker instance and its API host URL, including the API port if your instance requires one.
+- Looker API3 credentials, which consist of a client ID and a client secret. Looker admins create API3 credentials on the **Users** page of the **Admin** panel. Users create credentials on their **Account** page in Looker (Google Cloud core) instances after an admin enables API management. Refer to the [Looker API authentication](https://docs.cloud.google.com/looker/docs/api-auth) guide for more information.
+
+> **REQUIRED PERMISSIONS**
+> 
+> API3 credentials inherit the roles and permissions of the Looker user they belong to. Workato recommends API3 credentials for a user with the Looker **Admin** role because administrative objects, such as `Users`, `Groups`, `Roles`, `Scheduled Plans`, `Projects`, `Connections`, and `Integrations`, require admin-level access. `Query History` requires the `see_system_activity` permission, which Looker admins have by default. Objects the user can't access fail with a permissions error.
+
+## Supported connection types
+
+Looker data pipelines support **API3 credentials** authentication. Provide the client ID and client secret for a Looker user with access to the objects you plan to sync.
+
+> **OAUTH 2.0 CONNECTIONS AREN'T SUPPORTED**
+> 
+> The **Authentication type** drop-down menu also lists **OAuth 2.0 (authorization code + PKCE)**. Data pipelines don't support this authentication type, and a connection that uses it fails as a pipeline source. Create a separate connection that uses **API3 credentials** for your data pipeline.
+
+## Connect to Looker
+
+Complete the following steps to connect Looker as a data pipeline source:
+
+Connect to Looker
+
+1. Select **Create > Connection** or press C twice.
+   
+2. Search for `Looker` and select it as your app.
+   
+3. Enter a name in the **Connection name** field.
+   
+4. Use the **Location** drop-down menu to select the project where you plan to store the connection.
+   
+5. Use the **Connection type** drop-down menu to select **Cloud**. Looker data pipelines don't support on-prem groups.
+   
+6. Use the **Authentication type** drop-down menu to select **API3 credentials**.
+   
+7. Enter your Looker API host in the **Looker instance URL** field. Omit `https://` and include the API port if your instance requires one, for example `analytics.example.com:19999`.
+   
+8. Use the **API version** drop-down menu to select **Version 4.0**. Data pipelines support only Looker API version 4.0.
+   
+9. Enter the client ID of your API3 credentials in the **Client ID** field.
+   
+10. Enter the client secret of your API3 credentials in the **Client secret** field.
+    
+11. Select **Connect** to verify and save the connection. Workato displays a success message when the connection is established.
+    
+
+## Configure the pipeline
+
+Complete the following steps to configure Looker as your data pipeline source:
+
+1. Select **Create > Data pipeline** or press C+I.
+   
+2. Enter a name for the data pipeline in the **Data pipeline name** field.
+   
+   ![Data pipeline setup](/assets/set-up-pipeline.Cxx6hIk2.png)_Data pipeline setup_
+   
+3. Use the **Location** drop-down menu to select the project where you plan to store the data pipeline.
+   
+4. Click **Start building**.
+   
+5. Click the **Extract new/updated records from source app** trigger. This trigger defines how the pipeline retrieves data from Looker.
+   
+   ![Configure the Extract new/updated records from source app trigger](/assets/choose-source-app.B2OOUpgY.png)_Configure the Extract new/updated records from source app trigger_
+   
+6. Use the **Your Connected Source Apps** drop-down menu to select **Looker**.
+   
+7. Choose the Looker connection you plan to use for this pipeline. Alternatively, click **\+ New connection** to create a new connection.
+   
+8. Click **Add object** to open the **Add new objects** panel.
+   
+   ![Add objects](/assets/add-objects-looker.DX05kRk9.png)_Add objects_
+   
+9. Search or browse the list of available Looker objects, select the objects you plan to sync, and click **Add**.
+   
+   > **FULL SYNC ONLY OBJECTS**
+   > 
+   > Only `Query History` has a timestamp cursor. All other objects always sync in full. Refer to [Sync modes](#sync-modes) for more information.
+   
+10. Optional. Click the gear icon next to `Query History` to open its **Sync mode** settings. Use the **Sync mode** drop-down menu to select **Full sync** or **Incremental**, then click **Save**.
+    
+    Workato recommends **Incremental** to capture new `Query History` records on each run. `Query History` uses a timestamp cursor and doesn't track deleted rows in either sync mode. Refer to [Sync modes](#sync-modes) for more information.
+    
+11. Review and customize the schema for each selected object. The pipeline automatically fetches an object's schema when you select it. This ensures the destination matches the source.
+    
+    Expand an object to view associated fields. Keep all fields selected to extract all available data, or deselect specific fields to exclude them from data extraction and schema replication.
+    
+12. Optional. Configure field-level data protection by expanding an object and choosing how to handle each field:
+    
+    - **Replicate as is**: Data values at the source replicate identically to the destination.
+    - **Hash**: Hash sensitive data values in the field before syncing to your destination.
+    
+    Workato recommends hashing personally identifiable information (PII) and other sensitive fields. Refer to [Sensitive data handling](#sensitive-data-handling) for a list of fields that commonly contain PII.
+    
+13. Click **Add object** again to add more objects. Repeat this step to include additional Looker objects in your pipeline.
+    
+14. Use the **Choose how to handle schema changes** drop-down menu to select a schema drift handling option:
+    
+    - **Auto-sync new fields**: Adds fields that become available after an update to the connector's fixed schema.
+    - **Block new fields**: Keeps the selected schema fixed until you add newly available fields manually.
+    
+    Neither option detects new fields in your Looker instance, because Looker objects use fixed schemas. Refer to [Schema replication and schema drift management](/en/data-orchestration/data-pipeline-recipe/concepts#schema-drift) for more information.
+    
+15. Optional. Enter a value in the **Concurrency limit** field to cap the number of concurrent operations. Leave the field blank to use the default limit set by Workato. The maximum value is `5`.
+    
+16. Choose either a standard time-based schedule or define a custom cron expression in the **Frequency** field. This determines how often the pipeline syncs data from Looker to the destination.
+    
+    **Time-based schedule**
+    
+    1. Select the **Time unit**, such as **Minutes**, **Hours**, or **Days**.
+       
+    2. Specify the sync interval in the **Trigger every** field.
+       
+       For example, the pipeline syncs every 6 hours if you select **Hours** as the **Time unit** and enter `6` in the **Trigger every** field. The minimum interval you can set is `15` minutes.
+       
+    3. Select a start date for the historical data sync in the **When first started, this pipeline should pick up records from** field. This defines the earliest date from which the pipeline extracts `Query History` records. `Query History` starts from `90` days before the first run if you leave this field blank. All other objects sync in full and ignore this field. Refer to [System Activity history retention](#system-activity-history-retention) for more information.
+       
+       You can't change this value after you run the pipeline.
+       
+    4. Click **Save** to save your progress before you [configure your data pipeline destination](/en/data-orchestration/data-pipeline-recipe/configure-pipeline-destinations#configure‒how‒data‒is‒loaded‒in‒the‒workato‒data‒pipeline).
+       
+    
+    **Cron-based scheduling**
+    
+    1. Use the **Time unit** drop-down menu to select **Custom schedule**.
+       
+    2. Enter an expression in the **Cron expression** field using the format:
+       
+       ```text
+       [minute] [hour] [day of month] [month] [day of week]
+       ```
+       
+       The minimum interval for cron schedules is `15` minutes. For example, enter the following expression to sync every day at 8:00 AM UTC:
+       
+       ```text
+       0 8 * * *
+       ```
+       
+    3. Optional. Select a **Timezone** for the cron expression. Leave blank to use `Etc/UTC`.
+       
+    4. Select a start date for the historical data sync in the **When first started, this pipeline should pick up records from** field. This defines the earliest date from which the pipeline extracts `Query History` records. `Query History` starts from `90` days before the first run if you leave this field blank. All other objects sync in full and ignore this field. Refer to [System Activity history retention](#system-activity-history-retention) for more information.
+       
+       You can't change this value after you run the pipeline.
+       
+    5. Click **Save** to save your progress before you [configure your data pipeline destination](/en/data-orchestration/data-pipeline-recipe/configure-pipeline-destinations#configure‒how‒data‒is‒loaded‒in‒the‒workato‒data‒pipeline).
+       
+    
+
+## Supported Looker objects
+
+Looker data pipelines sync data from the Looker API 4.0. Each object syncs as a separate table in your destination.
+
+### Content objects
+
+These objects sync the Looks, dashboards, boards, folders, and schedules in your instance. Workato retrieves `Dashboard Elements`, `Dashboard Filters`, and `Dashboard Layouts` for each dashboard, `Dashboard Layout Components` for each dashboard layout, and `Content Metadata` for each folder.
+
+| Object | Sync mode(s) | Delete tracking |
+| --- | --- | --- |
+| `Looks` | Full sync | Yes |
+| `Dashboards` | Full sync | Yes |
+| `Dashboard Elements` | Full sync | Yes |
+| `Dashboard Filters` | Full sync | Yes |
+| `Dashboard Layouts` | Full sync | Yes |
+| `Dashboard Layout Components` | Full sync | Yes |
+| `Boards` | Full sync | Yes |
+| `Board Items` | Full sync | Yes |
+| `Board Sections` | Full sync | Yes |
+| `Folders` | Full sync | Yes |
+| `Content Metadata` | Full sync | Yes |
+| `Scheduled Plans` | Full sync | Yes |
+
+`Scheduled Plans` includes the schedules of every user in your instance.
+
+### User and access objects
+
+These objects sync the users, groups, and access configuration of your instance. Workato retrieves `User Sessions` for each user.
+
+| Object | Sync mode(s) | Delete tracking |
+| --- | --- | --- |
+| `Users` | Full sync | Yes |
+| `User Sessions` | Full sync | Yes |
+| `Groups` | Full sync | Yes |
+| `Roles` | Full sync | Yes |
+| `Permission Sets` | Full sync | Yes |
+| `Model Sets` | Full sync | Yes |
+| `User Attributes` | Full sync | Yes |
+
+### LookML and instance objects
+
+These objects sync LookML projects and models, database connections, and instance configuration. Workato retrieves `Project Files` for each project.
+
+| Object | Sync mode(s) | Delete tracking |
+| --- | --- | --- |
+| `LookML Models` | Full sync | Yes |
+| `Projects` | Full sync | Yes |
+| `Project Files` | Full sync | No |
+| `Workspaces` | Full sync | Yes |
+| `Connections` | Full sync | Yes |
+| `Datagroups` | Full sync | Yes |
+| `Integrations` | Full sync | Yes |
+
+`Workspaces` syncs the development and production workspaces of your instance. `Connections` syncs the database connections that Looker uses, not Workato connections.
+
+### Usage objects
+
+This object syncs query activity from the Looker System Activity `History` Explore:
+
+| Object | Sync mode(s) | Delete tracking |
+| --- | --- | --- |
+| `Query History` | Full sync, incremental | No |
+
+`Query History` syncs one row per query run. Refer to [System Activity history retention](#system-activity-history-retention) for the limits that apply to this object.
+
+## Sync modes
+
+Looker data pipelines support full sync and incremental sync. Looker doesn't provide a common changed-since filter across its API, so every object except `Query History` supports full sync only.
+
+### Full sync
+
+A full sync reads all available records on every run for every object except `Query History`.
+
+`Query History` also offers full sync, but it uses its timestamp cursor in either sync mode. Extraction resumes from the saved cursor if one exists. Otherwise, extraction starts at the date you select, or `90` days before the run if you leave the date blank. Workato doesn't track deletions for `Query History`.
+
+### Incremental sync
+
+`Query History` uses the `history.created_time` field as its cursor. The first run reads query history from the start date you select, or from `90` days before the first run if you leave the start date blank. Each later run reads records created at or after the most recent `history.created_time` value from the preceding run, and skips records that the pipeline already synced.
+
+### Delete tracking
+
+Delete tracking depends on the object:
+
+- **Full sync only objects except `Project Files`**: `Yes`. Workato marks records you delete in Looker as deleted in your destination on the next full sync.
+- **`Project Files` and `Query History`**: `No`. Workato doesn't detect deleted records for these objects, and records missing from a later sync aren't marked as deleted.
+
+## Schema and data type handling
+
+The following considerations apply to schema and data types when you sync data from Looker:
+
+### Fixed schemas
+
+Each object uses a fixed schema based on the Looker API 4.0 resource type. Looker objects don't have custom fields. `Query History` syncs the `history.id`, `history.created_time`, `query.id`, and `user.id` fields.
+
+### Nested fields
+
+Nested objects and arrays, such as the `can` permission map, the `folder` and `model` fields on `Looks`, and `vis_config` on `Dashboard Elements`, sync as JSON objects. Some child resources, such as `Dashboard Elements` and `Board Items`, sync as separate tables rather than nested JSON. A parent object can still carry a JSON copy of a child resource's fields alongside the separate table.
+
+Workato syncs JSON fields to the destination's native JSON type, such as `VARIANT` in Snowflake. Workato serializes JSON fields as strings if the destination doesn't support a native JSON type.
+
+### Timestamps
+
+Timestamp fields sync as timestamps with time zone. Workato treats Looker timestamps that don't include a time zone offset as UTC. The `created_at`, `stale_before`, `trigger_check_at`, and `triggered_at` fields on `Datagroups` sync as Unix timestamp integers, matching the Looker API.
+
+### Synthetic columns
+
+Workato adds the following column to every object except `Project Files` and `Query History`:
+
+| Column | Type | Purpose |
+| --- | --- | --- |
+| `_workato_is_deleted` | Boolean | Indicates whether the record was deleted in Looker. Refer to [Delete tracking](#delete-tracking) for more information. |
+
+## Sensitive data handling
+
+Looker objects can contain personally identifiable information (PII) and details about your database infrastructure. The following objects commonly contain sensitive fields:
+
+| Object | Sensitive fields |
+| --- | --- |
+| `Users` | `first_name`, `last_name`, `display_name`, `email`, `avatar_url`, `avatar_url_without_sizing` |
+| `User Sessions` | `ip_address`, `city`, `state`, `country`, `browser`, `operating_system` |
+| `Looks`, `Dashboards` | `user_name` |
+| `Dashboards` | `last_updater_name` |
+| `Scheduled Plans` | `scheduled_plan_destination`, `user` |
+| `Query History` | `user.id` |
+| `Connections` | `host`, `port`, `database`, `schema`, `tmp_db_host`, `jdbc_additional_params` |
+| `Projects` | `git_remote_url`, `git_username` |
+| `User Attributes` | `default_value` |
+
+Workato doesn't sync API3 credentials, database passwords, certificates, deploy secrets, or other secret values from Looker.
+
+Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
+
+## Looker limitations
+
+The following limitations apply when you use Looker as a data pipeline source:
+
+### System Activity history retention
+
+`Query History` reads from Looker System Activity, which keeps query history for approximately `90` days by default. Elite System Activity can extend this limit. The pipeline can't extract query history that Looker no longer retains, even if you select an earlier start date. Schedule regular syncs to capture query history before it ages out of System Activity.
+
+### Minimum sync frequency
+
+The minimum supported sync interval is 15 minutes.
+
+---
+
+---
+url: >-
   https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-marketo.md
 description: >-
   Configure Marketo as a data pipeline source to extract object records through
@@ -10048,7 +10372,7 @@ Set up Marketo as a data pipeline source to extract and sync records into your d
 
 Workato uses the Marketo REST API to extract object data for pipeline syncs.
 
-## Features supported
+## Marketo features supported
 
 The following features are supported when using Marketo as a data pipeline source:
 
@@ -10058,7 +10382,7 @@ The following features are supported when using Marketo as a data pipeline sourc
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Marketo prerequisites
 
 You must have the following configuration and access:
 
@@ -10207,7 +10531,7 @@ Set up Microsoft Dynamics 365 as a data pipeline source to extract Sales, Custom
 
 Use this guide to register a Microsoft Entra ID app, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Microsoft Dynamics 365 features supported
 
 The following features are supported when you use Microsoft Dynamics 365 as a pipeline source:
 
@@ -10219,7 +10543,7 @@ The following features are supported when you use Microsoft Dynamics 365 as a pi
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Microsoft Dynamics 365 prerequisites
 
 Complete the following requirements before you connect Microsoft Dynamics 365 as a data pipeline source:
 
@@ -10582,7 +10906,7 @@ Complete the following steps to configure Microsoft Dynamics 365 as your data pi
        
     
 
-## Supported objects
+## Supported Microsoft Dynamics 365 objects
 
 Microsoft Dynamics 365 data pipelines sync data from Microsoft Dataverse, the shared data platform behind Sales, Customer Service, Field Service, and Marketing (Customer Insights – Journeys). Workato dynamically discovers every table your connection can read, including custom tables, so you're not limited to the objects listed below. The following tables list commonly synced objects, grouped by app area. Each object syncs as a separate table in your destination.
 
@@ -10761,7 +11085,7 @@ Microsoft Dynamics 365 objects can contain significant personally identifiable i
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Microsoft Dynamics 365 limitations
 
 The following limitations apply when you use Microsoft Dynamics 365 as a data pipeline source:
 
@@ -10800,7 +11124,7 @@ Set up Microsoft Dynamics Business Central as a data pipeline source to extract 
 > 
 > Data pipelines support the cloud (SaaS) version of Microsoft Dynamics Business Central only. On-premises deployments aren't supported.
 
-## Features supported
+## Microsoft Dynamics Business Central features supported
 
 The following features are supported when you use Business Central as a pipeline source:
 
@@ -10815,7 +11139,7 @@ The following features are supported when you use Business Central as a pipeline
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Microsoft Dynamics Business Central prerequisites
 
 Complete the following requirements before you connect to Business Central as a data pipeline source:
 
@@ -10962,7 +11286,7 @@ Complete the following steps to configure Business Central as your data pipeline
        
     
 
-## Supported objects
+## Supported Microsoft Dynamics Business Central objects
 
 Business Central data pipelines support read-only extraction of business entities across finance, sales, purchasing, and setup and master data. The following tables list commonly used objects, grouped by category. This isn't a complete list of all objects that Business Central data pipelines support. Browse the full catalog in the **Add object** panel when you [configure the pipeline](#configure-the-pipeline).
 
@@ -11025,7 +11349,7 @@ An incremental sync extracts only records created or updated since the last sync
 
 Business Central data pipelines scope data extraction to a single company at a time. The **Company ID** field in the connection configuration sets a default company for the connection. Leave this field blank at the connection level to select the company per pipeline instead, using the **Company** drop-down menu in [Configure the pipeline](#configure-the-pipeline).
 
-## Limitations
+## Microsoft Dynamics Business Central limitations
 
 The following limitations apply when you use Business Central as a data pipeline source:
 
@@ -11050,7 +11374,7 @@ Set up Microsoft SharePoint as a data pipeline source to extract and sync `.csv`
 
 Use this guide to set up your Microsoft Entra app, connect SharePoint to Workato, configure the pipeline, and review file handling, sync modes, and limitations.
 
-## Features supported
+## Microsoft SharePoint features supported
 
 The following features are supported when you use Microsoft SharePoint as a pipeline source:
 
@@ -11063,7 +11387,7 @@ The following features are supported when you use Microsoft SharePoint as a pipe
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Microsoft SharePoint prerequisites
 
 Connecting Microsoft SharePoint as a data pipeline source requires:
 
@@ -11464,7 +11788,7 @@ SharePoint files can contain any customer data, including PII and business-confi
 
 Review the fields in each object before you sync it, and use the **Hash** option in field-level data protection to hash any column that contains PII or other sensitive data. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Microsoft SharePoint limitations
 
 The following limitations apply when you use Microsoft SharePoint as a data pipeline source:
 
@@ -11496,6 +11820,356 @@ The minimum supported sync interval is 15 minutes.
 
 ---
 url: >-
+  https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-monday.md
+description: >-
+  Set up Monday.com as a data pipeline source to extract and sync boards, items,
+  subitems, users, teams, tags, workspaces, updates, and activity logs to your
+  destination.
+---
+
+# Configure Monday.com as a data pipeline source
+
+Set up Monday.com as a data pipeline source to extract and sync boards, items, and subitems, along with users, teams, tags, workspaces, updates, and activity logs, from Monday.com to your destination.
+
+Use this guide to review the features and prerequisites, connect Monday.com as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
+
+## Features supported
+
+The following features are supported when you use Monday.com as a pipeline source:
+
+- **Cloud connectivity**: Connects to the Monday.com GraphQL API over HTTPS. An on-prem agent isn't required.
+- **Object-level selection**: Choose from `Boards`, `Items`, `Subitems`, and account objects. Refer to [Supported objects](#supported-objects) for the full list.
+- **Incremental sync**: `Activity Logs` syncs incrementally based on each event's `created_at` timestamp. Refer to [Incremental sync](#incremental-sync) for more information.
+- **Delete tracking**: Mark boards, items, and other full-sync records you delete in Monday.com as deleted in your destination on the next sync. Refer to [Delete tracking](#delete-tracking) for more information.
+- **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
+- **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
+- **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
+
+## Prerequisites
+
+Connecting Monday.com as a data pipeline source requires:
+
+- A Monday.com account with access to the boards you plan to sync.
+- Credentials for your chosen authentication method:
+  - **OAuth 2.0**: A Monday.com app and a [custom OAuth profile](/en/custom-oauth-profiles) built from that app's client ID and client secret. Refer to [Create a Monday.com OAuth app and custom OAuth profile](#create-a-monday-oauth-app-and-custom-oauth-profile) for setup steps.
+  - **API v2 Token**: A Monday.com personal API token. Refer to [Generate a Monday.com API token](#generate-a-monday-api-token) for setup steps.
+
+> **RECOMMENDED PLAN**
+> 
+> Workato recommends a Monday.com Pro or Enterprise plan. Monday.com limits the number of API calls an account can make each day, and full syncs of `Items` on large boards can exceed the daily limit on lower plans. Refer to [Daily API call limit](#daily-api-call-limit) for more information.
+
+## Supported connection types
+
+Monday.com data pipelines support the following authentication methods:
+
+- **OAuth 2.0**: Authorize Workato using a custom OAuth profile built from a Monday.com app that you create. Refer to [Create a Monday.com OAuth app and custom OAuth profile](#create-a-monday-oauth-app-and-custom-oauth-profile) for setup steps.
+- **API v2 Token**: Authenticate with a personal API token from your Monday.com account. The pipeline syncs only the boards and data the token owner can access in Monday.com.
+
+## Generate a Monday.com API token
+
+Complete the following steps to retrieve a personal API token for **API v2 Token** authentication. Skip this section if you plan to use OAuth 2.0:
+
+1. Log in to your [Monday.com](https://auth.monday.com/auth/login_monday/) account.
+   
+2. Click your profile picture in the upper right corner of the screen.
+   
+3. Select **Developers**. The Developer Center opens in a new tab.
+   
+4. Click **API token**, then click **Show**.
+   
+5. Copy your personal API token and store it securely. You must provide this token when you create the connection in Workato.
+   
+
+Monday.com admins can also copy the token from **Administration > Connections > Personal API token**. Refer to the Monday.com [Authentication](https://developer.monday.com/api-reference/docs/authentication) documentation for more information.
+
+## Connect to Monday.com
+
+Complete the following steps to connect Monday.com as a data pipeline source:
+
+Connect to Monday.com
+
+**OAuth 2.0**
+
+Complete the following steps to connect Monday.com with OAuth 2.0:
+
+- [Create a Monday.com OAuth app and custom OAuth profile](#create-a-monday-oauth-app-and-custom-oauth-profile) to store your Monday.com app's client ID and client secret in Workato.
+- [Connect to Monday.com with OAuth 2.0](#connect-to-monday-with-oauth-2-0) using the custom OAuth profile you created.
+
+### Create a Monday.com OAuth app and custom OAuth profile
+
+You must create a Monday.com app and a Workato custom OAuth profile before you connect Monday.com with OAuth 2.0:
+
+1. Go to **Tools > Custom OAuth profiles** in Workato and click **\+ New custom profile**.
+   
+2. Use the **Application** drop-down menu to select **Monday.com**.
+   
+3. Enter a name in the **Name** field. The name can contain spaces but no special characters, and it must be unique for your account.
+   
+4. Click **Create new app**. Keep the Workato tab open.
+   
+5. Sign in to Monday.com in a new tab and create an app in the Developer Center using `https://www.workato.com/oauth/callback` as the redirect URL. Refer to the Monday.com [OAuth](https://developer.monday.com/apps/docs/oauth) guide for steps.
+   
+6. Copy the app's client ID and client secret and store them securely.
+   
+7. Return to the Workato tab and enter the values in the **Client ID** and **Client secret** fields.
+   
+8. Click **Save**. Refer to [Custom OAuth profiles](/en/custom-oauth-profiles) for more information.
+   
+
+### Connect to Monday.com with OAuth 2.0
+
+Complete the following steps to create a Monday.com connection that uses your custom OAuth profile:
+
+1. Select **Create > Connection** or press C twice.
+   
+2. Search for `Monday.com` and select it as your app.
+   
+3. Enter a name in the **Connection name** field.
+   
+4. Use the **Location** drop-down menu to select the project where you plan to store the connection.
+   
+5. Select **OAuth 2.0** in the **Authentication type** field.
+   
+6. Use the **Custom OAuth profile** drop-down menu to select the [custom OAuth profile](#create-a-monday-oauth-app-and-custom-oauth-profile) you created for Monday.com. This field is required for OAuth 2.0 connections.
+   
+7. Click **Connect**.
+   
+8. Log in to your Monday.com account in the window that opens and authorize the app to complete the connection. Workato displays a success message when the connection is established.
+   
+
+**API v2 Token**
+
+Complete the following steps to connect Monday.com with the personal API token you [generated in Monday.com](#generate-a-monday-api-token):
+
+1. Select **Create > Connection** or press C twice.
+   
+2. Search for `Monday.com` and select it as your app.
+   
+3. Enter a name in the **Connection name** field.
+   
+4. Use the **Location** drop-down menu to select the project where you plan to store the connection.
+   
+5. Select **API v2 Token** in the **Authentication type** field.
+   
+6. Enter your personal API token in the **API v2 Token** field.
+   
+7. Click **Connect** to verify and save the connection. Workato displays a success message when the connection is established.
+   
+
+## Configure the pipeline
+
+Complete the following steps to configure Monday.com as your data pipeline source:
+
+1. Select **Create > Data pipeline** or press C+I.
+   
+2. Enter a name for the data pipeline in the **Data pipeline name** field.
+   
+   ![Data pipeline setup](/assets/set-up-pipeline.Cxx6hIk2.png)_Data pipeline setup_
+   
+3. Use the **Location** drop-down menu to select the project where you plan to store the data pipeline.
+   
+4. Click **Start building**.
+   
+5. Click the **Extract new/updated records from source app** trigger. This trigger defines how the pipeline retrieves data from Monday.com.
+   
+   ![Configure the Extract new/updated records from source app trigger](/assets/choose-source-app.B2OOUpgY.png)_Configure the Extract new/updated records from source app trigger_
+   
+6. Use the **Your Connected Source Apps** drop-down menu to select **Monday.com**.
+   
+7. Choose the Monday.com connection you plan to use for this pipeline. Alternatively, click **\+ New connection** to create a new connection.
+   
+8. Click **Add object** to open the **Add new objects** panel.
+   
+9. Search or browse the list of available Monday.com objects, select the objects you plan to sync, and click **Add**.
+   
+10. Review and customize the schema for each selected object. The pipeline automatically fetches an object's schema when you select it. This ensures the destination matches the source.
+    
+    Expand an object to view associated fields. Keep all fields selected to extract all available data, or deselect specific fields to exclude them from data extraction and schema replication.
+    
+11. Optional. Configure field-level data protection by expanding an object and choosing how to handle each field:
+    
+    - **Replicate as is**: Data values at the source replicate identically to the destination.
+    - **Hash**: Hash sensitive data values in the field before syncing to your destination.
+    
+    Workato recommends hashing personally identifiable information (PII) and other sensitive fields. Refer to [Sensitive data handling](#sensitive-data-handling) for a list of fields that commonly contain PII.
+    
+12. Click **Add object** again to add more objects. Repeat this step to include additional Monday.com objects in your pipeline.
+    
+13. Use the **Choose how to handle schema changes** drop-down menu to select a schema drift handling option:
+    
+    - **Auto-sync new fields**: Automatically detects and syncs new fields added in the source.
+    - **Block new fields**: Keeps the schema fixed after the pipeline starts. You must add new fields manually. This option may cause the destination to fall out of sync if the source schema updates.
+    
+    Refer to [Schema replication and schema drift management](/en/data-orchestration/data-pipeline-recipe/concepts#schema-drift) for more information.
+    
+14. Optional. Enter a value in the **Concurrency limit** field to cap the number of concurrent operations. Leave the field blank to use the default limit set by Workato. The maximum value for Monday.com is `10`, although the field hint may show a higher limit.
+    
+15. Choose either a standard time-based schedule or define a custom cron expression in the **Frequency** field. This determines how often the pipeline syncs data from Monday.com to the destination.
+    
+    **Time-based schedule**
+    
+    1. Select the **Time unit**, such as **Minutes**, **Hours**, or **Days**.
+       
+    2. Specify the sync interval in the **Trigger every** field.
+       
+       The pipeline syncs every 6 hours, for example, if you select **Hours** as the **Time unit** and enter `6` in the **Trigger every** field. The minimum interval you can set is `15` minutes.
+       
+    3. Select a start date for the historical data sync in the **When first started, this pipeline should pick up records from** field. This defines the earliest date from which the pipeline extracts `Updates` and `Activity Logs`. The pipeline picks up all available records if you leave this field blank. All other objects always sync in full and ignore this field.
+       
+       You can't change this value after you run the pipeline.
+       
+    4. Click **Save** to save your progress before you [configure your data pipeline destination](/en/data-orchestration/data-pipeline-recipe/configure-pipeline-destinations#configure‒how‒data‒is‒loaded‒in‒the‒workato‒data‒pipeline).
+       
+    
+    **Cron-based scheduling**
+    
+    1. Use the **Time unit** drop-down menu to select **Custom schedule**.
+       
+    2. Enter an expression in the **Cron expression** field using the format:
+       
+       ```text
+       [minute] [hour] [day of month] [month] [day of week]
+       ```
+       
+       The minimum interval for cron schedules is `15` minutes. For example, enter the following expression to sync every day at 8:00 AM UTC:
+       
+       ```text
+       0 8 * * *
+       ```
+       
+    3. Optional. Select a **Timezone** for the cron expression. Leave blank to use `Etc/UTC`.
+       
+    4. Select a start date for the historical data sync in the **When first started, this pipeline should pick up records from** field. This defines the earliest date from which the pipeline extracts `Updates` and `Activity Logs`. The pipeline picks up all available records if you leave this field blank. All other objects always sync in full and ignore this field.
+       
+       You can't change this value after you run the pipeline.
+       
+    5. Click **Save** to save your progress before you [configure your data pipeline destination](/en/data-orchestration/data-pipeline-recipe/configure-pipeline-destinations#configure‒how‒data‒is‒loaded‒in‒the‒workato‒data‒pipeline).
+       
+    
+
+## Supported objects
+
+Monday.com data pipelines sync data from the Monday.com GraphQL API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
+
+### Board objects
+
+`Boards` includes active, archived, and deleted boards. `Items` and `Subitems` contain the rows from every board the connection can access, including archived boards. Monday.com stores subitems on a hidden board for each board that has subitems, so `Boards` also contains one row for each of these subitem boards. Refer to [Subitem boards](#subitem-boards) for more information.
+
+| Object | Sync mode(s) | Delete tracking |
+| --- | --- | --- |
+| `Boards` | Full sync | Yes |
+| `Items` | Full sync | Yes |
+| `Subitems` | Full sync | Yes |
+
+### Account objects
+
+`Users` includes active, inactive, and pending users.
+
+| Object | Sync mode(s) | Delete tracking |
+| --- | --- | --- |
+| `Users` | Full sync | Yes |
+| `Teams` | Full sync | Yes |
+| `Tags` | Full sync | Yes |
+| `Workspaces` | Full sync | Yes |
+
+### Activity objects
+
+`Updates` contains the updates posted on items, with the ID and body of each reply in the `replies` column. `Activity Logs` contains the activity log events for every board the connection can access, including archived boards.
+
+| Object | Sync mode(s) | Delete tracking |
+| --- | --- | --- |
+| `Updates` | Full sync | Yes |
+| `Activity Logs` | Full sync, incremental | No |
+
+## Sync modes
+
+Monday.com data pipelines support full sync and incremental sync. Refer to the [Supported objects](#supported-objects) tables to see the sync modes for each object.
+
+### Full sync
+
+A full sync reads all records for the selected object from Monday.com on every run and updates your destination table to match. Board objects and account objects support full sync only, because the Monday.com API doesn't offer a way to request only changed records for these objects. `Updates` also supports full sync only. `Items` and `Subitems` read every board the connection can access on each run.
+
+### Incremental sync
+
+`Activity Logs` filters events by the `created_at` timestamp. Each incremental sync reads events created after the previous successful sync started. The pipeline can re-read events at the boundary of the previous sync, and your destination deduplicates re-read rows by primary key.
+
+### Delete tracking
+
+Delete tracking depends on the object:
+
+- **Full-sync objects**: `Yes`. Workato marks records you delete in Monday.com as deleted in your destination on the next full sync. A deleted board remains in `Boards` with a `state` value of `deleted` until Monday.com permanently removes it.
+- **`Activity Logs`**: `No`. Monday.com doesn't remove activity log events.
+
+## Schema and data type handling
+
+The following considerations apply to schema and data types when you sync data from Monday.com:
+
+### Column values
+
+Monday.com boards can have any combination of customer-defined columns, so each board has a different set of columns. `Items` and `Subitems` store all of a row's column values in the `column_values` column instead of creating one destination column for each board column. Each entry contains the column's `id`, its display `text`, and its raw `value`.
+
+Use the `columns` column in `Boards` to interpret `column_values`. It contains each board's column definitions, including the column ID, title, type, and settings. Join `Items` or `Subitems` to `Boards` on `board_id` to match each row to its board's column definitions. For subitems, `board_id` contains the ID of the hidden subitem board, which holds the subitem column definitions.
+
+### Subitem boards
+
+Monday.com creates a hidden board named `Subitems of <parent board>` to store subitems. These boards appear in `Boards` as ordinary boards, and their name prefix is the only way to identify them. Rows from these boards sync to `Subitems`, not `Items`. The `parent_item_id` column in `Subitems` contains the ID of the parent item.
+
+### Activity log data
+
+The `entity` column in `Activity Logs` identifies what the event applies to: `board` for a board or `pulse` for an item. The `event` column contains the event type, and the `data` column contains the event payload. For item events, the payload includes the item ID, which isn't available in a separate column. Workato adds a `board_id` column that contains the ID of the board the event belongs to.
+
+### Timestamps
+
+Most timestamp fields, such as `created_at` and `updated_at`, sync as timestamps with time zone. The `created_at` column in `Activity Logs` is an exception. It syncs as a 17-digit string in the format Monday.com returns it. Divide the value by `10,000,000` to convert it to Unix epoch seconds.
+
+### Nested fields
+
+Nested objects and arrays, such as `columns`, `groups`, `owners`, and `workspace` on `Boards`, `column_values` on `Items` and `Subitems`, `replies` and `assets` on `Updates`, `data` on `Activity Logs`, `photo_url` on `Users`, `users` on `Teams`, and the subscriber columns on `Workspaces`, sync as JSON objects. Workato stores them in your destination's native JSON type, such as `VARIANT` in Snowflake, and serializes them to strings only when the destination doesn't have a native JSON type.
+
+### Attachments
+
+The `assets` column in `Updates` contains file metadata, such as the asset ID and file name. Workato doesn't download attachment files.
+
+## Sensitive data handling
+
+Monday.com objects can contain personally identifiable information (PII) about your users and any customer data your teams store on boards. The following objects commonly contain sensitive fields:
+
+| Object | Sensitive fields |
+| --- | --- |
+| `Users` | `name`, `email`, `phone`, `mobile_phone`, `photo_url` |
+| `Items` | `name`, `column_values` |
+| `Subitems` | `name`, `column_values` |
+| `Updates` | `body`, `text_body`, `replies` |
+| `Activity Logs` | `data` |
+
+`column_values` can contain email addresses, phone numbers, and free text, depending on how each board is configured. Item names often contain customer or contact names on CRM-style boards. The `data` column in `Activity Logs` contains item column values, so it can hold the same information as `column_values`. Update text and replies can contain any information users share in discussion threads.
+
+Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
+
+## Limitations
+
+The following limitations apply when you use Monday.com as a data pipeline source:
+
+### Daily API call limit
+
+Monday.com limits the number of API calls each account can make per day. The limit resets at midnight UTC and depends on your plan. Refer to the Monday.com [Rate limits](https://developer.monday.com/api-reference/docs/rate-limits) documentation for the limit on each plan.
+
+`Items` and `Subitems` use the most calls, because the pipeline makes about one call for every `500` items on each board during every full sync. Each of these objects reads every board separately, so selecting both doubles the calls. `Activity Logs` also reads every board on each run and makes at least one call per board. The pipeline run fails with an error if your account reaches its daily limit. The next scheduled run after the reset syncs the data.
+
+### Activity log retention
+
+Monday.com retains activity log events for a period that depends on your plan, and returns no events older than that period. Refer to the Monday.com [Activity log](https://support.monday.com/hc/en-us/articles/115005310745-The-Activity-Log) documentation for the retention period on each plan.
+
+The first sync of `Activity Logs` picks up only the events your plan still retains. If a pipeline doesn't run for longer than your plan's retention period, events created during that gap are lost and the sync completes without an error. Schedule syncs more frequently than your plan's retention period to avoid gaps.
+
+### Minimum sync frequency
+
+The minimum supported sync interval is `15` minutes.
+
+---
+
+---
+url: >-
   https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-mysql-source.md
 description: >-
   Configure MySQL as a data pipeline source to extract table records and sync
@@ -11506,7 +12180,7 @@ description: >-
 
 Set up MySQL as a data pipeline source to extract and sync table records into your destination. Use this guide to set up a connection, configure your pipeline, add objects, and review known limitations.
 
-## Features supported
+## MySQL features supported
 
 The following features are supported when you use MySQL as a pipeline source:
 
@@ -11515,7 +12189,7 @@ The following features are supported when you use MySQL as a pipeline source:
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## MySQL prerequisites
 
 Connecting MySQL as a data pipeline source requires:
 
@@ -11674,11 +12348,11 @@ Complete the following steps to configure MySQL as your data pipeline source:
        
     
 
-## Supported objects
+## Supported MySQL objects
 
 MySQL data pipelines sync data from tables in your connected database.
 
-## Limitations
+## MySQL limitations
 
 The following limitations apply when you use MySQL as a data pipeline source:
 
@@ -11700,7 +12374,7 @@ description: >-
 
 Set up NetSuite2 as a data pipeline source to extract and sync records into your destination using the SuiteAnalytics Connect service. This guide includes connection setup, pipeline configuration, and key behavior for working with NetSuite2 as a source.
 
-## Features supported
+## NetSuite2 features supported
 
 The following features are supported when using NetSuite2 as a data pipeline source:
 
@@ -11710,7 +12384,7 @@ The following features are supported when using NetSuite2 as a data pipeline sou
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## NetSuite2 prerequisites
 
 You must have the following configuration and access:
 
@@ -11878,7 +12552,7 @@ Set up OneDrive as a data pipeline source to extract and sync records into your 
 
 Use this guide to review connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in OneDrive folders.
 
-## Features supported
+## OneDrive features supported
 
 The following features are supported when you use OneDrive as a data pipeline source:
 
@@ -11888,7 +12562,7 @@ The following features are supported when you use OneDrive as a data pipeline so
 - **Field-level selection**: Choose which fields to extract and replicate to your destination.
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 
-## Prerequisites
+## OneDrive prerequisites
 
 Connecting OneDrive as a data pipeline source requires:
 
@@ -12375,7 +13049,7 @@ Complete the following steps to configure OneDrive as your data pipeline source:
        
     
 
-## Supported objects
+## Supported OneDrive objects
 
 OneDrive doesn't have a fixed object catalog. Instead, each folder and filename pattern configuration you add becomes an object that syncs as a separate table in your destination:
 
@@ -12429,7 +13103,7 @@ OneDrive files can contain arbitrary customer data, including personally identif
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## OneDrive limitations
 
 The following limitations apply when you use OneDrive as a data pipeline source:
 
@@ -12463,7 +13137,7 @@ description: >-
 
 Set up Oracle as a data pipeline source to extract and sync records into your destination using the SuiteAnalytics Connect service. This guide includes connection setup, pipeline configuration, and key behavior for working with NetSuite2 as a source.
 
-## Features supported
+## Oracle features supported
 
 The following features are supported when using Oracle as a data pipeline source:
 
@@ -12473,7 +13147,7 @@ The following features are supported when using Oracle as a data pipeline source
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Oracle prerequisites
 
 Ensure you have the following configuration before creating the Oracle connection:
 
@@ -12585,7 +13259,23 @@ Complete the following steps to connect to Oracle using a Cloud connection:
     
 11. Optional. Expand [Advanced settings](#configure-advanced-settings) to configure additional connection options.
     
-12. Click **Connect**.
+12. Optional. Expand **SSL settings** to connect over TLS (TCPS) or mutual TLS (mTLS):
+    
+    | Field | Description |
+    | --- | --- |
+    | Server certificate | Provide the X.509 CA certificate of the database server in `.pem` format, such as the Amazon RDS certificate bundle. If left blank, the server certificate must be issued by a publicly trusted certificate authority. |
+    | SSL certificate | Provide the X.509 client certificate in `.pem` format for mTLS. Requires the **SSL certificate key**. |
+    | SSL certificate key | Provide the RSA client key in `.pem` format. Requires the **SSL certificate**. |
+    | Trust all | Specify whether the client should trust any certificate chain. Self-signed server certificates are supported. Workato ignores the **Server certificate** if you enable this setting. |
+    | Verify host | Specify whether to match the name in the server certificate against the database host. Enabled by default unless **Trust all** is enabled. |
+    
+    Workato connects over TLS if you set any SSL field and doesn't fall back to an unencrypted connection if TLS fails. Leave all SSL fields blank to connect without TLS. Enter the port of the database's TCPS listener in the **Database port** field when you use TLS.
+    
+    > **ORACLE AUTONOMOUS DATABASE**
+    > 
+    > Provide the **SSL certificate** and **SSL certificate key** and leave **Server certificate** blank to connect to Oracle Autonomous Database over mTLS. Its server certificate chains to a public certificate authority.
+    
+13. Click **Connect**.
     
 
 ### On-prem agent connection
@@ -12878,7 +13568,7 @@ Set up Oracle E-Business Suite (EBS) as a data pipeline source to extract and sy
 
 Use this guide to set up a database user, connect to EBS, configure your pipeline, and review sync behavior, data type handling, and limitations.
 
-## Features supported
+## Oracle E-Business Suite features supported
 
 The following features are supported when you use Oracle E-Business Suite as a pipeline source:
 
@@ -12891,7 +13581,7 @@ The following features are supported when you use Oracle E-Business Suite as a p
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Oracle E-Business Suite prerequisites
 
 Connecting Oracle E-Business Suite as a data pipeline source requires:
 
@@ -13070,7 +13760,7 @@ Complete the following steps to configure Oracle E-Business Suite as your data p
     The start date applies only to tables with a change tracking column. Refer to [Full sync](#full-sync) for more information.
     
 
-## Supported objects
+## Supported Oracle E-Business Suite objects
 
 Oracle E-Business Suite data pipelines sync data from tables in the connected EBS database. Workato lists every table the database user can access, across all schemas, when you click **Add object**. Each table appears as `<SCHEMA>.<TABLE_NAME>` and syncs as a separate table in your destination.
 
@@ -13133,7 +13823,7 @@ Workato maps Oracle column types to destination types as follows:
 
 Numeric columns sync as strings instead of decimals when the column doesn't have declared precision, a negative scale, a precision greater than 38, or a scale greater than the declared precision. Oracle `DATE` columns include a time of day that sync as timestamps.
 
-## Limitations
+## Oracle E-Business Suite limitations
 
 The following limitations apply when you use Oracle E-Business Suite as a data pipeline source:
 
@@ -13165,7 +13855,7 @@ description: >-
 
 Set up Oracle Fusion Cloud as a data pipeline source to extract and sync records into your destination. This guide covers connection setup, pipeline configuration, and key behavior when using Oracle Fusion Cloud as a source.
 
-## Prerequisites
+## Oracle Fusion Cloud prerequisites
 
 Ensure you have the following configuration before creating the connection:
 
@@ -13177,7 +13867,7 @@ Ensure you have the following configuration before creating the connection:
 
 The Oracle Fusion Cloud connector uses [Oracle Business Intelligence Cloud Connector](https://docs.oracle.com/en/cloud/saas/applications-common/26b/biacc/overview-of-business-intelligence-cloud-connector.html) (BICC) to extract data in bulk from Oracle Fusion Cloud applications. BICC enables the connector to retrieve business intelligence and other data from your Oracle Fusion Cloud instance and load it into your designated destination.
 
-## Features supported
+## Oracle Fusion Cloud features supported
 
 The following features are supported when using Oracle Fusion Cloud as a data pipeline source:
 
@@ -13558,7 +14248,7 @@ Set up Outreach as a data pipeline source to extract Outreach records, such as p
 
 Use this guide to connect Outreach as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Outreach features supported
 
 The following features are supported when you use Outreach as a pipeline source:
 
@@ -13570,7 +14260,7 @@ The following features are supported when you use Outreach as a pipeline source:
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Outreach prerequisites
 
 Complete the following requirements before you configure Outreach as a data pipeline source.
 
@@ -13721,7 +14411,7 @@ Complete the following steps to configure Outreach as your data pipeline source:
     This start date applies only to objects that support incremental sync. Full-sync objects extract their complete available record set.
     
 
-## Supported objects
+## Supported Outreach objects
 
 Outreach data pipelines sync data from Outreach REST API resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -13833,7 +14523,7 @@ The pipeline doesn't sync mailbox SMTP or IMAP credentials. Call recordings sync
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Outreach limitations
 
 The following limitations apply when you use Outreach as a data pipeline source:
 
@@ -13866,7 +14556,7 @@ Set up PagerDuty as a data pipeline source to extract incident, on-call, and inc
 
 Use this guide to review the prerequisites, generate a PagerDuty API key, connect PagerDuty as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema and data type handling, sensitive data handling, and limitations.
 
-## Features supported
+## PagerDuty features supported
 
 The following features are supported when you use PagerDuty as a pipeline source:
 
@@ -13877,7 +14567,7 @@ The following features are supported when you use PagerDuty as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## PagerDuty prerequisites
 
 Connecting PagerDuty as a data pipeline source requires:
 
@@ -14043,7 +14733,7 @@ Complete the following steps to configure PagerDuty as your data pipeline source
        
     
 
-## Supported objects
+## Supported PagerDuty objects
 
 PagerDuty data pipelines sync data from PagerDuty REST API v2 resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -14176,7 +14866,7 @@ PagerDuty objects can contain significant personally identifiable information (P
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## PagerDuty limitations
 
 The following limitations apply when you use PagerDuty as a data pipeline source:
 
@@ -14219,7 +14909,7 @@ Set up Pendo as a data pipeline source to extract and sync product analytics rec
 
 Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Pendo features supported
 
 The following features are supported when you use Pendo as a pipeline source:
 
@@ -14233,7 +14923,7 @@ The following features are supported when you use Pendo as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## Pendo prerequisites
 
 Connecting Pendo as a data pipeline source requires:
 
@@ -14377,7 +15067,7 @@ Complete the following steps to configure Pendo as your data pipeline source:
     > The start date applies only to event objects, such as `Events` and `Page Events`, and the `Visitor Application` and `Account Application` objects, which are built from events. These objects extract the last `91` days of events if you leave the field blank, and events older than `91` days drop out of the destination on each run. Set a start date before the first run if you need to retain older events. Refer to [Event history window](#event-history-window) for more information.
     
 
-## Supported objects
+## Supported Pendo objects
 
 Pendo data pipelines sync data from the Pendo API (v1). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -14474,7 +15164,7 @@ Pendo objects can contain personally identifiable information (PII), such as vis
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Pendo limitations
 
 The following limitations apply when you use Pendo as a data pipeline source:
 
@@ -14508,7 +15198,7 @@ Set up Pipedrive as a data pipeline source to extract and sync CRM data, such as
 
 Use this guide to get a Pipedrive API token, connect Pipedrive as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Pipedrive features supported
 
 The following features are supported when you use Pipedrive as a pipeline source:
 
@@ -14521,7 +15211,7 @@ The following features are supported when you use Pipedrive as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## Pipedrive prerequisites
 
 Connecting Pipedrive as a data pipeline source requires:
 
@@ -14709,7 +15399,7 @@ Complete the following steps to configure Pipedrive as your data pipeline source
     > The historical start date applies only to objects that support incremental sync. Objects that only support full sync extract all available records. Refer to [Supported objects](#supported-objects) to view the sync modes for each object.
     
 
-## Supported objects
+## Supported Pipedrive objects
 
 Pipedrive data pipelines sync data from the Pipedrive API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination and appears in the pipeline builder as **Label (object\_name)**, such as **Persons (persons)**. The sync mode column shows the modes an object supports. Incremental is the default for objects that support it. Pipedrive custom object types aren't supported.
 
@@ -14874,7 +15564,7 @@ The `content` field on `notes` and the `note` field on `activities` are free tex
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Pipedrive limitations
 
 The following limitations apply when you use Pipedrive as a data pipeline source:
 
@@ -14942,7 +15632,7 @@ Set up QuickBooks Online as a data pipeline source to extract accounting records
 
 Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior and schema handling, and understand known limitations.
 
-## Features supported
+## QuickBooks Online features supported
 
 The following features are supported when you use QuickBooks Online as a pipeline source:
 
@@ -14955,7 +15645,7 @@ The following features are supported when you use QuickBooks Online as a pipelin
 - **Field-level data protection**: Hash sensitive field values, such as personally identifiable information (PII), before they reach your destination. Refer to [Sensitive data handling](#sensitive-data-handling) for more information.
 - **Concurrency limit**: Limit the number of concurrent operations the pipeline runs against QuickBooks Online.
 
-## Prerequisites
+## QuickBooks Online prerequisites
 
 Complete the following requirements before you connect QuickBooks Online as a data pipeline source.
 
@@ -15115,7 +15805,7 @@ Complete the following steps to configure QuickBooks Online as your data pipelin
        
     
 
-## Supported objects
+## Supported QuickBooks Online objects
 
 QuickBooks Online data pipelines sync data from QuickBooks Online Accounting API v3 entities. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -15296,7 +15986,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends field-level hashing for the fields in the preceding table.
 
-## Limitations
+## QuickBooks Online limitations
 
 The following limitations apply when you use QuickBooks Online as a data pipeline source.
 
@@ -15329,7 +16019,7 @@ Set up Sage Intacct as a data pipeline source to extract accounting and financia
 
 Use this guide to review the features and prerequisites, connect Sage Intacct as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Sage Intacct features supported
 
 The following features are supported when you use Sage Intacct as a pipeline source:
 
@@ -15342,7 +16032,7 @@ The following features are supported when you use Sage Intacct as a pipeline sou
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Sage Intacct prerequisites
 
 Complete the following requirements before you configure Sage Intacct as a data pipeline source:
 
@@ -15500,7 +16190,7 @@ Complete the following steps to configure Sage Intacct as your data pipeline sou
     This start date applies only to objects that support incremental sync. Full-sync objects extract their complete available record set.
     
 
-## Supported objects
+## Supported Sage Intacct objects
 
 Sage Intacct data pipelines sync data from the Sage Intacct XML API. The connector discovers the objects available in your company when you connect, so the exact set depends on your subscribed modules, your edition, and any custom objects your company defines. Standard objects come from a curated catalog and custom Platform Services objects appear alongside them. Each object syncs as a separate table in your destination.
 
@@ -15623,7 +16313,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing these fields for pipelines operating under SOC 2, GDPR, CCPA, or PCI-DSS.
 
-## Limitations
+## Sage Intacct limitations
 
 The following limitations apply when you use Sage Intacct as a data pipeline source:
 
@@ -15655,7 +16345,7 @@ Set up Salesforce as a data pipeline source to extract and sync records into you
 
 Workato uses the [Salesforce Bulk API v2](https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/intro_bulk_api.htm) to extract and sync data efficiently at scale.
 
-## Features supported
+## Salesforce features supported
 
 The following features are supported when using Salesforce as a data pipeline source:
 
@@ -15665,7 +16355,7 @@ The following features are supported when using Salesforce as a data pipeline so
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Salesforce prerequisites
 
 You must have the following permissions to connect to and extract data from Salesforce:
 
@@ -15839,7 +16529,7 @@ Set up Salesforce Marketing Cloud as a data pipeline source to extract subscribe
 
 Use this guide to create an Installed Package, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Salesforce Marketing Cloud features supported
 
 The following features are supported when you use Salesforce Marketing Cloud as a pipeline source:
 
@@ -15850,7 +16540,7 @@ The following features are supported when you use Salesforce Marketing Cloud as 
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Salesforce Marketing Cloud prerequisites
 
 Connecting Salesforce Marketing Cloud as a data pipeline source requires:
 
@@ -16017,7 +16707,7 @@ Complete the following steps to configure Salesforce Marketing Cloud as your dat
        
     
 
-## Supported objects
+## Supported Salesforce Marketing Cloud objects
 
 Salesforce Marketing Cloud data pipelines sync data through a mix of the SOAP API and the REST API, depending on the object. Each object syncs as a separate table in your destination.
 
@@ -16174,7 +16864,7 @@ Salesforce Marketing Cloud objects can contain significant PII. The following ob
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Salesforce Marketing Cloud limitations
 
 The following limitations apply when you use Salesforce Marketing Cloud as a data pipeline source:
 
@@ -16219,7 +16909,7 @@ Set up Salesloft as a data pipeline source to extract and sync sales engagement 
 
 Use this guide to generate Salesloft credentials, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Salesloft features supported
 
 The following features are supported when you use Salesloft as a pipeline source:
 
@@ -16233,7 +16923,7 @@ The following features are supported when you use Salesloft as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Salesloft prerequisites
 
 Connecting Salesloft as a data pipeline source requires:
 
@@ -16483,7 +17173,7 @@ Complete the following steps to configure Salesloft as your data pipeline source
        
     
 
-## Supported objects
+## Supported Salesloft objects
 
 Salesloft data pipelines sync data from Salesloft REST API v2 resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -16640,7 +17330,7 @@ Salesloft objects can contain significant personally identifiable information (P
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Salesloft limitations
 
 The following limitations apply when you use Salesloft as a data pipeline source:
 
@@ -16677,7 +17367,7 @@ Set up SAP Concur as a data pipeline source to extract and sync expense reports,
 
 Use this guide to review the features and prerequisites, generate SAP Concur credentials, connect SAP Concur as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations.
 
-## Features supported
+## SAP Concur features supported
 
 The following features are supported when you use SAP Concur as a pipeline source:
 
@@ -16690,7 +17380,7 @@ The following features are supported when you use SAP Concur as a pipeline sourc
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## SAP Concur prerequisites
 
 Complete the following requirements before you configure SAP Concur as a data pipeline source:
 
@@ -17117,7 +17807,7 @@ Complete the following steps to configure SAP Concur as your data pipeline sourc
     This start date applies only to objects that support incremental sync. Full-sync objects reload their complete record set regardless of this value.
     
 
-## Supported objects
+## Supported SAP Concur objects
 
 SAP Concur data pipelines sync data from the SAP Concur Expense, Invoice, Request, Identity, Lists, and Common Locations APIs. Each object syncs as a separate table in your destination. Child objects sync as separate normalized tables. Each child table uses a single-column `id` primary key and carries a parent-reference column, such as `payment_request_id` on `payment_request_line` or `list_id` on `list_item`. Join on the parent-reference column to relate a child table back to its parent.
 
@@ -17293,7 +17983,7 @@ SAP Concur returns the `user` object's email addresses and phone numbers as arra
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## SAP Concur limitations
 
 The following limitations apply when you use SAP Concur as a data pipeline source:
 
@@ -19491,7 +20181,7 @@ Set up ServiceNow as a data pipeline source to extract and sync records into you
 
 Workato uses the [ServiceNow REST Table API v2](https://www.servicenow.com/docs/r/api-reference/rest-apis/c_TableAPI.html) to extract and sync data from any accessible ServiceNow table, including standard ITSM tables, CMDB tables, and custom tables.
 
-## Features supported
+## ServiceNow features supported
 
 The following features are supported when you use ServiceNow as a data pipeline source:
 
@@ -19505,7 +20195,7 @@ The following features are supported when you use ServiceNow as a data pipeline 
 | Schema drift detection and handling | Detects and applies schema changes automatically with **Auto-sync new fields**, or blocks changes for manual review. Refer to [Schema drift](/en/data-orchestration/data-pipeline-recipe/concepts#schema-drift). |
 | Field-level data masking | Apply hash-based masking to sensitive fields during pipeline configuration. Refer to [PII and sensitive data](#pii-and-sensitive-data). |
 
-## Prerequisites
+## ServiceNow prerequisites
 
 Complete the following requirements before you connect ServiceNow as a data pipeline source.
 
@@ -19765,7 +20455,7 @@ Complete the following steps to configure ServiceNow as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported ServiceNow objects
 
 ServiceNow stores all data in tables accessible through the REST Table API. The pipeline supports syncing any table accessible by your service account. This includes standard ITSM tables, CMDB tables, HR tables, custom tables, and application-scoped tables. A typical ServiceNow instance exposes over 1,000 tables, though the exact number varies based on the modules installed.
 
@@ -19918,7 +20608,7 @@ Key inheritance hierarchies include the following:
 - `cmdb_ci` is the parent of `cmdb_ci_server`, `cmdb_ci_computer`, `cmdb_ci_service`, `cmdb_ci_app_server`, `cmdb_ci_database`
 - `alm_asset` is the parent of `alm_hardware`, `alm_consumable`, `alm_license`
 
-## Limitations
+## ServiceNow limitations
 
 Review the following limitations when you configure a ServiceNow data pipeline:
 
@@ -19966,7 +20656,7 @@ description: >-
 
 Set up SFTP as a data pipeline source to extract and sync records into your destination. Use this guide to connect SFTP, configure your pipeline, and review sync behavior, schema handling, and limitations for `.csv` and `.parquet` files.
 
-## Features supported
+## SFTP features supported
 
 The following features are supported when you use SFTP as a data pipeline source:
 
@@ -19975,7 +20665,7 @@ The following features are supported when you use SFTP as a data pipeline source
 - Field-level selection for object extraction
 - Field-level data masking
 
-## Prerequisites
+## SFTP prerequisites
 
 Connecting SFTP as a data pipeline source requires:
 
@@ -20315,7 +21005,7 @@ SFTP is a common transport for high-sensitivity batch exports, such as payroll f
 
 Review the fields in each object before you sync it, and use the **Hash** option in field-level data protection to mask any column that contains PII or other sensitive data. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## SFTP limitations
 
 The following limitations apply when you use SFTP as a data pipeline source:
 
@@ -20374,7 +21064,7 @@ Set up Shopify as a data pipeline source to extract commerce data, such as order
 
 Use this guide to review supported features, complete the prerequisites, connect to Shopify, configure the pipeline, and understand supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Shopify features supported
 
 The following features are supported when you use Shopify as a pipeline source:
 
@@ -20386,7 +21076,7 @@ The following features are supported when you use Shopify as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Shopify prerequisites
 
 Complete the following requirements before you configure Shopify as a data pipeline source:
 
@@ -20791,7 +21481,7 @@ Complete the following steps to configure Shopify as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Shopify objects
 
 Shopify data pipelines sync data from the Shopify GraphQL Admin API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -20917,7 +21607,7 @@ Shopify gates access to customer PII behind Protected Customer Data approval. Re
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Shopify limitations
 
 The following limitations apply when you use Shopify as a data pipeline source:
 
@@ -20965,7 +21655,7 @@ Set up Slack as a data pipeline source to extract workspace data, such as channe
 
 Use this guide to review the features and prerequisites, connect Slack as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Slack features supported
 
 The following features are supported when you use Slack as a pipeline source:
 
@@ -20980,7 +21670,7 @@ The following features are supported when you use Slack as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Slack prerequisites
 
 Connecting Slack as a data pipeline source requires:
 
@@ -21175,7 +21865,7 @@ Complete the following steps to configure Slack as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Slack objects
 
 Slack data pipelines sync data from the Slack Web API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination. `team`, `user_groups`, `files`, `pins`, and `bookmarks` require a Custom OAuth profile. Refer to [Recommended permissions](#recommended-permissions) for more information.
 
@@ -21285,7 +21975,7 @@ Slack objects can contain significant PII. The following objects commonly contai
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Slack limitations
 
 The following limitations apply when you use Slack as a data pipeline source:
 
@@ -21338,7 +22028,7 @@ Set up Snowflake as a data pipeline source to extract table records and sync the
 
 Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Snowflake features supported
 
 The following features are supported when you use Snowflake as a pipeline source:
 
@@ -21349,7 +22039,7 @@ The following features are supported when you use Snowflake as a pipeline source
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or a custom cron expression.
 
-## Prerequisites
+## Snowflake prerequisites
 
 Complete the following requirements before you connect Snowflake as a data pipeline source.
 
@@ -21541,7 +22231,7 @@ Complete the following steps to configure Snowflake as your data pipeline source
        
     
 
-## Supported objects
+## Supported Snowflake objects
 
 Snowflake data pipelines sync data from base tables in your connected database, including transient tables. Workato discovers tables live against the connected database when you select **Add object**, rather than from a static catalog, so the available objects depend on the role used by your connection.
 
@@ -21605,7 +22295,7 @@ Workato adds the following synthetic column to destination tables for objects us
 | --- | --- | --- |
 | `_workato_is_deleted` | Boolean | Marks a row as deleted, based on Snowflake's change tracking data. Only populated on continuation runs of incremental sync by change tracking. |
 
-## Limitations
+## Snowflake limitations
 
 The following limitations apply when you use Snowflake as a data pipeline source:
 
@@ -21644,7 +22334,7 @@ description: >-
 
 Set up SQL Server as a data pipeline source to extract and sync records into your destination. Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## SQL Server features supported
 
 The following features are supported when you use SQL Server as a pipeline source:
 
@@ -21656,7 +22346,7 @@ The following features are supported when you use SQL Server as a pipeline sourc
 | Schema drift detection and handling | Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**. |
 | Configurable sync frequency | Schedule syncs on a time-based interval. The minimum supported interval is 15 minutes. |
 
-## Prerequisites
+## SQL Server prerequisites
 
 Complete the following requirements before you connect SQL Server as a data pipeline source.
 
@@ -21848,7 +22538,7 @@ Complete the following steps to configure SQL Server as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported SQL Server objects
 
 SQL Server data pipelines sync data from tables in your connected database. Workato discovers available tables across all schemas in the connected database when you select **Add object** during pipeline configuration. You can add one or more tables as objects in your pipeline. Views aren't supported because SQL Server Change Tracking requires base tables.
 
@@ -21874,7 +22564,7 @@ Workato pipelines translate source column names into valid destination identifie
 
 For example, the source column `$Name$` becomes `[_NAME_]` in the destination table.
 
-## Limitations
+## SQL Server limitations
 
 The following limitations apply when you use SQL Server as a data pipeline source.
 
@@ -21911,7 +22601,7 @@ Set up Square as a data pipeline source to extract payment, order, catalog, cust
 
 Use this guide to generate a Square access token, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Square features supported
 
 The following features are supported when you use Square as a pipeline source:
 
@@ -21925,7 +22615,7 @@ The following features are supported when you use Square as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Square prerequisites
 
 Connecting Square as a data pipeline source requires:
 
@@ -22117,7 +22807,7 @@ Complete the following steps to configure Square as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Square objects
 
 Square data pipelines sync data from the Square REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -22258,7 +22948,7 @@ Square doesn't return raw card numbers or CVV values through the API. Square ret
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Square limitations
 
 The following limitations apply when you use Square as a data pipeline source:
 
@@ -22288,7 +22978,7 @@ description: >-
 
 Set up Stripe as a data pipeline source to extract payment, billing, and financial records into your destination. Use this guide to generate a Stripe API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Stripe features supported
 
 The following features are supported when you use Stripe as a pipeline source:
 
@@ -22301,7 +22991,7 @@ The following features are supported when you use Stripe as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Stripe prerequisites
 
 Complete the following requirements before you connect Stripe as a data pipeline source.
 
@@ -22533,7 +23223,7 @@ Complete the following steps to configure Stripe as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Stripe objects
 
 Stripe data pipelines sync data from Stripe REST API resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -22689,7 +23379,7 @@ Stripe doesn't return raw card numbers or CVV values for customer payment method
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Stripe limitations
 
 The following limitations apply when you use Stripe as a data pipeline source.
 
@@ -22741,7 +23431,7 @@ Set up Trello as a data pipeline source to extract boards, cards, and related pr
 
 Use this guide to create a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Trello features supported
 
 The following features are supported when you use Trello as a pipeline source:
 
@@ -22753,7 +23443,7 @@ The following features are supported when you use Trello as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Trello prerequisites
 
 Connecting Trello as a data pipeline source requires:
 
@@ -22889,7 +23579,7 @@ Complete the following steps to configure Trello as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Trello objects
 
 Trello data pipelines sync data from the Trello REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -22998,7 +23688,7 @@ Customers can paste any PII into `Card.desc` and comment text in `Action.data`, 
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Trello limitations
 
 The following limitations apply when you use Trello as a data pipeline source:
 
@@ -23038,7 +23728,7 @@ Set up Typeform as a data pipeline source to extract and sync forms, responses, 
 
 Use this guide to review the features and prerequisites, connect Typeform as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Typeform features supported
 
 The following features are supported when you use Typeform as a pipeline source:
 
@@ -23052,7 +23742,7 @@ The following features are supported when you use Typeform as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Typeform prerequisites
 
 Connecting Typeform as a data pipeline source requires:
 
@@ -23207,7 +23897,7 @@ Complete the following steps to configure Typeform as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Typeform objects
 
 Typeform data pipelines sync data from the Typeform Create, Responses, and Webhooks APIs. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -23318,7 +24008,7 @@ Hidden fields often carry a respondent's email address or customer ID.
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Typeform limitations
 
 The following limitations apply when you use Typeform as a data pipeline source:
 
@@ -23354,7 +24044,7 @@ description: >-
 
 Set up Workday as a data pipeline source to extract business object records from your Workday tenant and sync to your destination. Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Workday features supported
 
 The following features are supported when you use Workday as a pipeline source:
 
@@ -23368,7 +24058,7 @@ The following features are supported when you use Workday as a pipeline source:
 | Full refresh and incremental sync | Supports full refresh and incremental sync modes. Refer to [Sync modes](#sync-modes) for more information. |
 | Delete tracking | Captures record deletions from Workday through a `Workato Is Deleted` flag on each record. Refer to [Schema and data type handling](#schema-and-data-type-handling) for more information. |
 
-## Prerequisites
+## Workday prerequisites
 
 Complete the following requirements before you connect Workday as a data pipeline source.
 
@@ -23609,7 +24299,7 @@ Complete the following steps to configure Workday as your data pipeline source:
     The historical start date applies to objects that support an API-level filter.
     
 
-## Supported objects
+## Supported Workday objects
 
 Workday pipelines sync data from business objects exposed through the Workday Web Services API. Workato discovers the available objects when you select **Add object** during pipeline configuration. The picker reflects what's available for your Workday tenant. Additional objects may appear depending on your tenant configuration and authentication type, including custom objects and WQL-backed objects when you connect with OAuth 2.0.
 
@@ -23723,7 +24413,7 @@ Workday pipelines deliver standard business object data as a JSON document rathe
 
 Each standard object also includes a primary key for the Workday record identifier, an optional descriptor field, and a `Workato Is Deleted` flag that you can use to identify deleted records.
 
-## Limitations
+## Workday limitations
 
 The following limitations apply when you use Workday as a data pipeline source:
 
@@ -23753,7 +24443,7 @@ description: >-
 
 Set up Workday RaaS to extract custom report data from your Workday tenant and sync to your destination. Use this guide to register a custom report as a pipeline object, configure incremental sync through report prompts, and understand known limitations.
 
-## Features supported
+## Workday RaaS features supported
 
 The following features are supported when you use Workday RaaS as a pipeline source:
 
@@ -23764,7 +24454,7 @@ The following features are supported when you use Workday RaaS as a pipeline sou
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Workday RaaS prerequisites
 
 Complete the following requirements before you configure Workday RaaS as a data pipeline source:
 
@@ -24156,7 +24846,7 @@ Workato fetches the report schema from Workday when you register the report as a
 
 After you register the report as a pipeline object, you can include or exclude individual columns from the sync in the pipeline's source trigger. Deselect a column's checkbox to remove it from the destination table.
 
-## Limitations
+## Workday RaaS limitations
 
 The following limitations apply when you use Workday RaaS as a data pipeline source.
 
@@ -24192,7 +24882,7 @@ Set up X as a data pipeline source to extract and sync ad account, campaign, and
 
 Use this guide to review the features and prerequisites, connect X as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## X features supported
 
 The following features are supported when you use X as a pipeline source:
 
@@ -24206,7 +24896,7 @@ The following features are supported when you use X as a pipeline source:
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 - **Configurable analytics windows**: Set how many days of analytics history the pipeline backfills, and how many trailing days it re-pulls on every run. Refer to [Configure the pipeline](#configure-the-pipeline) for more information.
 
-## Prerequisites
+## X prerequisites
 
 Connecting X as a data pipeline source requires:
 
@@ -24411,7 +25101,7 @@ Complete the following steps to configure X as your data pipeline source:
        
     
 
-## Supported objects
+## Supported X objects
 
 X data pipelines sync data from the X Ads API (version 12). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -24606,7 +25296,7 @@ X objects can contain personally identifiable information (PII). The following o
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## X limitations
 
 The following limitations apply when you use X as a data pipeline source:
 
@@ -24647,7 +25337,7 @@ Set up Xero as a data pipeline source to extract accounting data, such as invoic
 
 Use this guide to review the features and prerequisites, connect Xero as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations.
 
-## Features supported
+## Xero features supported
 
 The following features are supported when you use Xero as a pipeline source:
 
@@ -24659,7 +25349,7 @@ The following features are supported when you use Xero as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Xero prerequisites
 
 Complete the following requirements before you configure Xero as a data pipeline source:
 
@@ -24844,7 +25534,7 @@ Complete the following steps to configure Xero as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Xero objects
 
 Xero data pipelines sync data from the Xero Accounting API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -24997,7 +25687,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing `contact` and `user` PII for pipelines operating under the GDPR, the CCPA, or the Australian Privacy Act.
 
-## Limitations
+## Xero limitations
 
 The following limitations apply when you use Xero as a data pipeline source:
 
@@ -25035,7 +25725,7 @@ description: >-
 
 Set up Zendesk as a data pipeline source to extract tickets, users, organizations, and related support data into your destination. Use this guide to set up authentication, create a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Zendesk features supported
 
 The following features are supported when you use Zendesk as a pipeline source:
 
@@ -25047,7 +25737,7 @@ The following features are supported when you use Zendesk as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression.
 
-## Prerequisites
+## Zendesk prerequisites
 
 Complete the following requirements before you connect Zendesk as a data pipeline source:
 
@@ -25187,7 +25877,7 @@ Complete the following steps to configure Zendesk as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Zendesk objects
 
 Zendesk data pipelines sync data from the Zendesk Support and Help Center REST APIs. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -25347,7 +26037,7 @@ Zendesk Support data can contain significant PII, especially in ticket descripti
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Zendesk limitations
 
 The following limitations apply when you use Zendesk as a data pipeline source.
 
@@ -25391,7 +26081,7 @@ Set up ZoomInfo as a data pipeline source to extract your saved audiences with e
 
 Use this guide to create a ZoomInfo Standard App, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## ZoomInfo features supported
 
 The following features are supported when you use ZoomInfo as a pipeline source:
 
@@ -25404,7 +26094,7 @@ The following features are supported when you use ZoomInfo as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## ZoomInfo prerequisites
 
 Connecting ZoomInfo as a data pipeline source requires:
 
@@ -25576,7 +26266,7 @@ Complete the following steps to configure ZoomInfo as your data pipeline source:
     The start date sets where `scoops` and `news` begin when they run a full sync, such as on the first run. Incremental runs continue from the date of the last completed sync. `audiences` and `audience_rows` sync their complete history on every run, regardless of this setting.
     
 
-## Supported objects
+## Supported ZoomInfo objects
 
 ZoomInfo data pipelines sync data from the ZoomInfo GTM API. The following table lists the supported objects. Each object syncs as a separate table in your destination:
 
@@ -25670,7 +26360,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 > 
 > ZoomInfo restricts how you can use contact data downstream. Confirm that your ZoomInfo contract permits extracting and storing contact data in your destination before you sync `audience_rows` from `CONTACT` audiences.
 
-## Limitations
+## ZoomInfo limitations
 
 The following limitations apply when you use ZoomInfo as a data pipeline source:
 
@@ -25708,7 +26398,7 @@ Set up Zuora as a data pipeline source to extract billing, subscription, payment
 
 Use this guide to connect Zuora as a data pipeline source, configure your pipeline, and understand the supported objects, sync modes, and limitations.
 
-## Features supported
+## Zuora features supported
 
 The following features are supported when you use Zuora as a pipeline source:
 
@@ -25720,7 +26410,7 @@ The following features are supported when you use Zuora as a pipeline source:
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Zuora prerequisites
 
 Complete the following requirements before you configure Zuora as a data pipeline source.
 
@@ -25920,7 +26610,7 @@ Complete the following steps to configure Zuora as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Zuora objects
 
 Zuora data pipelines sync data from Zuora REST API resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -26040,7 +26730,7 @@ Zuora objects can contain PII and payment data. The following objects commonly c
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Zuora limitations
 
 The following limitations apply when you use Zuora as a data pipeline source:
 

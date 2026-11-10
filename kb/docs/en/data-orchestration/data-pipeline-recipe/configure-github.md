@@ -13,7 +13,7 @@ Set up GitHub as a data pipeline source to extract repositories, issues, pull re
 
 Use this guide to review the features and prerequisites, connect GitHub as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations.
 
-## Features supported
+## GitHub features supported
 
 The following features are supported when you use GitHub as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use GitHub as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## GitHub prerequisites
 
 Connecting GitHub as a data pipeline source requires:
 
@@ -232,7 +232,7 @@ Complete the following steps to configure GitHub as your data pipeline source:
        
     
 
-## Supported objects
+## Supported GitHub objects
 
 GitHub data pipelines sync data from the GitHub REST API, and from the GraphQL API for pull request reviews and releases. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -353,7 +353,7 @@ The `body` field on `Issue`, `IssueComment`, `PullRequest`, and `ReviewComment` 
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## GitHub limitations
 
 The following limitations apply when you use GitHub as a data pipeline source:
 

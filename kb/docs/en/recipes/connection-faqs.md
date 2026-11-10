@@ -96,6 +96,7 @@ The following connectors support custom OAuth profiles:
 - Lightspeed Commerce
 - Microsoft Dynamics 365
 - Microsoft SharePoint
+- Monday.com
 - Namely
 - NationBuilder
 - Nimble CRM

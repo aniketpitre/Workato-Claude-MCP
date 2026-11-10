@@ -13,7 +13,7 @@ Set up Greenhouse as a data pipeline source to extract recruiting data, such as 
 
 Use this guide to review the prerequisites, connect Greenhouse as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Greenhouse features supported
 
 The following features are supported when you use Greenhouse as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Greenhouse as a pipeline sourc
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Greenhouse prerequisites
 
 Complete the following requirements before you connect Greenhouse as a data pipeline source:
 
@@ -214,7 +214,7 @@ Complete the following steps to configure Greenhouse as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported Greenhouse objects
 
 Greenhouse data pipelines sync data from Greenhouse Harvest v3 API resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -336,7 +336,7 @@ Workato recommends hashing the `Offers` object's `custom_fields` field to preven
 
 Greenhouse sets a candidate's `anonymized_at` timestamp and clears the candidate's PII fields when the candidate is anonymized, for example, after a GDPR or CCPA erasure request. The pipeline preserves the `anonymized_at` value in the destination. Anonymized candidate records sync with null PII fields, which is expected behavior.
 
-## Limitations
+## Greenhouse limitations
 
 The following limitations apply when you use Greenhouse as a data pipeline source.
 

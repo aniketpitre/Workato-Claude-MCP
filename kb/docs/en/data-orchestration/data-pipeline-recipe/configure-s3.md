@@ -10,7 +10,7 @@ description: >-
 
 Set up Amazon S3 as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files in S3 buckets.
 
-## Features supported
+## Amazon S3 features supported
 
 The following features are supported when using Amazon S3 as a data pipeline source:
 
@@ -19,7 +19,7 @@ The following features are supported when using Amazon S3 as a data pipeline sou
 - Field-level selection for object extraction
 - Field-level data masking
 
-## Prerequisites
+## Amazon S3 prerequisites
 
 You must have the following configuration and access:
 

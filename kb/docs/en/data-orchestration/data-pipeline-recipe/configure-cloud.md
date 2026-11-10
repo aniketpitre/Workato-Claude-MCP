@@ -10,7 +10,7 @@ description: >-
 
 Set up Google Cloud Storage as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in GCS buckets.
 
-## Features supported
+## Google Cloud Storage features supported
 
 The following features are supported when using Google Cloud Storage as a data pipeline source:
 
@@ -19,7 +19,7 @@ The following features are supported when using Google Cloud Storage as a data p
 - Field‑level selection for data extraction
 - Field‑level data masking
 
-## Prerequisites
+## Google Cloud Storage prerequisites
 
 You must have the following configuration and access:
 

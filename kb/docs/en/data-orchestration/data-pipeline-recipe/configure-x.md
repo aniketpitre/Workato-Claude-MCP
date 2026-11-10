@@ -12,7 +12,7 @@ Set up X as a data pipeline source to extract and sync ad account, campaign, and
 
 Use this guide to review the features and prerequisites, connect X as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## X features supported
 
 The following features are supported when you use X as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use X as a pipeline source:
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 - **Configurable analytics windows**: Set how many days of analytics history the pipeline backfills, and how many trailing days it re-pulls on every run. Refer to [Configure the pipeline](#configure-the-pipeline) for more information.
 
-## Prerequisites
+## X prerequisites
 
 Connecting X as a data pipeline source requires:
 
@@ -231,7 +231,7 @@ Complete the following steps to configure X as your data pipeline source:
        
     
 
-## Supported objects
+## Supported X objects
 
 X data pipelines sync data from the X Ads API (version 12). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -426,7 +426,7 @@ X objects can contain personally identifiable information (PII). The following o
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## X limitations
 
 The following limitations apply when you use X as a data pipeline source:
 

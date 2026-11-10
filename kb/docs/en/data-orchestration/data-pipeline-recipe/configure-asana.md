@@ -13,7 +13,7 @@ Set up Asana as a data pipeline source to extract work-management data, such as 
 
 Use this guide to review the features and prerequisites, connect Asana as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Asana features supported
 
 The following features are supported when you use Asana as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Asana as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Asana prerequisites
 
 Complete the following requirements before you configure Asana as a data pipeline source.
 
@@ -168,7 +168,7 @@ Complete the following steps to configure Asana as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Asana objects
 
 Asana data pipelines sync data from the Asana REST API. The following tables list supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -281,7 +281,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing user email addresses and free-text description fields for pipelines operating under GDPR or CCPA.
 
-## Limitations
+## Asana limitations
 
 The following limitations apply when you use Asana as a data pipeline source:
 

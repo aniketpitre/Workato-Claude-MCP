@@ -13,7 +13,7 @@ Set up Shopify as a data pipeline source to extract commerce data, such as order
 
 Use this guide to review supported features, complete the prerequisites, connect to Shopify, configure the pipeline, and understand supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Shopify features supported
 
 The following features are supported when you use Shopify as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Shopify as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Shopify prerequisites
 
 Complete the following requirements before you configure Shopify as a data pipeline source:
 
@@ -430,7 +430,7 @@ Complete the following steps to configure Shopify as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Shopify objects
 
 Shopify data pipelines sync data from the Shopify GraphQL Admin API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -556,7 +556,7 @@ Shopify gates access to customer PII behind Protected Customer Data approval. Re
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Shopify limitations
 
 The following limitations apply when you use Shopify as a data pipeline source:
 

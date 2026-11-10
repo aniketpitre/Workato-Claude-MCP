@@ -10,7 +10,7 @@ description: >-
 
 Set up Ellucian Banner as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with your Banner environment.
 
-## Features supported
+## Ellucian Banner features supported
 
 The following features are supported when using Ellucian Banner as a data pipeline source:
 
@@ -20,7 +20,7 @@ The following features are supported when using Ellucian Banner as a data pipeli
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Ellucian Banner prerequisites
 
 Ensure you have completed the following tasks before you begin:
 

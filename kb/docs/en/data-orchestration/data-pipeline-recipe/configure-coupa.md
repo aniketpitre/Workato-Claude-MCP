@@ -10,7 +10,7 @@ description: >-
 
 Set up Coupa as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with Coupa as a source.
 
-## Features supported
+## Coupa features supported
 
 The following features are supported when using Coupa as a data pipeline source:
 
@@ -20,7 +20,7 @@ The following features are supported when using Coupa as a data pipeline source:
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Coupa prerequisites
 
 You must have the following configuration and access:
 

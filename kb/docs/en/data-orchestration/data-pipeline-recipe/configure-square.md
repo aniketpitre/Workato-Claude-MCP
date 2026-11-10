@@ -12,7 +12,7 @@ Set up Square as a data pipeline source to extract payment, order, catalog, cust
 
 Use this guide to generate a Square access token, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Square features supported
 
 The following features are supported when you use Square as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Square as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Square prerequisites
 
 Connecting Square as a data pipeline source requires:
 
@@ -218,7 +218,7 @@ Complete the following steps to configure Square as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Square objects
 
 Square data pipelines sync data from the Square REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -359,7 +359,7 @@ Square doesn't return raw card numbers or CVV values through the API. Square ret
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Square limitations
 
 The following limitations apply when you use Square as a data pipeline source:
 

@@ -10,7 +10,7 @@ description: >-
 
 Set up SQL Server as a data pipeline source to extract and sync records into your destination. Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## SQL Server features supported
 
 The following features are supported when you use SQL Server as a pipeline source:
 
@@ -22,7 +22,7 @@ The following features are supported when you use SQL Server as a pipeline sourc
 | Schema drift detection and handling | Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**. |
 | Configurable sync frequency | Schedule syncs on a time-based interval. The minimum supported interval is 15 minutes. |
 
-## Prerequisites
+## SQL Server prerequisites
 
 Complete the following requirements before you connect SQL Server as a data pipeline source.
 
@@ -214,7 +214,7 @@ Complete the following steps to configure SQL Server as your data pipeline sourc
        
     
 
-## Supported objects
+## Supported SQL Server objects
 
 SQL Server data pipelines sync data from tables in your connected database. Workato discovers available tables across all schemas in the connected database when you select **Add object** during pipeline configuration. You can add one or more tables as objects in your pipeline. Views aren't supported because SQL Server Change Tracking requires base tables.
 
@@ -240,7 +240,7 @@ Workato pipelines translate source column names into valid destination identifie
 
 For example, the source column `$Name$` becomes `[_NAME_]` in the destination table.
 
-## Limitations
+## SQL Server limitations
 
 The following limitations apply when you use SQL Server as a data pipeline source.
 

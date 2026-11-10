@@ -114,6 +114,6 @@ Since backup polling checks for all New or New/Updated objects it will not respe
 
 2\. I've a high volume use case to monitor events happening within Salesforce. What is the recommended approach?
 
-For high volume use cases we recommend using Platform events trigger or the Pushtopic trigger as these utilize the Salesforce Streaming API which is more durable (allows for events to be accessed for 24 hrs in the event queue).
+For high volume use cases we recommend using Platform events trigger or the Pushtopic trigger as these utilize the Salesforce Streaming API which is more durable. Salesforce keeps high-volume platform events in the event queue for up to 72 hours and PushTopic events for up to 24 hours.
 
 ---

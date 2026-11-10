@@ -12,7 +12,7 @@ Set up Typeform as a data pipeline source to extract and sync forms, responses, 
 
 Use this guide to review the features and prerequisites, connect Typeform as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Typeform features supported
 
 The following features are supported when you use Typeform as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Typeform as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Typeform prerequisites
 
 Connecting Typeform as a data pipeline source requires:
 
@@ -181,7 +181,7 @@ Complete the following steps to configure Typeform as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Typeform objects
 
 Typeform data pipelines sync data from the Typeform Create, Responses, and Webhooks APIs. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -292,7 +292,7 @@ Hidden fields often carry a respondent's email address or customer ID.
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Typeform limitations
 
 The following limitations apply when you use Typeform as a data pipeline source:
 

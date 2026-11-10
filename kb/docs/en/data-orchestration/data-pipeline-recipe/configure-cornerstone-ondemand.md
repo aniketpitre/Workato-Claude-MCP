@@ -12,7 +12,7 @@ Set up Cornerstone OnDemand as a data pipeline source to extract and sync learni
 
 Use this guide to register a Cornerstone OnDemand API client, connect Cornerstone OnDemand as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Cornerstone OnDemand features supported
 
 The following features are supported when you use Cornerstone OnDemand as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use Cornerstone OnDemand as a pipe
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Cornerstone OnDemand prerequisites
 
 Connecting Cornerstone OnDemand as a data pipeline source requires:
 
@@ -194,7 +194,7 @@ Complete the following steps to configure Cornerstone OnDemand as your data pipe
     > The historical start date applies to all Data Exporter objects, including objects that support full sync only, and filters records by the `_last_touched_dt_utc` field. Reporting API objects extract all available records.
     
 
-## Supported objects
+## Supported Cornerstone OnDemand objects
 
 Cornerstone OnDemand data pipelines sync data from the Cornerstone OnDemand Data Exporter API and Reporting API. Each object syncs as a separate table in your destination. The **Delete tracking** column describes incremental sync for objects that support it. Refer to [Delete tracking](#delete-tracking) for how these objects track deletes in full sync:
 
@@ -289,7 +289,7 @@ Custom field objects, such as `users_cf_core` and `vw_rpt_transaction_cf`, can a
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Cornerstone OnDemand limitations
 
 The following limitations apply when you use Cornerstone OnDemand as a data pipeline source:
 

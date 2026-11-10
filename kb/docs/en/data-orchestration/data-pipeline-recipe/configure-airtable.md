@@ -12,7 +12,7 @@ Set up Airtable as a data pipeline source to extract and sync records from your 
 
 Use this guide to review the features and prerequisites, connect Airtable as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, and limitations.
 
-## Features supported
+## Airtable features supported
 
 The following features are supported when you use Airtable as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use Airtable as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Airtable prerequisites
 
 Connecting Airtable as a data pipeline source requires:
 
@@ -228,7 +228,7 @@ Complete the following steps to configure Airtable as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Airtable objects
 
 Airtable bases and tables are entirely customer-defined, so Airtable data pipelines don't sync from a fixed object catalog. Workato discovers every table in your selected bases and exposes each table as a separate object you can sync, labeled `<Base name> / <Table name>` in the object picker when base names are available. Scoped discovery that supplies only base IDs may display `<Base ID> / <Table name>` instead.
 
@@ -303,7 +303,7 @@ Airtable tables are entirely customer-defined, so Workato can't predict which fi
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Airtable limitations
 
 The following limitations apply when you use Airtable as a data pipeline source:
 

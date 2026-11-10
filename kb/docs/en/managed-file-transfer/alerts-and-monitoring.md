@@ -30,6 +30,8 @@ Additionally, the **Runs** tab provides the following capabilities:
   
 - Use the **Period** and **Status** drop-down menus to filter logs.
   
+- Use the **Original run ID** search bar to find a sequence of attempts with the same `original_run_id` value. This includes the original attempt and all manual retries.
+  
 - Click **Retry** on a failed row to retry a single transfer or click **Retry all failed** to retry all failed transfers.
   
 - Select a row to view its detailed [attempt history](#attempt-history).
@@ -37,17 +39,16 @@ Additionally, the **Runs** tab provides the following capabilities:
 
 ### Attempt history
 
-You can select a row in the **Runs** tab to view its attempt history and the details of each attempt:
+You can select a row in the **Runs** tab to view the following information for the original attempt and any automatic retries. Manual retries create a separate run with its own attempt history.
 
 **For each attempt**
 
 | Field | Description |
 | --- | --- |
 | **Attempt** | The attempt number. |
-| **Provenance** | How the attempt was initiated: **Original** for the first attempt, **Auto-retry** for an automatic retry, or **Manual retry** followed by the name of the user who triggered it. |
 | **Start time** | When the attempt started. |
 | **End time** | When the attempt ended. |
-| **Status** | The outcome of the attempt. |
+| **Status** | The outcome of the attempt. Use the **Status** drop-down menu to filter by this field. |
 | **Duration** | How long the attempt took. |
 | **Details** | The error message for failed attempts, or a success summary. |
 
@@ -59,10 +60,8 @@ You can select a row in the **Runs** tab to view its attempt history and the det
 | **Source path** | The full path of the source file. |
 | **Start time** | When the first attempt started. |
 | **End time** | When the final attempt ended. |
-| **Duration** | Total time across all attempts. |
-| **Attempted automatic retries** | The number of automatic retries used. |
-
-Use the **Attempt type** drop-down menu to filter by original transfers, auto-retries, or manual retries and the **Status** drop-down menu to filter by outcome.
+| **Retries** | The number of automatic retries used, if applicable. |
+| **Related runs** | Links to additional runs with the same `original_run_id`, if applicable. |
 
 ## Workato Logs
 
@@ -76,33 +75,104 @@ Logs include the following columns for file orchestration entries:
 | **Log type** | The category of the event. |
 | **Log level** | The severity of the event, such as `INFO`, `WARN`, or `ERROR`. |
 | **Data** | Event-specific details in JSON format. |
+| **Recipe ID** | The ID of the recipe that triggered the transfer, if applicable. |
+| **Step number** | The number of the recipe step that triggered the transfer, if applicable. |
 
-Depending on the log type, the **Data** field includes the following additional fields:
+The contents of the **Data** JSON vary depending on the event. The following examples define commonly included fields:
 
 **File transfer**
 
-| Field | Description |
-| --- | --- |
-| **Transfer ID** | The identifier of the file transfer. |
-| **File run ID** | The identifier of the specific transfer run. |
+File transfers record automatic retries in the `attempts` array alongside the original attempt, instead of creating separate log events. Manual retries create a new event, with an `original_run_id` field identifying the run it retried and a new `run_id` identifying the manual retry.
 
 ```json
 {
-  message: "Source transfer complete.",
-  event: "MFT_SOURCE_DOWNLOAD_COMPLETE",
-  start_time: "2025-05-17T09:15:32.123Z",
-  end_time: "2025-05-17T09:15:32.423Z",
-  file_transfer: "mft_flow_banking_partners_001",
-  file_run_id: "4C1V-9bn5-2re7-8km3"
+  event_type: "transfer.run.succeeded",
+  timestamp: "2026-11-02T22:31:19.614Z",
+  user_id: 48141,
+  transfer_id: "mft-7hQ2kR-9pLxTz-A3",
+  transfer_name: "Bank reports to Partners",
+  run_id: "mftr-7hQ3mS-2vNbWq-A3",
+  execution_id: "d9e1bb1e-d4c4-4327-9e76-29f4a7825c83",
+  status: "succeeded",
+  started_at: "2026-11-02T22:30:40.100Z",
+  ended_at: "2026-11-02T22:31:19.600Z",
+  duration_ms: 39500,
+  attempts_count: 2,
+  attempts_truncated: false,
+  file: {
+    name: "bank_report_14362.txt",
+    source_path: "/Outbound Banking Reports/bank_report_14362.txt",
+    reported_size_bytes: 235233,
+    measured_size_bytes: 235233,
+    best_known_size_bytes: 235233
+  },
+  source: {
+    id: "6c0d96b8-3d29-48e1-855f-d007858eef39",
+    name: "Bank reports",
+    type: "workato_files",
+    directory_path: "/Outbound Banking Reports"
+  },
+  targets: [
+    {
+      id: "5cf694c6-0969-4d4d-9df4-f8004094dd51",
+      name: "Partner A",
+      type: "sftp",
+      directory_path: "/Processed",
+      processing_action_types: ["compress"]
+    }
+  ],
+  attempts: [
+    {
+      attempt_id: "a1f2c3d4-1111-4a1a-9999-000000000001",
+      attempt_number: 1,
+      origin: "original",
+      status: "failed",
+      started_at: "2026-11-02T22:30:40.100Z",
+      ended_at: "2026-11-02T22:30:43.200Z",
+      duration_ms: 3100,
+      failure: {
+        stage: "target_write",
+        error_code: "target_access_denied",
+        error_type_id: "err.ssh.auth.no_more_methods_available",
+        error_type_name: "No more authentication methods available",
+        error_message: "The target file could not be written because access was denied. Check the target connection permissions."
+      }
+    },
+    {
+      attempt_id: "d9e1bb1e-d4c4-4327-9e76-29f4a7825c83",
+      attempt_number: 2,
+      origin: "auto_retry",
+      status: "succeeded",
+      started_at: "2026-11-02T22:31:19.000Z",
+      ended_at: "2026-11-02T22:31:19.600Z",
+      duration_ms: 600
+    }
+  ]
 }
 ```
 
-**SFTP server**
-
 | Field | Description |
 | --- | --- |
-| **Username** | The account username used to authenticate. |
-| **IP address** | The IP address the connection originated from. |
+| `event_type` | The type of event, such as `transfer.run.succeeded` or `transfer.run.failed`. |
+| `timestamp` | The date and time when the event occurred. |
+| `user_id` | The ID of the user associated with the transfer. |
+| `transfer_id` | The ID of the file transfer. |
+| `transfer_name` | The name of the file transfer. |
+| `run_id` | The ID of the specific transfer run. |
+| `original_run_id` | The ID of the retried run. This field only exists for manual retries. |
+| `execution_id` | The ID of the run's final attempt. Matches the `attempt_id` of the last entry in `attempts`. |
+| `status` | The outcome of the run: `succeeded` or `failed`. |
+| `started_at` | When the run started. |
+| `ended_at` | When the run ended. |
+| `duration_ms` | The run duration in milliseconds. |
+| `attempts_count` | The number of attempts made during the run. |
+| `attempts_truncated` | Whether the `attempts` array was truncated and doesn't include every attempt made during the run. |
+| `file` | Details about the transferred file, including its name, size, and source path. |
+| `source` | The file's source location. |
+| `targets` | The destinations the file was sent to. |
+| `attempts` | Details about attempts made during the run, including error details for failed attempts. |
+
+**SFTP server**
 
 ```json
 {
@@ -119,6 +189,21 @@ Depending on the log type, the **Data** field includes the following additional 
   download_duration_seconds: 0.81006177
 }
 ```
+
+| Field | Description |
+| --- | --- |
+| `event_type` | The type of event, such as `sftp.file.downloaded`, `sftp.authentication.success`, or `sftp.session.disconnected`. |
+| `timestamp` | The date and time when the event occurred. |
+| `user_id` | The ID of the user associated with the SFTP account. |
+| `account_id` | The ID of the SFTP account. |
+| `account_username` | The account username used to authenticate. |
+| `ip_address` | The IP address the connection originated from. This field only exists for events related to authentication and connection. |
+| `session_id` | The ID of the SFTP connection. |
+| `file_name` | The name of the file. |
+| `file_path` | The full path of the file on the SFTP server. |
+| `byte_range_start` | The starting byte offset of the file operation. |
+| `byte_range_end` | The ending byte offset of the file operation. |
+| `download_duration_seconds` | The duration of the download in seconds. |
 
 ## Triggers
 

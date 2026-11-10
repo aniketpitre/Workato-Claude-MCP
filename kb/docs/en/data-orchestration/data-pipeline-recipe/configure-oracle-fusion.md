@@ -10,7 +10,7 @@ description: >-
 
 Set up Oracle Fusion Cloud as a data pipeline source to extract and sync records into your destination. This guide covers connection setup, pipeline configuration, and key behavior when using Oracle Fusion Cloud as a source.
 
-## Prerequisites
+## Oracle Fusion Cloud prerequisites
 
 Ensure you have the following configuration before creating the connection:
 
@@ -22,7 +22,7 @@ Ensure you have the following configuration before creating the connection:
 
 The Oracle Fusion Cloud connector uses [Oracle Business Intelligence Cloud Connector](https://docs.oracle.com/en/cloud/saas/applications-common/26b/biacc/overview-of-business-intelligence-cloud-connector.html) (BICC) to extract data in bulk from Oracle Fusion Cloud applications. BICC enables the connector to retrieve business intelligence and other data from your Oracle Fusion Cloud instance and load it into your designated destination.
 
-## Features supported
+## Oracle Fusion Cloud features supported
 
 The following features are supported when using Oracle Fusion Cloud as a data pipeline source:
 

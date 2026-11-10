@@ -1,6 +1,6 @@
 # Connectors
 
-2959 pages. Paths are relative to the repository root.
+2965 pages. Paths are relative to the repository root.
 
 
 ## Connectors
@@ -2631,6 +2631,12 @@
 - **Workato connectors - Reckon - New/updated record trigger** - `kb/docs/en/connectors/reckon/new-updated-record-trigger.md` - The New/updated record trigger initiates a recipe when a record is created or updated in Reckon.
 - **Workato connectors - Reckon - Search records action** - `kb/docs/en/connectors/reckon/search-records-action.md` - The Search records action retrieves records from Reckon using filters and selected fields.
 - **Workato connectors - Reckon - Update record action** - `kb/docs/en/connectors/reckon/update-record-action.md` - The Update record action updates an existing record in Reckon.
+- **Workato connectors - Redmine** - `kb/docs/en/connectors/redmine.md` - Connect Workato to Redmine with OAuth 2.0 to retrieve, search, create, and update issues.
+- **Redmine - Create record action** - `kb/docs/en/connectors/redmine/create-record-action.md` - The Create record action creates an issue in a Redmine project.
+- **Redmine - Get record action** - `kb/docs/en/connectors/redmine/get-record-action.md` - The Get record action retrieves an issue from Redmine by its ID.
+- **Redmine - Search records action** - `kb/docs/en/connectors/redmine/search-records-action.md` - The Search records action retrieves a list of issues from Redmine that match your search criteria.
+- **Redmine - Update record action** - `kb/docs/en/connectors/redmine/update-record-action.md` - The Update record action updates an issue in Redmine or adds a note to it.
+- **Redmine - Upload file action** - `kb/docs/en/connectors/redmine/upload-file-action.md` - The Upload file action uploads a file to Redmine and returns a token you can use to attach the file to an issue.
 - **Workato connectors - RicherValues** - `kb/docs/en/connectors/richervalues.md` - The RicherValues connector lets you automate property valuation workflows by placing valuation and inspection orders for real estate and lending teams.
 - **RicherValues - Place order action** - `kb/docs/en/connectors/richervalues/place-order-action.md` - The Place order places a property evaluation, AVM, or inspection order in RicherValues.
 - **Workato connectors - S3 Data lake** - `kb/docs/en/connectors/s3-lake.md` - S3 Data Lake is a centralized AWS service that stores and manages structured and unstructured data at scale using Amazon S3 and AWS Glue.

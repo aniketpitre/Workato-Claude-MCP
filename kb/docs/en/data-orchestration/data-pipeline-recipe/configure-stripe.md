@@ -10,7 +10,7 @@ description: >-
 
 Set up Stripe as a data pipeline source to extract payment, billing, and financial records into your destination. Use this guide to generate a Stripe API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Stripe features supported
 
 The following features are supported when you use Stripe as a pipeline source:
 
@@ -23,7 +23,7 @@ The following features are supported when you use Stripe as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Stripe prerequisites
 
 Complete the following requirements before you connect Stripe as a data pipeline source.
 
@@ -255,7 +255,7 @@ Complete the following steps to configure Stripe as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Stripe objects
 
 Stripe data pipelines sync data from Stripe REST API resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -411,7 +411,7 @@ Stripe doesn't return raw card numbers or CVV values for customer payment method
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Stripe limitations
 
 The following limitations apply when you use Stripe as a data pipeline source.
 

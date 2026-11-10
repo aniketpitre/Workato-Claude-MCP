@@ -15,7 +15,7 @@ Set up Microsoft Dynamics Business Central as a data pipeline source to extract 
 > 
 > Data pipelines support the cloud (SaaS) version of Microsoft Dynamics Business Central only. On-premises deployments aren't supported.
 
-## Features supported
+## Microsoft Dynamics Business Central features supported
 
 The following features are supported when you use Business Central as a pipeline source:
 
@@ -30,7 +30,7 @@ The following features are supported when you use Business Central as a pipeline
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Microsoft Dynamics Business Central prerequisites
 
 Complete the following requirements before you connect to Business Central as a data pipeline source:
 
@@ -177,7 +177,7 @@ Complete the following steps to configure Business Central as your data pipeline
        
     
 
-## Supported objects
+## Supported Microsoft Dynamics Business Central objects
 
 Business Central data pipelines support read-only extraction of business entities across finance, sales, purchasing, and setup and master data. The following tables list commonly used objects, grouped by category. This isn't a complete list of all objects that Business Central data pipelines support. Browse the full catalog in the **Add object** panel when you [configure the pipeline](#configure-the-pipeline).
 
@@ -240,7 +240,7 @@ An incremental sync extracts only records created or updated since the last sync
 
 Business Central data pipelines scope data extraction to a single company at a time. The **Company ID** field in the connection configuration sets a default company for the connection. Leave this field blank at the connection level to select the company per pipeline instead, using the **Company** drop-down menu in [Configure the pipeline](#configure-the-pipeline).
 
-## Limitations
+## Microsoft Dynamics Business Central limitations
 
 The following limitations apply when you use Business Central as a data pipeline source:
 

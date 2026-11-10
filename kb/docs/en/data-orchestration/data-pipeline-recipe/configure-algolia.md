@@ -12,7 +12,7 @@ Set up Algolia as a data pipeline source to extract index records, index configu
 
 Use this guide to prepare an Algolia API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Algolia features supported
 
 The following features are supported when you use Algolia as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Algolia as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## Algolia prerequisites
 
 Connecting Algolia as a data pipeline source requires:
 
@@ -185,7 +185,7 @@ Complete the following steps to configure Algolia as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Algolia objects
 
 Algolia data pipelines sync index content, index configuration, analytics, and API logs from your Algolia application. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination. Index-level objects appear once for each index in your application.
 
@@ -310,7 +310,7 @@ Deselecting a `Records` attribute doesn't keep its value out of your destination
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Algolia limitations
 
 The following limitations apply when you use Algolia as a data pipeline source:
 

@@ -12,7 +12,7 @@ Set up QuickBooks Online as a data pipeline source to extract accounting records
 
 Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior and schema handling, and understand known limitations.
 
-## Features supported
+## QuickBooks Online features supported
 
 The following features are supported when you use QuickBooks Online as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use QuickBooks Online as a pipelin
 - **Field-level data protection**: Hash sensitive field values, such as personally identifiable information (PII), before they reach your destination. Refer to [Sensitive data handling](#sensitive-data-handling) for more information.
 - **Concurrency limit**: Limit the number of concurrent operations the pipeline runs against QuickBooks Online.
 
-## Prerequisites
+## QuickBooks Online prerequisites
 
 Complete the following requirements before you connect QuickBooks Online as a data pipeline source.
 
@@ -185,7 +185,7 @@ Complete the following steps to configure QuickBooks Online as your data pipelin
        
     
 
-## Supported objects
+## Supported QuickBooks Online objects
 
 QuickBooks Online data pipelines sync data from QuickBooks Online Accounting API v3 entities. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -366,7 +366,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends field-level hashing for the fields in the preceding table.
 
-## Limitations
+## QuickBooks Online limitations
 
 The following limitations apply when you use QuickBooks Online as a data pipeline source.
 

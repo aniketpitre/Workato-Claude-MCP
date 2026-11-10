@@ -12,7 +12,7 @@ Set up ZoomInfo as a data pipeline source to extract your saved audiences with e
 
 Use this guide to create a ZoomInfo Standard App, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## ZoomInfo features supported
 
 The following features are supported when you use ZoomInfo as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use ZoomInfo as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## ZoomInfo prerequisites
 
 Connecting ZoomInfo as a data pipeline source requires:
 
@@ -197,7 +197,7 @@ Complete the following steps to configure ZoomInfo as your data pipeline source:
     The start date sets where `scoops` and `news` begin when they run a full sync, such as on the first run. Incremental runs continue from the date of the last completed sync. `audiences` and `audience_rows` sync their complete history on every run, regardless of this setting.
     
 
-## Supported objects
+## Supported ZoomInfo objects
 
 ZoomInfo data pipelines sync data from the ZoomInfo GTM API. The following table lists the supported objects. Each object syncs as a separate table in your destination:
 
@@ -291,7 +291,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 > 
 > ZoomInfo restricts how you can use contact data downstream. Confirm that your ZoomInfo contract permits extracting and storing contact data in your destination before you sync `audience_rows` from `CONTACT` audiences.
 
-## Limitations
+## ZoomInfo limitations
 
 The following limitations apply when you use ZoomInfo as a data pipeline source:
 

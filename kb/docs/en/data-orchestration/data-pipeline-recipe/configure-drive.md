@@ -10,7 +10,7 @@ description: >-
 
 Set up Google Drive as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in Google Drive folders.
 
-## Features supported
+## Google Drive features supported
 
 The following features are supported when using Google Drive as a data pipeline source:
 
@@ -19,7 +19,7 @@ The following features are supported when using Google Drive as a data pipeline 
 - Field-level selection for data extraction
 - Field-level data masking
 
-## Prerequisites
+## Google Drive prerequisites
 
 You must have the following configuration and access:
 

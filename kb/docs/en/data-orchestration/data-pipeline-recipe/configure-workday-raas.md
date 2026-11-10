@@ -10,7 +10,7 @@ description: >-
 
 Set up Workday RaaS to extract custom report data from your Workday tenant and sync to your destination. Use this guide to register a custom report as a pipeline object, configure incremental sync through report prompts, and understand known limitations.
 
-## Features supported
+## Workday RaaS features supported
 
 The following features are supported when you use Workday RaaS as a pipeline source:
 
@@ -21,7 +21,7 @@ The following features are supported when you use Workday RaaS as a pipeline sou
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Workday RaaS prerequisites
 
 Complete the following requirements before you configure Workday RaaS as a data pipeline source:
 
@@ -413,7 +413,7 @@ Workato fetches the report schema from Workday when you register the report as a
 
 After you register the report as a pipeline object, you can include or exclude individual columns from the sync in the pipeline's source trigger. Deselect a column's checkbox to remove it from the destination table.
 
-## Limitations
+## Workday RaaS limitations
 
 The following limitations apply when you use Workday RaaS as a data pipeline source.
 

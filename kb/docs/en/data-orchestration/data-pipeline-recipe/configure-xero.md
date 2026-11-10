@@ -13,7 +13,7 @@ Set up Xero as a data pipeline source to extract accounting data, such as invoic
 
 Use this guide to review the features and prerequisites, connect Xero as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations.
 
-## Features supported
+## Xero features supported
 
 The following features are supported when you use Xero as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Xero as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Xero prerequisites
 
 Complete the following requirements before you configure Xero as a data pipeline source:
 
@@ -210,7 +210,7 @@ Complete the following steps to configure Xero as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Xero objects
 
 Xero data pipelines sync data from the Xero Accounting API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -363,7 +363,7 @@ Use the **Hash** option in field-level data protection during pipeline configura
 
 Workato recommends hashing `contact` and `user` PII for pipelines operating under the GDPR, the CCPA, or the Australian Privacy Act.
 
-## Limitations
+## Xero limitations
 
 The following limitations apply when you use Xero as a data pipeline source:
 

@@ -13,7 +13,7 @@ Set up LinkedIn as a data pipeline source to extract ad account, campaign, creat
 
 Use this guide to prepare your LinkedIn credentials, connect LinkedIn to Workato, configure the pipeline, and understand the supported objects, sync modes, and limitations.
 
-## Features supported
+## LinkedIn features supported
 
 The following features are supported when you use LinkedIn as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use LinkedIn as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## LinkedIn prerequisites
 
 Complete the following requirements before you configure LinkedIn as a data pipeline source:
 
@@ -182,7 +182,7 @@ Complete the following steps to configure LinkedIn as your data pipeline source.
     This field doesn't apply to Ad Analytics objects, which backfill from a fixed start date instead. Refer to [Incremental sync](#incremental-sync) for details.
     
 
-## Supported objects
+## Supported LinkedIn objects
 
 LinkedIn data pipelines sync data from the LinkedIn Marketing API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -306,7 +306,7 @@ LinkedIn objects can contain personally identifiable information (PII). The foll
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## LinkedIn limitations
 
 The following limitations apply when you use LinkedIn as a data pipeline source:
 

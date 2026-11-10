@@ -13,7 +13,7 @@ Set up PagerDuty as a data pipeline source to extract incident, on-call, and inc
 
 Use this guide to review the prerequisites, generate a PagerDuty API key, connect PagerDuty as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema and data type handling, sensitive data handling, and limitations.
 
-## Features supported
+## PagerDuty features supported
 
 The following features are supported when you use PagerDuty as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use PagerDuty as a pipeline source
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## PagerDuty prerequisites
 
 Connecting PagerDuty as a data pipeline source requires:
 
@@ -190,7 +190,7 @@ Complete the following steps to configure PagerDuty as your data pipeline source
        
     
 
-## Supported objects
+## Supported PagerDuty objects
 
 PagerDuty data pipelines sync data from PagerDuty REST API v2 resources. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -323,7 +323,7 @@ PagerDuty objects can contain significant personally identifiable information (P
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## PagerDuty limitations
 
 The following limitations apply when you use PagerDuty as a data pipeline source:
 

@@ -10,7 +10,7 @@ description: >-
 
 Set up Workday as a data pipeline source to extract business object records from your Workday tenant and sync to your destination. Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Workday features supported
 
 The following features are supported when you use Workday as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use Workday as a pipeline source:
 | Full refresh and incremental sync | Supports full refresh and incremental sync modes. Refer to [Sync modes](#sync-modes) for more information. |
 | Delete tracking | Captures record deletions from Workday through a `Workato Is Deleted` flag on each record. Refer to [Schema and data type handling](#schema-and-data-type-handling) for more information. |
 
-## Prerequisites
+## Workday prerequisites
 
 Complete the following requirements before you connect Workday as a data pipeline source.
 
@@ -265,7 +265,7 @@ Complete the following steps to configure Workday as your data pipeline source:
     The historical start date applies to objects that support an API-level filter.
     
 
-## Supported objects
+## Supported Workday objects
 
 Workday pipelines sync data from business objects exposed through the Workday Web Services API. Workato discovers the available objects when you select **Add object** during pipeline configuration. The picker reflects what's available for your Workday tenant. Additional objects may appear depending on your tenant configuration and authentication type, including custom objects and WQL-backed objects when you connect with OAuth 2.0.
 
@@ -379,7 +379,7 @@ Workday pipelines deliver standard business object data as a JSON document rathe
 
 Each standard object also includes a primary key for the Workday record identifier, an optional descriptor field, and a `Workato Is Deleted` flag that you can use to identify deleted records.
 
-## Limitations
+## Workday limitations
 
 The following limitations apply when you use Workday as a data pipeline source:
 

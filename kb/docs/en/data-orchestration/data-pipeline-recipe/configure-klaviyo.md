@@ -12,7 +12,7 @@ Set up Klaviyo as a data pipeline source to extract audience, campaign, flow, ca
 
 Use this guide to generate a Klaviyo private API key, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Klaviyo features supported
 
 The following features are supported when you use Klaviyo as a pipeline source:
 
@@ -23,7 +23,7 @@ The following features are supported when you use Klaviyo as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Klaviyo prerequisites
 
 Connecting Klaviyo as a data pipeline source requires:
 
@@ -242,7 +242,7 @@ Complete the following steps to configure Klaviyo as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Klaviyo objects
 
 Klaviyo data pipelines sync data from Klaviyo's REST API. The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination. Klaviyo custom objects and custom object records aren't currently supported.
 
@@ -375,7 +375,7 @@ Klaviyo objects can contain personally identifiable information (PII). The follo
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Klaviyo limitations
 
 The following limitations apply when you use Klaviyo as a data pipeline source:
 

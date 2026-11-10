@@ -13,7 +13,7 @@ Set up Snowflake as a data pipeline source to extract table records and sync the
 
 Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Snowflake features supported
 
 The following features are supported when you use Snowflake as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use Snowflake as a pipeline source
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or a custom cron expression.
 
-## Prerequisites
+## Snowflake prerequisites
 
 Complete the following requirements before you connect Snowflake as a data pipeline source.
 
@@ -216,7 +216,7 @@ Complete the following steps to configure Snowflake as your data pipeline source
        
     
 
-## Supported objects
+## Supported Snowflake objects
 
 Snowflake data pipelines sync data from base tables in your connected database, including transient tables. Workato discovers tables live against the connected database when you select **Add object**, rather than from a static catalog, so the available objects depend on the role used by your connection.
 
@@ -280,7 +280,7 @@ Workato adds the following synthetic column to destination tables for objects us
 | --- | --- | --- |
 | `_workato_is_deleted` | Boolean | Marks a row as deleted, based on Snowflake's change tracking data. Only populated on continuation runs of incremental sync by change tracking. |
 
-## Limitations
+## Snowflake limitations
 
 The following limitations apply when you use Snowflake as a data pipeline source:
 

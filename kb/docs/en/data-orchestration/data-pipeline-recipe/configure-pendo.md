@@ -13,7 +13,7 @@ Set up Pendo as a data pipeline source to extract and sync product analytics rec
 
 Use this guide to set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Pendo features supported
 
 The following features are supported when you use Pendo as a pipeline source:
 
@@ -27,7 +27,7 @@ The following features are supported when you use Pendo as a pipeline source:
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is `15` minutes.
 
-## Prerequisites
+## Pendo prerequisites
 
 Connecting Pendo as a data pipeline source requires:
 
@@ -171,7 +171,7 @@ Complete the following steps to configure Pendo as your data pipeline source:
     > The start date applies only to event objects, such as `Events` and `Page Events`, and the `Visitor Application` and `Account Application` objects, which are built from events. These objects extract the last `91` days of events if you leave the field blank, and events older than `91` days drop out of the destination on each run. Set a start date before the first run if you need to retain older events. Refer to [Event history window](#event-history-window) for more information.
     
 
-## Supported objects
+## Supported Pendo objects
 
 Pendo data pipelines sync data from the Pendo API (v1). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination:
 
@@ -268,7 +268,7 @@ Pendo objects can contain personally identifiable information (PII), such as vis
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Pendo limitations
 
 The following limitations apply when you use Pendo as a data pipeline source:
 

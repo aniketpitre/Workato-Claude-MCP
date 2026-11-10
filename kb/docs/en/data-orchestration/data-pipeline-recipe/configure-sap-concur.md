@@ -13,7 +13,7 @@ Set up SAP Concur as a data pipeline source to extract and sync expense reports,
 
 Use this guide to review the features and prerequisites, generate SAP Concur credentials, connect SAP Concur as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and limitations.
 
-## Features supported
+## SAP Concur features supported
 
 The following features are supported when you use SAP Concur as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use SAP Concur as a pipeline sourc
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## SAP Concur prerequisites
 
 Complete the following requirements before you configure SAP Concur as a data pipeline source:
 
@@ -453,7 +453,7 @@ Complete the following steps to configure SAP Concur as your data pipeline sourc
     This start date applies only to objects that support incremental sync. Full-sync objects reload their complete record set regardless of this value.
     
 
-## Supported objects
+## Supported SAP Concur objects
 
 SAP Concur data pipelines sync data from the SAP Concur Expense, Invoice, Request, Identity, Lists, and Common Locations APIs. Each object syncs as a separate table in your destination. Child objects sync as separate normalized tables. Each child table uses a single-column `id` primary key and carries a parent-reference column, such as `payment_request_id` on `payment_request_line` or `list_id` on `list_item`. Join on the parent-reference column to relate a child table back to its parent.
 
@@ -629,7 +629,7 @@ SAP Concur returns the `user` object's email addresses and phone numbers as arra
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## SAP Concur limitations
 
 The following limitations apply when you use SAP Concur as a data pipeline source:
 

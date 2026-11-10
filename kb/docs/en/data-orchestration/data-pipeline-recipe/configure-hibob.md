@@ -11,7 +11,7 @@ description: >-
 
 Set up HiBob as a data pipeline source to extract employee data, historical people records, time off, compensation, and custom table objects into your destination. Use this guide to review the features supported, complete prerequisites, connect HiBob to Workato, configure the pipeline, and understand known limitations.
 
-## Features supported
+## HiBob features supported
 
 The following features are supported when you use HiBob as a pipeline source:
 
@@ -22,7 +22,7 @@ The following features are supported when you use HiBob as a pipeline source:
 - **Schema drift detection**: Configure per-tenant objects to auto-sync new fields, or lock the schema after the pipeline starts.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## HiBob prerequisites
 
 Complete the following requirements before you connect HiBob as a data pipeline source.
 
@@ -193,7 +193,7 @@ Complete the following steps to configure HiBob as your data pipeline source:
        
     
 
-## Supported objects
+## Supported HiBob objects
 
 The pipeline supports a curated set of HiBob objects, plus any custom tables defined in your workspace. Custom fields on `employees` and custom tables are discovered at pipeline setup time when you load the available objects and schemas in the object wizard. All other objects have fixed schemas.
 
@@ -298,7 +298,7 @@ HiBob objects can contain personally identifiable information (PII) and compensa
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## HiBob limitations
 
 The following limitations apply when you use HiBob as a data pipeline source.
 

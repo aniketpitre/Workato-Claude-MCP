@@ -10,7 +10,7 @@ description: >-
 
 Set up Azure Blob Storage as a data pipeline source to extract and sync records into your destination. This guide includes connection setup, pipeline configuration, and key behavior for working with `.csv` and `.parquet` files stored in Azure Blob containers.
 
-## Features supported
+## Azure Blob Storage features supported
 
 The following features are supported when using Azure Blob Storage as a data pipeline source:
 
@@ -19,7 +19,7 @@ The following features are supported when using Azure Blob Storage as a data pip
 - Field-level selection for data extraction
 - Field-level data masking
 
-## Prerequisites
+## Azure Blob Storage prerequisites
 
 You must have the following configuration and access:
 

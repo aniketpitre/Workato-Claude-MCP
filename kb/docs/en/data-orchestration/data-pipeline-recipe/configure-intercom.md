@@ -12,7 +12,7 @@ Set up Intercom as a data pipeline source to extract and sync customer engagemen
 
 The connector targets Intercom REST API version `2.15` and uses OAuth 2.0 for authentication.
 
-## Features supported
+## Intercom features supported
 
 The following features are supported when you use Intercom as a pipeline source:
 
@@ -25,7 +25,7 @@ The following features are supported when you use Intercom as a pipeline source:
 - **Configurable concurrency**: Cap the number of concurrent API operations the pipeline performs against Intercom.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Intercom prerequisites
 
 Complete the following prerequisites before you connect Intercom as a data pipeline source:
 
@@ -174,7 +174,7 @@ Complete the following steps to configure Intercom as your data pipeline source:
        
     
 
-## Supported objects
+## Supported Intercom objects
 
 The Intercom source connector supports the following objects. The sync mode for each object depends on whether the Intercom API exposes an incremental update mechanism. The **When first started, this pipeline should pick up records from** field applies only to objects that support an API-level filter.
 

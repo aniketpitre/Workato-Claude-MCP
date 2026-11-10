@@ -97,6 +97,8 @@ Select a source application and follow its configuration guide to authenticate, 
 - [GitHub](/en/data-orchestration/data-pipeline-recipe/configure-github)
 - [Google Sheets](/en/data-orchestration/data-pipeline-recipe/configure-google-sheets)
 - [Jira](/en/data-orchestration/data-pipeline-recipe/configure-jira)
+- [Looker](/en/data-orchestration/data-pipeline-recipe/configure-looker)
+- [Monday.com](/en/data-orchestration/data-pipeline-recipe/configure-monday)
 - [Trello](/en/data-orchestration/data-pipeline-recipe/configure-trello)
 
 ### Support & service

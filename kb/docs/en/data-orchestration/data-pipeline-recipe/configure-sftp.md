@@ -10,7 +10,7 @@ description: >-
 
 Set up SFTP as a data pipeline source to extract and sync records into your destination. Use this guide to connect SFTP, configure your pipeline, and review sync behavior, schema handling, and limitations for `.csv` and `.parquet` files.
 
-## Features supported
+## SFTP features supported
 
 The following features are supported when you use SFTP as a data pipeline source:
 
@@ -19,7 +19,7 @@ The following features are supported when you use SFTP as a data pipeline source
 - Field-level selection for object extraction
 - Field-level data masking
 
-## Prerequisites
+## SFTP prerequisites
 
 Connecting SFTP as a data pipeline source requires:
 
@@ -359,7 +359,7 @@ SFTP is a common transport for high-sensitivity batch exports, such as payroll f
 
 Review the fields in each object before you sync it, and use the **Hash** option in field-level data protection to mask any column that contains PII or other sensitive data. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## SFTP limitations
 
 The following limitations apply when you use SFTP as a data pipeline source:
 

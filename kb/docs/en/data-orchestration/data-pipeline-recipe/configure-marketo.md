@@ -12,7 +12,7 @@ Set up Marketo as a data pipeline source to extract and sync records into your d
 
 Workato uses the Marketo REST API to extract object data for pipeline syncs.
 
-## Features supported
+## Marketo features supported
 
 The following features are supported when using Marketo as a data pipeline source:
 
@@ -22,7 +22,7 @@ The following features are supported when using Marketo as a data pipeline sourc
 - Schema drift detection and handling
 - Field-level data masking
 
-## Prerequisites
+## Marketo prerequisites
 
 You must have the following configuration and access:
 

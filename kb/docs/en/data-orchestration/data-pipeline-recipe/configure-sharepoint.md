@@ -13,7 +13,7 @@ Set up Microsoft SharePoint as a data pipeline source to extract and sync `.csv`
 
 Use this guide to set up your Microsoft Entra app, connect SharePoint to Workato, configure the pipeline, and review file handling, sync modes, and limitations.
 
-## Features supported
+## Microsoft SharePoint features supported
 
 The following features are supported when you use Microsoft SharePoint as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Microsoft SharePoint as a pipe
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Microsoft SharePoint prerequisites
 
 Connecting Microsoft SharePoint as a data pipeline source requires:
 
@@ -427,7 +427,7 @@ SharePoint files can contain any customer data, including PII and business-confi
 
 Review the fields in each object before you sync it, and use the **Hash** option in field-level data protection to hash any column that contains PII or other sensitive data. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Microsoft SharePoint limitations
 
 The following limitations apply when you use Microsoft SharePoint as a data pipeline source:
 

@@ -13,7 +13,7 @@ Set up Google Analytics as a data pipeline source to extract prebuilt Google Ana
 
 Use this guide to review the features and prerequisites, connect Google Analytics as a data pipeline source, configure the pipeline, and understand the supported objects, sync modes, schema handling, sensitive data handling, and known limitations.
 
-## Features supported
+## Google Analytics features supported
 
 The following features are supported when you use Google Analytics as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Google Analytics as a pipeline
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Google Analytics prerequisites
 
 Complete the following requirements before you connect Google Analytics as a data pipeline source.
 
@@ -210,7 +210,7 @@ Complete the following steps to configure Google Analytics as your data pipeline
        
     
 
-## Supported objects
+## Supported Google Analytics objects
 
 Google Analytics data pipelines sync data from the Google Analytics Data API (prebuilt GA4 reports) and Admin API (account and property metadata). The following tables list the supported objects, grouped by category. Each object syncs as a separate table in your destination.
 
@@ -389,7 +389,7 @@ Google Analytics report data is aggregated. GA4's Data API doesn't expose indivi
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Google Analytics limitations
 
 The following limitations apply when you use Google Analytics as a data pipeline source.
 

@@ -10,7 +10,7 @@ description: >-
 
 Set up MySQL as a data pipeline source to extract and sync table records into your destination. Use this guide to set up a connection, configure your pipeline, add objects, and review known limitations.
 
-## Features supported
+## MySQL features supported
 
 The following features are supported when you use MySQL as a pipeline source:
 
@@ -19,7 +19,7 @@ The following features are supported when you use MySQL as a pipeline source:
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## MySQL prerequisites
 
 Connecting MySQL as a data pipeline source requires:
 
@@ -178,11 +178,11 @@ Complete the following steps to configure MySQL as your data pipeline source:
        
     
 
-## Supported objects
+## Supported MySQL objects
 
 MySQL data pipelines sync data from tables in your connected database.
 
-## Limitations
+## MySQL limitations
 
 The following limitations apply when you use MySQL as a data pipeline source:
 

@@ -13,7 +13,7 @@ Set up Oracle E-Business Suite (EBS) as a data pipeline source to extract and sy
 
 Use this guide to set up a database user, connect to EBS, configure your pipeline, and review sync behavior, data type handling, and limitations.
 
-## Features supported
+## Oracle E-Business Suite features supported
 
 The following features are supported when you use Oracle E-Business Suite as a pipeline source:
 
@@ -26,7 +26,7 @@ The following features are supported when you use Oracle E-Business Suite as a p
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Oracle E-Business Suite prerequisites
 
 Connecting Oracle E-Business Suite as a data pipeline source requires:
 
@@ -205,7 +205,7 @@ Complete the following steps to configure Oracle E-Business Suite as your data p
     The start date applies only to tables with a change tracking column. Refer to [Full sync](#full-sync) for more information.
     
 
-## Supported objects
+## Supported Oracle E-Business Suite objects
 
 Oracle E-Business Suite data pipelines sync data from tables in the connected EBS database. Workato lists every table the database user can access, across all schemas, when you click **Add object**. Each table appears as `<SCHEMA>.<TABLE_NAME>` and syncs as a separate table in your destination.
 
@@ -268,7 +268,7 @@ Workato maps Oracle column types to destination types as follows:
 
 Numeric columns sync as strings instead of decimals when the column doesn't have declared precision, a negative scale, a precision greater than 38, or a scale greater than the declared precision. Oracle `DATE` columns include a time of day that sync as timestamps.
 
-## Limitations
+## Oracle E-Business Suite limitations
 
 The following limitations apply when you use Oracle E-Business Suite as a data pipeline source:
 

@@ -13,7 +13,7 @@ Set up Salesforce Marketing Cloud as a data pipeline source to extract subscribe
 
 Use this guide to create an Installed Package, set up a connection, configure your pipeline, add objects, review sync behavior, and understand known limitations.
 
-## Features supported
+## Salesforce Marketing Cloud features supported
 
 The following features are supported when you use Salesforce Marketing Cloud as a pipeline source:
 
@@ -24,7 +24,7 @@ The following features are supported when you use Salesforce Marketing Cloud as 
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
 
-## Prerequisites
+## Salesforce Marketing Cloud prerequisites
 
 Connecting Salesforce Marketing Cloud as a data pipeline source requires:
 
@@ -191,7 +191,7 @@ Complete the following steps to configure Salesforce Marketing Cloud as your dat
        
     
 
-## Supported objects
+## Supported Salesforce Marketing Cloud objects
 
 Salesforce Marketing Cloud data pipelines sync data through a mix of the SOAP API and the REST API, depending on the object. Each object syncs as a separate table in your destination.
 
@@ -348,7 +348,7 @@ Salesforce Marketing Cloud objects can contain significant PII. The following ob
 
 Use the **Hash** option in field-level data protection during pipeline configuration to protect PII before it reaches your destination. Refer to the [Configure the pipeline](#configure-the-pipeline) steps for more information.
 
-## Limitations
+## Salesforce Marketing Cloud limitations
 
 The following limitations apply when you use Salesforce Marketing Cloud as a data pipeline source:
 

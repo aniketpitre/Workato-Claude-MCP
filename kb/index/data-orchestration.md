@@ -1,6 +1,6 @@
 # Data orchestration
 
-113 pages. Paths are relative to the repository root.
+115 pages. Paths are relative to the repository root.
 
 
 ## Data orchestration
@@ -49,7 +49,9 @@
 - **Configure Jira as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-jira.md` - Set up Jira as a data pipeline source to extract and sync issues, projects, users, and related records into your destination.
 - **Configure Klaviyo as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-klaviyo.md` - Configure Klaviyo as a data pipeline source to extract and sync audience, campaign, flow, catalog, and engagement records to your destination.
 - **Configure LinkedIn as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-linkedin.md` - Configure LinkedIn as a data pipeline source to extract ad account, campaign, creative, and analytics data through the LinkedIn Marketing API and sync it to your destination.
+- **Configure Looker as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-looker.md` - Set up Looker as a data pipeline source to extract and sync content, user, LookML, and query history metadata from your Looker instance to your destination.
 - **Configure Marketo as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-marketo.md` - Configure Marketo as a data pipeline source to extract object records through the REST API and sync them to your destination.
+- **Configure Monday.com as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-monday.md` - Set up Monday.com as a data pipeline source to extract and sync boards, items, subitems, users, teams, tags, workspaces, updates, and activity logs to your destination.
 - **Configure MySQL as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-mysql-source.md` - Configure MySQL as a data pipeline source to extract table records and sync them with your destination.
 - **Configure NetSuite2 as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-netsuite2.md` - Configure NetSuite2 as a data pipeline source to extract records through SuiteAnalytics Connect and sync them to your destination.
 - **Configure OneDrive as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-onedrive.md` - Set up OneDrive as a data pipeline source to extract and sync records from CSV and Parquet files into your destination.
