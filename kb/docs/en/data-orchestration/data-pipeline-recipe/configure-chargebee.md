@@ -256,7 +256,9 @@ Chargebee data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-A full sync reads all available records from Chargebee for the selected object and overwrites the destination table. Full-sync-only objects include `CouponCode`, `Gift`, `DifferentialPrice`, `UnbilledCharge`, and `Usage`. Some are full-sync-only because they lack a usable cursor, while others have no safe primary key for incremental upserts. Child objects that sync with a parent, including `SubscriptionItem`, `InvoiceLineItem`, `PriceTier`, and `QuotedSubscription`, also only support full sync.
+A full sync reads all available records from Chargebee for the selected object on every run. Full-sync-only objects include `CouponCode`, `Gift`, `DifferentialPrice`, `UnbilledCharge`, and `Usage`. Some are full-sync-only because they lack a usable cursor, while others have no safe primary key for incremental upserts. Child objects that sync with a parent, including `SubscriptionItem`, `InvoiceLineItem`, `PriceTier`, and `QuotedSubscription`, also only support full sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Chargebee stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

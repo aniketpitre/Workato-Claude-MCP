@@ -251,7 +251,9 @@ LinkedIn data pipelines support full sync and incremental sync. The sync mode is
 
 ### Full sync
 
-A full sync reads the selected object's available records from LinkedIn and overwrites the destination table. If the **When first started, this pipeline should pick up records from** field is set, applicable metadata objects exclude records whose native modification timestamp is not later than that date, on the initial run only.
+A full sync reads the selected object's available records from LinkedIn on every run. If the **When first started, this pipeline should pick up records from** field is set, applicable metadata objects exclude records whose native modification timestamp is not later than that date, on the initial run only.
+
+Objects with a primary key merge into the existing destination table, so records deleted in LinkedIn stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 `Account`, `Account User`, `Campaign Group`, `Campaign`, `Creative`, `Creative Serving Status History`, `Conversion`, `Lead Gen Form`, and `Lead Gen Form Response` use a full sync, because LinkedIn's Marketing API doesn't expose a working modified-time filter for these objects. Refer to [All account and campaign structure objects sync as full sync only](#all-account-and-campaign-structure-objects-sync-as-full-sync-only) for the effect on large accounts.
 

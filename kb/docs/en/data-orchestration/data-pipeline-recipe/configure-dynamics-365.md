@@ -494,7 +494,9 @@ Microsoft Dynamics 365 data pipelines support full sync and incremental sync. Th
 
 ### Full sync
 
-A full sync reads all available records for the selected object from Dataverse and overwrites the destination table. Objects without Change Tracking enabled use full sync, because Dataverse doesn't provide a way to fetch only changed records for them.
+A full sync reads all available records for the selected object from Dataverse on every run. Objects without Change Tracking enabled use full sync, because Dataverse doesn't provide a way to fetch only changed records for them.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Dataverse stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

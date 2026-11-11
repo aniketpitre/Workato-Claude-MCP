@@ -380,7 +380,9 @@ Confluence data pipelines support full sync and incremental sync. The sync mode 
 
 ### Full sync
 
-A full sync reads all available records from Confluence for the selected object and overwrites the destination table. Use a full sync for objects where you need a complete snapshot on each run. Because each full sync replaces the destination table, deletions in Confluence are reflected for all objects that sync in this mode.
+A full sync reads all available records from Confluence for the selected object on every run. Use a full sync for objects where you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Confluence stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

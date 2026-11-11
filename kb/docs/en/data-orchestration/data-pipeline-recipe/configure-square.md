@@ -307,7 +307,9 @@ Square data pipelines support full sync and incremental sync. The sync mode is c
 
 ### Full sync
 
-A full sync reads all available records from Square for the selected object and replaces the record set in the destination table. Objects without a reliable modified-time filter in the Square API, such as `Locations`, `Merchants`, `Team Members`, and `Vendors`, support full sync only.
+A full sync reads all available records from Square for the selected object on every run. Objects without a reliable modified-time filter in the Square API, such as `Locations`, `Merchants`, `Team Members`, and `Vendors`, support full sync only.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Square stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

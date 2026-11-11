@@ -264,7 +264,9 @@ Braintree data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-A full sync reads all available records from Braintree for the selected object and overwrites the destination table. Use full sync for objects where you need a complete current snapshot on each run.
+A full sync reads all available records from Braintree for the selected object on every run. Use full sync for objects where you need a complete current snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Braintree stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

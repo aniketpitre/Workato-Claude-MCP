@@ -114,7 +114,7 @@ Workato uses one of the following methods to detect deletions, based on the sour
 - **Destination-inferred**: The source doesn't expose a deletion signal. Workato compares each full sync against the previous run and marks records that no longer appear.
 - **Change tracking**: The source provides a change-tracking mechanism that Workato reads to detect deletions, such as SQL Server Change Tracking or the ServiceNow `sys_audit_delete` table.
 
-Workato keeps deleted records in the destination table instead of removing them. A full sync merges records into the existing table on the object's primary key, so its row count doesn't drop when records are deleted in the source. Exclude rows where `_workato_is_deleted` is `true` to query only records that exist in the source. Refer to [How a full sync works](/en/data-orchestration/sync-types#how-a-full-sync-works).
+Objects with a primary key keep their deleted records in the destination table. A full sync merges records into the existing table on the primary key, so its row count doesn't drop when records are deleted in the source. Exclude rows where `_workato_is_deleted` is `true` to query only records that exist in the source. Refer to [How a full sync works](/en/data-orchestration/sync-types#how-a-full-sync-works).
 
 Delete tracking isn't available for every source or object. For example, SFTP doesn't support delete tracking. Refer to your source application's configuration guide for the delete tracking behavior it supports.
 

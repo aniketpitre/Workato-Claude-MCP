@@ -271,7 +271,9 @@ HiBob data pipelines support full refresh and incremental sync. The sync mode is
 
 ### Full refresh
 
-Full refresh replaces the destination table on every sync. Most HiBob objects run in full refresh mode because the HiBob API doesn't expose a `modified_since` filter on the underlying endpoints. Historical tables (`lifecycle_history`, `salary_history`, `employment_history`, `work_history`) are append-only by nature, so full refresh returns the complete history each run.
+A full refresh reads all available records from HiBob on every run. Most HiBob objects run in full refresh mode because the HiBob API doesn't expose a `modified_since` filter on the underlying endpoints. Historical tables (`lifecycle_history`, `salary_history`, `employment_history`, `work_history`) are append-only by nature, so full refresh returns the complete history each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in HiBob stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

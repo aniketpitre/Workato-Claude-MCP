@@ -302,7 +302,9 @@ Xero data pipelines support full sync and incremental sync. The sync mode is fix
 
 ### Full sync
 
-Full sync reads all available records for an object on each run and replaces the record set in your destination. The pipeline uses full sync for reference objects that provide no modification signal, such as `tax_rate`, `currency`, `tracking_category`, and `branding_theme`.
+Full sync reads all available records for an object from Xero on each run. The pipeline uses full sync for reference objects that provide no modification signal, such as `tax_rate`, `currency`, `tracking_category`, and `branding_theme`.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Xero stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

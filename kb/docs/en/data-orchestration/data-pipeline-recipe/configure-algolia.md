@@ -247,7 +247,9 @@ Algolia data pipelines support full sync and incremental sync. The sync mode is 
 
 ### Full sync
 
-A full sync reads all available records within the selected object's extraction window on every run and replaces the record set in your destination table. `Indices`, `Records`, `Index Settings`, `Rules`, and `Synonyms` don't have a timestamp cursor, so they support full sync only.
+A full sync reads all available records within the selected object's extraction window on every run. `Indices`, `Records`, `Index Settings`, `Rules`, and `Synonyms` don't have a timestamp cursor, so they support full sync only.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Algolia stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 Analytics objects and `Logs` also support full sync. A full sync marks rows that fall outside the extracted date range as deleted, even if Algolia still retains them. Analytics extraction starts on the preceding day and log extraction reaches back at most 7 days if you don't set a start date. Workato recommends incremental sync for these objects if you need to retain older rows.
 

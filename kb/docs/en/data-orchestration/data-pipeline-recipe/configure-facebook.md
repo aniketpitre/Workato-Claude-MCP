@@ -234,7 +234,9 @@ Facebook data pipelines support full sync, incremental sync, and append-only syn
 
 ### Full sync
 
-A full sync re-reads the complete record set for an object on every run and overwrites the destination table. `AdAccount`, `Campaign`, `AdCreative`, `AdImage`, `AdVideo`, `CustomAudience`, and `AdLabel` use full sync, because Meta's API doesn't expose a reliable modified-time signal for these objects.
+A full sync re-reads the complete record set for an object from Facebook on every run. `AdAccount`, `Campaign`, `AdCreative`, `AdImage`, `AdVideo`, `CustomAudience`, and `AdLabel` use full sync, because Meta's API doesn't expose a reliable modified-time signal for these objects.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Facebook stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

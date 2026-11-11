@@ -359,7 +359,9 @@ X data pipelines support full sync and incremental sync. The sync mode is config
 
 ### Full sync
 
-A full sync re-reads the complete record set for an object on every run and overwrites the destination table. `Media Library`, `Promoted Tweet Content`, `Scheduled Tweets`, and `Referenced User Profiles` use full sync, because X API doesn't expose a reliable modified-time signal for these objects.
+A full sync re-reads the complete record set for an object from X on every run. `Media Library`, `Promoted Tweet Content`, `Scheduled Tweets`, and `Referenced User Profiles` use full sync, because X API doesn't expose a reliable modified-time signal for these objects.
+
+Objects with a primary key merge into the existing destination table, so records deleted in X stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

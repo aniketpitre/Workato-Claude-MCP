@@ -223,7 +223,9 @@ Pendo data pipelines support full sync for all objects. Incremental sync isn't a
 
 ### Full sync
 
-A full sync reads all available records from Pendo for the selected object on every run and replaces the record set in the destination table. Event objects and the `Visitor Application` and `Account Application` objects read all events within the event history window on every run.
+A full sync reads all available records from Pendo for the selected object on every run. Event objects and the `Visitor Application` and `Account Application` objects read all events within the event history window on every run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Pendo stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Delete tracking
 

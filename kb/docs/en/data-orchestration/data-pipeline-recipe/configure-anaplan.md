@@ -20,7 +20,7 @@ The following features are supported when you use Anaplan as a pipeline source:
 - **Multiple authentication methods**: Username/password, OAuth 2.0, and certificate authentication. Refer to [Supported connection types](#supported-connection-types).
 - **Regional data center support**: Connect to Anaplan instances hosted in multiple data centers.
 - **Object-level selection**: Choose which Anaplan workspaces, models, and export actions to sync.
-- **Full sync**: Every object syncs as a complete snapshot on each run. Refer to [Sync modes](#sync-modes).
+- **Full sync**: Every run extracts each object in full. The pipeline merges records into the destination for `workspace` and `model`, and overwrites export result tables, which don't have a primary key. Refer to [Sync modes](#sync-modes).
 - **Schema drift detection**: Automatically sync new fields as your Anaplan export definitions change, or block new fields until you add them manually.
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.

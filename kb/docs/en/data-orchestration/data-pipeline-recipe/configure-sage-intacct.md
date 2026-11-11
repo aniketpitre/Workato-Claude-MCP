@@ -254,7 +254,9 @@ Sage Intacct data pipelines support full sync and incremental sync. The connecto
 
 ### Full sync
 
-Full sync reads all available records for an object on each run and replaces the object's record set in your destination. The connector uses full sync for objects it can't sync incrementally, such as database views like `GL_DETAIL`.
+A full sync reads all available records from Sage Intacct for the selected object on every run. The connector uses full sync for objects it can't sync incrementally, such as database views like `GL_DETAIL`.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Sage Intacct stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -268,7 +270,7 @@ Refer to the [Supported objects](#supported-objects) tables to see the sync mode
 
 The connector doesn't track deletions. Sage Intacct doesn't expose deleted records in a way the pipeline can match to your synced data, so it doesn't flag deletes or add a soft-delete column to your destination.
 
-Objects that sync incrementally don't see a deletion, because an incremental run reads only the records changed since the previous run. Objects that sync in full re-read their complete record set each run, so a record deleted in Sage Intacct no longer appears after the next full sync.
+Objects that sync incrementally don't see a deletion, because an incremental run reads only the records changed since the previous run. Objects that sync in full re-read their complete record set each run. The pipeline overwrites the destination table for full-sync objects without a primary key, so a record deleted in Sage Intacct no longer appears after the next full sync.
 
 ## Schema and data type handling
 

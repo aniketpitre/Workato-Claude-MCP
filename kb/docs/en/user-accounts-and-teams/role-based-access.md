@@ -24,6 +24,8 @@ Workato supports two permissions models. The features and role types you see dep
 - [New permissions model](/en/user-accounts-and-teams/role-based-access/access-control-v2): Manage access using environment roles, project roles, and collaborator groups. This is the default for all workspaces.
 - [Legacy permissions model](/en/roles): Uses workspace-level roles only and doesn't support collaborator groups or project-level permissions.
 
+![Comparison of the legacy collaborator role and the new environment role, project role, and project settings](/assets/review-control-model.C91nOk0K.png)_Legacy and new permissions models_
+
 > **DEPRECATION NOTICE**
 > 
 > The legacy permissions model will be deprecated at the end of August 2026. Workato recommends that you migrate to the new permissions model before this date. Refer to the [Migrate to the new access control model](/en/user-accounts-and-teams/role-based-access/migrate-roles) guide for step-by-step instructions.

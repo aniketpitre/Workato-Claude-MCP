@@ -231,7 +231,9 @@ Freshdesk data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-A full sync reads all available records from Freshdesk for the selected object and overwrites the destination table. Objects that don't support incremental sync, such as `agents` and `ticket_fields`, use full sync because Freshdesk doesn't expose a modified-time filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete snapshot on each run.
+A full sync reads all available records from Freshdesk for the selected object on every run. Objects that don't support incremental sync, such as `agents` and `ticket_fields`, use full sync because Freshdesk doesn't expose a modified-time filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Freshdesk stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

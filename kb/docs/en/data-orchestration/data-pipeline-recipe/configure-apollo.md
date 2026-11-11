@@ -214,7 +214,9 @@ Apollo.io data pipelines support full sync and incremental sync. Each object use
 
 ### Full sync
 
-A full sync reads all available records from Apollo.io for the selected object and overwrites the destination table. Every object except `contacts` and `analytics_report` uses full sync, because Apollo.io doesn't expose an update-tracking cursor for them. `accounts`, `calls`, `conversations`, and `outreach_emails` only include a creation or occurrence timestamp, which confirms new records but can't detect edits to records Workato already synced.
+A full sync reads all available records from Apollo.io for the selected object on every run. Every object except `contacts` and `analytics_report` uses full sync, because Apollo.io doesn't expose an update-tracking cursor for them. `accounts`, `calls`, `conversations`, and `outreach_emails` only include a creation or occurrence timestamp, which confirms new records but can't detect edits to records Workato already synced.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Apollo.io stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

@@ -280,7 +280,7 @@ Workato uses one of the following methods to detect deletions, based on the sour
 - **Destination-inferred**: The source doesn't expose a deletion signal. Workato compares each full sync against the previous run and marks records that no longer appear.
 - **Change tracking**: The source provides a change-tracking mechanism that Workato reads to detect deletions, such as SQL Server Change Tracking or the ServiceNow `sys_audit_delete` table.
 
-Workato keeps deleted records in the destination table instead of removing them. A full sync merges records into the existing table on the object's primary key, so its row count doesn't drop when records are deleted in the source. Exclude rows where `_workato_is_deleted` is `true` to query only records that exist in the source. Refer to [How a full sync works](/en/data-orchestration/sync-types#how-a-full-sync-works).
+Objects with a primary key keep their deleted records in the destination table. A full sync merges records into the existing table on the primary key, so its row count doesn't drop when records are deleted in the source. Exclude rows where `_workato_is_deleted` is `true` to query only records that exist in the source. Refer to [How a full sync works](/en/data-orchestration/sync-types#how-a-full-sync-works).
 
 Delete tracking isn't available for every source or object. For example, SFTP doesn't support delete tracking. Refer to your source application's configuration guide for the delete tracking behavior it supports.
 
@@ -345,26 +345,33 @@ description: >-
 
 # Configure data pipeline sources
 
-Select a source application and follow its configuration guide to authenticate, select objects, and define a schema:
+Select a source application and follow its configuration guide to authenticate, select objects, and define a schema. Sources are grouped by the type of business data they contain.
 
-### CRM & sales
+## CRM & sales
+
+CRM and sales engagement sources contain accounts, contacts, opportunities, and sales activity such as calls, emails, and sequences. Sync this data to report on pipeline and rep activity, and combine it with marketing and finance data in your destination.
 
 - [Salesforce](/en/data-orchestration/data-pipeline-recipe/configure-salesforce)
 - [Apollo.io](/en/data-orchestration/data-pipeline-recipe/configure-apollo)
 - [Gong](/en/data-orchestration/data-pipeline-recipe/configure-gong)
 - [HubSpot](/en/data-orchestration/data-pipeline-recipe/configure-hubspot)
 - [Outreach](/en/data-orchestration/data-pipeline-recipe/configure-outreach)
+- [Pipedrive](/en/data-orchestration/data-pipeline-recipe/configure-pipedrive)
 - [Salesloft](/en/data-orchestration/data-pipeline-recipe/configure-salesloft)
 - [ZoomInfo](/en/data-orchestration/data-pipeline-recipe/configure-zoominfo)
 
-### Databases
+## Databases
+
+Database sources replicate tables from your databases and data warehouses. Use them to move table data into your destination for analytics and reporting.
 
 - [Snowflake](/en/data-orchestration/data-pipeline-recipe/configure-snowflake-source)
 - [MySQL](/en/data-orchestration/data-pipeline-recipe/configure-mysql-source)
 - [Oracle](/en/data-orchestration/data-pipeline-recipe/configure-oracle)
 - [SQL Server](/en/data-orchestration/data-pipeline-recipe/configure-sql-server-source)
 
-### ERP & enterprise
+## ERP & enterprise
+
+ERP and enterprise sources contain general ledger, customer, vendor, and operational records from your core business systems. Sync this data to build financial and operational reporting, or to combine planning data with financial records from your ERP.
 
 - [Microsoft Dynamics 365](/en/data-orchestration/data-pipeline-recipe/configure-dynamics-365)
 - [Anaplan](/en/data-orchestration/data-pipeline-recipe/configure-anaplan)
@@ -374,7 +381,9 @@ Select a source application and follow its configuration guide to authenticate, 
 - [Oracle Fusion Cloud](/en/data-orchestration/data-pipeline-recipe/configure-oracle-fusion)
 - [SAP Table Reader](/en/data-orchestration/data-pipeline-recipe/configure-sap-agent)
 
-### File storage
+## File storage
+
+File storage sources load structured files, such as CSV and Parquet, from cloud storage, shared drives, and SFTP servers. Use them to load file-based exports into your destination alongside your application data.
 
 - [Amazon S3](/en/data-orchestration/data-pipeline-recipe/configure-s3)
 - [Azure Blob Storage](/en/data-orchestration/data-pipeline-recipe/configure-blob)
@@ -384,7 +393,9 @@ Select a source application and follow its configuration guide to authenticate, 
 - [OneDrive](/en/data-orchestration/data-pipeline-recipe/configure-onedrive)
 - [SFTP](/en/data-orchestration/data-pipeline-recipe/configure-sftp)
 
-### Finance & accounting
+## Finance & accounting
+
+Finance and accounting sources contain invoices, payments, bills, journal entries, expenses, and vendor records. Sync this data to report on receivables, payables, and spend across your accounting systems.
 
 - [QuickBooks Online](/en/data-orchestration/data-pipeline-recipe/configure-quickbooks)
 - [Coupa](/en/data-orchestration/data-pipeline-recipe/configure-coupa)
@@ -394,7 +405,9 @@ Select a source application and follow its configuration guide to authenticate, 
 - [Xero](/en/data-orchestration/data-pipeline-recipe/configure-xero)
 - [Zuora](/en/data-orchestration/data-pipeline-recipe/configure-zuora)
 
-### HR & recruiting
+## HR & recruiting
+
+HR and recruiting sources contain employee records, job and compensation history, time off, and candidate pipelines. Sync this data to report on headcount, attrition, and hiring funnel metrics. These sources often contain PII and compensation data. Refer to [Field-level data protection](/en/data-orchestration/data-pipeline-recipe/concepts#data-masking) to hash sensitive fields.
 
 - [Workday](/en/data-orchestration/data-pipeline-recipe/configure-workday)
 - [BambooHR](/en/data-orchestration/data-pipeline-recipe/configure-bamboo-hr)
@@ -403,7 +416,9 @@ Select a source application and follow its configuration guide to authenticate, 
 - [HiBob](/en/data-orchestration/data-pipeline-recipe/configure-hibob)
 - [Workday RaaS](/en/data-orchestration/data-pipeline-recipe/configure-workday-raas)
 
-### Marketing & advertising
+## Marketing & advertising
+
+Marketing and advertising sources contain campaigns, ad performance, audiences, email engagement, form responses, and web, search, and product analytics. Sync this data to measure campaign performance across channels, and combine it with CRM data in your destination.
 
 - [Google Analytics](/en/data-orchestration/data-pipeline-recipe/configure-google-analytics)
 - [Algolia](/en/data-orchestration/data-pipeline-recipe/configure-algolia)
@@ -417,7 +432,9 @@ Select a source application and follow its configuration guide to authenticate, 
 - [Typeform](/en/data-orchestration/data-pipeline-recipe/configure-typeform)
 - [X](/en/data-orchestration/data-pipeline-recipe/configure-x)
 
-### Payments & commerce
+## Payments & commerce
+
+Payments and commerce sources contain transactions, orders, customers, subscriptions, refunds, and disputes. Sync this data to report on revenue, subscription changes, and order fulfillment.
 
 - [Stripe](/en/data-orchestration/data-pipeline-recipe/configure-stripe)
 - [Braintree](/en/data-orchestration/data-pipeline-recipe/configure-braintree)
@@ -425,7 +442,9 @@ Select a source application and follow its configuration guide to authenticate, 
 - [Shopify](/en/data-orchestration/data-pipeline-recipe/configure-shopify)
 - [Square](/en/data-orchestration/data-pipeline-recipe/configure-square)
 
-### Productivity & collaboration
+## Productivity & collaboration
+
+Productivity and collaboration sources contain projects, tasks, issues, pull requests, pages, messages, and spreadsheet data. Sync this data to track project delivery and development activity across tools.
 
 - [Slack](/en/data-orchestration/data-pipeline-recipe/configure-slack)
 - [Airtable](/en/data-orchestration/data-pipeline-recipe/configure-airtable)
@@ -438,7 +457,9 @@ Select a source application and follow its configuration guide to authenticate, 
 - [Monday.com](/en/data-orchestration/data-pipeline-recipe/configure-monday)
 - [Trello](/en/data-orchestration/data-pipeline-recipe/configure-trello)
 
-### Support & service
+## Support & service
+
+Support and service sources contain tickets, conversations, incidents, on-call schedules, SLAs, and satisfaction ratings. Sync this data to report on response and resolution times, SLA compliance, and support volume, or join it with CRM data to view support activity by account.
 
 - [Zendesk](/en/data-orchestration/data-pipeline-recipe/configure-zendesk)
 - [Freshdesk](/en/data-orchestration/data-pipeline-recipe/configure-freshdesk)
@@ -694,7 +715,7 @@ Airtable data pipelines support full sync and incremental sync. Every table supp
 
 ### Full sync
 
-Workato supports full sync for every table, including tables with a valid `Last Modified Time` field. A full sync extracts every record in the table and replaces the record set in your destination.
+Workato supports full sync for every table, including tables with a valid `Last Modified Time` field. A full sync extracts every record in the table on every run. Tables with a primary key merge into the existing destination table, so records deleted in Airtable stay in the table. Tables without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -1020,7 +1041,9 @@ Algolia data pipelines support full sync and incremental sync. The sync mode is 
 
 ### Full sync
 
-A full sync reads all available records within the selected object's extraction window on every run and replaces the record set in your destination table. `Indices`, `Records`, `Index Settings`, `Rules`, and `Synonyms` don't have a timestamp cursor, so they support full sync only.
+A full sync reads all available records within the selected object's extraction window on every run. `Indices`, `Records`, `Index Settings`, `Rules`, and `Synonyms` don't have a timestamp cursor, so they support full sync only.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Algolia stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 Analytics objects and `Logs` also support full sync. A full sync marks rows that fall outside the extracted date range as deleted, even if Algolia still retains them. Analytics extraction starts on the preceding day and log extraction reaches back at most 7 days if you don't set a start date. Workato recommends incremental sync for these objects if you need to retain older rows.
 
@@ -1341,7 +1364,7 @@ The following features are supported when you use Anaplan as a pipeline source:
 - **Multiple authentication methods**: Username/password, OAuth 2.0, and certificate authentication. Refer to [Supported connection types](#supported-connection-types).
 - **Regional data center support**: Connect to Anaplan instances hosted in multiple data centers.
 - **Object-level selection**: Choose which Anaplan workspaces, models, and export actions to sync.
-- **Full sync**: Every object syncs as a complete snapshot on each run. Refer to [Sync modes](#sync-modes).
+- **Full sync**: Every run extracts each object in full. The pipeline merges records into the destination for `workspace` and `model`, and overwrites export result tables, which don't have a primary key. Refer to [Sync modes](#sync-modes).
 - **Schema drift detection**: Automatically sync new fields as your Anaplan export definitions change, or block new fields until you add them manually.
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
@@ -1906,7 +1929,9 @@ Apollo.io data pipelines support full sync and incremental sync. Each object use
 
 ### Full sync
 
-A full sync reads all available records from Apollo.io for the selected object and overwrites the destination table. Every object except `contacts` and `analytics_report` uses full sync, because Apollo.io doesn't expose an update-tracking cursor for them. `accounts`, `calls`, `conversations`, and `outreach_emails` only include a creation or occurrence timestamp, which confirms new records but can't detect edits to records Workato already synced.
+A full sync reads all available records from Apollo.io for the selected object on every run. Every object except `contacts` and `analytics_report` uses full sync, because Apollo.io doesn't expose an update-tracking cursor for them. `accounts`, `calls`, `conversations`, and `outreach_emails` only include a creation or occurrence timestamp, which confirms new records but can't detect edits to records Workato already synced.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Apollo.io stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -2770,7 +2795,9 @@ BambooHR data pipelines support full sync and incremental sync. The sync mode is
 
 ### Full sync
 
-A full sync reads all available records from BambooHR for the selected object and overwrites the destination table. Deletions in BambooHR are reflected in the destination because each run replaces the table contents. Objects that don't support incremental sync run a full sync.
+A full sync reads all available records from BambooHR for the selected object on every run. Objects that don't support incremental sync run a full sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in BambooHR stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -2788,7 +2815,7 @@ Workato tracks deletions through two mechanisms, depending on the object's sync 
 
 For the `employees` object, Workato uses source-driven soft-delete tracking. Workato detects employee deletions through the BambooHR Changed Employees data and writes a delete marker row with the `_workato_is_deleted` column set to `true` instead of removing the row from the destination.
 
-For objects that support full sync only, deletions in the source are reflected in the destination because each run replaces the object's records entirely. Deletions are reflected on the next full sync rather than at the time they occur in BambooHR.
+A full sync flags deleted records for objects with a primary key and keeps them in the destination. Objects without a primary key lose deleted rows, because the full sync overwrites the table. The change appears on the next full sync either way, not when the deletion happens in BambooHR.
 
 ## Schema and data type handling
 
@@ -3139,7 +3166,9 @@ Braintree data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-A full sync reads all available records from Braintree for the selected object and overwrites the destination table. Use full sync for objects where you need a complete current snapshot on each run.
+A full sync reads all available records from Braintree for the selected object on every run. Use full sync for objects where you need a complete current snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Braintree stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -3469,7 +3498,9 @@ Chargebee data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-A full sync reads all available records from Chargebee for the selected object and overwrites the destination table. Full-sync-only objects include `CouponCode`, `Gift`, `DifferentialPrice`, `UnbilledCharge`, and `Usage`. Some are full-sync-only because they lack a usable cursor, while others have no safe primary key for incremental upserts. Child objects that sync with a parent, including `SubscriptionItem`, `InvoiceLineItem`, `PriceTier`, and `QuotedSubscription`, also only support full sync.
+A full sync reads all available records from Chargebee for the selected object on every run. Full-sync-only objects include `CouponCode`, `Gift`, `DifferentialPrice`, `UnbilledCharge`, and `Usage`. Some are full-sync-only because they lack a usable cursor, while others have no safe primary key for incremental upserts. Child objects that sync with a parent, including `SubscriptionItem`, `InvoiceLineItem`, `PriceTier`, and `QuotedSubscription`, also only support full sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Chargebee stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -3943,7 +3974,9 @@ Confluence data pipelines support full sync and incremental sync. The sync mode 
 
 ### Full sync
 
-A full sync reads all available records from Confluence for the selected object and overwrites the destination table. Use a full sync for objects where you need a complete snapshot on each run. Because each full sync replaces the destination table, deletions in Confluence are reflected for all objects that sync in this mode.
+A full sync reads all available records from Confluence for the selected object on every run. Use a full sync for objects where you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Confluence stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -4897,7 +4930,9 @@ Facebook data pipelines support full sync, incremental sync, and append-only syn
 
 ### Full sync
 
-A full sync re-reads the complete record set for an object on every run and overwrites the destination table. `AdAccount`, `Campaign`, `AdCreative`, `AdImage`, `AdVideo`, `CustomAudience`, and `AdLabel` use full sync, because Meta's API doesn't expose a reliable modified-time signal for these objects.
+A full sync re-reads the complete record set for an object from Facebook on every run. `AdAccount`, `Campaign`, `AdCreative`, `AdImage`, `AdVideo`, `CustomAudience`, and `AdLabel` use full sync, because Meta's API doesn't expose a reliable modified-time signal for these objects.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Facebook stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -5219,7 +5254,9 @@ Freshdesk data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-A full sync reads all available records from Freshdesk for the selected object and overwrites the destination table. Objects that don't support incremental sync, such as `agents` and `ticket_fields`, use full sync because Freshdesk doesn't expose a modified-time filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete snapshot on each run.
+A full sync reads all available records from Freshdesk for the selected object on every run. Objects that don't support incremental sync, such as `agents` and `ticket_fields`, use full sync because Freshdesk doesn't expose a modified-time filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Freshdesk stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -5607,7 +5644,7 @@ GitHub data pipelines support full sync and incremental sync. Refer to [Supporte
 
 ### Full sync
 
-A full sync reads all available records from GitHub for the selected object on every run and overwrites the destination table.
+A full sync reads all available records from GitHub for the selected object on every run. Objects with a primary key merge into the existing destination table, so records deleted in GitHub stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -5617,7 +5654,7 @@ An incremental sync extracts only records GitHub reports as created or updated s
 
 Workato compares each full sync against the previous run and marks records that no longer exist in GitHub as deleted in your destination. This applies to every full-sync object.
 
-GitHub's `since` parameter doesn't report deletions, so `Issue`, `IssueComment`, `Commit`, and `ReviewComment` don't track deletes during incremental sync. A record deleted in GitHub remains in your destination for these objects until you run a full sync. Refer to [Incremental objects do not track deletions](#incremental-objects-do-not-track-deletions) for more information.
+GitHub's `since` parameter doesn't report deletions, so `Issue`, `IssueComment`, `Commit`, and `ReviewComment` don't track deletes during incremental sync. A record deleted in GitHub stays in your destination for these objects. Refer to [Incremental objects do not track deletions](#incremental-objects-do-not-track-deletions) for more information.
 
 ## Schema and data type handling
 
@@ -5657,7 +5694,7 @@ The following limitations apply when you use GitHub as a data pipeline source:
 
 ### Incremental objects do not track deletions
 
-`Issue`, `IssueComment`, `Commit`, and `ReviewComment` sync incrementally using GitHub's `since` parameter, which doesn't report deletions. A record deleted in GitHub remains in your destination for these objects until you run a full sync. Refer to [Delete tracking](#delete-tracking) for more information.
+`Issue`, `IssueComment`, `Commit`, and `ReviewComment` sync incrementally using GitHub's `since` parameter, which doesn't report deletions. A record deleted in GitHub stays in your destination for these objects. Refer to [Delete tracking](#delete-tracking) for more information.
 
 ### You can't filter to specific repositories
 
@@ -6427,7 +6464,9 @@ Google Analytics data pipelines support full sync and incremental sync. Report t
 
 ### Full sync
 
-A full sync re-reads the complete list and replaces the destination table on every run. `Accounts`, `Properties`, `Data Streams`, `Custom Dimensions`, `Custom Metrics`, `Key Events`, and `Google Ads Links` use full sync, because the Google Analytics Admin API doesn't expose a way to filter these resources by last-modified time.
+A full sync re-reads the complete list from Google Analytics on every run. `Accounts`, `Properties`, `Data Streams`, `Custom Dimensions`, `Custom Metrics`, `Key Events`, and `Google Ads Links` use full sync, because the Google Analytics Admin API doesn't expose a way to filter these resources by last-modified time.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Google Analytics stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -7191,7 +7230,9 @@ Google Search Console data pipelines support full sync and incremental sync. Ref
 
 ### Full sync
 
-A full sync re-reads the complete record set for an object on every run and replaces the destination table. `Sites`, `Sitemaps`, and `Sitemap Contents` use full sync, because the Google Search Console API returns these resources as complete lists and offers no way to request only changed records.
+A full sync re-reads the complete record set from Google Search Console for an object on every run. `Sites`, `Sitemaps`, and `Sitemap Contents` use full sync, because the Google Search Console API returns these resources as complete lists and offers no way to request only changed records.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Google Search Console stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -7944,7 +7985,7 @@ Greenhouse data pipelines support full sync and incremental sync. The sync mode 
 
 ### Full sync
 
-Full sync reads all available records from Greenhouse on every sync and overwrites the destination table. Records deleted in Greenhouse are removed from the destination on the next sync because the destination table reflects the full current state of the source.
+A full sync reads all available records from Greenhouse on every run. Objects with a primary key merge into the existing destination table, so records deleted in Greenhouse stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -7954,7 +7995,7 @@ Incremental sync doesn't capture records deleted in Greenhouse. Deleted records 
 
 ### Delete tracking
 
-The Greenhouse Harvest v3 API doesn't provide a delete feed, so Greenhouse data pipelines don't track deletes. To remove deleted records from your destination, sync the object with full sync.
+The Greenhouse Harvest v3 API doesn't provide a delete feed, so Greenhouse data pipelines don't track deletes. Objects with a primary key keep their deleted records in the table. Refer to [Full sync](#full-sync) for more information.
 
 ## Schema and data type handling
 
@@ -8291,7 +8332,9 @@ HiBob data pipelines support full refresh and incremental sync. The sync mode is
 
 ### Full refresh
 
-Full refresh replaces the destination table on every sync. Most HiBob objects run in full refresh mode because the HiBob API doesn't expose a `modified_since` filter on the underlying endpoints. Historical tables (`lifecycle_history`, `salary_history`, `employment_history`, `work_history`) are append-only by nature, so full refresh returns the complete history each run.
+A full refresh reads all available records from HiBob on every run. Most HiBob objects run in full refresh mode because the HiBob API doesn't expose a `modified_since` filter on the underlying endpoints. Historical tables (`lifecycle_history`, `salary_history`, `employment_history`, `work_history`) are append-only by nature, so full refresh returns the complete history each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in HiBob stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -9258,7 +9301,9 @@ Jira data pipelines support full refresh and incremental sync.
 
 ### Full refresh
 
-A full refresh sync reads all available records from Jira for the selected object and overwrites the destination table. Use full refresh for objects where you need a complete snapshot on each run.
+A full refresh sync reads all available records from Jira for the selected object on every run. Use full refresh for objects where you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Jira stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -9628,7 +9673,7 @@ Klaviyo data pipelines support full sync and incremental sync. The sync mode is 
 
 ### Full sync
 
-A full sync reads all available records for the selected object from Klaviyo and replaces the record set in your destination table.
+A full sync reads all available records for the selected object from Klaviyo on every run. Objects with a primary key merge into the existing destination table, so records deleted in Klaviyo stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -9636,7 +9681,7 @@ An incremental sync extracts only new or changed records since the last successf
 
 ### Delete tracking
 
-Workato doesn't currently detect deleted records for any Klaviyo object. A record deleted in Klaviyo still appears in your destination until you remove it manually or reload the object with a full sync.
+Workato doesn't currently detect deleted records for any Klaviyo object. A record deleted in Klaviyo still appears in your destination until you remove it manually.
 
 `Global Exclusion` and `List Exclusion` are an exception to this general behavior. Each record represents a profile's current suppression from email marketing, so the record itself is the signal, rather than a separate delete event.
 
@@ -9955,7 +10000,9 @@ LinkedIn data pipelines support full sync and incremental sync. The sync mode is
 
 ### Full sync
 
-A full sync reads the selected object's available records from LinkedIn and overwrites the destination table. If the **When first started, this pipeline should pick up records from** field is set, applicable metadata objects exclude records whose native modification timestamp is not later than that date, on the initial run only.
+A full sync reads the selected object's available records from LinkedIn on every run. If the **When first started, this pipeline should pick up records from** field is set, applicable metadata objects exclude records whose native modification timestamp is not later than that date, on the initial run only.
+
+Objects with a primary key merge into the existing destination table, so records deleted in LinkedIn stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 `Account`, `Account User`, `Campaign Group`, `Campaign`, `Creative`, `Creative Serving Status History`, `Conversion`, `Lead Gen Form`, and `Lead Gen Form Response` use a full sync, because LinkedIn's Marketing API doesn't expose a working modified-time filter for these objects. Refer to [All account and campaign structure objects sync as full sync only](#all-account-and-campaign-structure-objects-sync-as-full-sync-only) for the effect on large accounts.
 
@@ -11012,7 +11059,9 @@ Microsoft Dynamics 365 data pipelines support full sync and incremental sync. Th
 
 ### Full sync
 
-A full sync reads all available records for the selected object from Dataverse and overwrites the destination table. Objects without Change Tracking enabled use full sync, because Dataverse doesn't provide a way to fetch only changed records for them.
+A full sync reads all available records for the selected object from Dataverse on every run. Objects without Change Tracking enabled use full sync, because Dataverse doesn't provide a way to fetch only changed records for them.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Dataverse stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -11339,7 +11388,7 @@ Data pipelines support the following sync modes for Business Central objects:
 
 ### Full sync
 
-A full sync reads all available records for the selected object from Business Central and replaces the entire dataset in the destination with the latest data.
+A full sync reads all available records for the selected object from Business Central on every run. Objects with a primary key merge into the existing destination table, so records deleted in Business Central stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -14811,7 +14860,9 @@ PagerDuty data pipelines support full sync, incremental sync, and append-only sy
 
 ### Full sync
 
-Full sync reads all available records from PagerDuty on every sync and replaces the destination table. PagerDuty reference and configuration objects, such as `Services`, `Users`, and `Escalation Policies`, sync with full sync because PagerDuty doesn't expose a change cursor for them.
+A full sync reads all available records from PagerDuty for the selected object on every run. PagerDuty reference and configuration objects, such as `Services`, `Users`, and `Escalation Policies`, sync with full sync because PagerDuty doesn't expose a change cursor for them.
+
+Objects with a primary key merge into the existing destination table, so records deleted in PagerDuty stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -15119,7 +15170,9 @@ Pendo data pipelines support full sync for all objects. Incremental sync isn't a
 
 ### Full sync
 
-A full sync reads all available records from Pendo for the selected object on every run and replaces the record set in the destination table. Event objects and the `Visitor Application` and `Account Application` objects read all events within the event history window on every run.
+A full sync reads all available records from Pendo for the selected object on every run. Event objects and the `Visitor Application` and `Account Application` objects read all events within the event history window on every run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Pendo stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Delete tracking
 
@@ -15495,7 +15548,9 @@ Pipedrive data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-Full sync reads all available records for an object on each run and replaces the record set in your destination. Incremental objects read only records since the historical start date if you set one. Objects without an incremental filter, such as field definitions, pipelines, and archived deals and leads, use full sync. Incremental objects also use full sync for their first run. You can switch an incremental object to full sync if you need a complete extraction on each run.
+A full sync reads all available records from Pipedrive for the selected object on every run. Incremental objects read only records since the historical start date if you set one. Objects without an incremental filter, such as field definitions, pipelines, and archived deals and leads, use full sync. Incremental objects also use full sync for their first run. You can switch an incremental object to full sync if you need a complete extraction on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Pipedrive stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -15509,7 +15564,7 @@ Delete tracking is per-object and follows sync mode:
 
 - **Full-sync objects**: Workato compares each full sync against the previous run and marks records that no longer exist in Pipedrive as deleted in your destination. Deletions are detected on the next full sync.
 - **Incremental objects**: Pipedrive reports deletions for `deals`, `persons`, `organizations`, `activities`, `products`, `notes`, `files`, and `users`. Workato marks these records as deleted in your destination. The marker column depends on the object. Refer to [Synthetic columns](#synthetic-columns) for more information.
-- **Leads**: Pipedrive doesn't report deleted leads, so Workato can't detect them while `leads` syncs incrementally. Deleted leads remain in your destination until you re-sync the object. Switch `leads` to full sync to detect deletions.
+- **Leads**: Pipedrive doesn't report deleted leads, so Workato can't detect them while `leads` syncs incrementally. Deleted leads stay in your destination. Switch `leads` to full sync to detect deletions.
 
 Delete tracking follows the full-sync behavior if you switch an incremental object to full sync.
 
@@ -15576,7 +15631,7 @@ Use **Re-sync** on the affected object to recover. A re-sync extracts the object
 
 ### Deleted leads aren't detected
 
-Pipedrive doesn't report deleted leads, and `leads` syncs incrementally by default. Deleted leads remain in your destination until you re-sync the object. Switch `leads` to full sync if you need Workato to detect deleted leads.
+Pipedrive doesn't report deleted leads, and `leads` syncs incrementally by default. Deleted leads stay in your destination. Switch `leads` to full sync if you need Workato to detect deleted leads.
 
 ### Rate limits
 
@@ -16260,7 +16315,9 @@ Sage Intacct data pipelines support full sync and incremental sync. The connecto
 
 ### Full sync
 
-Full sync reads all available records for an object on each run and replaces the object's record set in your destination. The connector uses full sync for objects it can't sync incrementally, such as database views like `GL_DETAIL`.
+A full sync reads all available records from Sage Intacct for the selected object on every run. The connector uses full sync for objects it can't sync incrementally, such as database views like `GL_DETAIL`.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Sage Intacct stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -16274,7 +16331,7 @@ Refer to the [Supported objects](#supported-objects) tables to see the sync mode
 
 The connector doesn't track deletions. Sage Intacct doesn't expose deleted records in a way the pipeline can match to your synced data, so it doesn't flag deletes or add a soft-delete column to your destination.
 
-Objects that sync incrementally don't see a deletion, because an incremental run reads only the records changed since the previous run. Objects that sync in full re-read their complete record set each run, so a record deleted in Sage Intacct no longer appears after the next full sync.
+Objects that sync incrementally don't see a deletion, because an incremental run reads only the records changed since the previous run. Objects that sync in full re-read their complete record set each run. The pipeline overwrites the destination table for full-sync objects without a primary key, so a record deleted in Sage Intacct no longer appears after the next full sync.
 
 ## Schema and data type handling
 
@@ -16784,7 +16841,9 @@ Salesforce Marketing Cloud data pipelines support full sync and incremental sync
 
 ### Full sync
 
-A full sync reads all available records from Salesforce Marketing Cloud for the selected object and overwrites the destination table. Objects that don't support incremental sync, such as `link` and `campaign`, use full sync because Salesforce Marketing Cloud doesn't expose a reliable date filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete overview on each run.
+A full sync reads all available records from Salesforce Marketing Cloud for the selected object on every run. Objects that don't support incremental sync, such as `link` and `campaign`, use full sync because Salesforce Marketing Cloud doesn't expose a reliable date filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete overview on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Salesforce Marketing Cloud stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -17889,7 +17948,9 @@ SAP Concur data pipelines support full sync and incremental sync. The sync mode 
 
 ### Full sync
 
-Full sync re-extracts the complete record set for an object on each run and overwrites the destination table. Most SAP Concur objects use full sync, because the SAP Concur APIs for those objects don't expose a modification-time filter. This includes the `user` object, because the SAP Concur Identity API can't filter by last-modified date.
+A full sync re-extracts the complete record set from SAP Concur for the selected object on every run. Most SAP Concur objects use full sync, because the SAP Concur APIs for those objects don't expose a modification-time filter. This includes the `user` object, because the SAP Concur Identity API can't filter by last-modified date.
+
+Objects with a primary key merge into the existing destination table, so records deleted in SAP Concur stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -18952,7 +19013,7 @@ The following occurs:
 
 The sync mode determines how the pipeline loads data into the destination:
 
-- **Full sync**: The pipeline replaces existing data in the destination with the latest extracted dataset.
+- **Full sync**: The pipeline reloads the latest extracted dataset. It merges the dataset into the destination for objects with a primary key and overwrites the destination for objects without one.
 - **Incremental sync**: The pipeline adds newly extracted records to the existing data in the destination.
 
 This cleanup process ensures efficient resource usage and prevents residual staging data from accumulating in SAP.
@@ -19548,7 +19609,7 @@ After the pipeline finishes extracting data, the SAP ODP framework cleans up the
 
 The sync mode determines how the pipeline loads data into the destination:
 
-- **Full sync**: The pipeline replaces existing data in the destination with the latest extracted dataset.
+- **Full sync**: The pipeline reloads the latest extracted dataset. It merges the dataset into the destination for objects with a primary key and overwrites the destination for objects without one.
 - **Incremental sync**: The pipeline adds newly extracted records to the existing data in the destination.
 
 You can monitor extraction requests in SAP using transaction code `ODQMON`.
@@ -21908,7 +21969,9 @@ Slack data pipelines support full sync and incremental sync. Each object support
 
 ### Full sync
 
-A full sync reads all available records from Slack for the selected object and overwrites the destination table on every run. The following objects sync in full by default:
+A full sync reads all available records from Slack for the selected object on every run. The following objects sync in full by default:
+
+Objects with a primary key merge into the existing destination table, so records deleted in Slack stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 - `channels`
 - `channel_members`
@@ -21933,11 +21996,11 @@ An incremental sync reads only new records since the previous run, using the mes
 
 Delete tracking is per-object and follows sync mode. Full-sync objects reflect deletions because Workato diffs each run against the previous run. Incremental objects don't reflect deletions, because there isn't a second full snapshot to diff against:
 
-- **`channels`**: Uses the native `is_archived` field when you enable **Include archived channels**. Otherwise, archived channels drop out of your destination (destination-inferred).
+- **`channels`**: Uses the native `is_archived` field when you enable **Include archived channels**. Otherwise, Workato flags archived channels as deleted in your destination on the next full sync (destination-inferred).
 - **`users`**: Uses the native `deleted` field to preserve deactivated users with that field set to `true`, rather than removing users.
 - **`user_groups`**: Uses a `_workato_is_deleted` column derived from Slack's `date_delete` field.
-- **`channel_members`, `files`, `pins`, `bookmarks`**: No native signal from Slack. A record that no longer appears in Slack drops out of your destination on the next sync (destination-inferred), because these objects sync in full every run.
-- **`messages`, `threads`, `reactions`, `message_attachments`, `message_files`**: None. These sync incrementally, and Slack doesn't signal a delete. A deleted message remains in your destination until you run a full sync of the affected object.
+- **`channel_members`, `files`, `pins`, `bookmarks`**: No native signal from Slack. Workato flags a record that no longer appears in Slack as deleted in your destination on the next sync (destination-inferred), because these objects sync in full every run.
+- **`messages`, `threads`, `reactions`, `message_attachments`, `message_files`**: None. These sync incrementally, and Slack doesn't signal a delete. A deleted message stays in your destination.
 
 ## Schema and data type handling
 
@@ -22248,7 +22311,7 @@ Snowflake data pipelines support two sync modes, configured per object: full syn
 
 ### Full sync
 
-A full sync reads all rows from the source table on every pipeline run and replaces the destination table. Use full sync for tables that don't expose a usable cursor column or change tracking.
+A full sync reads all rows from the source table on every pipeline run. The pipeline merges these rows into the existing destination table on the table's declared primary key, so rows deleted in Snowflake stay in the table. Use full sync for tables that don't expose a usable cursor column or change tracking.
 
 ### Incremental sync
 
@@ -22548,7 +22611,9 @@ SQL Server data pipelines support full refresh and incremental sync. The sync mo
 
 ### Full refresh
 
-A full refresh sync reads all rows from the source table on every pipeline run and overwrites the destination table. Use full refresh for tables where you need a complete snapshot of the data on each sync.
+A full refresh sync reads all rows from the source table on every pipeline run. Use full refresh for tables where you need a complete snapshot of the data on each sync.
+
+Tables with a primary key merge into the existing destination table, so rows deleted in SQL Server stay in the table. Tables without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -22896,7 +22961,9 @@ Square data pipelines support full sync and incremental sync. The sync mode is c
 
 ### Full sync
 
-A full sync reads all available records from Square for the selected object and replaces the record set in the destination table. Objects without a reliable modified-time filter in the Square API, such as `Locations`, `Merchants`, `Team Members`, and `Vendors`, support full sync only.
+A full sync reads all available records from Square for the selected object on every run. Objects without a reliable modified-time filter in the Square API, such as `Locations`, `Merchants`, `Team Members`, and `Vendors`, support full sync only.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Square stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -23305,7 +23372,9 @@ Stripe data pipelines support full refresh and incremental sync. The sync mode i
 
 ### Full refresh
 
-A full refresh sync reads all available records from Stripe for the selected object and overwrites the destination table. Use full refresh for objects where you need a complete snapshot on each run.
+A full refresh sync reads all available records from Stripe for the selected object on every run. Use full refresh for objects where you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Stripe stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -23637,7 +23706,9 @@ Trello data pipelines support full sync and incremental sync. The sync mode is c
 
 ### Full sync
 
-A full sync reads all available records from Trello for the selected object and replaces the record set in your destination. Workato re-extracts board, card, and organization structure objects in full on every scheduled run to capture edits, moves, and archival changes, because Trello doesn't expose a reliable last-updated timestamp on these objects. Archived boards, lists, and cards remain included in a full sync and are distinguished from active records through the source `closed` field, not removed from the sync.
+A full sync reads all available records from Trello for the selected object on every run. Workato re-extracts board, card, and organization structure objects in full on every scheduled run to capture edits, moves, and archival changes, because Trello doesn't expose a reliable last-updated timestamp on these objects. Archived boards, lists, and cards remain included in a full sync and are distinguished from active records through the source `closed` field, not removed from the sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Trello stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -23649,7 +23720,7 @@ Refer to the [Supported objects](#supported-objects) tables to see which objects
 
 Workato compares each full sync against the previous run and marks records that no longer appear in Trello as deleted in your destination. This applies to every full-sync object, including `Action` and `OrganizationAction` when you run them in full sync mode.
 
-`Action` and `OrganizationAction` don't track deletes while running incrementally, because incremental sync only reads new activity and doesn't capture a complete snapshot to compare against. Trello also doesn't provide a native delete signal on these objects. Most delete and remove event types aren't included in the activity feed at all. A record deleted in Trello remains in your destination for these objects until you run a full sync.
+`Action` and `OrganizationAction` don't track deletes while running incrementally, because incremental sync only reads new activity and doesn't capture a complete snapshot to compare against. Trello also doesn't provide a native delete signal on these objects. Most delete and remove event types aren't included in the activity feed at all. A record deleted in Trello stays in your destination for these objects.
 
 Refer to the [Supported objects](#supported-objects) tables to see which objects support delete tracking.
 
@@ -23930,7 +24001,9 @@ Typeform data pipelines support full sync and incremental sync. Refer to the [Su
 
 ### Full sync
 
-A full sync reads all records for the selected object from Typeform on every run and replaces the record set in your destination table. `Forms`, `Workspaces`, `Themes`, `Webhooks`, and `Images` support full sync only, because the Typeform API doesn't offer a way to request only changed records for these objects.
+A full sync reads all records for the selected object from Typeform on every run. `Forms`, `Workspaces`, `Themes`, `Webhooks`, and `Images` support full sync only, because the Typeform API doesn't offer a way to request only changed records for these objects.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Typeform stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 Response objects also support full sync, which reads every response from the start date you configure.
 
@@ -24401,7 +24474,9 @@ Workday data pipelines support full refresh and incremental sync.
 
 ### Full refresh
 
-A full refresh sync reads all available records for the object on every pipeline run and overwrites the destination. Use full refresh for objects when you need a complete snapshot of the data on each sync.
+A full refresh sync reads all available records for the object from Workday on every pipeline run. Use full refresh for objects when you need a complete snapshot of the data on each sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Workday stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -24821,7 +24896,9 @@ Workday RaaS pipelines support full refresh and incremental sync. The sync mode 
 
 ### Full refresh
 
-A full refresh sync runs the report without start and end date prompt values and overwrites the destination on every pipeline run. Use full refresh when you need a complete snapshot of the report on each sync, or when the report doesn't include date prompts.
+A full refresh sync runs the report without start and end date prompt values on every pipeline run. Use full refresh when you need a complete snapshot of the report on each sync, or when the report doesn't include date prompts.
+
+Reports with a primary key merge into the existing destination table, so records deleted in Workday stay in the table. Reports without a primary key overwrite the destination table on every run.
 
 Workato uses full refresh when **Enable incremental sync** is unchecked on the **Review schema** step.
 
@@ -25229,7 +25306,9 @@ X data pipelines support full sync and incremental sync. The sync mode is config
 
 ### Full sync
 
-A full sync re-reads the complete record set for an object on every run and overwrites the destination table. `Media Library`, `Promoted Tweet Content`, `Scheduled Tweets`, and `Referenced User Profiles` use full sync, because X API doesn't expose a reliable modified-time signal for these objects.
+A full sync re-reads the complete record set for an object from X on every run. `Media Library`, `Promoted Tweet Content`, `Scheduled Tweets`, and `Referenced User Profiles` use full sync, because X API doesn't expose a reliable modified-time signal for these objects.
+
+Objects with a primary key merge into the existing destination table, so records deleted in X stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -25626,7 +25705,9 @@ Xero data pipelines support full sync and incremental sync. The sync mode is fix
 
 ### Full sync
 
-Full sync reads all available records for an object on each run and replaces the record set in your destination. The pipeline uses full sync for reference objects that provide no modification signal, such as `tax_rate`, `currency`, `tracking_category`, and `branding_theme`.
+Full sync reads all available records for an object from Xero on each run. The pipeline uses full sync for reference objects that provide no modification signal, such as `tax_rate`, `currency`, `tracking_category`, and `branding_theme`.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Xero stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -25956,7 +26037,9 @@ Zendesk data pipelines support full refresh and incremental sync. The sync mode 
 
 ### Full refresh
 
-A full refresh sync reads all available records from Zendesk for the selected object and overwrites the destination table. Use full refresh for configuration and reference objects where you need a complete snapshot on each run.
+A full refresh sync reads all available records from Zendesk for the selected object on every run. Use full refresh for configuration and reference objects where you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Zendesk stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -26283,7 +26366,9 @@ ZoomInfo data pipelines support full sync and incremental sync. Configure the sy
 
 ### Full sync
 
-A full sync reads all available records for an object and replaces the record set in the destination table. `audiences` and `audience_rows` always use full sync.
+A full sync reads all available records from ZoomInfo for the selected object on every run. `audiences` and `audience_rows` always use full sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in ZoomInfo stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 `scoops` and `news` read all history from the pipeline's start date on every run when set to full sync. This uses more of your ZoomInfo request and record limits than incremental sync.
 
@@ -26686,7 +26771,7 @@ Zuora data pipelines support full sync and incremental sync.
 
 ### Full sync
 
-Full sync extracts all records for an object from Zuora. Use full sync for the initial historical sync or to rebuild an object's table in your destination.
+Full sync extracts all records for an object from Zuora. Use full sync for the initial historical sync or to reload an object's data in your destination.
 
 ### Incremental sync
 

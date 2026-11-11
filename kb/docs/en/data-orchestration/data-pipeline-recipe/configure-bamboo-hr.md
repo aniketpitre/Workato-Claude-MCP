@@ -229,7 +229,9 @@ BambooHR data pipelines support full sync and incremental sync. The sync mode is
 
 ### Full sync
 
-A full sync reads all available records from BambooHR for the selected object and overwrites the destination table. Deletions in BambooHR are reflected in the destination because each run replaces the table contents. Objects that don't support incremental sync run a full sync.
+A full sync reads all available records from BambooHR for the selected object on every run. Objects that don't support incremental sync run a full sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in BambooHR stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -247,7 +249,7 @@ Workato tracks deletions through two mechanisms, depending on the object's sync 
 
 For the `employees` object, Workato uses source-driven soft-delete tracking. Workato detects employee deletions through the BambooHR Changed Employees data and writes a delete marker row with the `_workato_is_deleted` column set to `true` instead of removing the row from the destination.
 
-For objects that support full sync only, deletions in the source are reflected in the destination because each run replaces the object's records entirely. Deletions are reflected on the next full sync rather than at the time they occur in BambooHR.
+A full sync flags deleted records for objects with a primary key and keeps them in the destination. Objects without a primary key lose deleted rows, because the full sync overwrites the table. The change appears on the next full sync either way, not when the deletion happens in BambooHR.
 
 ## Schema and data type handling
 

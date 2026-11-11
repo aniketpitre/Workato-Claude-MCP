@@ -214,7 +214,9 @@ ZoomInfo data pipelines support full sync and incremental sync. Configure the sy
 
 ### Full sync
 
-A full sync reads all available records for an object and replaces the record set in the destination table. `audiences` and `audience_rows` always use full sync.
+A full sync reads all available records from ZoomInfo for the selected object on every run. `audiences` and `audience_rows` always use full sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in ZoomInfo stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 `scoops` and `news` read all history from the pipeline's start date on every run when set to full sync. This uses more of your ZoomInfo request and record limits than incremental sync.
 

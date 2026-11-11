@@ -233,7 +233,7 @@ Snowflake data pipelines support two sync modes, configured per object: full syn
 
 ### Full sync
 
-A full sync reads all rows from the source table on every pipeline run and replaces the destination table. Use full sync for tables that don't expose a usable cursor column or change tracking.
+A full sync reads all rows from the source table on every pipeline run. The pipeline merges these rows into the existing destination table on the table's declared primary key, so rows deleted in Snowflake stay in the table. Use full sync for tables that don't expose a usable cursor column or change tracking.
 
 ### Incremental sync
 

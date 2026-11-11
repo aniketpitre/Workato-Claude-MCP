@@ -300,7 +300,7 @@ Zuora data pipelines support full sync and incremental sync.
 
 ### Full sync
 
-Full sync extracts all records for an object from Zuora. Use full sync for the initial historical sync or to rebuild an object's table in your destination.
+Full sync extracts all records for an object from Zuora. Use full sync for the initial historical sync or to reload an object's data in your destination.
 
 ### Incremental sync
 

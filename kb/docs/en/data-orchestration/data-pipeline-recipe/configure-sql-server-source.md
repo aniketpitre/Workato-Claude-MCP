@@ -224,7 +224,9 @@ SQL Server data pipelines support full refresh and incremental sync. The sync mo
 
 ### Full refresh
 
-A full refresh sync reads all rows from the source table on every pipeline run and overwrites the destination table. Use full refresh for tables where you need a complete snapshot of the data on each sync.
+A full refresh sync reads all rows from the source table on every pipeline run. Use full refresh for tables where you need a complete snapshot of the data on each sync.
+
+Tables with a primary key merge into the existing destination table, so rows deleted in SQL Server stay in the table. Tables without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

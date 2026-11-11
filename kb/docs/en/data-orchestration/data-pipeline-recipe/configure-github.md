@@ -309,7 +309,7 @@ GitHub data pipelines support full sync and incremental sync. Refer to [Supporte
 
 ### Full sync
 
-A full sync reads all available records from GitHub for the selected object on every run and overwrites the destination table.
+A full sync reads all available records from GitHub for the selected object on every run. Objects with a primary key merge into the existing destination table, so records deleted in GitHub stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -319,7 +319,7 @@ An incremental sync extracts only records GitHub reports as created or updated s
 
 Workato compares each full sync against the previous run and marks records that no longer exist in GitHub as deleted in your destination. This applies to every full-sync object.
 
-GitHub's `since` parameter doesn't report deletions, so `Issue`, `IssueComment`, `Commit`, and `ReviewComment` don't track deletes during incremental sync. A record deleted in GitHub remains in your destination for these objects until you run a full sync. Refer to [Incremental objects do not track deletions](#incremental-objects-do-not-track-deletions) for more information.
+GitHub's `since` parameter doesn't report deletions, so `Issue`, `IssueComment`, `Commit`, and `ReviewComment` don't track deletes during incremental sync. A record deleted in GitHub stays in your destination for these objects. Refer to [Incremental objects do not track deletions](#incremental-objects-do-not-track-deletions) for more information.
 
 ## Schema and data type handling
 
@@ -359,7 +359,7 @@ The following limitations apply when you use GitHub as a data pipeline source:
 
 ### Incremental objects do not track deletions
 
-`Issue`, `IssueComment`, `Commit`, and `ReviewComment` sync incrementally using GitHub's `since` parameter, which doesn't report deletions. A record deleted in GitHub remains in your destination for these objects until you run a full sync. Refer to [Delete tracking](#delete-tracking) for more information.
+`Issue`, `IssueComment`, `Commit`, and `ReviewComment` sync incrementally using GitHub's `since` parameter, which doesn't report deletions. A record deleted in GitHub stays in your destination for these objects. Refer to [Delete tracking](#delete-tracking) for more information.
 
 ### You can't filter to specific repositories
 

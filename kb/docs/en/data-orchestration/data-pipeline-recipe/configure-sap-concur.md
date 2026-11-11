@@ -535,7 +535,9 @@ SAP Concur data pipelines support full sync and incremental sync. The sync mode 
 
 ### Full sync
 
-Full sync re-extracts the complete record set for an object on each run and overwrites the destination table. Most SAP Concur objects use full sync, because the SAP Concur APIs for those objects don't expose a modification-time filter. This includes the `user` object, because the SAP Concur Identity API can't filter by last-modified date.
+A full sync re-extracts the complete record set from SAP Concur for the selected object on every run. Most SAP Concur objects use full sync, because the SAP Concur APIs for those objects don't expose a modification-time filter. This includes the `user` object, because the SAP Concur Identity API can't filter by last-modified date.
+
+Objects with a primary key merge into the existing destination table, so records deleted in SAP Concur stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

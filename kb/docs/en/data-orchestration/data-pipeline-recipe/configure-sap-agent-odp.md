@@ -587,7 +587,7 @@ After the pipeline finishes extracting data, the SAP ODP framework cleans up the
 
 The sync mode determines how the pipeline loads data into the destination:
 
-- **Full sync**: The pipeline replaces existing data in the destination with the latest extracted dataset.
+- **Full sync**: The pipeline reloads the latest extracted dataset. It merges the dataset into the destination for objects with a primary key and overwrites the destination for objects without one.
 - **Incremental sync**: The pipeline adds newly extracted records to the existing data in the destination.
 
 You can monitor extraction requests in SAP using transaction code `ODQMON`.

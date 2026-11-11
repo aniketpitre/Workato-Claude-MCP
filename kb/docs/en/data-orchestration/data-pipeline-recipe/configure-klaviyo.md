@@ -333,7 +333,7 @@ Klaviyo data pipelines support full sync and incremental sync. The sync mode is 
 
 ### Full sync
 
-A full sync reads all available records for the selected object from Klaviyo and replaces the record set in your destination table.
+A full sync reads all available records for the selected object from Klaviyo on every run. Objects with a primary key merge into the existing destination table, so records deleted in Klaviyo stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -341,7 +341,7 @@ An incremental sync extracts only new or changed records since the last successf
 
 ### Delete tracking
 
-Workato doesn't currently detect deleted records for any Klaviyo object. A record deleted in Klaviyo still appears in your destination until you remove it manually or reload the object with a full sync.
+Workato doesn't currently detect deleted records for any Klaviyo object. A record deleted in Klaviyo still appears in your destination until you remove it manually.
 
 `Global Exclusion` and `List Exclusion` are an exception to this general behavior. Each record represents a profile's current suppression from email marketing, so the record itself is the signal, rather than a separate delete event.
 

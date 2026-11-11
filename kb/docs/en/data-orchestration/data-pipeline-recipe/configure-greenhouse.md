@@ -280,7 +280,7 @@ Greenhouse data pipelines support full sync and incremental sync. The sync mode 
 
 ### Full sync
 
-Full sync reads all available records from Greenhouse on every sync and overwrites the destination table. Records deleted in Greenhouse are removed from the destination on the next sync because the destination table reflects the full current state of the source.
+A full sync reads all available records from Greenhouse on every run. Objects with a primary key merge into the existing destination table, so records deleted in Greenhouse stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -290,7 +290,7 @@ Incremental sync doesn't capture records deleted in Greenhouse. Deleted records 
 
 ### Delete tracking
 
-The Greenhouse Harvest v3 API doesn't provide a delete feed, so Greenhouse data pipelines don't track deletes. To remove deleted records from your destination, sync the object with full sync.
+The Greenhouse Harvest v3 API doesn't provide a delete feed, so Greenhouse data pipelines don't track deletes. Objects with a primary key keep their deleted records in the table. Refer to [Full sync](#full-sync) for more information.
 
 ## Schema and data type handling
 

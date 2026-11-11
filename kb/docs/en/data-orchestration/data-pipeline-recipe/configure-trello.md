@@ -218,7 +218,9 @@ Trello data pipelines support full sync and incremental sync. The sync mode is c
 
 ### Full sync
 
-A full sync reads all available records from Trello for the selected object and replaces the record set in your destination. Workato re-extracts board, card, and organization structure objects in full on every scheduled run to capture edits, moves, and archival changes, because Trello doesn't expose a reliable last-updated timestamp on these objects. Archived boards, lists, and cards remain included in a full sync and are distinguished from active records through the source `closed` field, not removed from the sync.
+A full sync reads all available records from Trello for the selected object on every run. Workato re-extracts board, card, and organization structure objects in full on every scheduled run to capture edits, moves, and archival changes, because Trello doesn't expose a reliable last-updated timestamp on these objects. Archived boards, lists, and cards remain included in a full sync and are distinguished from active records through the source `closed` field, not removed from the sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Trello stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -230,7 +232,7 @@ Refer to the [Supported objects](#supported-objects) tables to see which objects
 
 Workato compares each full sync against the previous run and marks records that no longer appear in Trello as deleted in your destination. This applies to every full-sync object, including `Action` and `OrganizationAction` when you run them in full sync mode.
 
-`Action` and `OrganizationAction` don't track deletes while running incrementally, because incremental sync only reads new activity and doesn't capture a complete snapshot to compare against. Trello also doesn't provide a native delete signal on these objects. Most delete and remove event types aren't included in the activity feed at all. A record deleted in Trello remains in your destination for these objects until you run a full sync.
+`Action` and `OrganizationAction` don't track deletes while running incrementally, because incremental sync only reads new activity and doesn't capture a complete snapshot to compare against. Trello also doesn't provide a native delete signal on these objects. Most delete and remove event types aren't included in the activity feed at all. A record deleted in Trello stays in your destination for these objects.
 
 Refer to the [Supported objects](#supported-objects) tables to see which objects support delete tracking.
 

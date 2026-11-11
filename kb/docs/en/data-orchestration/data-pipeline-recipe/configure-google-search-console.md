@@ -233,7 +233,9 @@ Google Search Console data pipelines support full sync and incremental sync. Ref
 
 ### Full sync
 
-A full sync re-reads the complete record set for an object on every run and replaces the destination table. `Sites`, `Sitemaps`, and `Sitemap Contents` use full sync, because the Google Search Console API returns these resources as complete lists and offers no way to request only changed records.
+A full sync re-reads the complete record set from Google Search Console for an object on every run. `Sites`, `Sitemaps`, and `Sitemap Contents` use full sync, because the Google Search Console API returns these resources as complete lists and offers no way to request only changed records.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Google Search Console stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

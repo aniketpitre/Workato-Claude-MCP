@@ -7,7 +7,9 @@ description: >-
 
 # MCP servers
 
-MCP servers enable you to expose endpoints to AI agents as tools or sets of tools through a remote, cloud-based [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) server. Your API recipe collections and AI gateway collections generate unique, authenticated MCP URLs. You can add this MCP URL to your LLM settings to enable an AI agent to use your API endpoint collection to answer user prompts.
+MCP servers enable you to expose endpoints to AI agents as tools or sets of tools through a remote, cloud-based [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) server. Each MCP server generates a unique, authenticated MCP URL. You can add this MCP URL to your LLM settings to enable an AI agent to use your MCP server tools to answer user prompts.
+
+You can create MCP servers with API collections, project assets, or external (proxy) MCP servers as the tool source.
 
 Watch a quick video guide: Getting started with MCP and Workato
 
@@ -32,6 +34,12 @@ Watch a quick video guide: Search for leads in Salesforce with MCP
 [Video](https://www.youtube.com/embed/eO-nG_q0woQ?rel=0&si=EDnWwRm7-T4dsykV)
 
 ### Create an MCP server with project assets
+
+Use project assets as your tool source in the following scenarios:
+
+- **The tool executes custom business logic**: You need agents to run a workflow, such as creating a GitHub issue or searching for leads in Salesforce.
+- **You need to build tools specifically for agents**: You can use assets, such as skills, from your project without publishing an API collection first.
+- **The action spans multiple apps or steps**: A single tool call orchestrates several systems.
 
 Complete the following steps to create an MCP server with project assets:
 
@@ -59,6 +67,12 @@ Complete the following steps to create an MCP server with project assets:
    
 
 ### Create an MCP server with an API collection
+
+Use an API collection as your tool source in the following scenarios:
+
+- **You have existing API recipes**: Your endpoints are published in an API recipe collection, and AI agents must access these endpoints as tools.
+- **The endpoints are stable and well-defined**: Each endpoint maps to a single tool with clearly defined inputs and outputs.
+- **You plan to reuse existing API management**: Your collection already has the authentication and access controls you need.
 
 Complete the following steps to create an MCP with an API collection:
 
@@ -90,6 +104,15 @@ Complete the following steps to create an MCP with an API collection:
    
 
 ### Create a proxy for external MCP servers
+
+Use an external MCP server as your tool source in the following scenarios:
+
+- **A third-party MCP server already exists**: You plan to use vendor-provided tools.
+- **You need agents to connect through Workato**: Agents use one Workato MCP URL instead of connecting directly to the external server.
+
+> **REFRESH EXTERNAL MCP SERVER TOOLS**
+> 
+> Workato detects changes to external MCP server tools but requires a builder to refresh the tools list to make the updated tools available to MCP clients.
 
 Complete the following steps to create a proxy MCP server:
 
@@ -219,6 +242,25 @@ Complete the following steps to create a proxy MCP server:
    
 9. Click **Create MCP Server**. The MCP server tools, description, remote MCP URL, and additional server information displays in the **Details** tab.
    
-   ![MCP server Details tab](/assets/mcp-tools-overview-page.2Q5AxJ3t.png)_MCP server **Details** tab admin view_
+   ![MCP proxy server Details tab](/assets/mcp-proxy-details-tab.BzOZDcSJ.png)_MCP proxy server **Details** tab admin view_
+   
+
+#### Refresh external MCP server tools
+
+Complete the following steps to refresh external MCP server tools:
+
+> **REFRESH EXTERNAL MCP SERVER TOOLS**
+> 
+> Workato detects changes to external MCP server tools but requires a builder to refresh the tools list to make the updated tools available to MCP clients.
+
+1. Go to **AI Hub > Enterprise MCP > Custom servers**.
+   
+2. Select the external proxy MCP server where you plan to refresh tools.
+   
+3. Go to the **Details** tab.
+   
+4. Go to the **Tools from external MCP server** section and click **Refresh tools**.
+   
+   ![Click Refresh tools](/assets/mcp-proxy-refresh-tools.D5kTvEF9.png)_Click **Refresh tools**_
 
 ---

@@ -265,7 +265,9 @@ Slack data pipelines support full sync and incremental sync. Each object support
 
 ### Full sync
 
-A full sync reads all available records from Slack for the selected object and overwrites the destination table on every run. The following objects sync in full by default:
+A full sync reads all available records from Slack for the selected object on every run. The following objects sync in full by default:
+
+Objects with a primary key merge into the existing destination table, so records deleted in Slack stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 - `channels`
 - `channel_members`
@@ -290,11 +292,11 @@ An incremental sync reads only new records since the previous run, using the mes
 
 Delete tracking is per-object and follows sync mode. Full-sync objects reflect deletions because Workato diffs each run against the previous run. Incremental objects don't reflect deletions, because there isn't a second full snapshot to diff against:
 
-- **`channels`**: Uses the native `is_archived` field when you enable **Include archived channels**. Otherwise, archived channels drop out of your destination (destination-inferred).
+- **`channels`**: Uses the native `is_archived` field when you enable **Include archived channels**. Otherwise, Workato flags archived channels as deleted in your destination on the next full sync (destination-inferred).
 - **`users`**: Uses the native `deleted` field to preserve deactivated users with that field set to `true`, rather than removing users.
 - **`user_groups`**: Uses a `_workato_is_deleted` column derived from Slack's `date_delete` field.
-- **`channel_members`, `files`, `pins`, `bookmarks`**: No native signal from Slack. A record that no longer appears in Slack drops out of your destination on the next sync (destination-inferred), because these objects sync in full every run.
-- **`messages`, `threads`, `reactions`, `message_attachments`, `message_files`**: None. These sync incrementally, and Slack doesn't signal a delete. A deleted message remains in your destination until you run a full sync of the affected object.
+- **`channel_members`, `files`, `pins`, `bookmarks`**: No native signal from Slack. Workato flags a record that no longer appears in Slack as deleted in your destination on the next sync (destination-inferred), because these objects sync in full every run.
+- **`messages`, `threads`, `reactions`, `message_attachments`, `message_files`**: None. These sync incrementally, and Slack doesn't signal a delete. A deleted message stays in your destination.
 
 ## Schema and data type handling
 

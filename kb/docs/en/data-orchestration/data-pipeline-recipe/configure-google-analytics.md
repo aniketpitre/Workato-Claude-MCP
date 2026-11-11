@@ -330,7 +330,9 @@ Google Analytics data pipelines support full sync and incremental sync. Report t
 
 ### Full sync
 
-A full sync re-reads the complete list and replaces the destination table on every run. `Accounts`, `Properties`, `Data Streams`, `Custom Dimensions`, `Custom Metrics`, `Key Events`, and `Google Ads Links` use full sync, because the Google Analytics Admin API doesn't expose a way to filter these resources by last-modified time.
+A full sync re-reads the complete list from Google Analytics on every run. `Accounts`, `Properties`, `Data Streams`, `Custom Dimensions`, `Custom Metrics`, `Key Events`, and `Google Ads Links` use full sync, because the Google Analytics Admin API doesn't expose a way to filter these resources by last-modified time.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Google Analytics stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

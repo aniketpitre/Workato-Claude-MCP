@@ -146,13 +146,9 @@ For more information, see [Data masking](/en/features/data-masking).
 
 Workato has a public [privacy policy](https://www.workato.com/legal/privacy-policy), which details the types of personal information we collect, how we handle that information, and your privacy rights as a customer.
 
-Can Workato employees see my recipe data or job details?
+Workato employees, including engineers, don't have access to your recipe job details, data, or execution logs, even if a job ID or URL is shared. Shared job and recipe IDs are used for troubleshooting and debugging error information within Workato's internal platform logs. Access to recipe and job data is strictly controlled and remains within your environment.
 
-No. Workato employees, including engineers, do not have access to your recipe job details, data, or execution logs, even if a job ID or URL is shared.
-
-Shared job and recipe IDs are primarily used for troubleshooting and debugging within our internal platform logs, where error information is stored. Access to recipe and job data is strictly controlled and remains within your environment.
-
-All data in Workato is encrypted in transit and at rest. Encrypted data cannot be accessed by Workato staff.
+All data in Workato is encrypted in transit and at rest. Workato staff can't access encrypted data.
 
 ### Audit log
 

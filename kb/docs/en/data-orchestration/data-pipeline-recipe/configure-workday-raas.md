@@ -388,7 +388,9 @@ Workday RaaS pipelines support full refresh and incremental sync. The sync mode 
 
 ### Full refresh
 
-A full refresh sync runs the report without start and end date prompt values and overwrites the destination on every pipeline run. Use full refresh when you need a complete snapshot of the report on each sync, or when the report doesn't include date prompts.
+A full refresh sync runs the report without start and end date prompt values on every pipeline run. Use full refresh when you need a complete snapshot of the report on each sync, or when the report doesn't include date prompts.
+
+Reports with a primary key merge into the existing destination table, so records deleted in Workday stay in the table. Reports without a primary key overwrite the destination table on every run.
 
 Workato uses full refresh when **Enable incremental sync** is unchecked on the **Review schema** step.
 

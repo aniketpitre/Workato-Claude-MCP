@@ -268,7 +268,9 @@ Salesforce Marketing Cloud data pipelines support full sync and incremental sync
 
 ### Full sync
 
-A full sync reads all available records from Salesforce Marketing Cloud for the selected object and overwrites the destination table. Objects that don't support incremental sync, such as `link` and `campaign`, use full sync because Salesforce Marketing Cloud doesn't expose a reliable date filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete overview on each run.
+A full sync reads all available records from Salesforce Marketing Cloud for the selected object on every run. Objects that don't support incremental sync, such as `link` and `campaign`, use full sync because Salesforce Marketing Cloud doesn't expose a reliable date filter for them. Objects that support incremental sync can still be configured for full sync if you need a complete overview on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Salesforce Marketing Cloud stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

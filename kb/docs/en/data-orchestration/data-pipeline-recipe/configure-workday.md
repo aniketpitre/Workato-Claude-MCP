@@ -367,7 +367,9 @@ Workday data pipelines support full refresh and incremental sync.
 
 ### Full refresh
 
-A full refresh sync reads all available records for the object on every pipeline run and overwrites the destination. Use full refresh for objects when you need a complete snapshot of the data on each sync.
+A full refresh sync reads all available records for the object from Workday on every pipeline run. Use full refresh for objects when you need a complete snapshot of the data on each sync.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Workday stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

@@ -241,7 +241,9 @@ Zendesk data pipelines support full refresh and incremental sync. The sync mode 
 
 ### Full refresh
 
-A full refresh sync reads all available records from Zendesk for the selected object and overwrites the destination table. Use full refresh for configuration and reference objects where you need a complete snapshot on each run.
+A full refresh sync reads all available records from Zendesk for the selected object on every run. Use full refresh for configuration and reference objects where you need a complete snapshot on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Zendesk stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

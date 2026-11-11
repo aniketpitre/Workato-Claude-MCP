@@ -268,7 +268,9 @@ PagerDuty data pipelines support full sync, incremental sync, and append-only sy
 
 ### Full sync
 
-Full sync reads all available records from PagerDuty on every sync and replaces the destination table. PagerDuty reference and configuration objects, such as `Services`, `Users`, and `Escalation Policies`, sync with full sync because PagerDuty doesn't expose a change cursor for them.
+A full sync reads all available records from PagerDuty for the selected object on every run. PagerDuty reference and configuration objects, such as `Services`, `Users`, and `Escalation Policies`, sync with full sync because PagerDuty doesn't expose a change cursor for them.
+
+Objects with a primary key merge into the existing destination table, so records deleted in PagerDuty stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

@@ -214,7 +214,9 @@ Typeform data pipelines support full sync and incremental sync. Refer to the [Su
 
 ### Full sync
 
-A full sync reads all records for the selected object from Typeform on every run and replaces the record set in your destination table. `Forms`, `Workspaces`, `Themes`, `Webhooks`, and `Images` support full sync only, because the Typeform API doesn't offer a way to request only changed records for these objects.
+A full sync reads all records for the selected object from Typeform on every run. `Forms`, `Workspaces`, `Themes`, `Webhooks`, and `Images` support full sync only, because the Typeform API doesn't offer a way to request only changed records for these objects.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Typeform stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 Response objects also support full sync, which reads every response from the start date you configure.
 

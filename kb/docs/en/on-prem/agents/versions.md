@@ -7,7 +7,7 @@ description: >-
 
 # On-prem agent version notes
 
-The latest version of the Workato on-prem agent (OPA) is `v34.0`.
+The latest version of the Workato on-prem agent (OPA) is `v34.1`.
 
 Learn more about how to [upgrade your OPA version](/en/on-prem/agents/upgrade).
 
@@ -20,6 +20,13 @@ Learn more about how to [upgrade your OPA version](/en/on-prem/agents/upgrade).
 > Refer to the [On-prem agent version deprecation](/en/on-prem/agents/deprecation) guide for more information.
 
 ## v34
+
+### v34.1
+
+_Released November 11, 2026_
+
+- **SAP**: Fixed input parameters bug for new Call BAPI and Call RFM actions (affected OPA 33.1 & 34.0).
+- **Kafka**: Fixed bug for `OAUTHBEARER SASL` mechanism (affected OPA 34.0).
 
 ### v34.0
 

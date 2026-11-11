@@ -244,7 +244,7 @@ Airtable data pipelines support full sync and incremental sync. Every table supp
 
 ### Full sync
 
-Workato supports full sync for every table, including tables with a valid `Last Modified Time` field. A full sync extracts every record in the table and replaces the record set in your destination.
+Workato supports full sync for every table, including tables with a valid `Last Modified Time` field. A full sync extracts every record in the table on every run. Tables with a primary key merge into the existing destination table, so records deleted in Airtable stay in the table. Tables without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

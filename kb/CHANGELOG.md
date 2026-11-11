@@ -1,5 +1,61 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-11T11:06:31+00:00 (incremental)
+
+- Pages: 4521 | added 0 | changed 51 | removed 0
+- Changed:
+  - https://docs.workato.com/en/connectors/sap.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/concepts.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-airtable.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-algolia.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-anaplan.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-apollo.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-bamboo-hr.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-braintree.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-business-central.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-chargebee.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-confluence.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-dynamics-365.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-facebook.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-freshdesk.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-github.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-google-analytics.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-google-search-console.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-greenhouse.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-hibob.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-jira.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-klaviyo.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-linkedin.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-pagerduty.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-pendo.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-pipedrive.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-pipeline-sources.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sage-intacct.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-salesforce-marketing-cloud.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sap-agent-odp.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sap-agent-ohd.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sap-concur.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-slack.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-snowflake-source.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sql-server-source.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-square.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-stripe.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-trello.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-typeform.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-workday-raas.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-workday.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-x.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-xero.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-zendesk.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-zoominfo.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-zuora.md
+  - https://docs.workato.com/en/data-orchestration/sync-types.md
+  - https://docs.workato.com/en/features/json-transformation-action.md
+  - https://docs.workato.com/en/mcp/mcp-servers.md
+  - https://docs.workato.com/en/on-prem/agents/versions.md
+  - https://docs.workato.com/en/security.md
+  - ... and 1 more
+
 ## 2026-11-10T11:19:56+00:00 (incremental)
 
 - Pages: 4521 | added 8 | changed 80 | removed 0

@@ -230,7 +230,7 @@ Data pipelines support the following sync modes for Business Central objects:
 
 ### Full sync
 
-A full sync reads all available records for the selected object from Business Central and replaces the entire dataset in the destination with the latest data.
+A full sync reads all available records for the selected object from Business Central on every run. Objects with a primary key merge into the existing destination table, so records deleted in Business Central stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 

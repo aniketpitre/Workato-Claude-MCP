@@ -7,17 +7,15 @@ description: >-
 
 # SAP RFC
 
-SAP serves as an enterprise resource planning software adopted by most of the world's largest and significant corporations. The SAP RFC Connector allows you to connect with SAP systems even if they're behind a corporate firewall. The connector supports using IDoc or RFC to communicate with SAP. Using Workato, you can build powerful automation around SAP and other applications, without writing code.
+SAP is an enterprise resource planning (ERP) system used by many large organizations. The SAP RFC connector lets you connect to SAP systems, including systems behind a corporate firewall. The connector uses IDocs or RFCs to communicate with SAP. You can build automations between SAP and other applications without writing code.
 
-The Workato SAP RFC connector is a [SAP-certified](https://sapblobs.blob.core.windows.net/csd-live/workato-rfc-connector-30-certificate-eee22820-bcfd-11ed-8582-6b093a4ee825) solution and recognized as a high quality, cost effective, and sustainable solution for SAP integration needs.
-
-We initially developed the connector for on-prem SAP systems, but you can also use it with [SAP S/4HANA Cloud, private edition](https://www.sap.com/products/erp/s4hana-private-edition.html).
+The SAP RFC connector was designed for on-prem SAP systems, but it is also compatible with [SAP S/4HANA Cloud, private edition](https://www.sap.com/products/erp/s4hana-private-edition.html).
 
 * * *
 
 ## Supported SAP versions
 
-Workato's SAP RFC connector supports SAP ERP ECC 6.0 and all it's enhancement Packages, SAP S/4HANA (On-Premise Edition and Private Edition), SAP CRM, SAP SRM, SAP SCM, and any other products compatible with the NetWeaver AS ABAP.
+The SAP RFC connector supports SAP ERP ECC 6.0 and all its enhancement packages, SAP S/4HANA (on-premise and private editions), SAP CRM, SAP SRM, SAP SCM, and other products compatible with SAP NetWeaver AS ABAP.
 
 * * *
 
@@ -25,10 +23,10 @@ Workato's SAP RFC connector supports SAP ERP ECC 6.0 and all it's enhancement Pa
 
 The connector supports the following communication methods with SAP:
 
-- Inbound IDoc (Sending an IDoc from Workato to SAP).
-- Outbound IDoc (Receiving an IDoc from SAP to Workato).
-- Call Remote Functions (Invoke a function module in SAP from Workato).
-- Call BAPI (Invoke a BAPI in SAP from Workato).
+- Inbound IDoc: Send an IDoc from Workato to SAP.
+- Outbound IDoc: Receive an IDoc from SAP in Workato.
+- Call remote functions: Invoke a function module in SAP from Workato.
+- Call BAPI: Invoke a BAPI in SAP from Workato.
 
 * * *
 
@@ -36,27 +34,22 @@ The connector supports the following communication methods with SAP:
 
 The SAP RFC connector supports the following capabilities:
 
-- Direct connection to SAP, allowing you to establish a connection to the application server.
-- Message server connection to SAP, allowing you to establish a connection to the load balancer.
-- Encrypted communication between an OPA and your SAP instance using Secure Network Communications (SNC). Refer to our [Enabling SNC encryption](/en/connectors/sap/snc-encryption) documentation to learn more about this capability.
-- Custom BAPI/RFC and extended IDocs.
+- Direct connection to the SAP application server.
+- Message server connection to the SAP load balancer.
+- Encrypted communication between the on-prem agent and your SAP instance through Secure Network Communications (SNC). Refer to [Enable SNC encryption](/en/connectors/sap/snc-encryption) for more information.
+- Custom BAPIs, custom RFCs, and extended IDocs.
 
 * * *
 
-## SAP Certified
+## SAP integration practices
 
-Beginning March, 06 2023, our SAP RFC connector is [SAP certified](https://www.sap.com/dmc/exp/sap-certified-solutions/#/solutions?search=Worka&id=s:5f017ab0-bfce-43c1-aeb7-bfe2584d3f20) for the following capabilities:
-
-- Access SAP Business Objects Repository (BOR) based on Application Components
-- Extract RFC/BAPI/IDOC Meta Data
-- Exchange RFC/BAPI/IDOC calls including SAP return parameters
-- Unicode communication enabled
-
-![Create RFC connection](/assets/SAP-certified.BvXUkMXR.png)_SAP Certified Solutions Directory_
+The Workato SAP RFC connector supports RFC-based integration in accordance with SAP-supported integration practices and doesn't rely on the restricted Operational Data Provisioning (ODP) Data Replication API.
 
 > **SAP ODP-BASED EXTRACTION**
 > 
-> The SAP RFC connector fully complies with SAP best practices for third-party integration. According to [SAP Note 3255746](https://me.sap.com/notes/3255746/E), customers and third-party applications are not allowed to use remote function modules related to the Operational Data Provisioning (ODP) Data Replication API to access SAP ABAP sources. Instead, SAP recommends using ODP-based data extraction through externally consumable [OData services](https://help.sap.com/docs/SAP_NETWEAVER_750/ccc9cdbdc6cd4eceaf1e5485b1bf8f4b/11853413cf124dde91925284133c007d.html?locale=en-US). This can be achieved by using Workato platform connectors such as the [SAP OData connector](/en/connectors/sap-odata) or the [universal HTTP connector](/en/developing-connectors/http-v2).
+> According to [SAP Note 3255746](https://me.sap.com/notes/3255746/E), customers and third-party applications aren't permitted to use RFC modules associated with the ODP Data Replication API to access SAP ABAP sources. These modules are intended only for SAP-internal applications.
+> 
+> SAP provides an officially supported, externally consumable [OData API](https://help.sap.com/docs/SAP_NETWEAVER_750/ccc9cdbdc6cd4eceaf1e5485b1bf8f4b/11853413cf124dde91925284133c007d.html?locale=en-US) for ODP-based extraction. Workato supports this approach through the [SAP ODP](/en/data-orchestration/data-pipeline-recipe/configure-sap-agent-odp) source in data pipelines, which is part of SAP Data Agent. You can also consume externally exposed OData services with the [SAP OData connector](/en/connectors/sap-odata) or the [universal HTTP connector](/en/developing-connectors/http-v2).
 
 * * *
 
@@ -64,35 +57,35 @@ Beginning March, 06 2023, our SAP RFC connector is [SAP certified](https://www.s
 
 You must have the following to use the SAP RFC connector:
 
-- The SAP JCo library version 3.1.7 and above.
+- SAP JCo library version 3.1.7 or later.
 
-Refer to [SAP Note 2786882 - SAP JCo 3.1 release and support strategy](https://launchpad.support.sap.com/#/notes/2786882) for more details and to make sure your operating system fulfills all prerequisites.
+Refer to [SAP Note 2786882 - SAP JCo 3.1 release and support strategy](https://launchpad.support.sap.com/#/notes/2786882) to confirm your operating system meets all prerequisites.
 
 > **DEPRECATION NOTICE**
 > 
-> Starting with OPA version 2.16, Workato no longer maintains support for JCo 3.0 libraries. Prior to submitting any support requests, ensure that you are now using the latest JCo 3.1.7 libraries or above. Refer to the [configuration section](/en/connectors/sap/opa-configure#library-download) for more information.
+> Workato doesn't support JCo 3.0 libraries in on-prem agent version 2.16 and later. Make sure you use JCo 3.1.7 libraries or later before you submit a support request. Refer to [Download the SAP JCo libraries](/en/connectors/sap/opa-configure#library-download) for more information.
 > 
-> Additionally, if you use IDocs, you must use SAP Java Connector 3.1.7 libraries or above and [SAP Java IDoc Library 3.1.3](https://support.sap.com/en/product/connectors/jco.html) or above.
+> IDocs require SAP Java Connector 3.1.7 libraries or later and [SAP Java IDoc Library 3.1.3](https://support.sap.com/en/product/connectors/jco.html) or later.
 
 * * *
 
 ## Introduction to IDoc
 
-`IDoc` stands for intermediate document. It is simply a data container used to exchange information between SAP systems or between SAP and third-party systems.
+An intermediate document (IDoc) is a data container that exchanges information between SAP systems, or between SAP and third-party systems.
 
-IDoc is an open interface which is independent of the internal data structure stored in SAP, and independent of sending or receiving applications. Any application can use IDoc by following the syntax and semantics of IDoc.
+IDoc is an open interface that's independent of the internal data structure in SAP and of the sending and receiving applications. Any application that follows IDoc syntax and semantics can use IDocs.
 
-IDoc is independent of the direction of data exchange, having both outbound and inbound capabilities.
+IDocs support both inbound and outbound data exchange.
 
 * * *
 
 ## Introduction to RFC
 
-`RFC` is a protocol used in SAP to manage communication between SAP systems and third-party applications. It facilitates the invocation of function modules residing on remote SAP systems from calling programs.
+Remote Function Call (RFC) is a protocol that manages communication between SAP systems and third-party applications. Calling programs use RFC to invoke function modules on remote SAP systems.
 
-Workato can call SAP RFCs residing in an SAP system to fetch the data returned or make synchronous updates to the SAP data. RFCs can also be configured to leveraged to call Workato directly from your SAP instance. Determine how to set up an API endpoint on Workato and [connect SAP directly to Workato here.](/en/connectors/sap/tls1.2#_2-adding-workato-ssl-certificates-to-trust-manager)
+Workato can call RFCs in an SAP system to fetch data or make synchronous updates to SAP data. You can also configure RFCs to call Workato directly from your SAP instance. Refer to [Configure SAP to interact with the Workato API platform](/en/connectors/sap/tls1.2#_2-adding-workato-ssl-certificates-to-trust-manager) to set up an API endpoint in Workato and connect SAP to it.
 
-If you have trouble connecting to Workato with RFCs, review our [Troubleshooting guide](/en/connectors/sap/sap-troubleshooting) for more information.
+Refer to the [SAP troubleshooting guide](/en/connectors/sap/sap-troubleshooting) if you have trouble connecting to Workato with RFCs.
 
 * * *
 

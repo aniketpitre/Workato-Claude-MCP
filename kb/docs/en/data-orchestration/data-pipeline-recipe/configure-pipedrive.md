@@ -309,7 +309,9 @@ Pipedrive data pipelines support full sync and incremental sync. The sync mode i
 
 ### Full sync
 
-Full sync reads all available records for an object on each run and replaces the record set in your destination. Incremental objects read only records since the historical start date if you set one. Objects without an incremental filter, such as field definitions, pipelines, and archived deals and leads, use full sync. Incremental objects also use full sync for their first run. You can switch an incremental object to full sync if you need a complete extraction on each run.
+A full sync reads all available records from Pipedrive for the selected object on every run. Incremental objects read only records since the historical start date if you set one. Objects without an incremental filter, such as field definitions, pipelines, and archived deals and leads, use full sync. Incremental objects also use full sync for their first run. You can switch an incremental object to full sync if you need a complete extraction on each run.
+
+Objects with a primary key merge into the existing destination table, so records deleted in Pipedrive stay in the table. Objects without a primary key overwrite the destination table on every run.
 
 ### Incremental sync
 
@@ -323,7 +325,7 @@ Delete tracking is per-object and follows sync mode:
 
 - **Full-sync objects**: Workato compares each full sync against the previous run and marks records that no longer exist in Pipedrive as deleted in your destination. Deletions are detected on the next full sync.
 - **Incremental objects**: Pipedrive reports deletions for `deals`, `persons`, `organizations`, `activities`, `products`, `notes`, `files`, and `users`. Workato marks these records as deleted in your destination. The marker column depends on the object. Refer to [Synthetic columns](#synthetic-columns) for more information.
-- **Leads**: Pipedrive doesn't report deleted leads, so Workato can't detect them while `leads` syncs incrementally. Deleted leads remain in your destination until you re-sync the object. Switch `leads` to full sync to detect deletions.
+- **Leads**: Pipedrive doesn't report deleted leads, so Workato can't detect them while `leads` syncs incrementally. Deleted leads stay in your destination. Switch `leads` to full sync to detect deletions.
 
 Delete tracking follows the full-sync behavior if you switch an incremental object to full sync.
 
@@ -390,7 +392,7 @@ Use **Re-sync** on the affected object to recover. A re-sync extracts the object
 
 ### Deleted leads aren't detected
 
-Pipedrive doesn't report deleted leads, and `leads` syncs incrementally by default. Deleted leads remain in your destination until you re-sync the object. Switch `leads` to full sync if you need Workato to detect deleted leads.
+Pipedrive doesn't report deleted leads, and `leads` syncs incrementally by default. Deleted leads stay in your destination. Switch `leads` to full sync if you need Workato to detect deleted leads.
 
 ### Rate limits
 
