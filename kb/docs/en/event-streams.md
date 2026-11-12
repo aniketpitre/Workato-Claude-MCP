@@ -26,13 +26,13 @@ Go to one of the following locations to access Event streams:
 
 ## Event streams as project assets
 
-Event streams are [project assets](/en/projects#assets-page). Like recipes and connections, each event stream belongs to a folder or project and appears in the **Assets** view. This enables you to organize, share, and manage event streams together with the assets that rely on them.
+Event streams are [project assets](/en/projects#assets-page). Like recipes and connections, each event stream belongs to a folder or project and appears in the **Assets** view. This enables you to organize, share, and manage event streams together with the assets that rely on them. Event stream names only need to be unique within a folder, so the same name can exist in different projects.
 
-The **Event Streams** project is the default storage location for existing event streams and for new event streams created without a specified location. Workato creates this project when it's needed and migrates event streams to it with no downtime for dependent recipes. You don't need to preserve the **Event Streams** project, Workato recreates it as needed.
+The **Event Streams Topics** project is the default storage location for existing event streams and for new event streams created without a specified location. Workato creates this project when it's needed and migrates event streams to it with no downtime for dependent recipes. You don't need to preserve the **Event Streams Topics** project, Workato recreates it as needed.
 
-> **DELETING AN EVENT STREAMS PROJECT**
+> **DELETING A PROJECT OR FOLDER WITH EVENT STREAMS**
 > 
-> Deleting a project that stores event streams permanently deletes those event streams.
+> Deleting a project or folder that stores event streams permanently deletes those event streams.
 
 Manage event stream assets using the following features:
 
@@ -42,8 +42,8 @@ Collaborators can access event streams with either [project-level](/en/user-acco
 
 How Workato migrates existing access depends on your workspace's permission model:
 
-- **Legacy roles** ([RBAC 1.0](/en/roles)): Collaborators keep access through the migrated **Event Streams** project and the new project-level Event streams permission. You must update permissions to maintain collaborator access if you move an event stream out of the **Event Streams** project.
-- **Environment roles** ([RBAC 2.0](/en/user-accounts-and-teams/role-based-access/access-control-v2)): Workato creates a dedicated collaborator group and project role for each environment role, then assigns that project role on the **Event Streams** project. Workato skips environment roles without any collaborators, and environment roles with the same access level share one project role.
+- **Legacy roles** ([RBAC 1.0](/en/roles)): Collaborators keep access through the migrated **Event Streams Topics** project and the new project-level Event streams permission. You must update permissions to maintain collaborator access if you move an event stream out of the **Event Streams Topics** project.
+- **Environment roles** ([RBAC 2.0](/en/user-accounts-and-teams/role-based-access/access-control-v2)): Workato creates a dedicated collaborator group and project role for each environment role, then assigns that project role on the **Event Streams Topics** project. Workato skips environment roles without any collaborators, and environment roles with the same access level share one project role.
 
 Built-in [project roles](/en/user-accounts-and-teams/role-based-access/new-model/system-project-roles) also include the **Event streams** permission.
 
@@ -53,11 +53,16 @@ Built-in [project roles](/en/user-accounts-and-teams/role-based-access/new-model
 
 ### Deployment
 
-Packages include event streams and their storage location. This allows you to move event streams between folders and environments. During import, Workato stores event streams created before this migration that don't include a storage location in the target project. If the target is the root folder, Workato imports them into the default **Event Streams** project. Refer to [Importing assets](/en/recipe-development-lifecycle/import) for more information.
+Packages include event streams and their storage location. This allows you to move event streams between folders and environments. During import, Workato stores event streams created before this migration that don't include a storage location in the target project. If the target is the root folder, Workato imports them into the default **Event Streams Topics** project. Refer to [Importing assets](/en/recipe-development-lifecycle/import) for more information.
 
-### Developer API
+### API endpoints
 
 You can specify where to store an event stream when you create or update it with the [Developer API](/en/workato-api/event-streams).
+
+The following endpoints no longer return the environment-level **Event streams** privilege in their response after a workspace migrates to project-level permissions:
+
+- [Developer API](/en/workato-api/environment-roles) and [Embedded API](/en/oem/oem-api/environment-roles) environment roles endpoints: The `topic` key disappears from the `config` object.
+- [Developer API](/en/workato-api/team#get-privileges) and [Embedded API](/en/oem/oem-api/managed-users#get-list-of-customer-privileges) **Get privileges** endpoints: The `Event streams` key disappears from each environment's `privileges` object for environment roles.
 
 ### Activity tracking
 

@@ -7,25 +7,35 @@ description: >-
 
 # Viewing Jobs FAQs
 
-Get answers to frequently asked questions about viewing jobs.
+Get answers to frequently asked questions (FAQs) about viewing jobs.
 
-What is a Recipe Job in Workato?
+## What is a Recipe Job in Workato?
+
+View answer
 
 A [Recipe Job](/en/recipes/jobs#recipe-jobs) in Workato is created when an active recipe processes a trigger event and runs a series of actions. Each job holds a unique trigger event and executes its recipe logic based on that data.
 
-How can I view job reports in Workato?
+## How can I view job reports in Workato?
+
+View answer
 
 [To view job reports](/en/recipes/jobs#viewing-job-reports), click the **Jobs** tab in your recipe to open the Jobs report page. You can view details about specific jobs, customize reports, and repeat (rerun) jobs.
 
-What is the data retention policy for job reports in Workato?
+## What is the data retention policy for job reports in Workato?
+
+View answer
 
 Job reports in Workato are retained according to your account's data retention policy. The duration for which the data is kept depends on the specific settings of your [Workato account](https://app.workato.com/).
 
-Can I customize job reports in Workato?
+## Can I customize job reports in Workato?
+
+View answer
 
 Yes. You can [customize job reports](/en/recipes/jobs#customizing-job-reports) to show up to 10 additional columns, which can include any data available in the recipe.
 
-What kind of metadata and statuses are included in job details?
+## What kind of metadata and statuses are included in job details?
+
+View answer
 
 The Job details page includes [metadata](/en/recipes/jobs#job-metadata-and-statuses) such as:
 
@@ -45,15 +55,21 @@ The Job details page includes [metadata](/en/recipes/jobs#job-metadata-and-statu
 - Paused
 - Aborted
 
-How are paused jobs handled in Workato?
+## How are paused jobs handled in Workato?
+
+View answer
 
 [Paused jobs](/en/recipes/jobs#paused-jobs) occur when a recipe containing long actions is stopped. These jobs resume when the recipe is restarted, continuing with the same recipe version they began with.
 
-Can I rerun a failed job?
+## Can I rerun a failed job?
+
+View answer
 
 Yes. You can [rerun jobs](/en/recipes/rerun-job#rerunning-jobs). When you rerun a job, the trigger event runs through the sequence of actions in the recipe again. Duplication may occur, so be sure to check and remove duplicates (if present) before re-running the job.
 
-Why is my job stuck in processing status?
+## Why is my job stuck in processing status?
+
+View answer
 
 Some jobs may take a long time to complete. This can happen if the recipe is:
 

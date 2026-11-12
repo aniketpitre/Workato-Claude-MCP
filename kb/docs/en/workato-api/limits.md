@@ -45,7 +45,9 @@ In addition, Developer API resources have the following rate and payload quotas:
 | **Custom connectors** | All | All other [Custom connectors](/en/workato-api/custom_connectors.html) endpoints | 1 request per second |
 | **Custom OAuth profiles** | All | All [Custom OAuth profiles](/en/workato-api/custom-oauth-profiles.html#create-custom-oauth-profile) endpoints | 60 requests per minute |
 | **Data pipelines** | All | All [Data pipelines](/en/workato-api/data-pipelines.html) endpoints | 60 requests per minute |
-| **Data tables** | All | All [Data tables](/en/workato-api/data-tables.html) endpoints | 60 requests per minute |
+| **Data tables** | GET, POST | Read endpoints: [Query records](/en/workato-api/data-tables.html#query-records), [Download file from the record](/en/workato-api/data-tables.html#download-file-from-the-record), [Describe uploaded file](/en/workato-api/data-tables.html#describe-uploaded-file) | 100 requests per second |
+| **Data tables** | POST, PUT, DELETE | Write endpoints: [Create record](/en/workato-api/data-tables.html#create-record), [Update record](/en/workato-api/data-tables.html#update-record), [Delete record](/en/workato-api/data-tables.html#delete-record), [Generate link to upload file](/en/workato-api/data-tables.html#generate-link-to-upload-file), All other [Record import](/en/workato-api/data-tables.html#record-import-apis) endpoints | 20,000 values per second |
+| **Data tables** | All | All other [Data tables](/en/workato-api/data-tables.html) endpoints | 60 requests per minute |
 | **Environment management** | All | All [Environment management](/en/workato-api/environment-management.html) endpoints | 60 requests per minute |
 | **Environment properties** | All | All [Environment properties](/en/workato-api/account-properties.html) endpoints | 60 requests per minute |
 | **Environment roles** | All[](/en/workato-api/environment-roles.html) | All [Environment roles](/en/workato-api/environment-roles.html) endpoints | 60 requests per minute |

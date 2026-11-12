@@ -23,8 +23,8 @@
 ## MCP Gateway
 
 - **MCP servers dashboard** - `kb/docs/en/mcp/dashboard.md` - View MCP server tool call volume, success rate, response time, and estimated token usage across all MCP servers, filtered by period, server, client, and user.
-- **MCP access methods** - `kb/docs/en/mcp/mcp-authentication.md` - Configure MCP server access with API token-based access, OAuth2 single sign-on through Workato Identity, or OpenID Connect (OIDC) and switch between access methods.
-- **MCP verified user access configuration** - `kb/docs/en/mcp/verified-user-access-configuration.md` - Configure MCP verified user access by setting up Workato Identity, end-user groups, and OAuth 2.0 end user tool connections.
+- **MCP access methods** - `kb/docs/en/mcp/mcp-authentication.md` - Configure MCP server access with API token-based access, OAuth2 single sign-on through Workato Identity, or OpenID Connect (OIDC), and switch between access methods.
+- **MCP verified user access configuration** - `kb/docs/en/mcp/verified-user-access-configuration.md` - Configure MCP verified user access by setting up either OIDC or Workato Identity with end-user groups, and OAuth 2.0 end user tool connections.
 - **MCP verified user access** - `kb/docs/en/mcp/verified-user-access.md` - Learn how MCP verified user access uses runtime user connections so each end user authenticates to external tools with their own credentials.
 
 ## MCP Registry

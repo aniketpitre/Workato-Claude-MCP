@@ -7,7 +7,7 @@ description: >-
 
 # MCP verified user access
 
-Verified user access works through [runtime user connections](/en/features/runtime-user-connections) and allows each end user to authenticate with their own credentials when accessing a tool that requires authentication. This ensures that workflows perform actions using the identity and permissions of the individual user. MCP verified user access supports [Recipe functions](/en/connectors/recipe-functions/guides/walkthrough)
+Verified user access works through [runtime user connections](/en/features/runtime-user-connections) and allows each end user to authenticate with their own credentials when accessing a tool that requires authentication. This ensures that workflows perform actions using the identity and permissions of the individual user.
 
 You can use verified user access with proxy MCP servers. This allows you to route requests to external systems like Salesforce or Snowflake with each user authenticating with their own credentials. Users are prompted to sign in to the external system the first time they connect, and Workato handles the rest automatically. Refer to [Create a proxy MCP server](/en/mcp/mcp-servers#create-a-proxy-mcp-server) for more information.
 
@@ -16,7 +16,7 @@ MCP verified user access only supports the following recipe types:
 - [Recipe functions](/en/connectors/recipe-functions/guides/walkthrough) that use OAuth 2.0 authorization code grant. Recipe functions that use [long actions](/en/recipes/long-actions) aren't supported for MCP verified user access.
 - [API recipes](/en/api-mgmt/api-recipes/walkthrough#step-1-create-the-recipe) that use OAuth 2.0 authorization code grant.
 
-MCP verified user access requires end-users to [authenticate with Workato Identity](/en/mcp/mcp-authentication#oauth2-authentication-with-workato-identity). Refer to [MCP Workato Identity access method and end-user group configuration](/en/mcp/verified-user-access-configuration#mcp-workato-identity-access-method-and-end-user-group-configuration) for more information.
+MCP verified user access requires end-users to authenticate with [Workato Identity](/en/mcp/mcp-authentication#oauth2-authentication-with-workato-identity) or [OIDC](/en/mcp/mcp-authentication#oidc-access). Refer to [MCP Workato Identity access method and end-user group configuration](/en/mcp/verified-user-access-configuration#mcp-workato-identity-access-method-and-end-user-group-configuration) and [OIDC configuration](/en/mcp/verified-user-access-configuration#oidc-configuration) for more information.
 
 > **MCP VERIFIED USER ACCESS DOESN'T SUPPORT TOKEN AUTHENTICATION**
 > 
@@ -24,7 +24,9 @@ MCP verified user access requires end-users to [authenticate with Workato Identi
 
 ## MCP verified user access authentication workflow
 
-The MCP client checks the user's connection when a request is made. The MCP server verifies if the user has a valid connection to the required external service. The user receives an authentication prompt if the connection is missing or expired. The prompt includes a Workato-generated connection setup link that redirects the user to the Workato Identity login page.
+The MCP client checks the user's connection at login or when a tool runs, depending on the MCP server's **App authorization** setting.
+
+The MCP server verifies if the user has a valid connection to the required external service. The user receives an authentication prompt if the connection is missing or expired. The prompt includes a Workato-generated connection setup link that redirects the user to the Workato Identity login page.
 
 The user is redirected to the external application that requires authorization after authentication with Workato Identity. Users must complete authorization sequentially if multiple applications require authorization. For example, the user is redirected to an OAuth consent screen for the external service, such as Jira or Salesforce. The system stores the connections linked to user's profile after the user authorizes access.
 
@@ -41,6 +43,36 @@ flowchart TD
     classDef WorkatoBlue fill:#5159f6,stroke:#5159f6,stroke-width:2px,color:#fff;
     class E,F,G,H WorkatoBlue
 ```
+
+## On-demand connection setup
+
+The MCP server returns a way to fix a missing or broken connection when a tool call runs. This applies to every MCP server with verified user access, and can't be turned off.
+
+The experience depends on whether the MCP client supports [URL elicitation](https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation#url-elicitation-required-error).
+
+### Clients that support elicitation
+
+MCP clients that support elicitation, such as Claude Desktop and Claude web, use the following on-demand workflow:
+
+- **Missing or invalid connection** is detected during a tool call.
+- **A URL elicitation message is sent** by the MCP server asking the user to open the verified user access connection page.
+- **The user fixes or authorizes the connection** on the page.
+- **The tool call resumes and completes** without the user restarting or resubmitting the request.
+
+### Clients that don't support elicitation
+
+MCP clients that don't support elicitation use the following on-demand workflow:
+
+- **Missing or invalid connection** is detected during a tool call.
+- **The MCP server returns the connection URL as text** in the tool response.
+- **The user opens the link and fixes the connection** on the same verified user access connection page.
+- **The user retries the tool** as tool calls don't resume automatically.
+
+## Connection setup at login
+
+Users see the verified user access connection page at login after they authenticate with Workato Identity. Set **App authorization** to **When first used** to let users sign in without a connection prompt and set up connections on demand instead.
+
+Refer to [Configure app authorization behavior](/en/mcp/verified-user-access-configuration#configure-app-authorization-behavior) for steps.
 
 ## Limitations
 

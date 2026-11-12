@@ -5,7 +5,7 @@ description: Publishes a message to the specified Solace topic.
 
 # Solace - Publish message to topic action
 
-The **Publish message to topic** action publishes a message to a `Solace` topic you specify.
+The **Publish message to topic** action publishes a message to a Solace topic you specify.
 
 ## Input
 

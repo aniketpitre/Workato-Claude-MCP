@@ -1,6 +1,6 @@
 # Data orchestration
 
-115 pages. Paths are relative to the repository root.
+117 pages. Paths are relative to the repository root.
 
 
 ## Data orchestration
@@ -51,6 +51,7 @@
 - **Configure LinkedIn as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-linkedin.md` - Configure LinkedIn as a data pipeline source to extract ad account, campaign, creative, and analytics data through the LinkedIn Marketing API and sync it to your destination.
 - **Configure Looker as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-looker.md` - Set up Looker as a data pipeline source to extract and sync content, user, LookML, and query history metadata from your Looker instance to your destination.
 - **Configure Marketo as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-marketo.md` - Configure Marketo as a data pipeline source to extract object records through the REST API and sync them to your destination.
+- **Configure Mixpanel as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-mixpanel.md` - Set up Mixpanel as a data pipeline source to extract and sync raw events, user profiles, cohorts, funnels, annotations, and group profiles from Mixpanel to your destination.
 - **Configure Monday.com as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-monday.md` - Set up Monday.com as a data pipeline source to extract and sync boards, items, subitems, users, teams, tags, workspaces, updates, and activity logs to your destination.
 - **Configure MySQL as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-mysql-source.md` - Configure MySQL as a data pipeline source to extract table records and sync them with your destination.
 - **Configure NetSuite2 as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-netsuite2.md` - Configure NetSuite2 as a data pipeline source to extract records through SuiteAnalytics Connect and sync them to your destination.
@@ -84,6 +85,7 @@
 - **Configure SQL Server as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-sql-server-source.md` - Configure SQL Server as a data pipeline source to extract table records through an on-prem agent and sync them with Change Tracking.
 - **Configure Square as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-square.md` - Configure Square as a data pipeline source to extract payments, orders, catalog, customer, and labor records and sync them to your destination.
 - **Configure Stripe as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-stripe.md` - Configure Stripe as a data pipeline source to extract payment, billing, and financial records and sync them to your destination.
+- **Configure SurveyMonkey as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-surveymonkey.md` - Configure SurveyMonkey as a data pipeline source to extract and sync surveys, survey structure, responses, answers, and collectors to your destination.
 - **Configure Trello as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-trello.md` - Set up Trello as a data pipeline source to extract and sync boards, cards, and related project data through the Trello REST API into your destination.
 - **Configure Typeform as a data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-typeform.md` - Set up Typeform as a data pipeline source to sync forms, responses, workspaces, themes, webhooks, and images to your destination.
 - **Configure Workday RaaS as your data pipeline source** - `kb/docs/en/data-orchestration/data-pipeline-recipe/configure-workday-raas.md` - Configure Workday RaaS as a data pipeline source to extract custom report data from your tenant and sync it to your destination.

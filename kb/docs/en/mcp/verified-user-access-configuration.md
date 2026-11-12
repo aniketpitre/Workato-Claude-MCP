@@ -1,18 +1,24 @@
 ---
 url: 'https://docs.workato.com/en/mcp/verified-user-access-configuration.md'
 description: >-
-  Configure MCP verified user access by setting up Workato Identity, end-user
-  groups, and OAuth 2.0 end user tool connections.
+  Configure MCP verified user access by setting up either OIDC or Workato
+  Identity with end-user groups, and OAuth 2.0 end user tool connections.
 ---
 
 # MCP verified user access configuration
 
-MCP [verified user access](/en/mcp/verified-user-access) requires the following configuration:
+MCP [verified user access](/en/mcp/verified-user-access) is compatible with Workato Identity and OpenID Connect (OIDC). OIDC allows users to sign in with Workato Identity, then authorize the apps used by the MCP server's tools using the configured OIDC provider.
 
-- Workato Identity access method with assigned end user groups.
-  
-- End user tool connection with OAuth 2.0 authorization code grant.
-  
+MCP verified user access requires the following Workato Identity or OIDC configuration:
+
+**Workato Identity**
+
+- Workato Identity access method with assigned end-user groups
+- End-user tool connection with OAuth 2.0 authorization code grant
+
+**OIDC**
+
+- OIDC access method with optional end-user groups and end users
 
 Refer to [Create an SDK connection for MCP verified user access](/en/developing-connectors/sdk/guides/walkthrough#create-an-sdk-connection-for-mcp-verified-user-access) if you plan to use the [Connector SDK](/en/developing-connectors/sdk) with MCP verified user access.
 
@@ -87,5 +93,40 @@ Complete the following steps to set up an OAuth 2.0 connection:
 13. Use the **Scopes** drop-down menu to select the scopes you plan to use for your connection.
     
 14. Click **Connect**.
+    
+
+## OIDC configuration
+
+Complete the following steps to configure OIDC for MCP verified user access:
+
+1. Configure an OIDC server in your identity provider (IdP).
+   
+2. Create an OIDC profile to store the connection details for an OIDC server in your IdP, including how Workato retrieves the IdP's public keys and which audience values it accepts.
+   
+3. Add OIDC authentication for environments by going to **Workspace admin > End users > Environment access** and selecting the checkboxes for the environments the user can access. Options are DEV, TEST, and PROD.
+   
+
+## Configure app authorization behavior
+
+Configure when users authorize apps for an MCP server that uses verified user access. The **App authorization** setting has two options:
+
+- **When added to a client**: Users authorize their apps after they sign in with Workato Identity and add the MCP server to their client. This is the default.
+- **When first used**: Users sign in without an app authorization prompt and authorize an app the first time a tool call requires an app authorization.
+
+On-demand setup applies to both options. Only MCP servers that use Workato Identity or OIDC are compatible with verified user access.
+
+Complete the following steps to configure app authorization behavior for verified user access connections:
+
+1. Go to **AI Hub > Enterprise MCP**.
+   
+2. Click the MCP server where you plan to configure app authorization behavior.
+   
+3. Click the **End user access** tab.
+   
+4. Click **Edit**.
+   
+5. Use the **App authorization** drop-down menu to select **When added to a client** or **When first used**.
+   
+6. Click **Save changes**.
 
 ---

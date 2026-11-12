@@ -7,15 +7,19 @@ description: >-
 
 # Workflow apps - FAQ
 
-Get answers to frequently asked questions about Workflow apps.
+Get answers to frequently asked questions (FAQs) about Workflow apps.
 
 ## General
 
-How does Workato support application development?
+### How does Workato support application development?
+
+View answer
 
 Workato supports [application development](/en/workflow-apps) by providing tools for data storage, user interfaces, and business logic implementation.
 
-What are the key components of an application in Workato?
+### What are the key components of an application in Workato?
+
+View answer
 
 An application in Workato consists of [three key components](/en/workflow-apps#key-components):
 
@@ -23,25 +27,35 @@ An application in Workato consists of [three key components](/en/workflow-apps#k
 - **UI:** User interface for business users, created partially by Workato and customized through Pages.
 - **Business Logic:** Implemented using Workato recipes.
 
-What is the role of the user interface in Workato applications?
+### What is the role of the user interface in Workato applications?
+
+View answer
 
 The [user interface in Workato applications](/en/workflow-apps#application-user-interface) provides a platform for business users to interact with the app. Workato auto-generates part of this UI, including features like the list of requests and navigation, while custom Pages allows you to further customize the UI.
 
-What is the Workflow apps portal in Workato and who can access it?
+### What is the Workflow apps portal in Workato and who can access it?
+
+View answer
 
 The [Workflow apps portal](/en/workflow-apps/portal-homepage) in Workato is a web application where business users can access all applications to which they have been granted access. The Workflow apps portal is responsive for mobile and tablet devices and can be customized.
 
-How many end users can I authorize to use apps created with Workflow apps?
+### How many end users can I authorize to use apps created with Workflow apps?
+
+View answer
 
 The number of end users allowed to interact with Workflow apps depends on your platform plan and any additional capacity you've purchased.
 
 Go to **Platform > Workflow apps portal** or use the [Usage dashboard](/en/pricing/usage) to track the number of authorized end users.
 
-Is there a limit to the number of builders or apps that can be created?
+### Is there a limit to the number of builders or apps that can be created?
+
+View answer
 
 No, there is no limit to the number of builders or apps that can be created on the platform. Builders can create as many apps as needed without restrictions.
 
-What is a typical application flow in Workato?
+### What is a typical application flow in Workato?
+
+View answer
 
 A typical [application flow in Workato](/en/workflow-apps#example-application-flow) involves a user logging into the Workflow apps portal, navigating to an application to view requests, filling in new requests through custom Pages or the Workflow apps connector, and submitting these requests. Submitted requests trigger recipes that process the requests, which may include tasks assigned to users or automated steps.
 
@@ -56,49 +70,71 @@ classDef default fill:#67eadd,stroke:#b3e0e1,stroke-width:2px,color:#000;
 
 ## Authentication and authorization
 
-Do I have to be a Workato user to log in to the Workflow apps portal?
+### Do I have to be a Workato user to log in to the Workflow apps portal?
+
+View answer
 
 No. The Workflow apps portal is designed for business users inside your organization and beyond and has separate [user and group management](/en/workflow-apps/app-user-groups#organize-users-groups).
 
-Can I add users and groups from my Identity Provider (for example, Okta or Microsoft Entra ID)?
+### Can I add users and groups from my Identity Provider (for example, Okta or Microsoft Entra ID)?
+
+View answer
 
 Yes. You can set up SAML SSO with your identity provider, enable Just-In-Time (JIT) provisioning so that the users are created automatically in the system when they first log in, and set up additional SAML attributes so that users land in the appropriate group. Refer to our [SAML administration guide](/en/workflow-apps/saml) for more information.
 
-Can I capture data from unauthorized users?
+### Can I capture data from unauthorized users?
+
+View answer
 
 Yes, you can use [public submission forms](/en/workflow-apps/public-links) to collect submissions and requests from users that don't have a Workflow apps account.
 
 ## Deployment and distribution
 
-Are mobile apps available?
+### Are mobile apps available?
+
+View answer
 
 Workflow apps does not allow you to create native mobile apps, however, all [portal pages](/en/workflow-apps/pages-create), both custom and built-in, have responsive layouts and render properly on mobile and tablet devices.
 
-Can Workflow apps pages be added to my internal websites or business apps as an iFrame?
+### Can Workflow apps pages be added to my internal websites or business apps as an iFrame?
+
+View answer
 
 Yes. You can embed the entire Workflow apps portal, a specific app, or even a page using an [`iframe`](/en/workflow-apps#use-cases). This requires explicit enablement by Workato Customer Support.
 
-Can I customize the URL of my application?
+### Can I customize the URL of my application?
+
+View answer
 
 You can [provide your subdomain](/en/workflow-apps/portal-settings#general) on your `workato.app` domain (all applications reside on `https://{your-domain}.workato.app`).
 
-Is Workflow apps available for Embedded customers?
+### Is Workflow apps available for Embedded customers?
+
+View answer
 
 The Workflow apps portal is available only to direct customers. Contact your Customer Success Manager for more information.
 
-Can a Workato application have a chain of approvals for the same request?
+### Can a Workato application have a chain of approvals for the same request?
+
+View answer
 
 Yes. It's possible to set up a chain of approvals for the same request in a Workato application by initiating multiple [user tasks](/en/workflow-apps/workflow-apps-connector/assign-task-to-users-action#assign-task-to-users-action) with the same Record ID.
 
-How does a user submit a request in a Workato application?
+### How does a user submit a request in a Workato application?
+
+View answer
 
 Users can submit a request either through a custom-defined Page in the application or by using the [Create request action](/en/workflow-apps/workflow-apps-connector/create-request-action) through the Workflow apps connector in Workato.
 
-What happens when a new request is submitted in Workato?
+### What happens when a new request is submitted in Workato?
+
+View answer
 
 A [new request submission](/en/workflow-apps/application-page#submit-a-request) triggers a recipe in Workato. This recipe, depending on its configuration, processes the request, which could include data enrichment, manual review, and other actions.
 
-How are tasks assigned and managed in Workato applications?
+### How are tasks assigned and managed in Workato applications?
+
+View answer
 
 Tasks are assigned through the [Assign task to users](/en/workflow-apps/workflow-apps-connector/assign-task-to-users-action#assign-task-to-users-action) action in the recipe. This determines the following:
 
@@ -110,17 +146,23 @@ Tasks are assigned through the [Assign task to users](/en/workflow-apps/workflow
 
 The assignee receives an email with a link to the task, which can be accessed through the Workflow apps portal.
 
-Is it possible to complete tasks in Workato using external platforms like Slack or Microsoft Teams?
+### Is it possible to complete tasks in Workato using external platforms like Slack or Microsoft Teams?
+
+View answer
 
 Yes. Tasks can be completed using external platforms through integrations like [Workbot for Slack](/en/workbot/workbot#workbot-for-slack) or [Workbot for Microsoft Teams](/en/workbot-for-teams/workbot).
 
 ## Data
 
-How do data tables work in Workato?
+### How do data tables work in Workato?
+
+View answer
 
 Apps with request and approval functionality use [Data tables](/en/data-tables#data-tables) for structured data storage. Users can define data tables in projects, with each application typically having one main data table for storing relevant information, such as invoices or PTO requests.
 
-What are the quotas on data storage?
+### What are the quotas on data storage?
+
+View answer
 
 [Workflow apps data storage quotas](/en/data-tables/data-table-limits#limits) include the following:
 
@@ -155,13 +197,17 @@ What are the quotas on data storage?
 | Link to a table | Display data from a different data table in your workspace. Choose a **Linked data table** to select another data table to link to your current table and **Display data from** to determine which column from the data table you have selected displays as a dropdown. | Each data table can link to a maximum of `20` data tables. Data tables supports linking to **short text** and **long text** column types. | NA |
 | Multi-value | This column supports storing multiple values in a single cell. Multi-value columns do not support nulls, empty strings, or duplicate values. Sorting columns is not supported. Supported value types include short **Text**, **Integer**, **Decimal**, **Date**, **DateTime**, and **Link to a table**. | Each data table can have a maximum of `20` multi-value columns. Each cell within a multi-value column can store up to `20` values. | NA |
 
-Can my data storage (for example, MySQL or Snowflake) be used for storage for app data?
+### Can my data storage (for example, MySQL or Snowflake) be used for storage for app data?
+
+View answer
 
 The data for apps with request and approval functionality is stored in [data tables](/en/data-tables#data-tables). You can use recipes to sync data between data tables and other storage / apps.
 
 Generic apps, or apps without request and approval functionality, use recipes to connect directly to external systems and can pull in live or contextual data using [Run recipe actions](/en/workflow-apps/component-actions/run-recipe).
 
-Is it possible to validate the data submitted?
+### Is it possible to validate the data submitted?
+
+View answer
 
 All [pages](/en/workflow-apps/application-page#application-page) automatically perform simple validations, including ensuring that required fields are filled in and that all inputs match their data type.
 
@@ -182,11 +228,15 @@ You can also perform validations in the recipe after the record has been created
 
 ## Application logic
 
-How do I troubleshoot application errors?
+### How do I troubleshoot application errors?
+
+View answer
 
 Application logic is implemented as Workato recipes, so all [troubleshooting](/en/troubleshooting) tools and practices apply.
 
-How are Workato recipes used in workflow automation?
+### How are Workato recipes used in workflow automation?
+
+View answer
 
 Workato recipes are used to coordinate users and services. This allows you to design workflows that span across time, various services, user personas, and UIs. Recipes often use the [Workflow apps connector](/en/workflow-apps/workflow-apps-connector#app-workflows) to implement user steps and change workflow stages.
 

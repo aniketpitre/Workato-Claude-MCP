@@ -9,21 +9,29 @@ description: >-
 
 Get answers to frequently asked questions (FAQs) about working with lists in Workato.
 
-Why can't I select or map a list datapill into an input field?
+## Why can't I select or map a list datapill into an input field?
+
+View answer
 
 Some input fields don't allow you to select list datapills directly from the datatree. To map a list datapill into these fields, switch the input to [formula mode](/en/formulas/formula-mode). Formula mode lets you reference lists and objects that aren't selectable in text mode.
 
 ![Mapping list datapills in formula mode](/assets/list-datapills-formula-mode.BlIrRMyz.gif)_Mapping list datapills in formula mode_
 
-How are lists used in integrations with Workato?
+## How are lists used in integrations with Workato?
+
+View answer
 
 Lists, also called arrays, let you handle structured data across applications. For example, you may need to process a list of order line items, contacts, or products in a recipe. Workato provides tools to manipulate individual list items or process entire batches.
 
-How do I set up a recipe that reads a list from a CSV file?
+## How do I set up a recipe that reads a list from a CSV file?
+
+View answer
 
 You can use the **New CSV file in folder** trigger from the Box connector to read a CSV file and parse it into a list of rows. Column headers become variables you can use in your recipe. Refer to [How to use list datapills](/en/features/list-management#how-to-use-list-datapills) for an example with a sample file.
 
-What are the ways to map list datapills into actions?
+## What are the ways to map list datapills into actions?
+
+View answer
 
 You can map list datapills into actions in three ways:
 
@@ -33,23 +41,33 @@ You can map list datapills into actions in three ways:
 
 Learn more in [How to use list datapills](/en/features/list-management#how-to-use-list-datapills).
 
-Why does only the first item get used when I map a list datapill directly?
+## Why does only the first item get used when I map a list datapill directly?
+
+View answer
 
 When you map a list datapill into an action that doesn't support list input, the action only uses the first item. To process all items, use a **Repeat** step or an action that accepts list input. Refer to [Direct use without list processing](/en/features/list-management#direct-use-without-list-processing) for more information.
 
-Which actions support list input?
+## Which actions support list input?
+
+View answer
 
 Some actions, like Salesforce bulk insert or NetSuite batch actions, contain a **Source list** input that accepts list datapills. These actions automatically process the entire list. Refer to [Actions that accept list inputs](/en/features/list-management#list-batch-action) for more information.
 
-When should I use a Repeat step?
+## When should I use a Repeat step?
+
+View answer
 
 Use a **Repeat** step when an action doesn't support list input. The **Repeat** step loops through each item in the list so you can process them one at a time. Refer to [Using the repeat step for explicit list processing](/en/features/list-management#list-repeat-action) for more information.
 
-How can I avoid incorrect values when using a Repeat step?
+## How can I avoid incorrect values when using a Repeat step?
+
+View answer
 
 If you use variables inside a loop, set **Clear step output** to **Yes**. Otherwise, values from earlier iterations may persist unexpectedly. See [Clear step output](/en/features/list-management#clear-step-output) for guidance.
 
-How can I manage lists using the Variables by Workato connector?
+## How can I manage lists using the Variables by Workato connector?
+
+View answer
 
 The [Variables by Workato](/en/features/variables) connector supports advanced list operations, including the following actions:
 
@@ -60,7 +78,9 @@ The [Variables by Workato](/en/features/variables) connector supports advanced l
 
 This is the recommended approach for managing lists in new recipes.
 
-Why can't I find the Lists by Workato connector when building a recipe?
+## Why can't I find the Lists by Workato connector when building a recipe?
+
+View answer
 
 The **Lists by Workato** connector is deprecated. You can no longer select it when building new recipes, and it won't receive bug fixes or improvements.
 

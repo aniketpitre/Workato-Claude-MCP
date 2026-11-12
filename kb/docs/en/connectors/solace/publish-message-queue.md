@@ -5,7 +5,7 @@ description: Publishes a message to the specified Solace queue.
 
 # Solace - Publish message to queue action
 
-The **Publish message to queue** action publishes a message to a `Solace` queue you specify.
+The **Publish message to queue** action publishes a message to a Solace queue you specify.
 
 ## Input
 

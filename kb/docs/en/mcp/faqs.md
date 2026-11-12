@@ -7,11 +7,13 @@ description: >-
 
 # MCP - FAQ
 
-Get answers to frequently asked questions about Model Context Protocol (MCP), including setup, authentication, Verified User Access, and troubleshooting.
+Get answers to frequently asked questions (FAQs) about Model Context Protocol (MCP), including setup, authentication, Verified User Access, and troubleshooting.
 
 ## Overview
 
-What is MCP?
+### What is MCP?
+
+View answer
 
 [Model Context Protocol (MCP)](/en/mcp) is an open protocol that standardizes how AI models connect to external systems and data sources. MCP enables you to expose your Workato capabilities (API collections, API recipes, recipe functions, and skills) as tools that AI clients can use.
 
@@ -21,7 +23,9 @@ Key benefits of MCP include:
 - **Standardizes interactions**: Provides a consistent way for AI models to communicate with different systems like Slack, Jira, or Google Drive
 - **Reduces development**: MCP's standardization reduces the need for custom integrations for each new data source
 
-What MCP capabilities does Workato provide?
+### What MCP capabilities does Workato provide?
+
+View answer
 
 Workato provides the following MCP capabilities:
 
@@ -29,7 +33,9 @@ Workato provides the following MCP capabilities:
 - **[Verified User Access](/en/mcp/verified-user-access)**: Enables your MCP servers to use authenticated end-user credentials for external API calls instead of static tokens.
 - **[Workato Developer API and Embedded API MCP](/en/mcp/developer-api-mcp)**: Enables AI-powered developer environments like Claude Desktop and Cursor to programmatically access your Workato workspace.
 
-Which AI clients/LLMs are compatible with Workato MCP?
+### Which AI clients/LLMs are compatible with Workato MCP?
+
+View answer
 
 [Workato MCP](/en/mcp#getting-started) is compatible with:
 
@@ -41,23 +47,31 @@ Which AI clients/LLMs are compatible with Workato MCP?
 
 ## Setup and access
 
-Is MCP available in my region?
+### Is MCP available in my region?
+
+View answer
 
 **[MCP](/en/mcp) is available in the US, EU, AU, SG, and JP data centers.**
 
 Contact your Customer Success representative if you're interested in using MCP or require additional information. Refer to your pricing plan and contract to learn more.
 
-How do I create an MCP server in Workato?
+### How do I create an MCP server in Workato?
+
+View answer
 
 You can create an MCP server in the AI Hub by [starting with a prebuilt template](/en/mcp/prebuilt-mcps#install-a-prebuilt-mcp-server-in-workato) or [building your own from scratch](/en/mcp/mcp-servers#create-an-mcp-server). The setup steps vary depending on which approach you choose.
 
-What prebuilt MCP server templates are available?
+### What prebuilt MCP server templates are available?
+
+View answer
 
 Workato provides prebuilt MCP server templates for common collaboration and productivity apps, such as [Slack](/en/mcp/prebuilt-mcps/slack-mcp-server), [Google Calendar](/en/mcp/prebuilt-mcps/google-calendar-mcp-server), and [Google Sheets](/en/mcp/prebuilt-mcps/google-sheets-mcp-server), project and development apps, such as [Jira](/en/mcp/prebuilt-mcps/jira-mcp-server) and [GitHub](/en/mcp/prebuilt-mcps/github-mcp-server), identity management apps, such as [Google Directory End User](/en/mcp/prebuilt-mcps/google-directory-end-user-mcp-server) and [Okta End User](/en/mcp/prebuilt-mcps/okta-end-user-mcp-server), and sales operations apps, such as [Gong](/en/mcp/prebuilt-mcps/gong-mcp-server).
 
 Refer to the [Prebuilt MCP servers](/en/mcp/prebuilt-mcps/mcp-servers) page for a complete list of available templates.
 
-What types of assets can I add as tools to an MCP server?
+### What types of assets can I add as tools to an MCP server?
+
+View answer
 
 You can select one of two tool source types when creating an MCP server from scratch:
 
@@ -77,7 +91,9 @@ With project assets, you can mix multiple asset types in the same MCP server. Al
 
 Learn more about [MCP servers](/en/mcp/mcp-servers) and [Verified User Access](/en/mcp/verified-user-access).
 
-How do I configure an AI client to use my MCP server?
+### How do I configure an AI client to use my MCP server?
+
+View answer
 
 Configuration steps vary by AI client:
 
@@ -86,7 +102,9 @@ Configuration steps vary by AI client:
 - [Cursor](/en/mcp/remote-mcp-servers#cursor-mcp-configuration)
 - [Microsoft Copilot](/en/mcp/remote-mcp-servers#microsoft-copilot-mcp-configuration)
 
-What are the best practices for designing MCP tools?
+### What are the best practices for designing MCP tools?
+
+View answer
 
 Follow these key principles when [designing MCP tools](/en/mcp/mcp-server-tool-design):
 
@@ -115,7 +133,9 @@ Follow these key principles when [designing MCP tools](/en/mcp/mcp-server-tool-d
 
 ## Authentication and access control
 
-What authentication methods does MCP support?
+### What authentication methods does MCP support?
+
+View answer
 
 MCP supports [two authentication methods](/en/mcp/mcp-authentication):
 
@@ -133,7 +153,9 @@ MCP supports [two authentication methods](/en/mcp/mcp-authentication):
 
 **Important**: Switching from token-based authentication to Workato Identity revokes the MCP token, requiring all clients to be reconfigured for OAuth 2.0 authentication.
 
-What is Verified User Access and when should I use it?
+### What is Verified User Access and when should I use it?
+
+View answer
 
 [Verified User Access (VUA)](/en/mcp/verified-user-access) enables end users to authenticate with their own credentials when interacting with MCP tools, bringing enterprise-grade governance and user-level security to AI workflows.
 
@@ -158,7 +180,9 @@ What is Verified User Access and when should I use it?
 - Selected tools must be recipe functions or skills
 - Connected applications must support OAuth 2.0 authorization code grant. API keys, basic auth, and other OAuth 2.0 grant types don't work with VUA.
 
-How do I enable Verified User Access for my MCP server?
+### How do I enable Verified User Access for my MCP server?
+
+View answer
 
 Complete the following steps to use [Verified User Access (VUA)](/en/mcp/verified-user-access) with your MCP server:
 
@@ -173,7 +197,9 @@ This allows each user to interact with your MCP tools using their own credential
 
 ## Limitations
 
-Can I limit MCP server usage?
+### Can I limit MCP server usage?
+
+View answer
 
 Yes. You can [configure MCP server quotas](/en/mcp/mcp-server-access-and-configuration#configure-mcp-server-limits) by going to your MCP server's **Settings > Limits** page:
 
@@ -183,21 +209,29 @@ Yes. You can [configure MCP server quotas](/en/mcp/mcp-server-access-and-configu
 
 When rate limits or usage quotas are exceeded, all requests are blocked until the quota interval passes or the quota resets.
 
-How many tokens can I have active on an MCP server at once?
+### How many tokens can I have active on an MCP server at once?
+
+View answer
 
 Up to 50.
 
-What's the maximum size of the Allowed IPs and Blocked IPs lists?
+### What's the maximum size of the Allowed IPs and Blocked IPs lists?
+
+View answer
 
 Each list holds up to 500 entries. The same quota applies to the **Allowed IPs** and **Blocked IPs** lists independently.
 
-How long can an MCP tool call run before it times out?
+### How long can an MCP tool call run before it times out?
+
+View answer
 
 A tool call returns inline within 30 seconds. After that, the call detaches and continues in the background up to a total of 300 seconds. Requests that exceed the asynchronous timeout don't return a response to the MCP client. Set the asynchronous timeout in your recipe settings.
 
 ## Troubleshooting
 
-Why can't I access my MCP server with Workato Identity?
+### Why can't I access my MCP server with Workato Identity?
+
+View answer
 
 MCP servers using Workato Identity (OAuth 2.0) authentication don't grant automatic access to any users. All users must be added to an end-user group to access MCP servers, including administrators.
 
@@ -214,7 +248,9 @@ You must have admin privileges to manage user groups. If using token-based authe
 
 Refer to [MCP access methods user groups](/en/mcp/mcp-authentication#user-groups) for step-by-step instructions.
 
-How can I track who is accessing my MCP server?
+### How can I track who is accessing my MCP server?
+
+View answer
 
 [MCP server logs](/en/mcp/mcp-server-access-and-configuration#view-mcp-server-logs) provide a unified usage and access overview for governance and tracking. Logs include:
 

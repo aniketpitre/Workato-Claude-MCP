@@ -73,13 +73,19 @@ We recommend using the following best practices when installing platform assets 
 - **Use Workato resources**: If you encounter errors in integrations that use assets downloaded from the community, contact [Workato support](https://support.workato.com/) for guidance. Our support team can assess the points of failure, as well as reach out to the asset developer for clarification.
   
 
-## Community recipe FAQs
+## Community connector FAQs
 
-Do I receive updates when the community connector is updated by the connector developer?
+Get answers to frequently asked questions (FAQs) about Community connectors.
+
+### Do I receive updates when the community connector is updated by the connector developer?
+
+View answer
 
 Connectors installed from the community library retain a relationship with their parent connector, which is the connector listed in the community. When the connector author publishes a new version of this connector, you will receive a notification to update your connector. Updating your connector to the latest version doesn't change the version that is released to your workspace. This allows you to test and ensure that the new connector version is stable and suitable for your recipes.
 
-How do community connectors work with other features in Workato?
+### How do community connectors work with other features in Workato?
+
+View answer
 
 Using connectors from the community is highly complementary to other existing features in Workato.
 

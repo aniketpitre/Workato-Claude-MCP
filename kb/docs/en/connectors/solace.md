@@ -8,7 +8,7 @@ description: >-
 
 # Solace
 
-[Solace](https://solace.com/) provides an event streaming and management platform built around the PubSub+ event broker, which lets applications, microservices, and devices publish and subscribe to messages over queues and topics. The `Solace` connector enables you to publish messages to Solace topics and queues, receive messages individually or in a batch from a queue, acknowledge messages received in manual acknowledgement mode, and trigger recipes when new messages arrive on a queue or topic.
+[Solace](https://solace.com/) provides an event streaming and management platform built around the PubSub+ event broker, which lets applications, microservices, and devices publish and subscribe to messages over queues and topics. The Solace connector enables you to publish messages to Solace topics and queues, receive messages individually or in a batch from a queue, acknowledge messages received in manual acknowledgement mode, and trigger recipes when a new message or batch of new messages arrives.
 
 > **PRIVATE RELEASE**
 > 
@@ -16,23 +16,24 @@ description: >-
 
 ## Prerequisites
 
-You must have the following prerequisites to use the `Solace` connector:
+You must have the following prerequisites to use the Solace connector:
 
 - An active [on-prem agent](/en/on-prem) with a configured on-prem group.
+- On-prem agent version [34](/en/on-prem/agents/versions#v34-0) or later to use the [New message batch in queue](/en/connectors/solace/new-message-batch-trigger) trigger, or manual acknowledgement on the [Receive messages batch from queue](/en/connectors/solace/receive-messages-batch-from-queue) action. Refer to [Upgrade your agent](/en/on-prem/agents/upgrade) to update an agent from an earlier version.
 - A Solace PubSub+ broker reachable from that on-prem agent, and its broker URL.
 - Credentials for one of the connector's supported authentication types. Refer to the Solace [Configuring Client Usernames](https://docs.solace.com/Configuring-and-Managing/Configuring-Client-Usernames.htm) guide for basic authentication credentials or the Solace [Configuring OAuth Authorization](https://docs.solace.com/Security/Configuring-OAuth-Authorization.htm) guide for OAuth credentials.
 - Optional. SEMP management endpoint credentials, if you want Workato to populate the queue name drop-down automatically instead of entering queue names manually.
 
 ## Connection setup
 
-The `Solace` connector supports the following authentication types:
+The Solace connector supports the following authentication types:
 
 - [Basic](#basic-connect)
 - [OAuth 2.0](#oauth2-connect)
 
 #### Connect to Solace using Basic authentication
 
-Complete the following steps to set up a basic authentication connection to `Solace` in Workato:
+Complete the following steps to set up a basic authentication connection to Solace in Workato:
 
 1. Click **Create > Connection** or press C twice.
    
@@ -67,7 +68,7 @@ Complete the following steps to set up a basic authentication connection to `Sol
 
 #### Connect to Solace using OAuth 2.0 authentication
 
-Complete the following steps to set up an OAuth 2.0 connection to `Solace` in Workato:
+Complete the following steps to set up an OAuth 2.0 connection to Solace in Workato:
 
 1. Click **Create > Connection** or press C twice.
    

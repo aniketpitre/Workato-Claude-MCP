@@ -890,7 +890,11 @@ description: >-
 
 # Troubleshooting - FAQ
 
-Running the workato command in my terminal results in errors
+Get answers to frequently asked questions (FAQs) about troubleshooting SDK connectors.
+
+## Running the workato command in my terminal results in errors
+
+View answer
 
 Here is a quick checklist of things to verify:
 
@@ -899,11 +903,15 @@ Here is a quick checklist of things to verify:
 3. Run `bundle install` in your connector project to ensure you have all dependencies installed.
 4. Remove your gemfile.lock and run `bundle install`.
 
-When I run a workato exec command, I get an error.
+## When I run a workato exec command, I get an error.
+
+View answer
 
 You may get this error if your connector receives a `400` bad request response from an API call. You may use options like `--verbose` to see the request, `--debug` to see the stacktrace of the SDK Gem and byebug to debug further.
 
-When I try to use the workato push command, I get an error
+## When I try to use the workato push command, I get an error
+
+View answer
 
 The `workato push` command tries to release your connector on Workato. If there are syntax errors in your connector, the output of the command will relay that to you.
 
@@ -913,7 +921,9 @@ Unable to publish custom adapter Chargebee Demo1: Syntax [["method require not a
 
 Where this is telling you that there is 1 error (denoted by 1 index in the root array) and the error is from line 1 position 0 to line 1 position 16.
 
-When I run RSpec, VCR states that there is an VCR::Errors::UnhandledHTTPRequestError:
+## When I run RSpec, VCR states that there is an VCR::Errors::UnhandledHTTPRequestError:
+
+View answer
 
 VCR records and matches HTTP requests based on your configurations in your `spec_helper.rb`. What RSpec is telling you is that it can't match the HTTP request you have sent to anything that has been recorded. There are a few reasons for this:
 

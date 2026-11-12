@@ -44,11 +44,17 @@ You must remap datapills that use custom fields in each relevant action for spec
 
 ## FAQ
 
-Must I migrate every action and every recipe?
+Get answers to frequently asked questions (FAQs) about migrating NetSuite recipes across environments.
+
+### Must I migrate every action and every recipe?
+
+View answer
 
 There is no requirement that you must migrate all existing recipes and/or actions. You can choose only to do this for selected recipes and actions where custom fields are used **AND** if this recipe is going to be migrated through recipe lifecycle management to a production Workato workspace. This enablement is unnecessary for actions and recipes that only interact with standard fields.
 
-Must I migrate recipes in my production Workspace?
+### Must I migrate recipes in my production Workspace?
+
+View answer
 
 NetSuite recipes in production workspaces probably do not need to be migrated. In situations where you do not foresee changing this recipe's connection or exporting and importing it into another Workato workspace, this migration is unnecessary. Migration offers the value for NetSuite recipes in UAT environments that you plan to import into production environments eventually.
 

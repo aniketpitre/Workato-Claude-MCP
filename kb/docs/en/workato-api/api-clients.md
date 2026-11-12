@@ -143,29 +143,41 @@ Use caution when deleting an API client or client role.
 
 ## FAQs for managing API clients and client roles
 
-1\. How should I configure client roles?
+Get answers to frequently asked questions (FAQs) about API clients and client roles.
+
+### How should I configure client roles?
+
+View answer
 
 Client roles should be configured with use cases in mind. For example, a "Recipe Operator" client role might have endpoint access to start/stop recipes whereas a "Project Deployment" client role might have access to Recipe Lifecycle Management and Environment Properties endpoints. This can be used in conjunction with project scoping on the API client level to achieve access scoped to both use cases and projects.
 
 As a best practice, the principle of least privilege should be employed when defining client roles.
 
-2\. How should I configure API clients?
+### How should I configure API clients?
+
+View answer
 
 Configure API clients with the use case and project in mind. For example, a "Sales and Marketing - Recipe Operator" API client can be provisioned specifically for the Sales and Marketing team. API client configuration allows you to be specific when you define permissions as this increases security, however this also increases complexity as you have to manage more API tokens.
 
-3\. Where should I store my API client tokens?
+### Where should I store my API client tokens?
+
+View answer
 
 API client tokens are view-once, meaning that if they are misplaced, they are lost forever. To recover the API client, you must regenerate the token.
 
 Ensure that you store your API tokens in a secure location with controlled access. We recommend you consider tools like AWS Secrets Manager as a way to manage these tokens, especially if you are planning to generate multiple tokens for different teams.
 
-4\. Who has access to API clients and how do I control access?
+### Who has access to API clients and how do I control access?
+
+View answer
 
 All environment admins in your workspace have access to API clients. **Environment admin** and legacy **Admin** roles have the **Developer API** and **API platform** privileges. Use caution when adding users as Admins as they have the ability to create, edit, and delete API clients which may impact existing automated workflows using Workato's APIs.
 
 When creating custom roles in your team, you can define access to API clients under the **Workspace admin** section and selecting API clients. Any user assigned this custom role will have full access to the API clients tool.
 
-5\. Why are some endpoints not compatible in my "TEST" and "PROD" environments?
+### Why are some endpoints not compatible in my "TEST" and "PROD" environments?
+
+View answer
 
 Certain API endpoints in Workato are only available in the "DEV" environment such as "Project deployments" and "Workspace Collaborators". This is because you can only manage these tools from your "DEV" environment.
 

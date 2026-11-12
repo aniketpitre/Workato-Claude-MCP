@@ -10,19 +10,27 @@ description: >-
 
 Get answers to frequently asked questions (FAQs) about Environments for Embedded customers.
 
-Who can access the Deployments tab?
+## Who can access the Deployments tab?
+
+View answer
 
 The **Deployments** tab is accessible for the Embedded Partner (EP) and collaborators with permission. Refer to [Embedded Environments](/en/oem/embedded-environments/environment-roles) roles for more information.
 
-Who can access different environments?
+## Who can access different environments?
+
+View answer
 
 Access to each environment can be defined for a collaborator. It is possible to assign a different role for each environment. Refer to [Embedded Environments](/en/oem/embedded-environments/environment-roles) roles for more information.
 
-Who can make deployments to another environment?
+## Who can make deployments to another environment?
+
+View answer
 
 A user must have deployment permission on both the origin and target environment to make a deployment. Refer to [Embedded Environments](/en/oem/embedded-environments/environment-roles) roles for more information.
 
-Can a collaborator deploy to an environment they don’t have access or deployment access to?
+## Can a collaborator deploy to an environment they don’t have access or deployment access to?
+
+View answer
 
 No. A collaborator must have access to at least two environments to view the [Deployments tab](/en/oem/embedded-environments/deploy-environment), and deployment permission in both environments.
 
@@ -32,7 +40,9 @@ If a collaborator has deployment access on two environments, they can only choos
 > 
 > The Embedded Partner (EP) manages access to different environments (Development, Test, Production) within an Embedded Customer's (EC) workspace through their UI in a fully embedded environment. The EP is responsible for generating new JWT tokens to enable seamless switching between environments without compromising security. This ensures that ECs can only access the environments they are permitted to, maintaining the integrity of each environment's operations.
 
-What happens when importing an SDK source code using RLCM in Development (package including connector)?
+## What happens when importing an SDK source code using RLCM in Development (package including connector)?
+
+View answer
 
 The connector becomes exclusively available in the current environment. It does not appear in other environments unless [deployed](/en/oem/embedded-environments/deploy-environment).
 
@@ -40,73 +50,107 @@ The connector becomes exclusively available in the current environment. It does 
 > 
 > We encourage partners to use shared connectors for a better and unified experience.
 
-What occurs during a deployment from Development to Production or Test for an SDK Connector?
+## What occurs during a deployment from Development to Production or Test for an SDK Connector?
+
+View answer
 
 If the [SDK connector](/en/developing-connectors/custom-connector#connector-sdk) is selected to be included in the deployment package, the connector, along with any updates or source code changes, is successfully included in the Production or Test environment. Each environment has distinct connector IDs, indicating separate instances. The SDK connector displays under **Tools**\> connector SDK for each environment where it is available.
 
-How does installing an SDK Connector through a sharing link affect its availability?
+## How does installing an SDK Connector through a sharing link affect its availability?
+
+View answer
 
 Installing the [SDK connector](/en/developing-connectors/custom-connector#connector-sdk) in the customer’s Development workspace through a sharing link makes it available as a private connector in Development. Without the connector, importing the package fails. The connector is not initially present in other environments after installation.
 
 Installation with a private link makes the connector available in the current environment. Without the connector, importing a package that uses it fails. The connector is not initially present in other environments after installation.
 
-How does editing the connector version in Development impact Production?
+## How does editing the connector version in Development impact Production?
+
+View answer
 
 Modifying the version in Development does not affect the version in Production. However, [deploying a new version](/en/oem/embedded-environments/deploy-environment#deployments-workflow) from Development to Production updates the connector in Production, maintaining the same ID.
 
-What behaviors have been observed SDK Connectors across environments?
+## What behaviors have been observed SDK Connectors across environments?
+
+View answer
 
 Connectors operate independently between Development, Test, and Production. Deployment transfers connectors with updates, maintaining consistency. Additionally, using a private link for sharing the connector matches the behavior observed with [RLCM](/en/oem/oem-api/recipe-lifecycle-management#recipe-lifecycle-management) imports.
 
-What happens to Lookup Tables when deploying a project?
+## What happens to Lookup Tables when deploying a project?
+
+View answer
 
 [Lookup Tables](/en/oem/oem-api/lookup-tables#lookup-tables) are included in the deployment package regardless of the table scope (global or project). Lookup Table content is only included in the deployment if you choose to include this data.
 
-How can I migrate my customers without losing data?
+## How can I migrate my customers without losing data?
+
+View answer
 
 You can [migrate customers](/en/oem/embedded-environments/migrate-embedded-environments#migration) without data loss by using the provision button in the Workato UI. This method assigns Environments to a specific customer. Recipes continue to run as usual. Initially, your existing workspace becomes your Development environment, and you must manually move it to Production if necessary.
 
-How will the connection-based pricing be affected?
+## How will the connection-based pricing be affected?
+
+View answer
 
 Introducing the [Environments feature](/en/oem/embedded-environments) with Development, Test, and Production environments does not impact connection-based pricing. A connection is only counted once, regardless of whether it's authenticated in one or all three environments. This ensures our pricing remains fair by counting each connection a single time. This aligns with our commitment to straightforward and equitable billing practices.
 
-Is the Environments feature compatible with Fully Embedded implementations?
+## Is the Environments feature compatible with Fully Embedded implementations?
+
+View answer
 
 Yes. The Environments feature is fully compatible with [Fully Embedded](/en/oem/workato-embedded#workato-fully-embedded) setups. Behind the scenes, each environment corresponds to a different `managed_user_id`. In Fully Embedded configurations, where the navigation bar is hidden, you must generate three different JWTs. Additionally, you can specify different origin URLs for each environment. This allows you tailor integration across your Development, Test, and Production stages.
 
-How does Environments work with Embedded APIs?
+## How does Environments work with Embedded APIs?
+
+View answer
 
 Each environment is associated with a unique `managed_user_id`. You must use the appropriate `managed_user_id` in the API endpoint to interact with the [Embedded APIs](/en/oem/oem-api#authentication) for a specific environment (Development, Test, or Production). For example, you can use endpoints such `.../managed_user/:managed_user_id_dev/` or `.../managed_user/:managed_user_id_prod/` to access the corresponding environment's data and settings.
 
-Is the Environments feature compatible with the Connection Widget?
+## Is the Environments feature compatible with the Connection Widget?
+
+View answer
 
 Yes. The [Connection Widget](/en/oem/workato-embedded-implementation#connection-widget) is compatible with the Environments feature. You must specify the [correct ID](/en/oem/embedded-environments/embedded-environments-api#how-to-get-the-correct-id) and `connection_id` corresponding to the environment (Development, Test, or Production) you plan to use when you select the widget to authenticate connections.
 
-Is the Environments feature compatible with the Admin workspace or only with Customer workspaces?
+## Is the Environments feature compatible with the Admin workspace or only with Customer workspaces?
+
+View answer
 
 The [Environments feature](/en/oem/embedded-environments) is enabled only for Customer workspaces. Although the Admin workspace does not yet support this feature, we recommend differentiating between Build and Live workspaces as a best practice.
 
-Can I have a mixed approach, with some customers having Environments and others not?
+## Can I have a mixed approach, with some customers having Environments and others not?
+
+View answer
 
 Yes. You can use a mixed approach. You can decide whether to provision Environments for each customer workspace. The Environments feature cannot be disabled after you provision a workspace. However, you can use [Role-Based Access Control (RBAC)](/en/user-accounts-and-teams/role-based-access/#managing-your-workspace-collaborators-with-role-based-access-control) to limit visibility, allowing collaborators to access only specific environments as required.
 
-Can I have more than three environments?
+## Can I have more than three environments?
+
+View answer
 
 No. The system is standardized to specifically use the Development, Test, and Production [environments](/en/oem/embedded-environments#environments). You cannot increase the number of environments.
 
-Can I rename my environments?
+## Can I rename my environments?
+
+View answer
 
 No. [Environment](/en/oem/embedded-environments#environments) names are Development, Test, and Production. These names cannot be changed.
 
-Can I have only STAGING and LIVE?
+## Can I have only STAGING and LIVE?
+
+View answer
 
 No. You cannot reduce the number of environments. However, you can adjust [Role-Based Access Control (RBAC)](/en/user-accounts-and-teams/role-based-access/#managing-your-workspace-collaborators-with-role-based-access-control) settings to limit collaborator access to only certain environments, such as Development and Production. This customizes the operational setup to functionally limit the number of environments.
 
-How does the shared connector work with the Environments feature?
+## How does the shared connector work with the Environments feature?
+
+View answer
 
 The same published version of a [shared connector](/en/oem/admin-console/shared-connectors#shared-connectors) is used across all environments (Development, Test, and Production).
 
-How can I define different roles for customer managers in each environment (Development, Test, and Production)?
+## How can I define different roles for customer managers in each environment (Development, Test, and Production)?
+
+View answer
 
 Granular Role-Based Access Control (RBAC) is available in the Embedded [Admin Console](/en/oem/admin-console#accessing-the-admin-console). The role you assign applies to this customer manager in all customer workspaces and across all three environments (Development, Test, and Production) by default.
 

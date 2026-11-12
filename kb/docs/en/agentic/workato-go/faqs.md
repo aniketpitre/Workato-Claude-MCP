@@ -7,11 +7,13 @@ description: >-
 
 # Workato GO - FAQ
 
-Get answers to frequently asked questions about Workato GO, including setup, data sources, Action Board, and troubleshooting.
+Get answers to frequently asked questions (FAQs) about Workato GO, including setup, data sources, Action Board, and troubleshooting.
 
 ## Overview
 
-What is Workato GO?
+### What is Workato GO?
+
+View answer
 
 [Workato GO](/en/agentic/workato-go) is an end-user interface that unifies AI-driven workflows, knowledge searches, and transactional interactions within a single, cohesive interface. It eliminates the need to switch between disconnected tools, search systems, and workflows.
 
@@ -22,20 +24,26 @@ What is Workato GO?
 - **Context-aware routing**: Determines whether a query is handled better by a genie, a search result, or both.
 - **Simplified task flow**: Forms, approvals, and user confirmations are built into the interface to avoid switching between apps.
 
-What types of knowledge can I search with Workato GO?
+### What types of knowledge can I search with Workato GO?
+
+View answer
 
 Workato GO provides two [knowledge sources](/en/agentic/workato-go/search):
 
 - **World knowledge**: Search across publicly available information
 - **Company knowledge**: Search across your company's third-party apps and internal documentation
 
-What data sources does Workato GO support?
+### What data sources does Workato GO support?
+
+View answer
 
 Workato GO supports a broad range of [data sources](/en/agentic/workato-go/data-sources) out-of-the-box, including Confluence, Salesforce, Slack, Google Drive, Jira, Gmail, Gong, and more. You can also add custom web crawler data sources to index internal documentation sites or public web pages.
 
 ## Setup and configuration
 
-How do I configure a subdomain for Workato GO?
+### How do I configure a subdomain for Workato GO?
+
+View answer
 
 Complete the following steps to [configure your subdomain](/en/agentic/workato-go/configuration#configure-your-subdomain):
 
@@ -48,7 +56,9 @@ Complete the following steps to [configure your subdomain](/en/agentic/workato-g
 
 Your subdomain must be 3-65 characters. A unique, randomly generated subdomain is provided by default if you don't customize it.
 
-Can I customize the branding in Workato GO?
+### Can I customize the branding in Workato GO?
+
+View answer
 
 Yes, you can [customize the company name and logo](/en/agentic/workato-go/configuration#configure-your-branding) using organization properties:
 
@@ -63,7 +73,9 @@ Yes, you can [customize the company name and logo](/en/agentic/workato-go/config
 
 **Logo requirements**: Public URL, transparent .png or .svg, 210x40px dimensions, under 200 KB.
 
-How do I add administrators to Workato GO?
+### How do I add administrators to Workato GO?
+
+View answer
 
 Complete the following steps to [add administrators](/en/agentic/workato-go/admins-user-groups) to Workato GO:
 
@@ -76,7 +88,9 @@ Complete the following steps to [add administrators](/en/agentic/workato-go/admi
 
 Administrators can manage data sources and view the activity log.
 
-How do I change the theme in Workato GO?
+### How do I change the theme in Workato GO?
+
+View answer
 
 Workato GO supports three themes: Light theme, Dark theme, and Sync with device, which matches your operating system settings.
 
@@ -86,11 +100,15 @@ Refer to [Choose a theme](/en/agentic/workato-go/preference-settings#choose-a-th
 
 ## Data sources
 
-What are data sources?
+### What are data sources?
+
+View answer
 
 [Data sources](/en/agentic/workato-go/data-sources) enable Workato GO to connect to your business systems, such as Jira, Confluence, Salesforce, and Google Drive, for enterprise search and AI workflows. This ensures search results reflect your actual business context and genies can retrieve current data to complete tasks.
 
-How do I add a data source to Workato GO?
+### How do I add a data source to Workato GO?
+
+View answer
 
 Each data source has specific configuration requirements. You must have administrator privileges in Workato GO to add data sources.
 
@@ -110,7 +128,9 @@ Refer to the connector-specific documentation for setup instructions:
 
 **Custom web pages**: You can also add custom web crawler data sources to index internal documentation sites or public web pages. Refer to [Add a web crawler data source](/en/agentic/workato-go/data-sources#add-a-custom-data-source).
 
-Can I limit which Google Drive files are indexed by Workato GO?
+### Can I limit which Google Drive files are indexed by Workato GO?
+
+View answer
 
 Yes, you can [limit the Google Drive crawler scope](/en/agentic/workato-go/data-sources/google-drive#limit-google-drive-crawler-scope) to specific users' files:
 
@@ -123,7 +143,9 @@ Yes, you can [limit the Google Drive crawler scope](/en/agentic/workato-go/data-
 
 This enables you to limit indexing to a pilot group, specific departments, or restrict access to sensitive content.
 
-How does Workato GO handle permissions when ingesting data?
+### How does Workato GO handle permissions when ingesting data?
+
+View answer
 
 [Workato GO](/en/agentic/workato-go) respects native permissions from source systems:
 
@@ -134,7 +156,9 @@ How does Workato GO handle permissions when ingesting data?
 
 ## Action Board
 
-What is Action Board?
+### What is Action Board?
+
+View answer
 
 [Action Board](/en/agentic/agent-studio/action-board) displays customizable dashboards in [Workato GO](/en/agentic/workato-go) that visualize KPI metrics configured in Agent Studio. Action Board displays:
 
@@ -144,7 +168,9 @@ What is Action Board?
 
 **Important**: Action Board and the KPI tab are only available for genies that use Workato GO as the chat interface. Action Board doesn't support genies using Slack or Microsoft Teams.
 
-What are the prerequisites for using Action Board?
+### What are the prerequisites for using Action Board?
+
+View answer
 
 To use Action Board, you must:
 
@@ -155,7 +181,9 @@ To use Action Board, you must:
 
 Learn more about [Action Board](/en/agentic/agent-studio/action-board).
 
-How do KPIs work with Action Board?
+### How do KPIs work with Action Board?
+
+View answer
 
 KPIs (Key Performance Indicators) are quantifiable measurements of progress toward company goals. KPIs use [data tables](/en/data-tables) to store frequently used data that KPI skills reference.
 
@@ -179,7 +207,9 @@ Learn more about [creating KPIs](/en/agentic/agent-studio/action-board).
 
 ## Troubleshooting
 
-What should I do if real-time search or chat stops working?
+### What should I do if real-time search or chat stops working?
+
+View answer
 
 This is typically caused by blocked or terminated Server-Sent Events (SSE) connections. SSE is a network-level issue, not a browser-specific problem.
 
@@ -200,7 +230,9 @@ This is typically caused by blocked or terminated Server-Sent Events (SSE) conne
 
 Refer to [Troubleshoot search and real-time chat issues](/en/agentic/workato-go/search#troubleshoot-search-and-real-time-chat-issues) for more information.
 
-Why aren't my genies appearing in Workato GO?
+### Why aren't my genies appearing in Workato GO?
+
+View answer
 
 Verify the following if genies aren't appearing in Workato GO after configuration:
 

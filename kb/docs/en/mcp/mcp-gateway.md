@@ -77,7 +77,7 @@ Refer to [MCP access methods](/en/mcp/mcp-authentication) for more information.
 
 ## Authorization
 
-Workato MCP provides authorization at two layers:
+Workato MCP provides authorization at the following layers:
 
 - **Server-level authorization with end-user groups**: Controls which MCP servers a user can access.
   
@@ -104,7 +104,9 @@ Tool groups are a subset of the MCP server's end-user groups. A group can't be a
 
 ## Verified user access per-user backend authorization
 
-End-user groups govern access to the MCP server. [Verified user access](/en/mcp/verified-user-access) governs access to the underlying tools. OAuth 2.0 authentication propagates the user's identity to the underlying tool's backend connection after the end user is authenticated to the MCP server. This ensures backend calls to Salesforce, Gmail, and other tools execute under the calling user's identity and permissions rather than a shared service account.
+End-user groups govern access to MCP servers using Workato Identity. [Verified user access](/en/mcp/verified-user-access) governs access to the underlying tools. OAuth 2.0 authentication propagates the user's identity to the underlying tool's backend connection after the end user is authenticated to the MCP server. This ensures backend calls to Salesforce, Gmail, and other tools execute under the calling user's identity and permissions rather than a shared service account.
+
+Verified user access requires the Workato Identity or OIDC access method. API token access isn't supported.
 
 ## MCP verified user access
 

@@ -7,17 +7,21 @@ description: >-
 
 # IP allowlists FAQs
 
-Get answers to frequently asked IP allowlist questions.
+Get answers to frequently asked questions (FAQs) about IP allowlists.
 
 > **VIRTUAL PRIVATE WORKATO (VPW) CUSTOMERS**
 > 
 > This page provides general guidance for all Workato users. If you're a Virtual Private Workato (VPW) customer, refer to your private documentation for detailed configuration guidance specific to your instances.
 
-Why should I add Workato's IP addresses to my allowlist?
+## Why should I add Workato's IP addresses to my allowlist?
+
+View answer
 
 Adding [Workato's IP addresses](/en/security/ip-allowlists#traffic-from-workato) to your allowlist enhances connection security by helping prevent traffic hijacking to and from Workato by malicious websites.
 
-How can I configure my database to allowlist Workato's IP addresses?
+## How can I configure my database to allowlist Workato's IP addresses?
+
+View answer
 
 You can [use SQL commands](/en/security/ip-allowlists#example-allowlist-configuration) to allowlist Workato's IP addresses in your database. Run the following SQL command on your database to allowlist the Workato IP addresses:
 
@@ -28,19 +32,27 @@ TO 'integrationuser'@'52.5.142.59',
 'integrationuser'@'52.54.43.157';
 ```
 
-What should I consider when adding IP addresses to the allowlist for OPA version 2.11.0 or newer?
+## What should I consider when adding IP addresses to the allowlist for OPA version 2.11.0 or newer?
+
+View answer
 
 For [OPA version 2.11.0 or later](/en/security/ip-allowlists#on-premise-gateway-addresses), you must add specific FQDNs and IP addresses to the allowlist. It's important to use both the sg3 and sg4 versions for load balancing.
 
-How do I configure firewall allowlists for on-premise gateway IP addresses?
+## How do I configure firewall allowlists for on-premise gateway IP addresses?
+
+View answer
 
 To [configure firewall allowlists](/en/security/ip-allowlists#static-assets) for on-premise gateway IP addresses, you must enable outbound TCP connections from the OPA to port 443.
 
-What should I do if my organization restricts DNS resolutions for the OPA?
+## What should I do if my organization restricts DNS resolutions for the OPA?
+
+View answer
 
 Ensure that the machine where OPA runs can resolve the IP addresses of the on-premise gateway's FQDNs if your organization [restricts DNS resolutions](/en/security/ip-allowlists#dns-resolution-of-fqdns).
 
-Which IP addresses should I add to the allowlist when using custom domains for API recipes in Workato?
+## Which IP addresses should I add to the allowlist when using custom domains for API recipes in Workato?
+
+View answer
 
 The [IP addresses for custom domains](/en/security/ip-allowlists#custom-apim-domains) vary by data center. Refer to the following lists to determine which IP address to use.
 
@@ -59,7 +71,9 @@ The [IP addresses for custom domains](/en/security/ip-allowlists#custom-apim-dom
 
 - Self-service data center: 13.219.6.188, 54.82.211.237, 54.86.143.73
 
-What IP addresses are used for browser-based user interaction to Workato?
+## What IP addresses are used for browser-based user interaction to Workato?
+
+View answer
 
 The [IP addresses for browser-based user interaction](/en/security/ip-allowlists#browsers-and-api-endpoints) depend on the data center where your account is located.
 
@@ -79,7 +93,9 @@ Self-service (Workato Free, Workato Pro, or Developer Sandbox) users:
 
 - **Self-service Data Center**: [https://app.trial.workato.com/](https://app.trial.workato.com/)
 
-Where can I find the API endpoint IP addresses for Workato?
+## Where can I find the API endpoint IP addresses for Workato?
+
+View answer
 
 The [API endpoint IP address](/en/security/ip-allowlists#browsers-and-api-endpoints) differs depending on the location of your data center.
 

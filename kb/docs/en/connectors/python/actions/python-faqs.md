@@ -7,13 +7,17 @@ description: >-
 
 # Python FAQs
 
-Get answers to frequently asked questions about Python.
+Get answers to frequently asked questions (FAQs) about Python.
 
-What can I do with the Python connector in Workato?
+## What can I do with the Python connector in Workato?
+
+View answer
 
 The [Python connector](/en/connectors/python#python) allows you to write and execute custom Python code as part of a recipe. You can use this connector to develop web applications, data pipelines, and machine learning projects.
 
-What are common uses for the Python connector?
+## What are common uses for the Python connector?
+
+View answer
 
 Common uses for the Python connector include:
 
@@ -23,11 +27,15 @@ Common uses for the Python connector include:
 
 Refer to [Use cases](/en/connectors/python#use-cases) for more ways to use Python.
 
-Which version of Python does the Workato Python connector use?
+## Which version of Python does the Workato Python connector use?
+
+View answer
 
 The Python connector in Workato runs [Python 3.9 or later](/en/connectors/python#runtime-version).
 
-What libraries are supported by the Workato Python connector?
+## What libraries are supported by the Workato Python connector?
+
+View answer
 
 The Python connector supports all standard [libraries](/en/connectors/python#libraries) included in Python 3.9 or later. The Python connector also supports the following libraries:
 
@@ -66,7 +74,9 @@ The Python connector supports all standard [libraries](/en/connectors/python#lib
 > 
 > The Python connector does not support user-provided libraries or libraries not listed in the preceding list.
 
-Are there any limitations to using the Python connector in Workato?
+## Are there any limitations to using the Python connector in Workato?
+
+View answer
 
 Yes, you should consider the following [limitations](/en/connectors/python#limitations) when using the Python connector:
 
@@ -80,11 +90,15 @@ Yes, you should consider the following [limitations](/en/connectors/python#limit
 | Maximum size quota for Excel files processed with the Pandas library | 5 MB | Uncompressing Excel files requires additional memory. |
 | Read request timeout for Python evaluation in actions | 90 seconds | This quota applies to the following action: **Invoke custom Python code** action |
 
-What actions are supported by the Python connector in Workato?
+## What actions are supported by the Python connector in Workato?
+
+View answer
 
 The primary [action](/en/connectors/python#actions) supported by the Python connector is `Execute Python code`. This allows you to run custom Python scripts within a recipe.
 
-Do I need to perform any setup configuration to use the Python connector in Workato?
+## Do I need to perform any setup configuration to use the Python connector in Workato?
+
+View answer
 
 No specific [setup configuration](/en/connectors/python#connection-setup) is required for the Python connector. You can search for and select Python in the **Apps** tab to start using it.
 

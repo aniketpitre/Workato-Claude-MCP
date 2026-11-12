@@ -3048,11 +3048,13 @@ description: >-
 
 # Role-based access control FAQs
 
-Learn more about Workato's new permission model with these frequently asked questions.
+Get answers to frequently asked questions (FAQs) about Workato's new permission model.
 
 ## Overview
 
-What can I do with the permission model?
+### What can I do with the permission model?
+
+View answer
 
 The [new permission model](/en/user-accounts-and-teams/role-based-access/access-control-v2#manage-workspace-collaborators-with-role-based-access-control) enables the following capabilities:
 
@@ -3060,14 +3062,18 @@ The [new permission model](/en/user-accounts-and-teams/role-based-access/access-
 - **User group-based permissions**: Grant project access to collaborator groups. Members inherit access automatically, making permission management scalable and consistent.
 - **Enhanced role lifecycle management**: Use APIs and SAML/SCIM to manage roles and assignments programmatically.
 
-How does the permissions model work with existing permissions?
+### How does the permissions model work with existing permissions?
+
+View answer
 
 The permissions model separates a collaborator's permissions into two types:
 
 - [Environment roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#environment-roles): Define permissions per environment. These roles govern platform settings, admin capabilities, and AHQ console access. Assign the necessary permissions in the **Dev** environment to access admin features or AHQ. Permissions in **Test** or **Prod** don't apply at the workspace level.
 - [Project roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles): Define permissions within individual projects. These include access to folders, connections, recipes, deployments, and admin rights.
 
-What system project roles are provided by default?
+### What system project roles are provided by default?
+
+View answer
 
 Workato provides [four default project roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles):
 
@@ -3080,11 +3086,15 @@ You can also create unlimited custom roles with tailored permissions.
 
 ## Prerequisites
 
-What are the requirements before enabling the permission model?
+### What are the requirements before enabling the permission model?
+
+View answer
 
 The [home assets](/en/projects#home-assets) (root) folder must be empty before you enable the model. You must store all assets within dedicated projects to meet the access control system requirement.
 
-What happens if I have assets in the home assets folder?
+### What happens if I have assets in the home assets folder?
+
+View answer
 
 You must migrate the assets into a [project](/en/projects#projects). Workato provides a migration script that performs the following actions:
 
@@ -3092,17 +3102,23 @@ You must migrate the assets into a [project](/en/projects#projects). Workato pro
 - Retains the same `folder_id` and `project_id`.
 - Enforces validation to block users from adding new assets to the root.
 
-How do I migrate home assets?
+### How do I migrate home assets?
+
+View answer
 
 Contact your Workato representative to confirm readiness. They run the migration script after confirmation. Complete this step before you enable the [permission model](/en/user-accounts-and-teams/role-based-access/access-control-v2).
 
 ## Compatibility with the existing role model
 
-What happens with collaborator roles when the permission model is enabled in my workspace?
+### What happens with collaborator roles when the permission model is enabled in my workspace?
+
+View answer
 
 The platform prevents users from creating new [collaborator roles](/en/roles). It hides roles without assigned members in the UI but ensures that all roles remain accessible through the API. The platform assigns the role and displays it in the UI again when a user with that role logs in through SAML or SCIM.
 
-Can I still access legacy roles through the API after migration?
+### Can I still access legacy roles through the API after migration?
+
+View answer
 
 Yes. The API provides full access to all roles, including [legacy roles](/en/roles). You can retrieve the full list and assign legacy roles to collaborators using API endpoints. Roles without collaborators assigned to them are hidden in the UI.
 
@@ -3110,17 +3126,23 @@ Yes. The API provides full access to all roles, including [legacy roles](/en/rol
 > 
 > Legacy roles are supported in the API only for backward compatibility. Workato plans to deprecate this access in a future release. Migrate to the new permission model and collaborator groups, and avoid assigning legacy roles through the API.
 
-What should early adopters do before enabling the permission model?
+### What should early adopters do before enabling the permission model?
+
+View answer
 
 Create a complete record of all [collaborator roles](/en/roles) before you enable the permission model. Take screenshots or use the API to export the list. Some roles may disappear from the UI after migration.
 
-Can old and new permission models work together during migration?
+### Can old and new permission models work together during migration?
+
+View answer
 
 Yes. The platform supports both models at the same time. Some collaborators can use [legacy roles](/en/roles) while others use [environment and project roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#key-roles). Each collaborator must use one model per environment. The platform doesn't allow mixing legacy and new roles within a single environment.
 
 ## Legacy role migration
 
-What happens if I don't migrate before the deprecation deadline?
+### What happens if I don't migrate before the deprecation deadline?
+
+View answer
 
 Legacy collaborator roles continue to function normally until the deprecation date at the end of August 2026. Workato recommends that you complete your [migration](/en/user-accounts-and-teams/role-based-access/migrate-roles) before this date to ensure uninterrupted access for all collaborators.
 
@@ -3132,14 +3154,18 @@ Workato sends you a report of all changes made to your workspace during the mana
 - The collaborator groups created from users who held the same role within an environment
 - The collaborator group and project role assignments based on your previous project access
 
-Does migrating roles in a parent workspace migrate child or customer workspaces?
+### Does migrating roles in a parent workspace migrate child or customer workspaces?
+
+View answer
 
 The behavior depends on your workspace structure:
 
 - **Automation HQ**: Migrating [inheritable roles](/en/user-accounts-and-teams/role-based-access/migrate-roles#ahq-inheritable-roles) in the Automation HQ workspace applies to every downstream workspace where the role is assigned. Downstream collaborator assignments update automatically. Custom collaborator roles created directly in a child workspace don't migrate automatically. Each child workspace admin must run the migration wizard in their workspace.
 - **Embedded**: Migrating [inheritable roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#inherited-roles) in the Embedded partner workspace applies to every customer workspace where the role is assigned, matching Automation HQ behavior. Custom roles created directly in a customer workspace don't migrate automatically. Migrate inheritable roles first, then migrate each customer workspace individually using the Embedded API or the in-app migration wizard. Refer to **How do I migrate Embedded customer workspaces?** in this section for more information.
 
-How do I migrate my legacy collaborator roles?
+### How do I migrate my legacy collaborator roles?
+
+View answer
 
 Use the bulk-migration tool in **Workspace admin > Access control > Collaborator roles**. You must have **Workspace admin** access. The tool follows a two-step process:
 
@@ -3148,19 +3174,25 @@ Use the bulk-migration tool in **Workspace admin > Access control > Collaborator
 
 Refer to the [Migrate to the new access control model](/en/user-accounts-and-teams/role-based-access/migrate-roles) guide for step-by-step instructions.
 
-I manage roles through SAML or SCIM. What must I do before the managed migration?
+### I manage roles through SAML or SCIM. What must I do before the managed migration?
+
+View answer
 
 Role attributes passed from your identity provider continue to manage environment access after migration. Project permissions can be managed in the Workato UI, or from your identity provider through the `workato_user_groups` attribute.
 
 Configure the `workato_user_groups` attribute before the migration if you plan to manage project permissions from your identity provider. Refer to [SAML role sync](/en/user-accounts-and-teams/saml-role-sync) for configuration steps. No other action is required if you plan to manage project permissions in the UI.
 
-How do I migrate child workspaces in Automation HQ?
+### How do I migrate child workspaces in Automation HQ?
+
+View answer
 
 Migrate [inheritable roles](/en/user-accounts-and-teams/role-based-access/migrate-roles#ahq-inheritable-roles) in the Automation HQ workspace. The migration applies to every downstream workspace where the role is assigned, and downstream collaborator assignments update automatically.
 
 Child workspaces that have their own custom collaborator roles must initiate a separate bulk migration independently. Each child workspace admin must run the migration wizard in their workspace to migrate locally created custom roles.
 
-How do I migrate Embedded customer workspaces?
+### How do I migrate Embedded customer workspaces?
+
+View answer
 
 Migrate [inheritable roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#inherited-roles) from the Embedded partner workspace first. The migration applies to every customer workspace where the role is assigned.
 
@@ -3175,7 +3207,9 @@ Alternatively, you can run the [in-app migration wizard](/en/user-accounts-and-t
 
 The migration splits each legacy collaborator role into a project role and an environment role and introduces collaborator groups. You may need to refactor your integration if your embedded UI displays or manages roles, or if your API calls create or assign collaborator roles. Contact your Customer Success Manager to align on a migration path and timeline if you expect a large impact on your customers.
 
-What is the difference between Automation HQ and the Embedded Admin console?
+### What is the difference between Automation HQ and the Embedded Admin console?
+
+View answer
 
 [Automation HQ](/en/automation-hq) provides central control over your organization's managed workspaces. Use it to represent business units as workspaces, share assets, control apps and quotas, and create inheritable roles from the HQ workspace.
 
@@ -3185,7 +3219,9 @@ Use Automation HQ if you manage workspaces for teams inside your organization. U
 
 ## Role migration process
 
-What happens during role migration?
+### What happens during role migration?
+
+View answer
 
 The migration prompts you to name the new [environment](/en/user-accounts-and-teams/role-based-access/access-control-v2#environment-roles) and [project](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles) roles. Both the environment and project roles use the name of the legacy collaborator role by default.
 
@@ -3203,23 +3239,33 @@ The system generates an HTML summary report before the migration starts. It incl
 
 The process then creates the new roles and automatically reassigns collaborators. All existing project access and permissions remain unchanged.
 
-Can I preview changes before migrating a role?
+### Can I preview changes before migrating a role?
+
+View answer
 
 Yes. The system provides a downloadable summary report that displays all changes before [migration](/en/user-accounts-and-teams/role-based-access/migrate-roles#migrate-system-roles). This lets you review the updates without applying them.
 
-What happens to collaborators assigned to a migrated role?
+### What happens to collaborators assigned to a migrated role?
+
+View answer
 
 The system automatically reassigns these collaborators to the [new project roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles). Collaborators retain the same project access and receive equivalent permissions.
 
-Can I migrate roles one at a time?
+### Can I migrate roles one at a time?
+
+View answer
 
 Yes. The migration process works on a role-by-role basis. You can [migrate roles](/en/user-accounts-and-teams/role-based-access/migrate-roles) individually to support a gradual transition and testing.
 
-Can I migrate multiple roles at once?
+### Can I migrate multiple roles at once?
+
+View answer
 
 Yes. Use the [bulk-migration tool](/en/user-accounts-and-teams/role-based-access/migrate-roles#bulk-migrate-all-collaborator-roles) to consolidate and migrate all collaborator roles at scale. You can also use the [Embedded](/en/oem/oem-api/role-migration) or [Developer](/en/workato-api/role-migration) API to migrate a role and create a recipe to repeat the process for other roles.
 
-How do I manage centralized permissions across multiple workspaces using Automation HQ?
+### How do I manage centralized permissions across multiple workspaces using Automation HQ?
+
+View answer
 
 Automation HQ supports [inheritable](/en/user-accounts-and-teams/role-based-access/access-control-v2#inherited-roles) environment and project roles:
 
@@ -3229,21 +3275,29 @@ Automation HQ supports [inheritable](/en/user-accounts-and-teams/role-based-acce
 
 ## Collaborator groups
 
-How do collaborator groups work with the permission model?
+### How do collaborator groups work with the permission model?
+
+View answer
 
 [Collaborator groups](/en/user-accounts-and-teams/role-based-access/access-control-v2#collaborator-groups) are sets of collaborators that receive project roles as a unit. You must create a group and assign members before you can grant project access to the entire group instead of individuals.
 
-What happens if a collaborator belongs to multiple groups?
+### What happens if a collaborator belongs to multiple groups?
+
+View answer
 
 The platform [combines all permissions](/en/user-accounts-and-teams/role-based-access/access-control-v2#ahq-moderators-and-oem-customer-managers) from the groups. The collaborator receives the highest level of access granted by any group. Permissions increase with additional group memberships and don't conflict or cancel each other.
 
-How does session management work when group membership changes?
+### How does session management work when group membership changes?
+
+View answer
 
 Group changes apply immediately after the page refreshes. Your identity provider reasserts group membership and overwrites any interim updates if the collaborator logs out and then back in through [SAML](/en/user-accounts-and-teams/saml-role-sync) or [SCIM](/en/scim).
 
 ## Project-access permissions
 
-What is the Manage projects – Access control permission?
+### What is the Manage projects – Access control permission?
+
+View answer
 
 This environment-level permission allows administrators to perform the following actions:
 
@@ -3251,13 +3305,17 @@ This environment-level permission allows administrators to perform the following
 - Add themselves to any project by selecting a role.
 - Supervise project access across the workspace.
 
-What is the Project administration – Access control permission?
+### What is the Project administration – Access control permission?
+
+View answer
 
 This project-level permission allows collaborators to manage access control for a specific [project](/en/projects). All collaborators with this permission have equal privileges and can modify each other's access within the project.
 
 This permission supports delegated project-level administration. It doesn't allow users to invite new collaborators, create collaborator groups, or define new roles. It limits access control to existing users, groups, and roles within the project.
 
-How does this admin access model differ from the old one?
+### How does this admin access model differ from the old one?
+
+View answer
 
 The [permission model](/en/user-accounts-and-teams/role-based-access/access-control-v2#collaborators) introduces explicit access tracking and improves control:
 
@@ -3268,7 +3326,9 @@ This change improves visibility and restricts silent access to sensitive content
 
 ## System roles and system collaborator group
 
-What system environment roles are provided by default?
+### What system environment roles are provided by default?
+
+View answer
 
 The platform provides [four default environment roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#environment-roles):
 
@@ -3277,7 +3337,9 @@ The platform provides [four default environment roles](/en/user-accounts-and-tea
 - **Environment manager**: Grants full access to platform tools but excludes workspace admin privileges.
 - **Environment admin**: Grants full access to all permissions in the environment.
 
-What system project roles are provided by default?
+### What system project roles are provided by default?
+
+View answer
 
 The platform provides [four default project roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles):
 
@@ -3288,11 +3350,15 @@ The platform provides [four default project roles](/en/user-accounts-and-teams/r
 
 Customers can create unlimited custom project roles to meet specific access needs.
 
-How do I use the All collaborators system group for project access?
+### How do I use the All collaborators system group for project access?
+
+View answer
 
 All projects deny access to the **All collaborators** group by default. A project admin can [change this setting](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles) to assign baseline access to all collaborators who have environment access. This setup works well for shared projects that require general read access.
 
-When should I use All collaborators instead of group assignment?
+### When should I use All collaborators instead of group assignment?
+
+View answer
 
 Use the **All collaborators** group to apply baseline access to everyone. Use [specific groups](/en/user-accounts-and-teams/role-based-access/access-control-v2#collaborator-groups) when different teams need distinct access. Consider the following guidelines:
 
@@ -3301,7 +3367,9 @@ Use the **All collaborators** group to apply baseline access to everyone. Use [s
 
 ## SAML and SCIM integration for role sync
 
-What is the new SAML/SCIM parameter?
+### What is the new SAML/SCIM parameter?
+
+View answer
 
 The SAML/SCIM parameter is `workato_user_groups`. It complements the following existing attributes:
 
@@ -3320,7 +3388,9 @@ workato_role_prod: "ProdEnvAdmin"
 workato_user_groups: "HR developers, Marketing Admin"
 ```
 
-What happens if a collaborator logs in through SAML or SCIM but the configuration isn't updated?
+### What happens if a collaborator logs in through SAML or SCIM but the configuration isn't updated?
+
+View answer
 
 The platform assigns the collaborator a [legacy role](/en/roles). SAML continues to act as the source of truth for role assignment. The system applies the following behavior if the `workato_user_groups parameter` is missing:
 
@@ -3332,7 +3402,9 @@ The platform assigns the collaborator a [legacy role](/en/roles). SAML continues
 > 
 > The platform deletes UI-created role assignments the next time the collaborator logs in through [SSO](/en/user-accounts-and-teams/single-sign-on#prerequisites) when the SAML configuration is active.
 
-What happens when a SAML parameter includes a non-existent role?
+### What happens when a SAML parameter includes a non-existent role?
+
+View answer
 
 The platform's behavior depends on the presence of the `workato_user_groups` [parameter](/en/user-accounts-and-teams/role-based-access/access-control-v2#saml-and-scim-integration). It applies the following logic:
 
@@ -3345,13 +3417,17 @@ This behavior prevents excessive permissions caused by typos and helps admins de
 > 
 > The values in `workato_user_groups` are case-sensitive. For example, `HR Developer` and `hr developer` are treated as different groups.
 
-What happens when a collaborator has an empty collaborator group value in SAML?
+### What happens when a collaborator has an empty collaborator group value in SAML?
+
+View answer
 
 The platform assigns no project access to collaborators when `workato_user_groups` [is empty](/en/user-accounts-and-teams/role-based-access/access-control-v2#behavior-when-group-data-is-empty). These users see an empty workspace with no accessible projects.
 
 Admins can configure the **All collaborators** system group with default project access to ensure visibility for new users.
 
-How do I assign multiple collaborator groups to a single collaborator in SAML?
+### How do I assign multiple collaborator groups to a single collaborator in SAML?
+
+View answer
 
 [Separate the values](/en/user-accounts-and-teams/role-based-access/access-control-v2#behavior-when-group-data-includes-values) in the `workato_user_groups` attribute with commas. For example:
 
@@ -3361,7 +3437,9 @@ HR developer, Marketing Admin
 
 Group names are case-sensitive.
 
-Why does the system assign the Member role instead of Environment admin during SSO login?
+### Why does the system assign the Member role instead of Environment admin during SSO login?
+
+View answer
 
 The platform defaults to the **Member** role if it detects a mismatch or missing context during SSO login. If you use the `workato_role` attribute to assign the **Environment admin** role, you must also include the `workato_user_groups` parameter.
 
@@ -3369,7 +3447,9 @@ Without `workato_user_groups`, the platform treats `workato_role` as a custom ro
 
 ## Common use cases
 
-How can I give production support access to specific projects only?
+### How can I give production support access to specific projects only?
+
+View answer
 
 You can use the permissions model with the following steps:
 
@@ -3382,7 +3462,9 @@ You can use the permissions model with the following steps:
 4. Use environment roles to manage access to the **Prod** environment.
    
 
-How can I enable teams to manage their own deployments without giving full workspace access?
+### How can I enable teams to manage their own deployments without giving full workspace access?
+
+View answer
 
 You can assign [project roles with deployment permissions](/en/user-accounts-and-teams/role-based-access/access-control-v2#assign-project-roles-during-deployment) only to the required projects. This configuration enables teams to do the following:
 
@@ -3391,11 +3473,15 @@ You can assign [project roles with deployment permissions](/en/user-accounts-and
 - Avoid modifying other teams' projects or shared services.
 - Maintain deployment control within their team's scope.
 
-How can I provide read-only access to sensitive projects for specific business units?
+### How can I provide read-only access to sensitive projects for specific business units?
+
+View answer
 
 Create a [collaborator group](/en/user-accounts-and-teams/role-based-access/access-control-v2#collaborator-groups) for the business unit and assign a custom **Read Only** project role to the required projects. This setup restricts access to specific content and prevents exposure to other projects or unnecessary permissions.
 
-How do I handle collaborators who work across multiple teams or projects?
+### How do I handle collaborators who work across multiple teams or projects?
+
+View answer
 
 Assign the collaborator to multiple groups. The platform [aggregates all permissions](/en/user-accounts-and-teams/role-based-access/access-control-v2#resolve-permission-conflicts) and grants the highest level from any group. For example:
 
@@ -3404,7 +3490,9 @@ Assign the collaborator to multiple groups. The platform [aggregates all permiss
 
 In this case, the collaborator receives the combined permissions from both roles for the **Marketing project**.
 
-How can I set up shared projects that everyone can access?
+### How can I set up shared projects that everyone can access?
+
+View answer
 
 Use the **All collaborators** group to [assign baseline access](/en/user-accounts-and-teams/role-based-access/access-control-v2#default-access-for-all-collaborators). Apply the following configuration:
 
@@ -3417,11 +3505,15 @@ Use the **All collaborators** group to [assign baseline access](/en/user-account
 4. Use group assignments to grant higher access to specific teams.
    
 
-How do I prevent unauthorized access while delegating project management?
+### How do I prevent unauthorized access while delegating project management?
+
+View answer
 
 Use the **Project administration – Access control** permission to delegate [project-level access management](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles). Project owners can manage access only to their assigned projects. They can't invite new collaborators, create roles, or define new groups. Project owners can only assign existing roles and groups. The platform logs changes in the audit log.
 
-How can I give a collaborator builder access in Dev/Test but read-only with deploy access in Prod?
+### How can I give a collaborator builder access in Dev/Test but read-only with deploy access in Prod?
+
+View answer
 
 Create two [custom project roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#custom-roles) to manage access across environments. Define a **Power User** role that grants full project access along with deploy permissions, including review, if enabled. Define a **CI/CD Operator** role that grants read-only access with deploy permissions.
 
@@ -3435,7 +3527,9 @@ Apply project roles per environment:
 
 This configuration gives the collaborator full access in **Dev**, and read-only access with deploy permissions in both **Test** and **Prod**.
 
-What happens if the target project doesn't exist in the destination environment during deployment?
+### What happens if the target project doesn't exist in the destination environment during deployment?
+
+View answer
 
 The platform [automatically creates the project](/en/user-accounts-and-teams/role-based-access/access-control-v2#assign-project-roles-during-deployment) if it doesn't exist, which can introduce a security risk:
 
@@ -3446,7 +3540,9 @@ This overrides intended restrictions and grants full project-level permissions.
 
 We recommend that an administrator with the **Create projects** permission create empty projects in **Test** and **Prod**, and assign the appropriate project roles such as **CI/CD Operator** before the first deployment.
 
-How do deployment permissions work across environments?
+### How do deployment permissions work across environments?
+
+View answer
 
 Deployment permissions rely on [project roles](/en/user-accounts-and-teams/role-based-access/access-control-v2#project-roles) in both the source and target environments. A collaborator needs the following permissions to complete a deployment:
 
@@ -3458,7 +3554,9 @@ This setup supports different deployment roles across environments and allows ti
 
 ## API and automation
 
-How do API keys work with the permission model?
+### How do API keys work with the permission model?
+
+View answer
 
 [API keys](/en/api-mgmt/api-client-mgmt#api-keys) are environment-specific. You must use a separate API key for each environment (Dev, Test, Prod) to manage project access because permissions are tied to individual environments.
 
@@ -3467,7 +3565,9 @@ The platform handles API endpoints differently depending on what they access:
 - Endpoints for collaborators and legacy collaborator roles work only in the **Dev** environment for backward compatibility.
 - Endpoints for collaborator groups and environment/project roles return the same responses regardless of the environment.
 
-Are there tools to help with bulk project permission management?
+### Are there tools to help with bulk project permission management?
+
+View answer
 
 Yes. You can use the Embedded or Developer API with the Workato app to build tools that simplify permission management. For example, you can select a source project and copy its project access matrix to multiple target projects. Refer to the following API documentation for additional information:
 
@@ -3494,7 +3594,9 @@ Yes. You can use the Embedded or Developer API with the Workato app to build too
 
 ## Troubleshooting
 
-A collaborator reports they lost access after SAML changes. What should I check?
+### A collaborator reports they lost access after SAML changes. What should I check?
+
+View answer
 
 Check the following in order:
 

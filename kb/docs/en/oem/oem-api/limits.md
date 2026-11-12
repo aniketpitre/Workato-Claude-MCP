@@ -42,7 +42,9 @@ In addition, Embedded API resources have the following rate and payload quotas:
 | **Customer managers** | All | All [Customer managers](/en/oem/oem-api/customer-managers.html) endpoints | 60 requests per minute |
 | **Customer workspace collaborators** | All | All [Customer workspace collaborators](/en/oem/oem-api/team.html) endpoints | 60 requests per minute. Additionally, you can send one request per user and workspace ID every 20 minutes to the **Invite collaborator to managed customer workspace** endpoint. |
 | **Data retention** | All | All [Data retention](/en/oem/oem-api/data-retention.html) endpoints | 60 requests per minute |
-| **Data tables** | All | All [Data tables](/en/oem/oem-api/data-tables.html) endpoints | 60 requests per minute |
+| **Data tables** | GET, POST | Read endpoints: [Query records](/en/oem/oem-api/data-tables.html#query-records), [Download file from the record](/en/oem/oem-api/data-tables.html#download-file-from-the-record), [Describe uploaded file](/en/oem/oem-api/data-tables.html#describe-uploaded-file) | 200 requests per second |
+| **Data tables** | POST, PUT, DELETE | Write endpoints: [Create record](/en/oem/oem-api/data-tables.html#create-record), [Update record](/en/oem/oem-api/data-tables.html#update-record), [Delete record](/en/oem/oem-api/data-tables.html#delete-record), [Generate link to upload file](/en/oem/oem-api/data-tables.html#generate-link-to-upload-file), All other [Record import](/en/oem/oem-api/data-tables.html#record-import-apis) endpoints | 40,000 values per second |
+| **Data tables** | All | All other [Data tables](/en/oem/oem-api/data-tables.html) endpoints | 60 requests per minute |
 | **Dynamic field mapping** | All | All [Dynamic field mapping](/en/oem/oem-api/dynamic-field-mapping.html) endpoints | 60 requests per minute |
 | **Environment management** | All | All [Environment management](/en/oem/oem-api/environment-management.html) endpoints | 60 requests per minute |
 | **Environment properties** | GET | List properties by prefix: [/api/managed\_users/:managed\_user\_id /properties](/en/oem/oem-api/account-properties.html#list-properties-by-prefix) | 1,000 requests per minute |

@@ -7,11 +7,11 @@ description: >-
 
 # Agentic - FAQ
 
-Get answers to frequently asked questions about Agentic features, including Agent Studio, Workato GO, and MCP.
+Get answers to frequently asked questions (FAQs) about Agentic features, including Agent Studio, Workato GO, and MCP.
 
-## Getting started
+## How do Agent Studio, Workato GO, and MCP work together?
 
-How do Agent Studio, Workato GO, and MCP work together?
+View answer
 
 [Agent Studio](/en/agentic/agent-studio) is where you build genies (AI agents) that can take actions across your business systems.
 
@@ -26,7 +26,9 @@ Agent Studio, Workato GO, and MCP connect in several ways:
 - Skills can be used by genies directly or exposed as MCP tools for external AI clients.
 - MCP servers let both genies and external AI clients use the same Workato integrations.
 
-When should I use Workato genies vs. external AI clients with MCP?
+## When should I use Workato genies vs. external AI clients with MCP?
+
+View answer
 
 Genies are AI agents hosted and managed by Workato. They handle conversation management, knowledge retrieval, and decision-making about which skills to use.
 
@@ -50,13 +52,15 @@ You can use both approaches. Build skills once, then deploy them to genies or ex
 
 ## Agent Studio
 
-### Overview
+### What is Agent Studio?
 
-What is Agent Studio?
+View answer
 
 [Agent Studio](/en/agentic/agent-studio) is where you build and configure AI agents (genies). These genies perform actions, call workflows, understand context, and execute pre-defined skills to achieve your defined goals.
 
-What are genies?
+### What are genies?
+
+View answer
 
 Genies are AI-powered agents built in Agent Studio that pursue goals you define, adapt to context, and act across apps and data systems.
 
@@ -67,25 +71,31 @@ Genies operate through the following [key components](/en/agentic/agent-studio#g
 - **Knowledge base** stores company-specific information, conversation history, and metadata.
 - **Skills** enable interaction with various applications and systems.
 
-### Setup and access
+### Who can access Agent Studio and what are the prerequisites?
 
-Who can access Agent Studio and what are the prerequisites?
+View answer
 
 [Genies](/en/agentic/agent-studio) are an Agentic feature available to customers on specific pricing plans. **Genies are available in the US, EU, AU, SG, and JP data centers.** Genie models are hosted in the US, EU, and APAC regions and respect data residency requirements where possible.
 
 You must ensure that genies are enabled in your account before using this feature. Contact your Customer Success representative to enable genies if you don't see the genies option in your workspace or require additional information. Refer to your pricing plan and contract to learn more.
 
-Can I enable Agent Studio for child workspaces independently?
+### Can I enable Agent Studio for child workspaces independently?
+
+View answer
 
 No. Agent Studio becomes available to all child workspaces when it's enabled on an [AHQ parent workspace](/en/ahq-hq-workspace). You can't enable Agent Studio for specific child workspaces without enabling the parent first.
 
 You can use [collaborator permissions](/en/user-accounts-and-teams/role-based-access/) to control which users can access Agent Studio in each workspace.
 
-Where do I access and manage genies?
+### Where do I access and manage genies?
+
+View answer
 
 You can view and configure genies by going to **AI Hub > Agent Studio**. Refer to [Getting started with genies](/en/agentic/agent-studio/genies-configuration#genies-configuration) for more information.
 
-What LLM models does Agent Studio support?
+### What LLM models does Agent Studio support?
+
+View answer
 
 Agent Studio supports [three LLM options for genies](/en/agentic/agent-studio/ai-model/ai-model):
 
@@ -95,7 +105,9 @@ Agent Studio supports [three LLM options for genies](/en/agentic/agent-studio/ai
 
 Note that the AI model can only be changed after you stop your genie.
 
-What chat interfaces can be used with genies?
+### What chat interfaces can be used with genies?
+
+View answer
 
 The following options are available for the genie [chat interface](/en/agentic/agent-studio/chat-interface/chat-interface):
 
@@ -106,7 +118,9 @@ The following options are available for the genie [chat interface](/en/agentic/a
 
 Only custom interfaces can use [Headless API](/en/agentic/agent-studio/chat-interface/headless-api). You can't change the chat interface after a genie is created.
 
-What file and image types can genies handle?
+### What file and image types can genies handle?
+
+View answer
 
 Genies support [file and image uploads](/en/agentic/agent-studio/upload-files-and-images) up to 25MB.
 
@@ -114,11 +128,15 @@ Common document file types are supported, including `.pdf`,`.doc` and `.csv`. Re
 
 Common image formats are supported, including `.jpg` and `.png`. Video files aren't supported. Refer to [Images](/en/agentic/agent-studio/upload-files-and-images#images) for a complete list of supported image formats.
 
-How do I create a genie?
+### How do I create a genie?
+
+View answer
 
 Refer to [Create your first genie](/en/agentic/agent-studio/create-a-genie) for detailed instructions.
 
-What are the required components to run a genie?
+### What are the required components to run a genie?
+
+View answer
 
 Configure the following components to get your genie working:
 
@@ -130,7 +148,9 @@ Configure the following components to get your genie working:
 
 Refer to [Create your first genie](/en/agentic/agent-studio/create-a-genie) for a step-by-step walkthrough of creating all components together.
 
-What metrics can I track for my genies?
+### What metrics can I track for my genies?
+
+View answer
 
 The genie [Overview page](/en/agentic/agent-studio/genie-overview-page) tracks:
 
@@ -145,9 +165,9 @@ You can filter metrics by time range.
 
 **Note**: Genies using Workato GO can also track custom business KPIs. Refer to the [Action Board](/en/agentic/faqs#action-board) section for more information.
 
-### Knowledge bases
+### What is a knowledge base?
 
-What is a knowledge base?
+View answer
 
 A [knowledge base](/en/agentic/agent-studio/knowledge-bases/knowledge-bases) serves as the genie's memory and provides the following capabilities:
 
@@ -155,7 +175,9 @@ A [knowledge base](/en/agentic/agent-studio/knowledge-bases/knowledge-bases) ser
 - Can be updated in real-time to ensure the genie has the most current information.
 - Can access metadata to filter by attributes such as created date, source, or knowledge base ID.
 
-How do I create a knowledge base?
+### How do I create a knowledge base?
+
+View answer
 
 Complete the following steps to [create a knowledge base](/en/agentic/agent-studio/knowledge-bases/knowledge-bases#getting-started-with-knowledge-bases):
 
@@ -166,7 +188,9 @@ Complete the following steps to [create a knowledge base](/en/agentic/agent-stud
 3. Choose your data source (Knowledge recipes or Workato GO data sources).
    
 
-How do I add a knowledge base to a genie?
+### How do I add a knowledge base to a genie?
+
+View answer
 
 Complete the following steps to [add a knowledge base to a genie](/en/agentic/agent-studio/create-a-genie#add-knowledge-to-a-genie):
 
@@ -177,11 +201,15 @@ Complete the following steps to [add a knowledge base to a genie](/en/agentic/ag
 3. Search for and select the knowledge base you plan to add.
    
 
-Can a knowledge base be shared across multiple genies?
+### Can a knowledge base be shared across multiple genies?
+
+View answer
 
 Yes. [Knowledge bases](/en/agentic/agent-studio/knowledge-bases/knowledge-bases) can be shared across multiple genies, even when genies are in different projects. This allows you to reuse the same knowledge base across different genies without duplication.
 
-What file formats are supported when ingesting documents through knowledge recipes?
+### What file formats are supported when ingesting documents through knowledge recipes?
+
+View answer
 
 The following file formats are supported when using the **Store document in a knowledge base** action in [knowledge recipes](/en/agentic/agent-studio/knowledge-bases/knowledge-base-recipes):
 
@@ -190,13 +218,17 @@ The following file formats are supported when using the **Store document in a kn
 - Microsoft Excel (.xlsx)
 - Microsoft PowerPoint (.pptx)
 
-When should I use a knowledge base versus a database?
+### When should I use a knowledge base versus a database?
+
+View answer
 
 Use **knowledge bases** for semantic search over unstructured content, such as policies, guides, or descriptions. Use **databases** (accessed through skills) for exact lookups, counts, and filtered queries over structured data.
 
 Refer to [Knowledge bases and databases](/en/agentic/agent-studio/knowledge-bases/knowledge-bases-and-databases) for more information.
 
-Why isn't my genie finding information in structured data files?
+### Why isn't my genie finding information in structured data files?
+
+View answer
 
 Knowledge bases use semantic search, which struggles with structured formats like JSON or CSV. Raw structured data creates poor search results because semantic search can't effectively parse key-value pairs and repetitive field names.
 
@@ -212,7 +244,9 @@ Knowledge bases use semantic search, which struggles with structured formats lik
 
 Refer to [Prepare JSON and API application data](/en/agentic/agent-studio/knowledge-bases/knowledge-base-configuration#prepare-json-and-api-application-data) for format examples.
 
-Why does my genie return incomplete results for counting or listing questions?
+### Why does my genie return incomplete results for counting or listing questions?
+
+View answer
 
 Knowledge bases are designed for semantic search, not comprehensive queries. Each query returns only the 10 most relevant documents. This means that when you ask `how many invoices are overdue?`, your genie sees only 10 matches even if hundreds exist.
 
@@ -220,7 +254,9 @@ Knowledge bases are designed for semantic search, not comprehensive queries. Eac
 
 Refer to [Knowledge bases versus databases](/en/agentic/agent-studio/knowledge-bases/knowledge-bases-and-databases) for guidance on when to use each option.
 
-Why isn't my genie finding information in my documents?
+### Why isn't my genie finding information in my documents?
+
+View answer
 
 Knowledge bases split documents into 8,000-character chunks with no overlap. This means your genie may not find information if a chunk boundary splits mid-concept, or if key content is buried deep in a document.
 
@@ -232,9 +268,9 @@ Knowledge bases split documents into 8,000-character chunks with no overlap. Thi
 
 Refer to [Knowledge base document preparation](/en/agentic/agent-studio/knowledge-bases/knowledge-base-configuration#knowledge-base-document-preparation) for more information.
 
-### Security and authentication
+### What security features are available in Agent Studio?
 
-What security features are available in Agent Studio?
+View answer
 
 Agent Studio provides several security controls:
 
@@ -253,7 +289,9 @@ Agent Studio provides several security controls:
 - Genies can only execute skills you explicitly add to them.
 - Skills respect connected app permissions and access controls.
 
-What is Verified User Access and when should I use it?
+### What is Verified User Access and when should I use it?
+
+View answer
 
 [Verified User Access (VUA)](/en/agentic/agent-studio/verified-user-access) allows skills to execute with each end user's own credentials, rather than the recipe builder's credentials. End users authenticate once when first using a VUA-enabled skill and can manage their connections using the `!list_connections` keyword in chat.
 
@@ -277,9 +315,9 @@ Skills support two approaches:
 
 Refer to [Add verified user access to skills](/en/agentic/agent-studio/verified-user-access#add-verified-user-access-to-skill-recipes).
 
-### Advanced features
+### What are app events and when should I use them?
 
-What are app events and when should I use them?
+View answer
 
 [App events](/en/agentic/agent-studio/app-events) enable genies to act proactively by responding to triggers from external systems (like Salesforce or Zoom) instead of waiting for users to start conversations.
 
@@ -287,20 +325,26 @@ For example, when a NetSuite access request is approved, an IT Genie can automat
 
 App events automate complex tasks, surface relevant work at the right time, and give genies context earlier in the process.
 
-What is agent orchestration?
+### What is agent orchestration?
+
+View answer
 
 [Agent orchestration](/en/agentic/agent-studio/agent-orchestration) enables genies to work autonomously within recipes. Recipes can assign tasks to genies without user input, and genies can delegate subtasks to other genies.
 
 When a recipe uses the **Assign task to genie** action, the recipe job pauses while the genie processes the task autonomously, then resumes when the genie returns its response. This enables complex multi-agent workflows like compliance audits where one genie delegates evidence collection to another specialized genie.
 
-What are the limitations of agent orchestration?
+### What are the limitations of agent orchestration?
+
+View answer
 
 Agent orchestration has the following limitations:
 
 - Genies using [verified user access](/en/agentic/agent-studio/verified-user-access) skills can't be used with the **Assign task to genie** action.
 - Genies requiring [Business approvals](/en/agentic/agent-studio/business-approvals) can't process autonomous tasks.
 
-Can skills, knowledge bases, and genies be used across multiple projects?
+### Can skills, knowledge bases, and genies be used across multiple projects?
+
+View answer
 
 Yes. You can share and use skills, knowledge bases, and genies across multiple projects.
 
@@ -310,9 +354,9 @@ Yes. You can share and use skills, knowledge bases, and genies across multiple p
 
 Skills, knowledge bases, and genies can also be moved between projects freely without losing their configuration or connections.
 
-### Troubleshooting
+### Why can't users access or interact with my genie?
 
-Why can't users access or interact with my genie?
+View answer
 
 Verify the following if users can't access your genie or the genie isn't responding:
 
@@ -328,69 +372,91 @@ Refer to [Create a user group](/en/workato-identity/user-groups#create-a-user-gr
 
 ## Skills
 
-### Overview
+### What are skills?
 
-What are skills?
+View answer
 
 [Skills](/en/agentic/skills) are tools that let genies and MCP clients take actions in your business systems. A skill can query data, create records, send messages, update tickets, or perform any action your Workato recipes can do. Refer to the [Workato Skill connector](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector) for the connector that powers skills.
 
-Can skills be shared across multiple genies?
+### Can skills be shared across multiple genies?
+
+View answer
 
 Yes. You can share [skills](/en/agentic/skills) across multiple genies, even when genies are in different projects. Sharing lets you reuse skills across different genies without duplication.
 
-Can I publish skills to the community library?
+### Can I publish skills to the community library?
+
+View answer
 
 Yes. You can share [skills](/en/agentic/skills) in the [community library](/en/community-library#browse-assets).
 
-### Workato Skill connector
+### Will my existing skills break?
 
-Will my existing skills break?
+View answer
 
 No. Existing skills built on the [Workato Genie connector](/en/agentic/agent-studio/connectors/workato-genie-connector/workato-genie-connector) continue to function and remain available for assignment to genies.
 
 The Workato Genie connector **Start workflow** trigger and **Return response** action are deprecated. They continue to work, but they don't receive new enhancements.
 
-Do I have to migrate?
+### Do I have to migrate?
+
+View answer
 
 No. Migration is optional and at your own pace. New skills automatically use the [Workato Skill connector](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector) regardless of where you create them. Refer to [Migrate an existing skill](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector#migrate-an-existing-skill) for the steps.
 
-What happens when I create a new skill?
+### What happens when I create a new skill?
+
+View answer
 
 New skills automatically use the [Workato Skill connector](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector) regardless of where you create them.
 
-Will pre-built MCP servers I've already added change?
+### Will pre-built MCP servers I've already added change?
+
+View answer
 
 No. Existing pre-built MCP servers are unchanged. Newly added pre-built MCP servers will use the [Workato Skill connector](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector).
 
-Can I use skills if I'm an MCP-only customer?
+### Can I use skills if I'm an MCP-only customer?
+
+View answer
 
 Yes. Customers on Business MCP and Enterprise MCP plans can create and use skills without an Agent Studio license.
 
-Can I assign skills built on the Workato Skill connector to a genie?
+### Can I assign skills built on the Workato Skill connector to a genie?
+
+View answer
 
 Yes. Skills built on the [Workato Skill connector](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector) are assignable to genies, just like skills built on the [Workato Genie connector](/en/agentic/agent-studio/connectors/workato-genie-connector/workato-genie-connector). The genie builder lists both skill types.
 
-Can I change the trigger of a skill after creation?
+### Can I change the trigger of a skill after creation?
+
+View answer
 
 Yes. Workato sets the **Start workflow** trigger as the default when you create a skill. However, after you configure the trigger, you can replace it with a different trigger to run the recipe from an external event instead of an agent invocation. This differs from skills built on the [Workato Genie connector](/en/agentic/agent-studio/connectors/workato-genie-connector/workato-genie-connector), where the trigger was fixed.
 
 Replacing the **Start workflow** trigger permanently removes the skill from any genies and MCP servers it was assigned to, and you can't undo this action. The recipe editor prompts you for confirmation before you make this change. The fields defined in the original trigger's result schema remain available in the **Return response** action.
 
-What's the maximum response size from a skill?
+### What's the maximum response size from a skill?
+
+View answer
 
 The **Return response** action has a maximum response size of 250 KB. You can pass larger results as a streamable datapill to work around this limitation. Refer to [Stream large results](/en/agentic/agent-studio/connectors/workato-skill-connector/return-response#streaming) for more information.
 
-Can a skill return binary file content?
+### Can a skill return binary file content?
+
+View answer
 
 No. Result fields don't support binary file content. To work around this limitation, upload the file earlier in the recipe to a file storage location your agent can access, such as Workato file storage, Amazon S3, or Google Drive. Then return the file URL or ID as a string field. The agent retrieves the file using that reference.
 
-Does the Developer API for skills still work?
+### Does the Developer API for skills still work?
+
+View answer
 
 Yes. The Developer API supports skills built on either the [Workato Skill connector](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector) or the [Workato Genie connector](/en/agentic/agent-studio/connectors/workato-genie-connector/workato-genie-connector). Refer to [Skills](/en/workato-api/agent-studio#skills) in the Workato API reference for endpoint details.
 
-### Troubleshooting
+### Why is my skill only returning one record instead of the full dataset?
 
-Why is my skill only returning one record instead of the full dataset?
+View answer
 
 The **Return response** action can return one record when you use **Text mode** instead of **Formula mode**, or when you select individual field datapills instead of the Records datapill. Text mode returns only the last record from a collection.
 
@@ -409,7 +475,9 @@ Complete the following steps to resolve this issue:
 
 Refer to [Text versus formula mode](/en/formulas/formula-mode#text-vs-formula-mode) for more information.
 
-Why does my genie make mistakes with simple math calculations?
+### Why does my genie make mistakes with simple math calculations?
+
+View answer
 
 LLMs generate responses by predicting tokens instead of performing mathematical operations. This can cause errors in precise arithmetic, especially multi-step calculations and financial computations.
 
@@ -425,9 +493,9 @@ Refer to [Troubleshoot arithmetic errors](/en/agentic/agent-studio/troubleshooti
 
 ## Workato GO
 
-### Overview
+### What is Workato GO?
 
-What is Workato GO?
+View answer
 
 [Workato GO](/en/agentic/workato-go) is an end-user interface that unifies AI-driven workflows, knowledge searches, and transactional interactions within a single, cohesive interface. It eliminates the need to switch between disconnected tools, search systems, and workflows.
 
@@ -438,20 +506,24 @@ What is Workato GO?
 - **Context-aware routing**: Determines whether a query is handled better by a genie, a search result, or both.
 - **Simplified task flow**: Forms, approvals, and user confirmations are built into the interface to avoid switching between apps.
 
-What types of knowledge can I search with Workato GO?
+### What types of knowledge can I search with Workato GO?
+
+View answer
 
 Workato GO provides two [knowledge sources](/en/agentic/workato-go/search):
 
 - **World knowledge**: Search across publicly available information
 - **Company knowledge**: Search across your company's third-party apps and internal documentation
 
-What data sources does Workato GO support?
+### What data sources does Workato GO support?
+
+View answer
 
 Workato GO supports a broad range of [data sources](/en/agentic/workato-go/data-sources) out-of-the-box, including Confluence, Salesforce, Slack, Google Drive, Jira, Gmail, Gong, and more. You can also add custom web crawler data sources to index internal documentation sites or public web pages.
 
-### Setup and configuration
+### How do I configure a subdomain for Workato GO?
 
-How do I configure a subdomain for Workato GO?
+View answer
 
 Complete the following steps to [configure your subdomain](/en/agentic/workato-go/configuration#configure-your-subdomain):
 
@@ -464,7 +536,9 @@ Complete the following steps to [configure your subdomain](/en/agentic/workato-g
 
 Your subdomain must be 3-65 characters. A unique, randomly generated subdomain is provided by default if you don't customize it.
 
-Can I customize the branding in Workato GO?
+### Can I customize the branding in Workato GO?
+
+View answer
 
 Yes, you can [customize the company name and logo](/en/agentic/workato-go/configuration#configure-your-branding) using organization properties:
 
@@ -479,7 +553,9 @@ Yes, you can [customize the company name and logo](/en/agentic/workato-go/config
 
 **Logo requirements**: Public URL, transparent .png or .svg, 210x40px dimensions, under 200 KB.
 
-How do I add administrators to Workato GO?
+### How do I add administrators to Workato GO?
+
+View answer
 
 Complete the following steps to [add administrators](/en/agentic/workato-go/admins-user-groups) to Workato GO:
 
@@ -492,7 +568,9 @@ Complete the following steps to [add administrators](/en/agentic/workato-go/admi
 
 Administrators can manage data sources and view the activity log.
 
-How do I change the theme in Workato GO?
+### How do I change the theme in Workato GO?
+
+View answer
 
 Workato GO supports three themes: Light theme, Dark theme, and Sync with device, which matches your operating system settings.
 
@@ -500,13 +578,15 @@ You can change your theme by clicking your profile icon in the side navigation b
 
 Refer to [Choose a theme](/en/agentic/workato-go/preference-settings#choose-a-theme) for more information.
 
-### Data sources
+### What are data sources?
 
-What are data sources?
+View answer
 
 [Data sources](/en/agentic/workato-go/data-sources) enable Workato GO to connect to your business systems, such as Jira, Confluence, Salesforce, and Google Drive, for enterprise search and AI workflows. This ensures search results reflect your actual business context and genies can retrieve current data to complete tasks.
 
-How do I add a data source to Workato GO?
+### How do I add a data source to Workato GO?
+
+View answer
 
 Each data source has specific configuration requirements. You must have administrator privileges in Workato GO to add data sources.
 
@@ -526,7 +606,9 @@ Refer to the connector-specific documentation for setup instructions:
 
 **Custom web pages**: You can also add custom web crawler data sources to index internal documentation sites or public web pages. Refer to [Add a web crawler data source](/en/agentic/workato-go/data-sources#add-a-custom-data-source).
 
-Can I limit which Google Drive files are indexed by Workato GO?
+### Can I limit which Google Drive files are indexed by Workato GO?
+
+View answer
 
 Yes, you can [limit the Google Drive crawler scope](/en/agentic/workato-go/data-sources/google-drive#limit-google-drive-crawler-scope) to specific users' files:
 
@@ -539,7 +621,9 @@ Yes, you can [limit the Google Drive crawler scope](/en/agentic/workato-go/data-
 
 This enables you to limit indexing to a pilot group, specific departments, or restrict access to sensitive content.
 
-How does Workato GO handle permissions when ingesting data?
+### How does Workato GO handle permissions when ingesting data?
+
+View answer
 
 [Workato GO](/en/agentic/workato-go) respects native permissions from source systems:
 
@@ -548,9 +632,9 @@ How does Workato GO handle permissions when ingesting data?
 - You can restrict which users are crawled/indexed
 - Permission-aware crawling ensures users only see content they have access to in the source system
 
-### Action Board
+### What is Action Board?
 
-What is Action Board?
+View answer
 
 [Action Board](/en/agentic/agent-studio/action-board) displays customizable dashboards in [Workato GO](/en/agentic/workato-go) that visualize KPI metrics configured in Agent Studio. Action Board displays:
 
@@ -560,7 +644,9 @@ What is Action Board?
 
 **Important**: Action Board and the KPI tab are only available for genies that use Workato GO as the chat interface. Action Board doesn't support genies using Slack or Microsoft Teams.
 
-What are the prerequisites for using Action Board?
+### What are the prerequisites for using Action Board?
+
+View answer
 
 To use Action Board, you must:
 
@@ -571,7 +657,9 @@ To use Action Board, you must:
 
 Learn more about [Action Board](/en/agentic/agent-studio/action-board).
 
-How do KPIs work with Action Board?
+### How do KPIs work with Action Board?
+
+View answer
 
 KPIs (Key Performance Indicators) are quantifiable measurements of progress toward company goals. KPIs use [data tables](/en/data-tables) to store frequently used data that KPI skills reference.
 
@@ -593,9 +681,9 @@ Each action board is limited to five thumbnails.
 
 Learn more about [creating KPIs](/en/agentic/agent-studio/action-board).
 
-### Troubleshooting
+### What should I do if real-time search or chat stops working?
 
-What should I do if real-time search or chat stops working?
+View answer
 
 This is typically caused by blocked or terminated Server-Sent Events (SSE) connections. SSE is a network-level issue, not a browser-specific problem.
 
@@ -616,7 +704,9 @@ This is typically caused by blocked or terminated Server-Sent Events (SSE) conne
 
 Refer to [Troubleshoot search and real-time chat issues](/en/agentic/workato-go/search#troubleshoot-search-and-real-time-chat-issues) for more information.
 
-Why aren't my genies appearing in Workato GO?
+### Why aren't my genies appearing in Workato GO?
+
+View answer
 
 Verify the following if genies aren't appearing in Workato GO after configuration:
 
@@ -630,9 +720,9 @@ If genies still don't appear after completing setup, verify you're accessing the
 
 ## MCP
 
-### Overview
+### What is MCP?
 
-What is MCP?
+View answer
 
 [Model Context Protocol (MCP)](/en/mcp) is an open protocol that standardizes how AI models connect to external systems and data sources. MCP enables you to expose your Workato capabilities (API collections, API recipes, recipe functions, and skills) as tools that AI clients can use.
 
@@ -642,7 +732,9 @@ Key benefits of MCP include:
 - **Standardizes interactions**: Provides a consistent way for AI models to communicate with different systems like Slack, Jira, or Google Drive
 - **Reduces development**: MCP's standardization reduces the need for custom integrations for each new data source
 
-What MCP capabilities does Workato provide?
+### What MCP capabilities does Workato provide?
+
+View answer
 
 Workato provides the following MCP capabilities:
 
@@ -650,7 +742,9 @@ Workato provides the following MCP capabilities:
 - **[Verified User Access](/en/mcp/verified-user-access)**: Enables your MCP servers to use authenticated end-user credentials for external API calls instead of static tokens.
 - **[Workato Developer API and Embedded API MCP](/en/mcp/developer-api-mcp)**: Enables AI-powered developer environments like Claude Desktop and Cursor to programmatically access your Workato workspace.
 
-Which AI clients/LLMs are compatible with Workato MCP?
+### Which AI clients/LLMs are compatible with Workato MCP?
+
+View answer
 
 [Workato MCP](/en/mcp#getting-started) is compatible with:
 
@@ -660,25 +754,31 @@ Which AI clients/LLMs are compatible with Workato MCP?
 - ChatGPT
 - Any MCP client that supports the Model Context Protocol standard
 
-### Setup and access
+### Is MCP available in my region?
 
-Is MCP available in my region?
+View answer
 
 **[MCP](/en/mcp) is available in the US, EU, AU, SG, and JP data centers.**
 
 Contact your Customer Success representative if you're interested in using MCP or require additional information. Refer to your pricing plan and contract to learn more.
 
-How do I create an MCP server in Workato?
+### How do I create an MCP server in Workato?
+
+View answer
 
 You can create an MCP server in the AI Hub by [starting with a prebuilt template](/en/mcp/prebuilt-mcps#install-a-prebuilt-mcp-server-in-workato) or [building your own from scratch](/en/mcp/mcp-servers#create-an-mcp-server). The setup steps vary depending on which approach you choose.
 
-What prebuilt MCP server templates are available?
+### What prebuilt MCP server templates are available?
+
+View answer
 
 Workato provides prebuilt MCP server templates for common collaboration and productivity apps, such as [Slack](/en/mcp/prebuilt-mcps/slack-mcp-server), [Google Calendar](/en/mcp/prebuilt-mcps/google-calendar-mcp-server), and [Google Sheets](/en/mcp/prebuilt-mcps/google-sheets-mcp-server), project and development apps, such as [Jira](/en/mcp/prebuilt-mcps/jira-mcp-server) and [GitHub](/en/mcp/prebuilt-mcps/github-mcp-server), identity management apps, such as [Google Directory End User](/en/mcp/prebuilt-mcps/google-directory-end-user-mcp-server) and [Okta End User](/en/mcp/prebuilt-mcps/okta-end-user-mcp-server), and sales operations apps, such as [Gong](/en/mcp/prebuilt-mcps/gong-mcp-server).
 
 Refer to the [Prebuilt MCP servers](/en/mcp/prebuilt-mcps/mcp-servers) page for a complete list of available templates.
 
-What types of assets can I add as tools to an MCP server?
+### What types of assets can I add as tools to an MCP server?
+
+View answer
 
 You can select one of two tool source types when creating an MCP server from scratch:
 
@@ -698,7 +798,9 @@ With project assets, you can mix multiple asset types in the same MCP server. Al
 
 Learn more about [MCP servers](/en/mcp/mcp-servers) and [Verified User Access](/en/mcp/verified-user-access).
 
-How do I configure an AI client to use my MCP server?
+### How do I configure an AI client to use my MCP server?
+
+View answer
 
 Configuration steps vary by AI client:
 
@@ -707,7 +809,9 @@ Configuration steps vary by AI client:
 - [Cursor](/en/mcp/remote-mcp-servers#cursor-mcp-configuration)
 - [Microsoft Copilot](/en/mcp/remote-mcp-servers#microsoft-copilot-mcp-configuration)
 
-What are the best practices for designing MCP tools?
+### What are the best practices for designing MCP tools?
+
+View answer
 
 Follow these key principles when [designing MCP tools](/en/mcp/mcp-server-tool-design):
 
@@ -734,9 +838,9 @@ Follow these key principles when [designing MCP tools](/en/mcp/mcp-server-tool-d
 - Test tools with real AI workflows
 - Monitor usage patterns and refine based on which tools are used most frequently
 
-### Authentication and access control
+### What authentication methods does MCP support?
 
-What authentication methods does MCP support?
+View answer
 
 MCP supports [two authentication methods](/en/mcp/mcp-authentication):
 
@@ -754,7 +858,9 @@ MCP supports [two authentication methods](/en/mcp/mcp-authentication):
 
 **Important**: Switching from token-based authentication to Workato Identity revokes the MCP token, requiring all clients to be reconfigured for OAuth 2.0 authentication.
 
-What is Verified User Access and when should I use it?
+### What is Verified User Access and when should I use it?
+
+View answer
 
 [Verified User Access (VUA)](/en/mcp/verified-user-access) enables end users to authenticate with their own credentials when interacting with MCP tools, bringing enterprise-grade governance and user-level security to AI workflows.
 
@@ -779,7 +885,9 @@ What is Verified User Access and when should I use it?
 - Selected tools must be recipe functions or skills
 - Connected applications must support OAuth 2.0 authorization code grant. API keys, basic auth, and other OAuth 2.0 grant types don't work with VUA.
 
-How do I enable Verified User Access for my MCP server?
+### How do I enable Verified User Access for my MCP server?
+
+View answer
 
 Complete the following steps to use [Verified User Access (VUA)](/en/mcp/verified-user-access) with your MCP server:
 
@@ -792,9 +900,9 @@ Complete the following steps to use [Verified User Access (VUA)](/en/mcp/verifie
 
 This allows each user to interact with your MCP tools using their own credentials, ensuring actions are performed as the authenticated user rather than the builder's credentials.
 
-### Limitations
+### Can I limit MCP server usage?
 
-Can I limit MCP server usage?
+View answer
 
 Yes. You can [configure MCP server quotas](/en/mcp/mcp-server-access-and-configuration#configure-mcp-server-limits) by going to your MCP server's **Settings > Limits** page:
 
@@ -804,21 +912,27 @@ Yes. You can [configure MCP server quotas](/en/mcp/mcp-server-access-and-configu
 
 When rate limits or usage quotas are exceeded, all requests are blocked until the quota interval passes or the quota resets.
 
-How many tokens can I have active on an MCP server at once?
+### How many tokens can I have active on an MCP server at once?
+
+View answer
 
 Up to 50.
 
-What's the maximum size of the Allowed IPs and Blocked IPs lists?
+### What's the maximum size of the Allowed IPs and Blocked IPs lists?
+
+View answer
 
 Each list holds up to 500 entries. The same quota applies to the **Allowed IPs** and **Blocked IPs** lists independently.
 
-How long can an MCP tool call run before it times out?
+### How long can an MCP tool call run before it times out?
+
+View answer
 
 A tool call returns inline within 30 seconds. After that, the call detaches and continues in the background up to a total of 300 seconds. Requests that exceed the asynchronous timeout don't return a response to the MCP client. Set the asynchronous timeout in your recipe settings.
 
-### Troubleshooting
+### Why can't I access my MCP server with Workato Identity?
 
-Why can't I access my MCP server with Workato Identity?
+View answer
 
 MCP servers using Workato Identity (OAuth 2.0) authentication don't grant automatic access to any users. All users must be added to an end-user group to access MCP servers, including administrators.
 
@@ -835,7 +949,9 @@ You must have admin privileges to manage user groups. If using token-based authe
 
 Refer to [MCP access methods user groups](/en/mcp/mcp-authentication#user-groups) for step-by-step instructions.
 
-How can I track who is accessing my MCP server?
+### How can I track who is accessing my MCP server?
+
+View answer
 
 [MCP server logs](/en/mcp/mcp-server-access-and-configuration#view-mcp-server-logs) provide a unified usage and access overview for governance and tracking. Logs include:
 

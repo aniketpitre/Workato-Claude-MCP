@@ -7,23 +7,31 @@ description: >-
 
 # String formulas FAQs
 
-Get answers to frequently asked string formula questions.
+Get answers to frequently asked questions (FAQs) about string formulas.
 
-What are string formulas in Workato?
+## What are string formulas in Workato?
+
+View answer
 
 Strings are sequences of text and characters. [String formulas](/en/formulas/string-formulas#string-formulas) in Workato are allowlisted Ruby methods that enable you to manipulate and work with strings.
 
-What is the purpose of conditionals in string formulas?
+## What is the purpose of conditionals in string formulas?
+
+View answer
 
 Conditionals allow you to apply if-else logic to strings, which you can use to perform various actions based on conditions. Refer to [Conditionals](/en/formulas/conditions#conditionals) for more robust instructions on how to add conditionals to formulas.
 
-How do I include and exclude work in string formulas?
+## How do I include and exclude work in string formulas?
+
+View answer
 
 The [`include?` formula](/en/formulas/string-formulas#include) checks if a specific substring is present in a string and returns `true` if it is found.
 
 The [`exclude?` formula](/en/formulas/string-formulas#exclude) checks if a specific substring is _not_ present in a string and returns `true` if it is _not_ found.
 
-Can I use text manipulation with string formulas?
+## Can I use text manipulation with string formulas?
+
+View answer
 
 Yes. You can manipulate text within strings with the following formulas:
 
@@ -37,7 +45,9 @@ Yes. You can manipulate text within strings with the following formulas:
   
   - Changes the case of strings depending on your required format.
 
-Can I convert alpha-2 and alpha-3 content?
+## Can I convert alpha-2 and alpha-3 content?
+
+View answer
 
 Yes. You can convert alpha-2 and alpha-3 country codes to country names or convert country names to country codes with the following formulas:
 
@@ -50,15 +60,21 @@ You can convert alpha-2 and alpha-3 country codes to currency codes or currency 
 - [`to_currency_code`](/en/formulas/string-formulas#to-currency-code)
 - [`to_currency_name`](/en/formulas/string-formulas#to-currency-name)
 
-What is the purpose of the ordinalize formula?
+## What is the purpose of the ordinalize formula?
+
+View answer
 
 The [`ordinalize` formula](/en/formulas/string-formulas#ordinalize) turns a number into an ordinal string, such as 1st, 2nd, 3rd, and so on.
 
-What formula should I use to convert data types?
+## What formula should I use to convert data types?
+
+View answer
 
 You can use the [`to_s` formula](/en/formulas/string-formulas#to-s) to convert various data types, including numbers, dates, and more into string data types.
 
-How do I convert the Ruby decrypt method output to a string?
+## How do I convert the Ruby decrypt method output to a string?
+
+View answer
 
 The [Ruby decrypt method](/en/developing-connectors/sdk/sdk-reference/ruby_methods#decrypt) returns a byte array instead of a string by default. You can convert the decrypt method output to a string by appending the `.as_string()` or `.as_utf8` function to your formula.
 

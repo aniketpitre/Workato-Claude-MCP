@@ -24,9 +24,6 @@ Future improvements to Recipe functions will give you the ability to easily refa
 
 Here's a look at what's changing in Workato to accommodate this new recipe type:
 
-- [Recipe wizard starting point](#recipe-wizard-starting-point)
-- [Recipe builder](#recipe-builder)
-
 ### Recipe Wizard Starting Point
 
 The **Build callable recipe** recipe starting point option has been replaced with **Build recipe function**:
@@ -39,19 +36,9 @@ To create and use reusable components when building recipes, use the **Recipe fu
 
 ![The Recipe functions app in the Recipe builder](/assets/recipe-functions-recipe-builder.Bn5TwbFY.gif)
 
-* * *
+## Are callable recipes and recipe functions the same?
 
-## FAQ
-
-- [Are callable recipes and recipe functions the same?](#are-callable-recipes-and-recipe-functions-the-same)
-- [Do I need to replace my existing callable recipes with recipe functions?](#do-i-need-to-replace-my-existing-callable-recipes-with-recipe-functions)
-- [Are recipe functions billable on recipe-based plans?](#are-recipe-functions-billable-on-recipe-based-plans)
-- [Is there a way to convert callable recipes into recipe functions?](#is-there-a-way-to-convert-callable-recipes-into-recipe-functions)
-- [Can I continue using existing callable recipes from new recipes?](#can-i-continue-using-existing-callable-recipes-from-new-recipes)
-- [I’m using the same callable recipe as an API endpoint and as a reusable component. Will that still work?](#i-m-using-the-same-callable-recipe-as-an-api-endpoint-and-as-a-reusable-component-will-that-still-work)
-- [Can I use callable recipes to create reusable components as before?](#can-i-use-callable-recipes-to-create-reusable-components-as-before)
-
-### Are callable recipes and recipe functions the same?
+View answer
 
 No. While callable recipes filled multiple functions in Workato, including the creation of API endpoints, recipe functions are focused solely on creating reusable recipe components. For this reason, recipe functions have a much simpler data structure and less design overhead.
 
@@ -61,31 +48,43 @@ See example data structures
 
 Unlike callable recipes, recipe functions can't be used to create API endpoints. Instead, use the new dedicated [API recipe type](/en/api-mgmt/api-recipes/). Check out the [API recipe FAQ](/en/api-mgmt/api-recipes/api-recipes-faq)
 
-### Do I need to replace my existing callable recipes with recipe functions?
+## Do I need to replace my existing callable recipes with recipe functions?
+
+View answer
 
 No. Your existing recipes continue to work. Recipe functions provide new capabilities, such as one-click refactoring of multiple steps into a single recipe function. You don't need to convert callable recipes that already work.
 
-### Are recipe functions billable on recipe-based plans?
+## Are recipe functions billable on recipe-based plans?
+
+View answer
 
 No, recipe functions aren't billable recipes.
 
-### Is there a way to convert callable recipes into recipe functions?
+## Is there a way to convert callable recipes into recipe functions?
+
+View answer
 
 Currently, no. However, there’s no need to convert recipes, as callable recipes will continue to work as before.
 
-### Can I continue using existing callable recipes from new recipes?
+## Can I continue using existing callable recipes from new recipes?
+
+View answer
 
 Yes. Even though you can’t create new callable recipes, the **Callable Recipes by Workato** app will continue to be available in the Recipe builder. If you need to call one of your existing callable recipes, just select the app and choose the appropriate action and recipe.
 
 As you start to build recipe functions, remember that legacy callable recipes are accessed via the **Callable recipes by Workato** app, while new recipe functions are accessed via the **Recipe function by Workato** app. If you can’t find the recipe you’re looking for, make sure you’re using the right app.
 
-### I’m using the same callable recipe as an API endpoint and as a reusable component. Will that still work?
+## I’m using the same callable recipe as an API endpoint and as a reusable component. Will that still work?
+
+View answer
 
 Yes. An existing callable recipe can still be used both as an API endpoint and to be called from other Workato recipes. However, this is quite rare in practice.
 
 To support this use case with API recipes and recipe functions, you’ll need to create two recipes. To retain modularity, you can keep the bulk of your logic inside the recipe function and invoke it from your API recipe.
 
-### Can I use callable recipes to create reusable components as before?
+## Can I use callable recipes to create reusable components as before?
+
+View answer
 
 No. Callable recipes will be phased out.
 

@@ -1,13 +1,13 @@
 ---
 url: 'https://docs.workato.com/en/connectors/solace/acknowledge-message.md'
 description: >-
-  Settles a message received from a trigger or the receive action in manual
-  acknowledgement mode.
+  Settles a message or batch of messages received from a trigger or receive
+  action in manual acknowledgement mode.
 ---
 
 # Solace - Acknowledge message received from Solace action
 
-The **Acknowledge message received from Solace** action settles a message received from a trigger or the **Receive message from queue** action in manual acknowledgement mode.
+The **Acknowledge message received from Solace** action settles a message or batch of messages received from a trigger or receive action in manual acknowledgement mode. The **Outcome** you specify applies to every message in a batch as one unit.
 
 ## Input
 

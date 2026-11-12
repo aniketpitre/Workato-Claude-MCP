@@ -2,7 +2,7 @@
 url: 'https://docs.workato.com/en/mcp/mcp-authentication.md'
 description: >-
   Configure MCP server access with API token-based access, OAuth2 single sign-on
-  through Workato Identity, or OpenID Connect (OIDC) and switch between access
+  through Workato Identity, or OpenID Connect (OIDC), and switch between access
   methods.
 ---
 
@@ -42,7 +42,7 @@ Complete the following steps to use Workato Identity for MCP server access:
    
 6. Click Workato Identity.
    
-   ![Click Workato Identity](/assets/oidc-access-method-mcp.B_XN5csr.png)_Click Workato Identity_
+   ![Click Workato Identity](/assets/oidc-access-method-mcp.X-AFio_q.png)_Click Workato Identity_
    
 7. Click **Confirm**.
    
@@ -196,7 +196,7 @@ Complete the following steps to use OIDC for MCP server access:
    
 6. Click **OpenID Connect**.
    
-   ![Click OpenID Connect](/assets/oidc-access-method-mcp.B_XN5csr.png)_Click **OpenID Connect**_
+   ![Click OpenID Connect](/assets/oidc-access-method-mcp.X-AFio_q.png)_Click **OpenID Connect**_
    
 7. Click **Confirm**.
    
@@ -251,10 +251,10 @@ flowchart TD
   end
   subgraph Q[<strong>External MCP server</strong>]
     direction LR
-    subgraph RR[&nbsp Sign in with &nbsp <br> own credentials &nbsp]
+    subgraph RR[&nbsp Sign in <br> with own <br> credentials]
       direction LR
     end
-    subgraph RRR[&nbsp Consent &nbsp <br> granted &nbsp]
+    subgraph RRR[&nbsp Consent granted &nbsp]
       direction LR
     end
   end

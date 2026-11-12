@@ -19,7 +19,17 @@ Data table resources have the following rate limits:
 
 | Type | Resource | Quota |
 | --- | --- | --- |
-| All | All [Data tables](/en/workato-api/data-tables.html) endpoints | 60 requests per minute |
+| GET, POST | Read endpoints: [Query records](/en/workato-api/data-tables.html#query-records), [Download file from the record](/en/workato-api/data-tables.html#download-file-from-the-record), [Describe uploaded file](/en/workato-api/data-tables.html#describe-uploaded-file) | 100 requests per second |
+| POST, PUT, DELETE | Write endpoints: [Create record](/en/workato-api/data-tables.html#create-record), [Update record](/en/workato-api/data-tables.html#update-record), [Delete record](/en/workato-api/data-tables.html#delete-record), [Generate link to upload file](/en/workato-api/data-tables.html#generate-link-to-upload-file), All other [Record import](/en/workato-api/data-tables.html#record-import-apis) endpoints | 20,000 values per second |
+| All | All other [Data tables](/en/workato-api/data-tables.html) endpoints | 60 requests per minute |
+
+> **HOW DATA TABLE LIMITS ARE COUNTED**
+> 
+> The following applies to the read and write limits:
+> 
+> - Each limit applies per environment and is one shared pool for the endpoints in its row. For example, if you call the Query records endpoint at 100 requests per second, the other read endpoints in that environment are rate limited until usage drops.
+> - Write limits count values instead of requests. Workato counts one value for each field in each record you create, update, or delete, and each item in a multi-value field counts separately. For example, creating 10 records in a table with 100 fields counts as 1,000 values.
+> - Generate link to upload file and the record import endpoints listed in the write row count as one value per request.
 
 ## Data center base URLs
 

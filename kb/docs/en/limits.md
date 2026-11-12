@@ -833,7 +833,9 @@ In addition, Developer API resources have the following rate and payload quotas:
 | **Custom connectors** | All | All other [Custom connectors](/en/workato-api/custom_connectors.html) endpoints | 1 request per second |
 | **Custom OAuth profiles** | All | All [Custom OAuth profiles](/en/workato-api/custom-oauth-profiles.html#create-custom-oauth-profile) endpoints | 60 requests per minute |
 | **Data pipelines** | All | All [Data pipelines](/en/workato-api/data-pipelines.html) endpoints | 60 requests per minute |
-| **Data tables** | All | All [Data tables](/en/workato-api/data-tables.html) endpoints | 60 requests per minute |
+| **Data tables** | GET, POST | Read endpoints: [Query records](/en/workato-api/data-tables.html#query-records), [Download file from the record](/en/workato-api/data-tables.html#download-file-from-the-record), [Describe uploaded file](/en/workato-api/data-tables.html#describe-uploaded-file) | 100 requests per second |
+| **Data tables** | POST, PUT, DELETE | Write endpoints: [Create record](/en/workato-api/data-tables.html#create-record), [Update record](/en/workato-api/data-tables.html#update-record), [Delete record](/en/workato-api/data-tables.html#delete-record), [Generate link to upload file](/en/workato-api/data-tables.html#generate-link-to-upload-file), All other [Record import](/en/workato-api/data-tables.html#record-import-apis) endpoints | 20,000 values per second |
+| **Data tables** | All | All other [Data tables](/en/workato-api/data-tables.html) endpoints | 60 requests per minute |
 | **Environment management** | All | All [Environment management](/en/workato-api/environment-management.html) endpoints | 60 requests per minute |
 | **Environment properties** | All | All [Environment properties](/en/workato-api/account-properties.html) endpoints | 60 requests per minute |
 | **Environment roles** | All[](/en/workato-api/environment-roles.html) | All [Environment roles](/en/workato-api/environment-roles.html) endpoints | 60 requests per minute |
@@ -909,7 +911,9 @@ In addition, Embedded API resources have the following rate limits:
 | **Customer managers** | All | All [Customer managers](/en/oem/oem-api/customer-managers.html) endpoints | 60 requests per minute |
 | **Customer workspace collaborators** | All | All [Customer workspace collaborators](/en/oem/oem-api/team.html) endpoints | 60 requests per minute. Additionally, you can send one request per user and workspace ID every 20 minutes to the **Invite collaborator to managed customer workspace** endpoint. |
 | **Data retention** | All | All [Data retention](/en/oem/oem-api/data-retention.html) endpoints | 60 requests per minute |
-| **Data tables** | All | All [Data tables](/en/oem/oem-api/data-tables.html) endpoints | 60 requests per minute |
+| **Data tables** | GET, POST | Read endpoints: [Query records](/en/oem/oem-api/data-tables.html#query-records), [Download file from the record](/en/oem/oem-api/data-tables.html#download-file-from-the-record), [Describe uploaded file](/en/oem/oem-api/data-tables.html#describe-uploaded-file) | 200 requests per second |
+| **Data tables** | POST, PUT, DELETE | Write endpoints: [Create record](/en/oem/oem-api/data-tables.html#create-record), [Update record](/en/oem/oem-api/data-tables.html#update-record), [Delete record](/en/oem/oem-api/data-tables.html#delete-record), [Generate link to upload file](/en/oem/oem-api/data-tables.html#generate-link-to-upload-file), All other [Record import](/en/oem/oem-api/data-tables.html#record-import-apis) endpoints | 40,000 values per second |
+| **Data tables** | All | All other [Data tables](/en/oem/oem-api/data-tables.html) endpoints | 60 requests per minute |
 | **Dynamic field mapping** | All | All [Dynamic field mapping](/en/oem/oem-api/dynamic-field-mapping.html) endpoints | 60 requests per minute |
 | **Environment management** | All | All [Environment management](/en/oem/oem-api/environment-management.html) endpoints | 60 requests per minute |
 | **Environment properties** | GET | List properties by prefix: [/api/managed\_users/:managed\_user\_id /properties](/en/oem/oem-api/account-properties.html#list-properties-by-prefix) | 1,000 requests per minute |

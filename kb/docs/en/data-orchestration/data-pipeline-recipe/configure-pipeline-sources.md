@@ -90,6 +90,7 @@ Marketing and advertising sources contain campaigns, ad performance, audiences, 
 - [Klaviyo](/en/data-orchestration/data-pipeline-recipe/configure-klaviyo)
 - [LinkedIn](/en/data-orchestration/data-pipeline-recipe/configure-linkedin)
 - [Marketo](/en/data-orchestration/data-pipeline-recipe/configure-marketo)
+- [Mixpanel](/en/data-orchestration/data-pipeline-recipe/configure-mixpanel)
 - [Pendo](/en/data-orchestration/data-pipeline-recipe/configure-pendo)
 - [Salesforce Marketing Cloud](/en/data-orchestration/data-pipeline-recipe/configure-salesforce-marketing-cloud)
 - [Typeform](/en/data-orchestration/data-pipeline-recipe/configure-typeform)
@@ -129,3 +130,4 @@ Support and service sources contain tickets, conversations, incidents, on-call s
 - [Intercom](/en/data-orchestration/data-pipeline-recipe/configure-intercom)
 - [PagerDuty](/en/data-orchestration/data-pipeline-recipe/configure-pagerduty)
 - [ServiceNow](/en/data-orchestration/data-pipeline-recipe/configure-servicenow)
+- [SurveyMonkey](/en/data-orchestration/data-pipeline-recipe/configure-surveymonkey)

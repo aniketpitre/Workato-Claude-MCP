@@ -203,7 +203,7 @@ POST https://YOUR_DATA_CENTER/api/event_streams/topics
 | Name | Type | Description |
 | --- | --- | --- |
 | name | **string** _required_ | The name of the new topic. Topic names must be unique within a folder. |
-| folder\_id | **number** _optional_ | The ID of the folder or project to store the topic inside. By default, Workato places the topic in your workspace's **Event Streams** project, creating that project if it doesn't already exist. |
+| folder\_id | **number** _optional_ | The ID of the folder or project to store the topic inside. By default, Workato places the topic in your workspace's **Event Streams Topics** project, creating that project if it doesn't already exist. |
 | schema | **array** _required_ | The schema definition for the new topic. Must adhere to a valid Workato schema format. |
 | schema\[control\_type\] | **string** _required_ | The control type for a field in the topic schema. |
 | schema\[label\] | **string** _required_ | The label that appears for the field in the topic schema. |
@@ -386,7 +386,7 @@ PUT https://YOUR_DATA_CENTER/api/event_streams/topics/:topic_id
 | Name | Type | Description |
 | --- | --- | --- |
 | name | **string** _optional_ | The name of the updated topic. |
-| folder\_id | **number** _optional_ | The ID of the folder or project to move the topic to. By default, Workato places the topic in your workspace's **Event Streams** project, creating that project if it doesn't already exist. |
+| folder\_id | **number** _optional_ | The ID of the folder or project to move the topic to. By default, Workato places the topic in your workspace's **Event Streams Topics** project, creating that project if it doesn't already exist. |
 | schema | **array** _optional_ | The schema definition for the updated topic. Must adhere to a valid Workato schema format. |
 | schema\[control\_type\] | **string** _optional_ | The control type for a field in the topic schema. |
 | schema\[label\] | **string** _optional_ | The label that appears for the field in the topic schema. |

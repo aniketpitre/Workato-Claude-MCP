@@ -757,7 +757,7 @@ Import a package in zip file format into a folder. This endpoint allows an API c
 
 > **EVENT STREAM FOLDER PLACEMENT**
 > 
-> Event streams imported without folder information during the [transition period](/en/event-streams#event-streams-as-project-assets) are placed into the default **Event Streams** project, which Workato creates the first time it's needed. You must specify a folder to import event stream packages after the transition period.
+> Event streams imported without folder information during the [transition period](/en/event-streams#event-streams-as-project-assets) are placed into the default **Event Streams Topics** project, which Workato creates the first time it's needed. You must specify a folder to import event stream packages after the transition period.
 
 <api-code no-copy-method>
 

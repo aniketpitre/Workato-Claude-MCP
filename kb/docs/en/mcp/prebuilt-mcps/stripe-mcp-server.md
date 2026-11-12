@@ -428,23 +428,27 @@ View SurveyMonkey Authoring connection setup steps
 
 Complete the following steps to connect to SurveyMonkey in Workato:
 
-1. Provide a **Connection name** that identifies which SurveyMonkey account Workato is connected to.
+1. Click **Create > Connection** or press C twice.
    
-2. Use the **Location** drop-down menu to select the project or folder where you plan to store the connection.
+2. Search for `SurveyMonkey` and select it as your app.
    
-3. Use the **Datacenter** drop-down menu to select the data center that hosts your SurveyMonkey account. Defaults to **United States**. You must use a [custom OAuth profile](/en/custom-oauth-profiles) to connect to a data center outside of the United States.
+3. Provide a **Connection name** that identifies which SurveyMonkey account Workato is connected to.
    
-4. Optional. Use the **Custom OAuth profile** drop-down menu to select a [custom OAuth profile](/en/custom-oauth-profiles) for your connection. All requests to the app use the profile you specify here.
+4. Use the **Location** drop-down menu to select the project or folder where you plan to store the connection.
    
-5. Click **Connect** to open the SurveyMonkey authorization window.
+5. Use the **Datacenter** drop-down menu to select the data center that hosts your SurveyMonkey account. Defaults to **United States**. You must use a [custom OAuth profile](/en/custom-oauth-profiles) to connect to a data center outside of the United States.
    
-6. Sign in to SurveyMonkey with your account credentials. We recommend you use an admin account to avoid permission roadblocks.
+6. Optional. Use the **Custom OAuth profile** drop-down menu to select a [custom OAuth profile](/en/custom-oauth-profiles) for your connection. All requests to the app use the profile you specify here.
    
-7. Read the terms of service and click **Authorize** to complete the connection setup.
+7. Click **Connect** to open the SurveyMonkey authorization window.
+   
+8. Sign in to SurveyMonkey with your account credentials. We recommend you use an admin account to avoid permission roadblocks.
+   
+9. Read the terms of service and click **Authorize** to complete the connection setup.
    
    > **VIEW ANSWERS REQUIREMENT**
    > 
-   > Select `view answers along with responses` during authorization if you plan to use the `Completed survey response` trigger or the `Send survey invite via email and wait for response` action.
+   > Select `View answers along with responses` during authorization to retrieve survey response answers. The `Completed survey response` trigger, the `Send survey invite via email and wait for response` action, and the `survey_responses` and `response_answers` data pipeline objects require this permission.
    
    ![Authorization grant](/assets/authorization_grant.mzHGoRrt.png)_Authorize Workato to access your SurveyMonkey account._
    
@@ -682,23 +686,27 @@ View SurveyMonkey Distribution connection setup steps
 
 Complete the following steps to connect to SurveyMonkey in Workato:
 
-1. Provide a **Connection name** that identifies which SurveyMonkey account Workato is connected to.
+1. Click **Create > Connection** or press C twice.
    
-2. Use the **Location** drop-down menu to select the project or folder where you plan to store the connection.
+2. Search for `SurveyMonkey` and select it as your app.
    
-3. Use the **Datacenter** drop-down menu to select the data center that hosts your SurveyMonkey account. Defaults to **United States**. You must use a [custom OAuth profile](/en/custom-oauth-profiles) to connect to a data center outside of the United States.
+3. Provide a **Connection name** that identifies which SurveyMonkey account Workato is connected to.
    
-4. Optional. Use the **Custom OAuth profile** drop-down menu to select a [custom OAuth profile](/en/custom-oauth-profiles) for your connection. All requests to the app use the profile you specify here.
+4. Use the **Location** drop-down menu to select the project or folder where you plan to store the connection.
    
-5. Click **Connect** to open the SurveyMonkey authorization window.
+5. Use the **Datacenter** drop-down menu to select the data center that hosts your SurveyMonkey account. Defaults to **United States**. You must use a [custom OAuth profile](/en/custom-oauth-profiles) to connect to a data center outside of the United States.
    
-6. Sign in to SurveyMonkey with your account credentials. We recommend you use an admin account to avoid permission roadblocks.
+6. Optional. Use the **Custom OAuth profile** drop-down menu to select a [custom OAuth profile](/en/custom-oauth-profiles) for your connection. All requests to the app use the profile you specify here.
    
-7. Read the terms of service and click **Authorize** to complete the connection setup.
+7. Click **Connect** to open the SurveyMonkey authorization window.
+   
+8. Sign in to SurveyMonkey with your account credentials. We recommend you use an admin account to avoid permission roadblocks.
+   
+9. Read the terms of service and click **Authorize** to complete the connection setup.
    
    > **VIEW ANSWERS REQUIREMENT**
    > 
-   > Select `view answers along with responses` during authorization if you plan to use the `Completed survey response` trigger or the `Send survey invite via email and wait for response` action.
+   > Select `View answers along with responses` during authorization to retrieve survey response answers. The `Completed survey response` trigger, the `Send survey invite via email and wait for response` action, and the `survey_responses` and `response_answers` data pipeline objects require this permission.
    
    ![Authorization grant](/assets/authorization_grant.mzHGoRrt.png)_Authorize Workato to access your SurveyMonkey account._
    

@@ -1,5 +1,65 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-12T11:24:52+00:00 (incremental)
+
+- Pages: 4524 | added 3 | changed 88 | removed 0
+- Added:
+  - https://docs.workato.com/en/connectors/solace/new-message-batch-trigger.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-mixpanel.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-surveymonkey.md
+- Changed:
+  - https://docs.workato.com/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector-faqs.md
+  - https://docs.workato.com/en/agentic/agent-studio/faqs.md
+  - https://docs.workato.com/en/agentic/agent-studio/verified-user-access.md
+  - https://docs.workato.com/en/agentic/faqs.md
+  - https://docs.workato.com/en/agentic/workato-go/faqs.md
+  - https://docs.workato.com/en/api-mgmt/api-collections-management-faqs.md
+  - https://docs.workato.com/en/api-mgmt/api-endpoints-management-faqs.md
+  - https://docs.workato.com/en/api-mgmt/api-recipes/api-recipes-faq.md
+  - https://docs.workato.com/en/cloud-hosting-editions/hosting-editions-faq.md
+  - https://docs.workato.com/en/connectors/javascript/javascript-faqs.md
+  - https://docs.workato.com/en/connectors/netsuite/netsuite-faq.md
+  - https://docs.workato.com/en/connectors/netsuite/netsuite-recipe-migration.md
+  - https://docs.workato.com/en/connectors/openapi/openapi-faqs.md
+  - https://docs.workato.com/en/connectors/python/actions/python-faqs.md
+  - https://docs.workato.com/en/connectors/salesforce/salesforce-connector-faqs.md
+  - https://docs.workato.com/en/connectors/salesforce/soql-faqs.md
+  - https://docs.workato.com/en/connectors/sharepoint/sharepoint-faqs.md
+  - https://docs.workato.com/en/connectors/solace.md
+  - https://docs.workato.com/en/connectors/solace/acknowledge-message.md
+  - https://docs.workato.com/en/connectors/solace/new-message-queue-trigger.md
+  - https://docs.workato.com/en/connectors/solace/new-message-topic-trigger.md
+  - https://docs.workato.com/en/connectors/solace/publish-message-queue.md
+  - https://docs.workato.com/en/connectors/solace/publish-message-topic.md
+  - https://docs.workato.com/en/connectors/solace/receive-message-queue.md
+  - https://docs.workato.com/en/connectors/solace/receive-messages-batch-from-queue.md
+  - https://docs.workato.com/en/connectors/surveymonkey.md
+  - https://docs.workato.com/en/connectors/workato-webhooks/webhooks-faqs.md
+  - https://docs.workato.com/en/connectors/workday/workday-faqs.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-pipeline-sources.md
+  - https://docs.workato.com/en/developing-connectors/community/community.md
+  - https://docs.workato.com/en/developing-connectors/http/http-faqs.md
+  - https://docs.workato.com/en/developing-connectors/sdk/cli/guides/rspec/vcr.md
+  - https://docs.workato.com/en/developing-connectors/sdk/cli/guides/troubleshooting.md
+  - https://docs.workato.com/en/developing-connectors/sdk/guides/import-via-oas.md
+  - https://docs.workato.com/en/developing-connectors/sdk/quickstart/FAQ.md
+  - https://docs.workato.com/en/event-streams.md
+  - https://docs.workato.com/en/features/activity-audit-log-faqs.md
+  - https://docs.workato.com/en/features/admin-dashboard-faqs.md
+  - https://docs.workato.com/en/features/callable-recipes/recipe-functions-faq.md
+  - https://docs.workato.com/en/features/collection-faqs.md
+  - https://docs.workato.com/en/features/handling-json-faqs.md
+  - https://docs.workato.com/en/features/json-transformation-action.md
+  - https://docs.workato.com/en/features/list-management-faqs.md
+  - https://docs.workato.com/en/formulas/date-formulas-faqs.md
+  - https://docs.workato.com/en/formulas/list-formula-faqs.md
+  - https://docs.workato.com/en/formulas/string-formulas-faqs.md
+  - https://docs.workato.com/en/insights/insights-faqs.md
+  - https://docs.workato.com/en/limits.md
+  - https://docs.workato.com/en/mcp/faqs.md
+  - https://docs.workato.com/en/mcp/mcp-authentication.md
+  - ... and 38 more
+
 ## 2026-11-11T11:06:31+00:00 (incremental)
 
 - Pages: 4521 | added 0 | changed 51 | removed 0

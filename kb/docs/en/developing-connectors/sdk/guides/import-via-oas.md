@@ -52,23 +52,35 @@ There are many more steps to improving your connector. Learn more about [extendi
 
 ## Troubleshooting/FAQ
 
-1\. My OAS failed to parse or the generated code does not work as expected, what should I do?
+Get answers to troubleshooting and frequently asked questions (FAQs) about connector generation from OAS.
+
+### My OAS failed to parse or the generated code does not work as expected, what should I do?
+
+View answer
 
 There could be many reasons that an OAS failed to be parsed into a connector. Please ensure that your OAS document is valid and of version 3.0. Please reach out to our support team and provide your OAS in the support ticket. Our team will troubleshoot and analyze what could be the issue.
 
-2\. Why are triggers not included in the parsed connector?
+### Why are triggers not included in the parsed connector?
+
+View answer
 
 Triggers often have additional embedded logic within them such as pagination logic and cursor management. As of the initial release, triggers are not automatically generated and will need to be implemented manually. You may, however, reuse the `object_definitions` and `methods` generated to build your desired triggers.
 
-3\. Will OAS 3.1 and Swagger 2.0 be supported?
+### Will OAS 3.1 and Swagger 2.0 be supported?
+
+View answer
 
 Support for other versions of OpenAPI documents are being considered. Please reach out to your CSM for the latest timelines for support.
 
-4\. The code for my generated connector is not indented properly. What can i do about it?
+### 4\. The code for my generated connector is not indented properly. What can i do about it?
+
+View answer
 
 When focusing your cursor in the code editor, you can use `ctrl+a` (Windows) or `cmd+a` (Mac) to select all your connector code followed by `shift+tab` to auto indent your code.
 
-5\. What data formats does the generated connector support?
+### 5\. What data formats does the generated connector support?
+
+View answer
 
 The OAS generation tool only supports JSON APIs at the moment.
 

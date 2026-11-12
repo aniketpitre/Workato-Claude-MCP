@@ -1,6 +1,6 @@
 # Connectors
 
-2965 pages. Paths are relative to the repository root.
+2966 pages. Paths are relative to the repository root.
 
 
 ## Connectors
@@ -1484,13 +1484,14 @@
 - **Workato connectors - Upload File to Internal Stage** - `kb/docs/en/connectors/snowflake/upload-file-to-internal-stage.md` - The Upload file to internal stage action in the Snowflake connector lets you load a CSV or FileStorage file to an internal stage using PUT.
 - **Workato connectors - Snowflake Upsert action** - `kb/docs/en/connectors/snowflake/upsert.md` - The Upsert action in the Snowflake connector lets you insert or update single rows or batches of rows in a table using primary key values.
 - **Workato connectors - Solace** - `kb/docs/en/connectors/solace.md` - Solace provides an event streaming and management platform built around the PubSub+ event broker, which lets applications, microservices, and devices publish and subscribe to messages over queues and 
-- **Workato connectors - Solace - Acknowledge message received from Solace action** - `kb/docs/en/connectors/solace/acknowledge-message.md` - Settles a message received from a trigger or the receive action in manual acknowledgement mode.
+- **Workato connectors - Solace - Acknowledge message received from Solace action** - `kb/docs/en/connectors/solace/acknowledge-message.md` - Settles a message or batch of messages received from a trigger or receive action in manual acknowledgement mode.
+- **Workato connectors - Solace - New message batch in queue trigger** - `kb/docs/en/connectors/solace/new-message-batch-trigger.md` - The New message batch in queue trigger monitors a Solace queue for a batch of new messages.
 - **Workato connectors - Solace - New message in queue trigger** - `kb/docs/en/connectors/solace/new-message-queue-trigger.md` - The New message in queue trigger monitors a Solace queue for new messages.
 - **Workato connectors - Solace - New message in topic trigger** - `kb/docs/en/connectors/solace/new-message-topic-trigger.md` - Triggers when a new message is available in the specified Solace topic.
 - **Workato connectors - Solace - Publish message to queue action** - `kb/docs/en/connectors/solace/publish-message-queue.md` - Publishes a message to the specified Solace queue.
 - **Workato connectors - Solace - Publish message to topic action** - `kb/docs/en/connectors/solace/publish-message-topic.md` - Publishes a message to the specified Solace topic.
 - **Workato connectors - Solace - Receive message from queue action** - `kb/docs/en/connectors/solace/receive-message-queue.md` - Receives a message from the specified Solace queue.
-- **Workato connectors - Solace - Receive messages batch from queue action** - `kb/docs/en/connectors/solace/receive-messages-batch-from-queue.md` - Receives up to Batch size messages from the specified Solace queue.
+- **Workato connectors - Solace - Receive messages batch from queue action** - `kb/docs/en/connectors/solace/receive-messages-batch-from-queue.md` - Receives a batch of messages from the Solace queue you specify.
 - **Workato connectors - Amazon SQS** - `kb/docs/en/connectors/sqs.md` - Amazon SQS is a web service offered by Amazon Web Services that provides fully managed message queues for microservices, distributed systems, and serverless applications.
 - **Amazon SQS - Delete message action** - `kb/docs/en/connectors/sqs/delete-message-action.md` - The SQS connector supports the Delete message and Delete messages (batch) action.
 - **Amazon SQS - New message trigger** - `kb/docs/en/connectors/sqs/new-message-trigger.md` - The Amazon SQS connector supports the New message and New message (Batch) triggers.

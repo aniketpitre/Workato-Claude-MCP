@@ -7,13 +7,17 @@ description: >-
 
 # Workbot for Microsoft Teams FAQs
 
-Get answers to frequently asked questions about Workbot for Microsoft Teams.
+Get answers to frequently asked questions (FAQs) about Workbot for Microsoft Teams.
 
-How does Workbot for Microsoft Teams work with Workato?
+## How does Workbot for Microsoft Teams work with Workato?
+
+View answer
 
 [Workbot for Microsoft Teams](/en/workbot-for-teams/workbot#workbot-for-microsoft-teams) is a bot platform built on top of the Workato integration platform. This allows you to run business workflows directly from Microsoft Teams.
 
-What are the main functions of Workbot for Microsoft Teams?
+## What are the main functions of Workbot for Microsoft Teams?
+
+View answer
 
 Workbot for Microsoft Teams allows you to execute [business workflows](/en/workbot-for-teams/using-workbot-for-teams#using-workbot-for-microsoft-teams) from within Microsoft Teams using Workbot commands. For example, you can use Workbot commands to:
 
@@ -21,19 +25,27 @@ Workbot for Microsoft Teams allows you to execute [business workflows](/en/workb
 - Create ServiceNow tickets
 - List Salesforce opportunities
 
-How do Workato recipes work with Workbot for Microsoft Teams?
+## How do Workato recipes work with Workbot for Microsoft Teams?
+
+View answer
 
 Workato recipes are automated workflows that span multiple apps. When integrated with Workbot for Microsoft Teams, these recipes can be triggered by specific Workbot commands within Microsoft Teams, allowing you to perform tasks across different apps.
 
-What are Workbot commands and how do they function?
+## What are Workbot commands and how do they function?
+
+View answer
 
 Workbot commands are instructions given to Workbot in Microsoft Teams to execute specific tasks or workflows. When a command is sent to Workbot, it triggers the corresponding recipe in Workato to execute the workflow steps.
 
-What are the requirements to use Workbot for Microsoft Teams?
+## What are the requirements to use Workbot for Microsoft Teams?
+
+View answer
 
 To use Workbot for Microsoft Teams, a Microsoft work or school account is [required](/en/workbot-for-teams/getting-started#prerequisites). These accounts are typically set up by an organization’s administrator. Personal Microsoft accounts aren't supported.
 
-What Microsoft Graph permissions are required for Workbot for Microsoft Teams?
+## What Microsoft Graph permissions are required for Workbot for Microsoft Teams?
+
+View answer
 
 Workbot for Microsoft Teams requires various [Microsoft Graph permissions](/en/workbot-for-teams/getting-started#microsoft-graph-permissions), including:
 
@@ -43,7 +55,9 @@ Workbot for Microsoft Teams requires various [Microsoft Graph permissions](/en/w
 
 These permissions allow Workbot to retrieve necessary user and team information without admin consent.
 
-Who can install Workbot into a Microsoft organization and what roles are required?
+## Who can install Workbot into a Microsoft organization and what roles are required?
+
+View answer
 
 The following [roles](/en/workbot-for-teams/getting-started#required-roles) are required to install Workbot within a Microsoft organization:
 
@@ -54,7 +68,9 @@ The following [roles](/en/workbot-for-teams/getting-started#required-roles) are 
 
 Note that Global administrators have the additional ability to consent on behalf of the organization during installation.
 
-How do I set up Workbot for Microsoft Teams in Workato?
+## How do I set up Workbot for Microsoft Teams in Workato?
+
+View answer
 
 Complete the following steps to [set up Workbot](/en/workbot-for-teams/getting-started#connection-setup) for Microsoft Teams:
 
@@ -71,7 +87,9 @@ Complete the following steps to [set up Workbot](/en/workbot-for-teams/getting-s
 6. Click **Yes** when prompted to allow Workato to access your information. If you are a Global administrator, you can optionally Consent on behalf of your organization. This allows users to perform reconnection in Workato without requiring an administrator during reauthorization. Teams app permission policies must allow the Workbot app for your user.
    
 
-How do I create and start my first Workbot recipe?
+## How do I create and start my first Workbot recipe?
+
+View answer
 
 Basic steps to start your [first Workbot recipe](/en/workbot-for-teams/getting-started#use-workbot-in-a-recipe) include:
 
@@ -79,7 +97,9 @@ Basic steps to start your [first Workbot recipe](/en/workbot-for-teams/getting-s
 - Link your Microsoft Teams and Salesforce accounts to Workbot.
 - Start the recipe.
 
-How do I add Workbot to a team in Microsoft Teams?
+## How do I add Workbot to a team in Microsoft Teams?
+
+View answer
 
 To [add Workbot to a team](/en/workbot-for-teams/getting-started#add-workbot-to-a-team) in Microsoft Teams:
 
