@@ -9,10 +9,6 @@ description: >-
 
 The standard library is the set of functions built into WEL (Workato Expression Language). It ships with the language, so there is nothing to install, import, or connect. Every function is available in every expression.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Quick reference
 
 WEL organizes functions into the following categories:
@@ -67,7 +63,7 @@ WEL doesn't coerce arguments to make a call succeed. Passing a number where a fu
 
 This is deliberate. Silent coercion is the most common cause of a transformation running without an error but producing the wrong result.
 
-The exceptions are string interpolation, which converts automatically, and two [Transform data action](/en/wel/workato-expression-language-connector) flags that configure specific coercions.
+The exceptions are string interpolation, which converts automatically, and one [Transform data action](/en/wel/workato-expression-language-connector) flag that configures mixed precision coercion.
 
 ## Related
 

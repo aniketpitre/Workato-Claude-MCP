@@ -38,7 +38,7 @@ Additional input fields are generated based on the structure of the sample XML y
 
 This action supports sample XML files with up to the following quotas:
 
-- Maximum number of fields: 5000 fields
+- Maximum number of fields: 5,000 fields
 - Maximum combined file size: 10MB (sample XML and XSD combined)
 
 This action doesn't generate a form if the sample XML exceeds 5,000 fields. You must simplify the sample by reducing the number of fields, or split it into smaller samples before you use this action.

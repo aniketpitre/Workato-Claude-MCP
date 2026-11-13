@@ -22,7 +22,7 @@
 
 ## Build with AIRO
 
-- **AIRO - Build custom connectors with AIRO MCP** - `kb/docs/en/airo/build/custom-connectors.md` - Build, review, save, and release Workato custom connectors from Claude Code, Claude Desktop, or Cursor through the AIRO MCP server.
+- **AIRO - Build custom connectors with AIRO** - `kb/docs/en/airo/build/custom-connectors.md` - Use AIRO to build, review, and release Workato custom connectors, either directly in Workato or through an MCP client such as Claude Code, Claude Desktop, or Cursor.
 - **AIRO - Build recipes with AIRO** - `kb/docs/en/airo/build/recipes.md` - Describe a use case in plain language and AIRO builds or modifies the recipe in the editor.
 
 ## Chat with AIRO

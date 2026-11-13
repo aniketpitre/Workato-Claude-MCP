@@ -11,13 +11,9 @@ WEL has 16 data types. Use the right type when data enters or leaves an expressi
 
 `_` is the input your expression receives in these examples. Refer to [Input variables](/en/wel/language/expressions#input-variable) for more information.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 Two rules govern how every type in WEL behaves:
 
-- **WEL doesn't coerce by default**: Passing a number where a `String` is expected raises `E100` rather than converting it. Nothing is silently reinterpreted to make an expression succeed, except inside [string interpolation](/en/wel/language/strings#f-strings), which converts automatically, and two [Transform data](/en/wel/workato-expression-language-connector) flags that configure specific coercions.
+- **WEL doesn't coerce by default**: Passing a number where a `String` is expected raises `E100` rather than converting it. Nothing is silently reinterpreted to make an expression succeed, except inside [string interpolation](/en/wel/language/strings#f-strings), which converts automatically, and one [Transform data](/en/wel/workato-expression-language-connector) flag that configures a specific coercion.
 - **Collections don't become strings by accident**: A `List` or `Map` is only serialized by an explicit call such as [to\_json](/en/wel/stdlib/json#to-json).
 
 Both rules exist because a transformation that fails is visible, and one that silently produces the wrong value isn't.
@@ -30,9 +26,9 @@ WEL contains the following data types:
 | --- | --- | --- |
 | [Null](#null-and-skip) | The absence of a value | `null` |
 | [Bool](/en/wel/stdlib/conversion#bool) | A boolean | `true`, `false` |
-| [Integer](#integer) | A whole number, arbitrary precision | `42` |
+| [Integer](#integer) | A whole number, arbitrary precision up to 1024 bytes | `42` |
 | [Float](#float) | A 64-bit IEEE 754 floating-point number | `3.14` |
-| [Decimal](#decimal) | An exact decimal, arbitrary precision | `Decimal('1.00')` |
+| [Decimal](#decimal) | An exact decimal, arbitrary precision up to 1024 bytes | `Decimal('1.00')` |
 | [String](#string) | UTF-8 text | `'hello'` |
 | [Binary](#binary) | Raw bytes | `0x"48656C6C6F"` |
 | [PlainDate](#plain-date) | A calendar date, no time, no zone | `PlainDate('2026-03-15')` |
@@ -42,7 +38,7 @@ WEL contains the following data types:
 | [Duration](#duration) | A length of time | `Duration('PT2H30M')` |
 | [List](#list) | An ordered collection | `[1, 2, 3]` |
 | [Map](#map) | A key-value collection | `{a: 1}` |
-| [Skip](#null-and-skip) | A marker meaning "omit this" | `Skip()` |
+| [Skip](#null-and-skip) | A marker meaning "omit this" | `Skip` |
 | [Lambda](/en/wel/language/expressions#lambdas) | An inline function | `x ~> x * 2` |
 
 > **CHECK A VALUE'S TYPE**
@@ -55,7 +51,7 @@ WEL has three numeric types, and the choice between them is the most consequenti
 
 ### `Integer`
 
-An `Integer` is a whole number, with arbitrary precision. There is no 64-bit ceiling and no silent loss above `2^53`.
+An `Integer` is a whole number, with arbitrary precision up to a 1024-byte (8192-bit) magnitude, including intermediate values. Every magnitude up to 2466 decimal digits fits. A 2467-digit magnitude fits only if it doesn't exceed `2^8192 - 1`. There is no 64-bit ceiling and no silent loss above `2^53`. A literal or constant that exceeds the limit raises a non-catchable `E020` error. A value computed at runtime raises a catchable `E211` error.
 
 No 64-bit ceiling
 
@@ -83,7 +79,7 @@ This happens because floats store numbers in base 2, where most decimal fraction
 
 ### `Decimal`
 
-`Decimal` provides exact decimal arithmetic at arbitrary precision. Use it for cases where fraction precision matters, such as when working with money.
+`Decimal` provides exact decimal arithmetic at arbitrary precision up to a 1024-byte magnitude. Use it for cases where fraction precision matters, such as when working with money.
 
 Decimals preserve scale
 
@@ -238,17 +234,17 @@ The restriction exists because an accidentally stringified collection, such as a
 
 | Formula | Result |
 | --- | --- |
-| `{a: 1, b: Skip()}` | `{a: 1}` |
+| `{a: 1, b: Skip}` | `{a: 1}` |
 
 This distinction is especially common in CRM update APIs. Sending `null` clears a field, while omitting the key with `Skip` leaves it untouched.
 
 Filter and transform a list with map\_by
 
-Returning [Skip()](/en/wel/stdlib/conversion#skip) from a [map\_by](/en/wel/stdlib/list#map-by) lambda drops that element from the result, so a single pass can filter and transform together:
+Returning [Skip](/en/wel/stdlib/conversion#skip) from a [map\_by](/en/wel/stdlib/list#map-by) lambda drops that element from the result. This means a single pass can filter and transform together:
 
 | Formula | Result |
 | --- | --- |
-| `[1, -2, 3] >> map_by(n ~> if n > 0 then n else Skip())` | `[1, 3]` |
+| `[1, -2, 3] >> map_by(n ~> if n > 0 then n else Skip)` | `[1, 3]` |
 
 ## Test for values
 

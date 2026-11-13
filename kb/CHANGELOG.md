@@ -1,5 +1,76 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-13T11:08:19+00:00 (incremental)
+
+- Pages: 4540 | added 16 | changed 49 | removed 0
+- Added:
+  - https://docs.workato.com/en/connectors/resend.md
+  - https://docs.workato.com/en/connectors/resend/cancel-email-action.md
+  - https://docs.workato.com/en/connectors/resend/get-record-action.md
+  - https://docs.workato.com/en/connectors/resend/new-email-event-trigger.md
+  - https://docs.workato.com/en/connectors/resend/search-records-action.md
+  - https://docs.workato.com/en/connectors/resend/send-email-action.md
+  - https://docs.workato.com/en/connectors/resend/send-emails-action-batch.md
+  - https://docs.workato.com/en/connectors/resend/update-record-action.md
+  - https://docs.workato.com/en/connectors/ynab.md
+  - https://docs.workato.com/en/connectors/ynab/get-record-action.md
+  - https://docs.workato.com/en/connectors/ynab/new-updated-record-trigger.md
+  - https://docs.workato.com/en/connectors/ynab/search-records-action.md
+  - https://docs.workato.com/en/connectors/ynab/update-record-action.md
+  - https://docs.workato.com/en/connectors/ynab/update-records-action.md
+  - https://docs.workato.com/en/features/transformation-maps/create-map.md
+  - https://docs.workato.com/en/features/transformation-maps/map-examples.md
+- Changed:
+  - https://docs.workato.com/en/airo/build/custom-connectors.md
+  - https://docs.workato.com/en/airo/mcp.md
+  - https://docs.workato.com/en/connectors/jira.md
+  - https://docs.workato.com/en/connectors/jira/triggers.md
+  - https://docs.workato.com/en/connectors/limits.md
+  - https://docs.workato.com/en/connectors/xml-tools-workato.md
+  - https://docs.workato.com/en/features/generate-xml-from-xml.md
+  - https://docs.workato.com/en/features/generate-xml-from-xsd.md
+  - https://docs.workato.com/en/features/json-transformation-action.md
+  - https://docs.workato.com/en/features/transformation-maps.md
+  - https://docs.workato.com/en/limits.md
+  - https://docs.workato.com/en/managed-file-transfer.md
+  - https://docs.workato.com/en/managed-file-transfer/alerts-and-monitoring.md
+  - https://docs.workato.com/en/managed-file-transfer/error-handling-and-retries.md
+  - https://docs.workato.com/en/managed-file-transfer/transfer-flows.md
+  - https://docs.workato.com/en/mcp/developer-api-mcp.md
+  - https://docs.workato.com/en/mcp/prebuilt-mcps/case-intake-triage-mcp-server.md
+  - https://docs.workato.com/en/mcp/prebuilt-mcps/jira-mcp-server.md
+  - https://docs.workato.com/en/mcp/verified-user-access.md
+  - https://docs.workato.com/en/oem/oem-api/connections-parameters.md
+  - https://docs.workato.com/en/wel.md
+  - https://docs.workato.com/en/wel/cookbook.md
+  - https://docs.workato.com/en/wel/errors.md
+  - https://docs.workato.com/en/wel/language.md
+  - https://docs.workato.com/en/wel/language/data-types.md
+  - https://docs.workato.com/en/wel/language/expressions.md
+  - https://docs.workato.com/en/wel/language/operators.md
+  - https://docs.workato.com/en/wel/language/strings.md
+  - https://docs.workato.com/en/wel/quickstart.md
+  - https://docs.workato.com/en/wel/stdlib.md
+  - https://docs.workato.com/en/wel/stdlib/binary.md
+  - https://docs.workato.com/en/wel/stdlib/common.md
+  - https://docs.workato.com/en/wel/stdlib/conversion.md
+  - https://docs.workato.com/en/wel/stdlib/crypto.md
+  - https://docs.workato.com/en/wel/stdlib/deep-map.md
+  - https://docs.workato.com/en/wel/stdlib/encoding.md
+  - https://docs.workato.com/en/wel/stdlib/escape.md
+  - https://docs.workato.com/en/wel/stdlib/formatting.md
+  - https://docs.workato.com/en/wel/stdlib/json.md
+  - https://docs.workato.com/en/wel/stdlib/list.md
+  - https://docs.workato.com/en/wel/stdlib/map.md
+  - https://docs.workato.com/en/wel/stdlib/numeric.md
+  - https://docs.workato.com/en/wel/stdlib/random.md
+  - https://docs.workato.com/en/wel/stdlib/string.md
+  - https://docs.workato.com/en/wel/stdlib/temporal.md
+  - https://docs.workato.com/en/wel/stdlib/unicode.md
+  - https://docs.workato.com/en/wel/workato-expression-language-connector.md
+  - https://docs.workato.com/en/workato-api/connections-parameters-dev.md
+  - https://docs.workato.com/en/workspace-admin-settings.md
+
 ## 2026-11-12T11:24:52+00:00 (incremental)
 
 - Pages: 4524 | added 3 | changed 88 | removed 0

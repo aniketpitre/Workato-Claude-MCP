@@ -24,16 +24,30 @@ Your MCP server respects all Developer API and Embedded API permissions and proj
 
 > **MCP URL AND API TOKEN INTEGRATION**
 > 
-> You can manage Developer APIs and Embedded APIs with both remote and [local MCP servers](/en/mcp/mcp-local-servers) with the following configuration:
+> You can manage Developer APIs and Embedded APIs with both remote and [local MCP servers](/en/mcp/mcp-local-servers) with the following configuration, changing the `url` to match your data center:
 > 
 > ```json
 > "YOUR-API-REMOTE-NAME": {
->       "url": "https://app.workato.com/mcp",
+>       "url": "https://YOUR_DATA_CENTER/mcp",
 >       "headers": {
 >         "Authorization": "Bearer <YOUR_API_TOKEN>"
 >       }
 >     }
 > ```
+
+## Base URL
+
+The base URL depends on the data center you use:
+
+- US Data Center: [https://app.workato.com/mcp/](https://app.workato.com/mcp/)
+- EU Data Center: [https://app.eu.workato.com/mcp/](https://app.eu.workato.com/mcp/)
+- JP Data Center: [https://app.jp.workato.com/mcp/](https://app.jp.workato.com/mcp/)
+- SG Data Center: [https://app.sg.workato.com/mcp/](https://app.sg.workato.com/mcp/)
+- AU Data Center: [https://app.au.workato.com/mcp/](https://app.au.workato.com/mcp/)
+- IL Data Center: [https://app.il.workato.com/mcp/](https://app.il.workato.com/mcp/)
+- CN Data Center: [https://app.workatoapp.cn/mcp/](https://app.workatoapp.cn/mcp/)
+- KR Data Center: [https://app.kr.workato.com/mcp/](https://app.kr.workato.com/mcp/)
+- UK Data Center: [https://app.uk.workato.com/mcp/](https://app.uk.workato.com/mcp/)
 
 ## Configure Developer APIs and Embedded APIs as an MCP server
 
@@ -63,7 +77,7 @@ Complete the following steps to use your Developer API or Embedded API endpoints
       
    3. Click **Edit Config** to open the `claude_desktop_config.json` file.
       
-   4. Add the following configuration to convert your API client role endpoints into an MCP server, replacing `YOUR-API-REMOTE-NAME` and `YOUR_API_TOKEN` with your values:
+   4. Add the following configuration to convert your API client role endpoints into an MCP server, replacing `YOUR-API-REMOTE-NAME`,`YOUR_API_TOKEN`, and `YOUR_DATA_CENTER` with your values:
       
       ```json
       {
@@ -72,7 +86,7 @@ Complete the following steps to use your Developer API or Embedded API endpoints
             "command": "npx",
             "args": [
               "mcp-remote",
-              "https://app.workato.com/mcp",
+              "https://YOUR_DATA_CENTER/mcp",
               "--header",
               "Authorization: Bearer <YOUR_API_TOKEN>"
             ]
@@ -100,13 +114,13 @@ Complete the following steps to use your Developer API or Embedded API endpoints
       
       ![New MCP server](/assets/configure-cursor.DhhCFK4N.png)_Click **\+ New MCP Server**_
       
-   5. Add the following configuration to convert your API client role endpoints into an MCP server, replacing `YOUR-API-REMOTE-NAME` and `YOUR_API_TOKEN` with your values:
+   5. Add the following configuration to convert your API client role endpoints into an MCP server, replacing `YOUR-API-REMOTE-NAME`,`YOUR_API_TOKEN`, and `YOUR_DATA_CENTER` with your values:
       
       ```json
       {
         "mcpServers": {
           "YOUR-API-REMOTE-NAME": {
-            "url": "https://app.workato.com/mcp",
+            "url": "https://YOUR_DATA_CENTER/mcp",
             "headers": {
               "Authorization": "Bearer <YOUR_API_TOKEN>"
             }
@@ -126,13 +140,13 @@ Complete the following steps to use your Developer API or Embedded API endpoints
    
    ### Local configuration
    
-   1. Replace `YOUR_API_TOKEN` and `YOUR-API-LOCAL-NAME` with your specific values.
+   1. Replace `YOUR_API_TOKEN`, `YOUR-API-LOCAL-NAME`, and `YOUR_DATA_CENTER` with your specific values.
       
       Example configuration:
       
       ```json
       "YOUR-API-LOCAL-NAME": {
-            "url": "https://app.workato.com/mcp",
+            "url": "https://YOUR_DATA_CENTER/mcp",
             "headers": {
               "Authorization": "Bearer <YOUR_API_TOKEN>"
             }

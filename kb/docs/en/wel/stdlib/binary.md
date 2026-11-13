@@ -1,8 +1,9 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/binary.md'
 description: >-
-  WEL binary functions for base64, hex, and quoted-printable conversion,
-  measuring byte length, and slicing raw byte data from files and digests.
+  Use WEL binary functions to convert bytes to and from base64, hex, and
+  quoted-printable text, measure byte length, and slice raw byte data from files
+  and digests.
 ---
 
 # Binary functions
@@ -17,17 +18,13 @@ Binary functions convert bytes to JSON-safe text representations. They also meas
 > 
 > Specify which character encoding the bytes are in to convert them to readable text, using [decode\_string](/en/wel/stdlib/encoding). Use `encode_base64` or `encode_hex_string` to go from bytes to text that is safe to put in a JSON field.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Base64
 
 Base64 is the standard way to embed raw bytes in a JSON field or a URL.
 
 ### `encode_base64`
 
-Encodes bytes as a base64 string.
+Encodes bytes or an ASCII string as a base64 string.
 
 ```text
 encode_base64(binary, mode)
@@ -35,8 +32,8 @@ encode_base64(binary, mode)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to encode. |
-| mode | Optional. `'url'` for URL-safe output, `'no_pad'` to omit padding, `'url_no_pad'` for both. |
+| binary | The bytes or ASCII string to encode. A non-ASCII string raises `E100`. |
+| mode | Optional. `'url'` for URL-safe output, `'no_pad'` to omit padding, `'url_no_pad'` for both. An unrecognized `mode` raises `E225`. |
 
 Encode bytes as base64
 
@@ -68,7 +65,7 @@ decode_base64(text, mode)
 
 | Parameter | Description |
 | --- | --- |
-| text | The base64 string to decode. |
+| text | The base64 string to decode. A binary string raises `E100`. Invalid characters or incorrect padding raise `E226`. |
 | mode | Optional. `'url'` for URL-safe input. |
 
 Decode a base64 string to bytes
@@ -93,7 +90,7 @@ Hex represents each byte as two characters, trading size for human readability.
 
 ### `encode_hex_string`
 
-Converts bytes to a hexadecimal string, two characters per byte.
+Converts bytes or an ASCII string to a hexadecimal string, two characters per byte.
 
 Hex requires more space than base64 but provides a human-readable representation. Checksums and digests commonly use this format.
 
@@ -103,8 +100,8 @@ encode_hex_string(binary, mode)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to encode. |
-| mode | Optional. `'upper'` for uppercase output. |
+| binary | The bytes or ASCII string to encode. A non-ASCII string raises `E100`. Empty bytes encode to an empty string. |
+| mode | Optional. `'upper'` for uppercase output. An unrecognized `mode` raises `E225`. |
 
 Encode bytes as a hex string
 
@@ -132,8 +129,8 @@ decode_hex_string(text, mode)
 
 | Parameter | Description |
 | --- | --- |
-| text | The hex string to decode. |
-| mode | Optional. `'strict'` to reject prefixes and suffixes. |
+| text | The hex string to decode. An odd-length string or a non-hex character raises `E226`. An empty string decodes to an empty binary. |
+| mode | Optional. `'strict'` to reject prefixes and suffixes. An unrecognized `mode` raises `E225`. |
 
 Decode a hex string to bytes
 
@@ -167,7 +164,7 @@ encode_quoted_printable(binary)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to encode. |
+| binary | The bytes to encode. Non-`Binary` input raises `E100`. |
 
 Encode bytes as quoted-printable
 
@@ -195,7 +192,7 @@ decode_quoted_printable(text)
 
 | Parameter | Description |
 | --- | --- |
-| text | The quoted-printable string to decode. |
+| text | The quoted-printable string to decode. Malformed data raises `E226`. |
 
 Decode a quoted-printable string to bytes
 
@@ -219,9 +216,9 @@ The following functions measure and extract raw byte ranges directly, without an
 
 ### `byte_length`
 
-Returns the number of bytes.
+Returns the number of bytes in a binary or an ASCII string.
 
-`byte_length` returns a byte count, not a character count. `length` counts code points in text, and [grapheme\_length](/en/wel/stdlib/unicode#grapheme-length) counts user-perceived characters (grapheme clusters) instead. The three can differ for anything outside ASCII.
+`byte_length` returns a byte count, not a character count. `length` counts code points in text, and [grapheme\_length](/en/wel/stdlib/unicode#grapheme-length) counts user-perceived characters (grapheme clusters) instead. `length` and `grapheme_length` can differ for anything outside ASCII. `byte_length` raises `E100` on non-ASCII text instead of returning a third count.
 
 ```text
 byte_length(binary)
@@ -229,7 +226,7 @@ byte_length(binary)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to measure. |
+| binary | The binary or ASCII string to measure. A non-ASCII string raises `E100`. Refer to [encode\_string](/en/wel/stdlib/encoding#encode-string) to encode a non-ASCII string to `Binary` first. |
 
 Measure the byte length of a string
 
@@ -249,7 +246,7 @@ byte_length(Binary('ABC'))
 
 ### `byte_slice`
 
-Extracts a run of bytes by offset and length.
+Extracts a run of bytes from a binary or an ASCII string by offset and length.
 
 ```text
 byte_slice(binary, offset, length)
@@ -257,9 +254,9 @@ byte_slice(binary, offset, length)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to slice. |
-| offset | Zero-based starting byte. |
-| length | How many bytes to take. |
+| binary | The bytes or ASCII string to slice. A non-ASCII string raises `E100`. |
+| offset | Zero-based starting byte. An `offset` past the end of the bytes raises `E201`. A negative `offset` raises `E211`. |
+| length | How many bytes to take. A negative `length` raises `E211`. |
 
 Extract a range of bytes
 

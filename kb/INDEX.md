@@ -6,8 +6,8 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 
 | Section | Pages | Index |
 | --- | ---: | --- |
-| Connectors | 2966 | [index/connectors.md](index/connectors.md) |
-| Recipe design | 193 | [index/recipe-design.md](index/recipe-design.md) |
+| Connectors | 2980 | [index/connectors.md](index/connectors.md) |
+| Recipe design | 195 | [index/recipe-design.md](index/recipe-design.md) |
 | Other | 121 | [index/other.md](index/other.md) |
 | Data orchestration | 117 | [index/data-orchestration.md](index/data-orchestration.md) |
 | Connector SDK | 93 | [index/connector-sdk.md](index/connector-sdk.md) |

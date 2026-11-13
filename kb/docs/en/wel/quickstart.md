@@ -16,10 +16,6 @@ This page uses [one example](#example) to showcase three methods of working with
 - [With an AI client](#start-with-ai): Write WEL with an external AI client.
 - [With the binary](#start-with-the-binary): Test changes to an expression quickly and without running a recipe.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Example
 
 A webhook delivers an order. The destination system expects a flat record with a normalized name and email, a calendar date, and an exact total.

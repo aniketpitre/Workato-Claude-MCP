@@ -1,8 +1,8 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/string.md'
 description: >-
-  WEL string functions check, clean, extract, and replace text in recipe data,
-  including case conversion, padding, and regular expression matching.
+  Use WEL string functions to check, clean, extract, and replace text in recipe
+  data, including case conversion, padding, and regular expression matching.
 ---
 
 # String functions
@@ -10,10 +10,6 @@ description: >-
 String functions read and reshape text. Use them to clean inbound payloads, extract identifiers, normalize values before they reach a destination system, and build the exact string format a target expects.
 
 `_` is the input your expression receives in these examples. Refer to [Input variables](/en/wel/language/expressions#input-variable) for more information.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Call a string function
 
@@ -138,15 +134,25 @@ true
 
 ### `contains?`
 
-Returns `true` if the string contains the substring, using a case-sensitive comparison.
+Returns `true` if a string contains the substring, or if a list has an element that equals the substring according to WEL's [comparison](/en/wel/language/operators#comparison) rules:
+
+| Behavior | Example |
+| --- | --- |
+| Numbers and strings don't equate. | `1 == '1'` returns `false`. |
+| `Integer` compares across type with `Float` and `Decimal`. `Float` and `Decimal` don't mix. | `1 == 1.0` and `1 == Decimal('1')` return `true`. `1.5 == Decimal('1.5')` raises `E103`. |
+| Comparison examines value, not construction. | `[1, 2] == range(1, 2)` returns `true`. `{a: 1} == from_entries([{key: 'a', value: 1}])` returns `true`. |
+| Strings that [normalize](/en/wel/stdlib/unicode#unicode-normalize) differently aren't equal. | `é` stored as one character and `e` followed by a combining accent render identically but aren't equal. Use [unicode\_compare](/en/wel/stdlib/unicode) to compare text from different systems. |
+| String comparison is case-sensitive. | `'A' == 'a'` returns `false`. |
+
+Nested lists and maps match by their full contents rather than by reference, for example: `contains?([[1, 2], [3, 4]], [1, 2])` returns `true`.
 
 ```text
-contains?(string, substring)
+contains?(input, substring)
 ```
 
 | Parameter | Description |
 | --- | --- |
-| string | The string to search. |
+| input | The string or list to search. |
 | substring | The value to look for. |
 
 A matching substring, same case
@@ -241,7 +247,7 @@ true
 
 ### `valid_email?`
 
-Returns `true` if the string is a valid email address, as defined in RFC 5321 and RFC 5322.
+Returns `true` if the string is a valid email address, as defined in RFC 5321 and RFC 5322. `valid_email?` accepts a quoted local part, an IP-literal domain such as `[127.0.0.1]`, a domain with no dot such as `user@localhost`, and non-ASCII characters. A display-name form, such as `'Jane Doe <jane@example.com>'`, and leading or trailing whitespace invalidate an address.
 
 ```text
 valid_email?(string)
@@ -285,7 +291,7 @@ false
 
 ### `valid_url?`
 
-Returns `true` if the string is a valid URL. Pass a list of schemes to restrict which are accepted.
+Returns `true` if the string is a valid URL. Pass a list of schemes to restrict which are accepted. Entries in `schemes` omit the trailing `:`, for example `['http']` rather than `['http:']`. An empty `schemes` list rejects every URL.
 
 ```text
 valid_url?(string)
@@ -295,7 +301,7 @@ valid_url?(string, schemes)
 | Parameter | Description |
 | --- | --- |
 | string | The URL to validate. |
-| schemes | Optional. A list of allowed schemes. |
+| schemes | Optional. A list of allowed schemes. Non-list data types raise `E100`. |
 
 A valid URL with no scheme restriction
 
@@ -340,7 +346,7 @@ match?(string, pattern)
 | Parameter | Description |
 | --- | --- |
 | string | The string to test. |
-| pattern | A regular expression. |
+| pattern | A regular expression. An invalid pattern raises `E213`. A pattern that exceeds the matching engine's backtracking budget raises `E211`. |
 
 A string matching the pattern
 
@@ -593,7 +599,7 @@ SO-1001
 
 ### `lpad`
 
-Pads the start of the string until it reaches the given width. Use it for zero-padded reference numbers and fixed-width records.
+Pads the start of the string until it reaches the given width. Use it for zero-padded reference numbers and fixed-width records. An input with `width` characters or more returns unchanged rather than truncated.
 
 ```text
 lpad(string, width, pad)
@@ -602,8 +608,8 @@ lpad(string, width, pad)
 | Parameter | Description |
 | --- | --- |
 | string | The string to pad. |
-| width | The target width. |
-| pad | The padding string. |
+| width | The target width. Negative values and values over 10,000,000 raise `E211`. |
+| pad | The padding string. Padding repeats and truncates as needed to reach the correct `width`. An empty `pad` pads with spaces. |
 
 Zero-pad a number to a fixed width
 
@@ -623,7 +629,7 @@ lpad('42', 8, '0')
 
 ### `rpad`
 
-Pads the end of the string until it reaches the given width.
+Pads the end of the string until it reaches the given width. An input with `width` characters or more returns unchanged rather than truncated.
 
 ```text
 rpad(string, width, pad)
@@ -632,8 +638,8 @@ rpad(string, width, pad)
 | Parameter | Description |
 | --- | --- |
 | string | The string to pad. |
-| width | The target width. |
-| pad | The padding string. |
+| width | The target width. Negative values and values over 10,000,000 raise `E211`. |
+| pad | The padding string. Padding repeats and truncates as needed to reach the correct `width`. An empty `pad` pads with spaces. |
 
 Space-pad a string to a fixed width
 
@@ -664,7 +670,7 @@ normalize_newlines(string, terminator)
 | Parameter | Description |
 | --- | --- |
 | string | The string to normalize. |
-| terminator | Optional. The target line terminator. |
+| terminator | Optional. The target line terminator. An unrecognized `terminator` raises `E225`. |
 
 Normalize mixed line terminators to LF
 
@@ -725,7 +731,7 @@ substring(string, start, length)
 | --- | --- |
 | string | The source string. |
 | start | The zero-based start index. |
-| length | Optional. The number of code points to take. |
+| length | Optional. The number of code points to take. A negative value raises `E211`. |
 
 Extract from a start index to the end
 
@@ -775,21 +781,21 @@ substring('SO-1001', -4)
 1001
 ```
 
-> **OUT-OF-RANGE STARTS RAISE E201**
+> **OUT-OF-RANGE STARTS**
 > 
-> WEL clamps a `length` longer than the remaining string. A `start` past the end of the string raises `E201`. Check the length first when the start position isn't `0`.
+> WEL clamps a `length` longer than the remaining string. A `start` past the end of the string raises `E201`. A `start` at the end of the string returns `''` instead.
 
 ### `index_of`
 
-Returns the zero-based index of the first occurrence of a substring, or `-1` if it isn't found.
+Returns the zero-based index of the first occurrence of a substring, or `-1` if it isn't found. `List` inputs search for an element equal to `substring` instead of a literal occurrence.
 
 ```text
-index_of(string, substring)
+index_of(input, substring)
 ```
 
 | Parameter | Description |
 | --- | --- |
-| string | The string to search. |
+| input | The string or list to search. |
 | substring | The value to find. |
 
 Find the index of a substring
@@ -819,7 +825,7 @@ split(string, separator)
 | Parameter | Description |
 | --- | --- |
 | string | The string to split. |
-| separator | The literal separator. |
+| separator | The literal separator. An empty separator splits the string into its individual code points instead of producing empty pieces. Any other separator keeps empty pieces. For example: `'a,,b'` split on `,` returns three elements, with the middle element empty. |
 
 Split a string on a literal separator
 
@@ -839,7 +845,7 @@ split('a@example.com,b@example.com', ',')
 
 ### `split_regex`
 
-Splits a string into a list on a regular expression. Use it when the delimiter varies.
+Splits a string into a list on a regular expression. Use it when the delimiter varies. Each capture group in `pattern` adds its own matched text between the pieces, as in JavaScript. For example, `split_regex('a1b', '(\d)')` returns `['a', '1', 'b']`. Use `(?:...)` to group without capturing. An empty match at the start or end of the string doesn't split.
 
 ```text
 split_regex(string, pattern)
@@ -848,7 +854,7 @@ split_regex(string, pattern)
 | Parameter | Description |
 | --- | --- |
 | string | The string to split. |
-| pattern | A regular expression matching the separator. |
+| pattern | A regular expression matching the separator. An invalid pattern raises `E213`. A pattern that exceeds the matching engine's backtracking budget raises `E211`. |
 
 Split a string on a varying delimiter
 
@@ -877,7 +883,7 @@ match(string, pattern)
 | Parameter | Description |
 | --- | --- |
 | string | The string to search. |
-| pattern | A regular expression. |
+| pattern | A regular expression. An invalid pattern raises `E213`. A pattern that exceeds the matching engine's backtracking budget raises `E211`. |
 
 Match a pattern with named capture groups
 
@@ -901,7 +907,7 @@ match('SO-1001', '^(?<prefix>[A-Z]+)-(?<number>\d+)$')
 
 ### `match_all`
 
-Returns every regular expression match as a list of maps, using the same key structure as `match`.
+Returns every regular expression match as a list of maps, using the same key structure as `match`. A pattern that can match an empty string, such as `match_all('ab', '')`, still steps forward one code point at a time, so it returns one empty match for each position rather than looping. A result over 1,000,000 matches raises `E211`.
 
 ```text
 match_all(string, pattern)
@@ -910,7 +916,7 @@ match_all(string, pattern)
 | Parameter | Description |
 | --- | --- |
 | string | The string to search. |
-| pattern | A regular expression. |
+| pattern | A regular expression. An invalid pattern raises `E213`. |
 
 Match every occurrence of a pattern
 
@@ -930,7 +936,7 @@ match_all('A-100 B-220', '[A-Z]-\d+')
 
 ### `parse_url`
 
-Parses a URL into its components.
+Parses a URL into its components. The `host` returns lowercase and in Punycode when it contains non-ASCII characters. `port` is `null` when the URL omits a port and relies on the scheme's default.
 
 ```text
 parse_url(string)
@@ -938,7 +944,7 @@ parse_url(string)
 
 | Parameter | Description |
 | --- | --- |
-| string | The URL to parse. |
+| string | The URL to parse. An unparseable URL raises `E208`. |
 
 Parse a URL into its components
 
@@ -993,6 +999,8 @@ WEL has separate functions for literal and regular expression matching. Each com
 | `replace_first_regex`, `sub` | Regular expression | First match |
 | `replace_all_regex`, `gsub` | Regular expression | All matches |
 
+In `replacement`, `$1` and `$<name>` insert a numbered or named capture group, `$&` inserts the full match, `` $` `` and `$'` insert the text before and after the match, and `$$` inserts a literal `$`. An invalid pattern raises `E213`. A pattern that exceeds the matching engine's backtracking budget raises `E211`. A `g` flag on the pattern passed to `replace_first_regex` or `sub` still replaces only the first match.
+
 ### `replace_all`
 
 Replaces every occurrence of a literal substring.
@@ -1004,7 +1012,7 @@ replace_all(string, pattern, replacement)
 | Parameter | Description |
 | --- | --- |
 | string | The source string. |
-| pattern | The literal text to find. |
+| pattern | The literal text to find. An empty `pattern` inserts `replacement` between every code point, and at the start and end of the string. |
 | replacement | The replacement text. |
 
 Remove every occurrence of a literal substring
@@ -1034,7 +1042,7 @@ replace_first(string, pattern, replacement)
 | Parameter | Description |
 | --- | --- |
 | string | The source string. |
-| pattern | The literal text to find. |
+| pattern | The literal text to find. An empty `pattern` inserts `replacement` at the start of the string. |
 | replacement | The replacement text. |
 
 Remove the first occurrence of a literal substring
@@ -1133,14 +1141,19 @@ PO-1001
 
 Joins two strings. Use `++` or string interpolation to join more than two, or to mix in other types.
 
+Null handling depends on the **Concat with null** flag:
+
+- Off (the default): A `null` operand raises `E205`.
+- On: `concat` returns the non-`null` operand unchanged, if there is one, or returns `null` when both operands are `null`.
+
 ```text
 concat(first, second)
 ```
 
 | Parameter | Description |
 | --- | --- |
-| first | The first string. |
-| second | The second string. |
+| first | The first string. Non-string, non-null data types raise `E100`. |
+| second | The second string. Non-string, non-null data types raise `E100`. |
 
 Join two strings
 

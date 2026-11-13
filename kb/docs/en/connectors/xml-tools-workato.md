@@ -55,4 +55,30 @@ The **Enable streaming?** field controls how the **Parse XML document** action h
 
 Set **Enable streaming?** to **Yes** when you anticipate large XML payloads.
 
+## Quotas
+
+The XML tools by Workato connector has the following quotas:
+
+### File size quotas
+
+| Description | Quota |
+| --- | --- |
+| XML tools by Workato actions, default payload quota | 10 MB |
+| Parse XML document action, with streaming enabled | 200 MB |
+
+### Action-specific quotas
+
+| Description | Quota |
+| --- | --- |
+| Maximum number of fields for the Generate XML document from XSD action | 5,000 fields |
+
+### Schema building quotas
+
+| Description | Quota |
+| --- | --- |
+| Maximum nesting depth of a schema built from XSD or sample XML | 300 |
+| Maximum number of properties, objects, and arrays in a schema built from XSD or sample XML | 15,000 |
+| Maximum number of child properties in a single object of an XML-derived schema | 5,000 |
+| Maximum time to build one XML schema, per request or response | 10 seconds |
+
 ---

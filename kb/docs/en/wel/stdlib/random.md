@@ -1,7 +1,7 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/random.md'
 description: >-
-  WEL random functions for generating UUIDs, random integers, floats,
+  Use WEL random functions to generate UUIDs, random integers, floats,
   hexadecimal strings, and raw bytes for identifiers and idempotency keys.
 ---
 
@@ -17,9 +17,7 @@ Random functions generate a new value on every evaluation. Use them for identifi
 
 The following examples show the length of each function's output instead of a literal value because each evaluation returns a different value.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
+Random functions derive their randomness from the host and raise `E450` if the host source fails.
 
 ## Identifiers
 
@@ -65,7 +63,7 @@ random_hex(bytes)
 
 | Parameter | Description |
 | --- | --- |
-| bytes | How many random bytes to generate. The string returned is twice this long. |
+| bytes | How many random bytes to generate. The string returned is twice this long. Non-integer data types raise `E100`. A value outside the `1` to `1,048,576` range raises `E211`. |
 
 Generate a random hex string and measure its length
 
@@ -91,6 +89,8 @@ The following functions generate a random number within a range:
 
 Returns a random integer between `min` and `max`, both included.
 
+`min` and `max` must be `Integer` values within the 64-bit signed integer range. Non-integer data types raise `E100`. A value outside the 64-bit signed integer range raises `E211`. Values that set `max` less than `min` raise `E211` instead of swapping the bounds. `random_int` returns the shared value when `min` and `max` are equal.
+
 ```text
 random_int(min, max)
 ```
@@ -102,7 +102,7 @@ random_int(min, max)
 
 ### `random_float`
 
-Returns a random `Float` between `0.0` and `1.0`, including the lower bound but excluding the upper.
+Returns a random `Float` between `0.0` and `1.0`, including the lower bound but excluding the upper. The result is uniform over multiples of 2^-53.
 
 Don't use `random_float` for anything requiring exact decimal arithmetic, because it returns a `Float`. Refer to [Data types](/en/wel/language/data-types). It takes no arguments.
 
@@ -126,7 +126,7 @@ random_bytes(count)
 
 | Parameter | Description |
 | --- | --- |
-| count | How many bytes to generate. |
+| count | How many bytes to generate. Non-integer data types raise `E100`. A value outside the `1` to `1,048,576` range raises `E211`. |
 
 Generate random bytes and measure their length
 
@@ -149,5 +149,6 @@ byte_length(random_bytes(8))
 - [Crypto functions](/en/wel/stdlib/crypto): Information about using random bytes as salts and initialization vectors.
 - [Binary functions](/en/wel/stdlib/binary): Information about `byte_length`, and how to turn `Binary` into hex or base64 text.
 - [Data types](/en/wel/language/data-types): Information about `Binary`, `Float`, and `Decimal`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E100`, `E211`, and `E450`.
 
 ---

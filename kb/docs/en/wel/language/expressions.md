@@ -11,10 +11,6 @@ A WEL step is one expression, with no statements, no assignments, and no return.
 
 This isn't restrictive, because every construct in WEL produces a value. A conditional produces a value, and a `let` binding produces a value. Each composes anywhere a value is allowed, including inside a [map literal](#build-the-output).
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Input variables
 
 The underscore (`_`) is the **input variable**. It holds the input fields you declared in the [Transform data](/en/wel/workato-expression-language-connector) action.
@@ -109,6 +105,24 @@ do {
 > **WEL DOESN'T ALLOW SHADOWING**
 > 
 > Re-binding a name that is already in scope raises `E009`. This prevents an inner binding from silently capturing an outer one. Use a different name to resolve the error.
+
+### Naming rules
+
+`let` bindings, lambda parameters, and `fun` names have the following character rules:
+
+| Allowed | Not allowed |
+| --- | --- |
+| A letter from any script, or `_`, as the first character; Letters, digits, or combining marks after the first character; An optional trailing `?` or `!` | A digit as the first character; A space, `-`, or `$` anywhere in the name; Any other character (`E024`); More than 64 Unicode scalar values after Normalization Form C (NFC) (`E015`); A reserved word or type name as the binding name, such as `if` or `true` |
+
+> **SCRIPT LANGUAGE LENGTH**
+> 
+> The 64-scalar limit gives scripts like Japanese and Cyrillic the same effective length limit as other languages. For example:
+> 
+> ```text
+> let 注文数 = 2 do 注文数
+> ```
+
+WEL normalizes names in the expression to NFC, so `café` written with a precomposed `é` and `café` written with a combining accent are the same binding. Data received from a host or parsed from JSON keeps its original spelling. Use [unicode\_normalize](/en/wel/stdlib/unicode) to normalize a source's keys.
 
 ## Guards
 

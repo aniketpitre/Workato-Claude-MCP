@@ -23,9 +23,9 @@ Regardless of the state of the webhook, Workato continues to run a backup poll r
 
 > **REAL-TIME TRIGGER SUPPORT FOR OAUTH 2.0**
 > 
-> OAuth 2.0 doesn't support real-time triggers because it is incompatible with webhooks. Refer to the [Jira connection](/en/connectors/jira) guide to configure a different authentication method if you plan to use real-time triggers.
+> OAuth 2.0 doesn't support real-time triggers because it's incompatible with webhooks. Refer to the [Jira connection](/en/connectors/jira) guide to configure a different authentication method if you plan to use real-time triggers.
 > 
-> Alternatively, you can register the [Webhooks connector](/en/connectors/workato-webhooks) in Jira to use Jira's static webhook functionality. Refer to the [Cloud Jira](https://support.atlassian.com/jira-cloud-administration/docs/manage-webhooks/) or [Jira Datacenter](https://confluence.atlassian.com/adminjiraserver/managing-webhooks-938846912.html) webhook documentation for registration steps.
+> Alternatively, you can register the [Webhooks connector](/en/connectors/workato-webhooks) in Jira to use Jira's static webhook functionality. Refer to the [Cloud Jira](https://support.atlassian.com/jira-cloud-administration/docs/manage-webhooks/) or [Jira Data Center](https://confluence.atlassian.com/adminjiraserver/managing-webhooks-938846912.html) webhook documentation for registration steps.
 
 ## Deleted object (real-time)
 

@@ -38,6 +38,6 @@ Additional input fields are generated based on the XSD documents you provide.
 
 ## Quotas
 
-This action supports XSD schemas with a maximum of 5000 fields total. This action doesn't generate a form if an XSD exceeds this limit. You must simplify or split the schema into smaller schemas before using this action.
+This action supports XSD schemas with a maximum of 5,000 fields total. This action doesn't generate a form if an XSD exceeds this limit. You must simplify or split the schema into smaller schemas before using this action.
 
 ---

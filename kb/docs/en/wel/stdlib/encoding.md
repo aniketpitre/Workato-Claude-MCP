@@ -1,8 +1,8 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/encoding.md'
 description: >-
-  WEL encoding functions for converting between text and bytes in a named
-  character encoding, checking convertibility, and encoding MIME email headers.
+  Use WEL encoding functions to convert between text and bytes in a named
+  character encoding, check convertibility, and encode MIME email headers.
 ---
 
 # Encoding functions
@@ -14,10 +14,6 @@ These functions matter when a system doesn't speak UTF-8, such as a mainframe ex
 > **ENCODING ISN'T ESCAPING**
 > 
 > Encoding is about which bytes represent a character. [Escaping](/en/wel/stdlib/escape) is about which characters are safe inside a format. An accented name sent to a CSV needs both, and neither substitutes for the other.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Text to bytes and back
 
@@ -36,7 +32,7 @@ encode_string(text, encoding)
 | Parameter | Description |
 | --- | --- |
 | text | The string to encode. |
-| encoding | An encoding name, such as `UTF-8` or `Shift_JIS`. |
+| encoding | An encoding name, such as `UTF-8` or `Shift_JIS`. A name suffixed with `-BOM`, such as `UTF-8-BOM`, prepends a byte-order mark. A name suffixed with `-NFC`, `-NFD`, `-NFKC`, or `-NFKD`, such as `UTF-8-NFC`, normalizes the text to that form before encoding. An unrecognized name raises `E206`. A character the target encoding can't represent raises `E227`. |
 
 Encode an accented string as UTF-8
 
@@ -58,7 +54,7 @@ The `é` occupies two bytes, `C3A9`, so the 4-code-point string `café` encodes 
 
 ### `decode_string`
 
-Converts `Binary` to a string using a named encoding.
+Converts `Binary` to a string using a named encoding. This conversion strips leading byte-order marks.
 
 ```text
 decode_string(binary, encoding, options)
@@ -66,9 +62,9 @@ decode_string(binary, encoding, options)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to decode. |
-| encoding | The encoding the bytes are in. |
-| options | Optional map to control how invalid sequences are handled. `invalid`: `'replace'` substitutes a replacement character, or `'skip'` drops them. |
+| binary | The bytes to decode. Data types other than `Binary` raise `E100`. |
+| encoding | The encoding the bytes are in. An unrecognized name raises `E206`. |
+| options | Optional map to control how invalid sequences are handled. `invalid`: `'replace'` substitutes a replacement character, or `'skip'` drops them. Other `invalid` values raise `E225`. An unrecognized key in `options` raises `E225`. |
 
 An invalid sequence raises an error by default. Silently replacing bytes instead would turn a data problem into a corrupted record that nobody notices.
 
@@ -100,9 +96,9 @@ decode_string_by_content_type(binary, content_type, options)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to decode. |
+| binary | The bytes to decode. Data types other than `Binary` raise `E100`. |
 | content\_type | The `Content-Type` header value. |
-| options | Optional map specifying a `fallback` encoding to use when the header names none. |
+| options | Optional map specifying a `fallback` encoding to use when the header names none. An unrecognized key in `options` raises `E225`. |
 
 ## Check before converting
 
@@ -165,7 +161,7 @@ convertible_to_encoding?(text, encoding)
 | Parameter | Description |
 | --- | --- |
 | text | The string to test. |
-| encoding | The target encoding. |
+| encoding | The target encoding. An unrecognized encoding raises `E206`. |
 
 Test whether an accented string fits ASCII
 
@@ -193,8 +189,8 @@ valid_string?(binary, encoding)
 
 | Parameter | Description |
 | --- | --- |
-| binary | The bytes to test. |
-| encoding | The encoding to test against. |
+| binary | The bytes to test. Data types other than `Binary` raise `E100`. |
+| encoding | The encoding to test against. An unrecognized encoding raises `E206`. |
 
 Valid UTF-8 bytes
 
@@ -214,7 +210,7 @@ true
 
 ### `encodings`
 
-Lists the supported encoding names. Pass `true` to include synonyms.
+Lists the encoding types that other encoding functions accept. Encoding names are case-insensitive.
 
 ```text
 encodings(include_synonyms)
@@ -222,7 +218,7 @@ encodings(include_synonyms)
 
 | Parameter | Description |
 | --- | --- |
-| include\_synonyms | Optional `Boolean`. |
+| include\_synonyms | Optional boolean flag. Controls whether the response contains accepted synonyms in addition to the canonical names of each encoding type, such as `utf8` as a synonym to `UTF-8`. Defaults to `false`. Non-boolean data types raise `E100`. |
 
 ## Email headers
 
@@ -239,8 +235,10 @@ encode_mime_header(text, encoding, mode)
 | Parameter | Description |
 | --- | --- |
 | text | The header text to encode. |
-| encoding | The character encoding to use. |
-| mode | Optional encoding mode. |
+| encoding | The character encoding to use. An unrecognized encoding raises `E206`. A character the encoding can't represent raises `E227`. |
+| mode | Optional encoding mode. Defaults to `'B'` (base64). An unrecognized mode raises `E225`. |
+
+The result splits the output into multiple encoded-words when one word would exceed the 75 character limit RFC 2047 sets for encoded words.
 
 Encode an accented name for a header
 
@@ -260,7 +258,7 @@ encode_mime_header('café', 'UTF-8')
 
 ### `decode_mime_header`
 
-Decodes RFC 2047 encoded-words in an email header back to text.
+Decodes RFC 2047 encoded-words in an email header back to text. `decode_mime_header` drops whitespace between adjacent encoded-words. Adjacent words can use different charsets.
 
 ```text
 decode_mime_header(text)
@@ -268,7 +266,7 @@ decode_mime_header(text)
 
 | Parameter | Description |
 | --- | --- |
-| text | The header value to decode. |
+| text | The header value to decode. A malformed encoded word raises `E226`. An unrecognized charset raises `E206`. |
 
 Decode an RFC 2047 encoded-word
 

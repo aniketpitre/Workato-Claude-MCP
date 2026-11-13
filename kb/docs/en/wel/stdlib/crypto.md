@@ -1,9 +1,9 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/crypto.md'
 description: >-
-  WEL crypto functions for hashing, HMAC signatures, JWT encoding and
-  verification, PBKDF2 key derivation, and AES encryption and decryption of
-  data.
+  Use WEL crypto functions to hash data, create and verify HMAC signatures,
+  encode and verify JWTs, derive keys with PBKDF2, and encrypt and decrypt data
+  with AES.
 ---
 
 # Crypto functions
@@ -17,10 +17,6 @@ Crypto functions cover the cryptography an integration actually needs, such as p
 > - **Don't put a secret in an expression**: A key written into a recipe is visible to anyone who can view it and travels with every export. Pass secrets in as input from a secure source.
 > - **Hashing isn't encryption**: A hash can't recover the original value. Use hashes for checksums and signatures, not reversible data protection.
 > - **A digest of a low-entropy value is guessable**: Hashing an email address doesn't anonymize it, because an attacker can enumerate the whole space.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Choose an algorithm
 
@@ -41,7 +37,7 @@ Use the algorithm that fits your use case:
 
 Each algorithm comes in two forms, distinguished by a `hex_` prefix:
 
-- `sha256(...)` returns a `Binary` digest: the raw bytes.
+- `sha256(...)` returns a `Binary` digest of raw bytes.
 - `hex_sha256(...)` returns a `String` of hex characters.
 
 Compare the hex form against a signature header, or put it in a JSON field. Use the `Binary` form when feeding the digest into another function.
@@ -483,15 +479,15 @@ WEL supports HMAC-signed JWTs: `HS256`, `HS384`, and `HS512`.
 Builds and signs a JWT.
 
 ```text
-jwt_encode(payload, key, algorithm, options)
+jwt_encode(payload, key, algorithm, headers)
 ```
 
 | Parameter | Description |
 | --- | --- |
-| payload | A `Map` of claims. |
+| payload | A `Map` of claims. Date claims accept an `Integer`, `Float`, `Decimal`, or `DateTime`. A `Binary` value raises `E210`, and a non-ASCII string key raises `E100`. |
 | key | The signing secret. |
 | algorithm | `HS256`, `HS384`, or `HS512`. Case-insensitive. |
-| options | Optional map of additional header fields. |
+| headers | Optional map of additional JOSE header fields. A `Binary` value raises `E210`. |
 
 Encode and sign a JWT with HS256
 
@@ -511,7 +507,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEifQ.FKuUN7RwYyegTHXiye1j
 
 > **HS256 REQUIRES A KEY OF AT LEAST 32 BYTES**
 > 
-> A shorter key raises `E220` rather than signing with weak material. `HS384` and `HS512` require correspondingly longer keys.
+> A shorter key raises `E216` rather than signing with weak material. `HS384` and `HS512` require correspondingly longer keys.
 > 
 > The length requirement exists because an HMAC is only as strong as its key, and a short one makes the signature easy to forge.
 
@@ -525,10 +521,10 @@ jwt_decode(token, key, algorithm, options)
 
 | Parameter | Description |
 | --- | --- |
-| token | The encoded JWT. |
+| token | The encoded JWT. A failed check, a token that isn't three dot-separated segments, an invalid header or payload JSON, a non-numeric `exp` or `nbf`, or a token longer than 1,048,576 bytes raises `E216`. A segment that isn't valid un-padded base64url raises `E226`. A repeated key in the header or payload JSON raises `E223`. |
 | key | The secret to verify against. |
 | algorithm | `HS256`, `HS384`, or `HS512`. |
-| options | Optional map of verification settings. |
+| options | Optional map of verification settings. `iss`: The issuer the token claims., `aud`: The audience the token claims., `leeway_seconds`: How many seconds of clock skew to tolerate on expiry and not-before checks. An unrecognized option key raises `E225`. An option key with a value of the wrong type raises `E218`. A negative `leeway_seconds` raises `E211`. |
 
 Decode and verify a JWT
 
@@ -687,6 +683,6 @@ secret data!!!!!
 - [Binary functions](/en/wel/stdlib/binary): More information about `encode_base64`, `encode_hex_string`, and `byte_length`.
 - [Random functions](/en/wel/stdlib/random): Generate `random_bytes` for salts and initialization vectors.
 - [Encoding functions](/en/wel/stdlib/encoding): Use `decode_string` to turn decrypted bytes back into text.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E220`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E216`.
 
 ---

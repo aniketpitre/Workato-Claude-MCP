@@ -679,13 +679,13 @@ Create a data table to store approver thresholds by region.
 
 ### Build a custom connector
 
-Build a connector for an API that isn't available as a platform connector, using your own development environment instead of the Workato SDK editor.
+Build a connector for an API that isn't available as a platform connector.
 
 ```
 Build a connector for the National Weather Service API at https://www.weather.gov/documentation/services-web-api.
 Add an action that retrieves active weather alerts for a state or territory.
 ```
 
-Refer to [Build custom connectors with AIRO MCP](/en/airo/build/custom-connectors) for the full workflow, including how saving and releasing changes work.
+Refer to [Build custom connectors with AIRO](/en/airo/build/custom-connectors) for the full workflow, including how saving and releasing changes work.
 
 ---

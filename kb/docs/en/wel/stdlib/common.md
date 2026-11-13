@@ -1,17 +1,64 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/common.md'
 description: >-
-  WEL common functions for measuring length, testing whether a value is present,
-  providing a fallback when it isn't, and inspecting a value's type.
+  Use WEL common functions to read an element by index or key, measure length,
+  test presence, and inspect a value's type.
 ---
 
 # Common functions
 
 Common functions work on values of any type. Almost every transformation needs to know whether a usable value is present and what type it's holding, and these functions answer both. They are the backbone of writing expressions that survive imperfect inbound data.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
+## Access an element or key
+
+The following function reads one element out of a `List` or `Map`:
+
+### `at`
+
+Returns the element of a `List` at an index, or the value of a `Map` at a key.
+
+`at` behaves the same whether `collection` is a `List` or a `Map`. Refer to [List functions](/en/wel/stdlib/list#at) and [Map functions](/en/wel/stdlib/map#at) for type-specific examples and related functions like `find_by` and `pluck`.
+
+```text
+at(collection, index)
+```
+
+| Parameter | Description |
+| --- | --- |
+| collection | The `List` or `Map` to read from. Other collection types raise `E100`. |
+| index | An `Integer` position for a `List`, or a `String` key for a `Map`. A negative index counts back from the end, so `-1` is the last element in a `List`. An index outside the `List` raises `E201`, and an index outside the 64-bit range raises `E211`. A `Map` key matches exactly, so a key present with a `null` value returns `null` rather than raising an error, and a missing key raises catchable `E104`. |
+
+Get a list element by position
+
+The following example returns the element at index `0`:
+
+**Formula**
+
+```text
+at(['pending', 'shipped', 'closed'], 0)
+```
+
+**Output**
+
+```text
+pending
+```
+
+Get a map value by key
+
+The following example returns the value at a key:
+
+**Formula**
+
+```text
+at({sku: 'WID-1', qty: 3}, 'qty')
+```
+
+**Output**
+
+```text
+3
+```
 
 ## Measure
 
@@ -29,7 +76,7 @@ length(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A `String`, `List`, or `Map`. |
+| value | A `String`, `List`, or `Map`. Any other type, including `null` and `Binary`, raises `E100`. |
 
 Count code points in a string
 
@@ -85,7 +132,7 @@ The following functions test whether a value is actually usable, not just non-nu
 
 ### `present?`
 
-Returns `true` when a value is actually usable: not `null`, not empty, not whitespace-only, and not `NaN` or `Infinity`. Works on every data type.
+Returns `true` when a value is actually usable: Not `null`, not empty, not whitespace-only, and not `Infinity`. Works on every data type.
 
 `false` returns as `true` because it's a meaningful value in a pipeline, not an absence. This differs from Ruby's `blank?`.
 
@@ -179,9 +226,9 @@ true
 
 ### `presence`
 
-Returns the value when it's present, and `null` when it isn't.
+Returns the value when it's present, and `null` when it isn't or when the value is `Skip`.
 
-`presence` is the companion to `present?`, and the two are for different jobs. `present?` gives you a `Boolean` to branch on. `presence` normalizes every kind of absence: empty string, whitespace-only string, empty list or map, `NaN`, `Infinity`, down to a single `null`. This lets the fallback operator `|` catch all of them at once:
+`presence` is the companion to `present?`, and the two are for different jobs. `present?` gives you a `Boolean` to branch on. `presence` normalizes every kind of absence: Empty string, whitespace-only string, empty list or map, `Infinity`, down to a single `null`. This lets the fallback operator `|` catch all of them at once:
 
 ```text
 presence(_.nickname) | 'none'
@@ -272,7 +319,7 @@ The following function reports which of the 16 WEL types a value actually is:
 
 ### `type_of`
 
-Returns the name of a value's type as a `String`.
+Returns the name of a value's type as a `String`. Calling `type_of` on a lambda raises `E107`.
 
 Most useful for writing condition lambdas, which decide which leaves of a payload a rule should apply to, and for diagnosing a transformation that is failing on unexpected input.
 
@@ -388,6 +435,8 @@ Null
 
 - [Data types](/en/wel/language/data-types): The 16 WEL data types and when to use each one.
 - [Operators](/en/wel/language/operators): More information about the fallback operator `|`.
+- [List functions](/en/wel/stdlib/list): More `List` functions, including `find_by` to search by condition.
+- [Map functions](/en/wel/stdlib/map): More `Map` functions, including `pluck` to narrow to a few keys.
 - [Deep map functions](/en/wel/stdlib/deep-map): Use `type_of` inside condition lambdas.
 - [Unicode functions](/en/wel/stdlib/unicode): Count text the way a reader sees it.
 

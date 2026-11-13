@@ -1,17 +1,13 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/unicode.md'
 description: >-
-  WEL Unicode functions for grapheme-aware text handling, Unicode normalization,
-  detecting deceptive text, and Japanese kana and width conversion.
+  Use WEL Unicode functions to handle text by grapheme, normalize Unicode text,
+  detect deceptive text, and convert Japanese kana and width.
 ---
 
 # Unicode functions
 
 Unicode functions handle text based on how readers perceive it rather than how systems store it. Use these functions for non-English text, strings that look identical but aren’t equal, and potentially deceptive text from external sources.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Grapheme clusters
 
@@ -56,8 +52,6 @@ grapheme_length('👨‍👩‍👧')
 
 Extracts text by grapheme-cluster index without splitting characters that contain multiple code points.
 
-A negative start counts from the end. A start exactly at the end returns an empty string. Any other out-of-range start raises `E201`.
-
 ```text
 grapheme_substring(text, start, length)
 ```
@@ -65,8 +59,8 @@ grapheme_substring(text, start, length)
 | Parameter | Description |
 | --- | --- |
 | text | The string to extract from. |
-| start | Zero-based grapheme index. Negative counts from the end. |
-| length | Optional number of grapheme clusters. |
+| start | Zero-based grapheme index. Negative counts from the end. A start exactly at the end returns an empty string. Any other out-of-range start raises `E201`. |
+| length | Optional number of grapheme clusters. A negative `length` raises `E211`. |
 
 Extract a substring by grapheme index
 
@@ -126,8 +120,8 @@ grapheme_rpad(text, width, pad)
 | Parameter | Description |
 | --- | --- |
 | text | The string to pad. |
-| width | Target width in grapheme clusters. |
-| pad | The padding string. |
+| width | Target width in grapheme clusters. Negative values and values over 10,000,000 raise `E211`. |
+| pad | The padding string. Padding repeats and truncates as needed to reach the correct `width`. |
 
 Pad a string on the left
 
@@ -165,20 +159,20 @@ grapheme_rpad('42', 5, '0')
 
 Systems can store the same visible text in different ways. For example, `café` can contain a single `é` or an `e` followed by a combining accent. These representations look identical but aren't equal. This difference can cause a lookup to fail for an existing record.
 
-Normalization converts text to a canonical form so comparisons work.
+Normalization converts text to a canonical form so comparisons between different systems evaluate correctly.
 
 | Form | What it does |
 | --- | --- |
-| `nfc` | Compose: combine marks into single characters. The usual choice for storage. |
-| `nfd` | Decompose: split characters into base characters and combining marks. |
+| `nfc` | Compose: Combine marks into single characters. `nfc` is the usual choice for storage. |
+| `nfd` | Decompose: Split characters into base characters and combining marks. |
 | `nfkc` | Compose, and fold compatibility variants such as full-width to half-width. |
 | `nfkd` | Decompose, and fold compatibility variants. |
 
-Normalize to `nfc` when data arrives, and comparisons downstream behave.
+Normalize to `nfc` when data arrives, and comparisons downstream behave. An unrecognized `form` raises `E206`.
 
 ### `unicode_normalize`
 
-Converts a string to the given normalization form.
+Converts a string to the normalization form you specify.
 
 ```text
 unicode_normalize(text, form)
@@ -187,7 +181,7 @@ unicode_normalize(text, form)
 | Parameter | Description |
 | --- | --- |
 | text | The string to normalize. |
-| form | `nfc`, `nfd`, `nfkc`, or `nfkd`. |
+| form | The normalization form to convert to: `nfc`, `nfd`, `nfkc`, or `nfkd`. Any other value raises `E225`. |
 
 Length of the composed form
 
@@ -225,7 +219,7 @@ The decomposed form is one unit longer because the accent becomes a separate com
 
 ### `unicode_normalized?`
 
-Returns `true` if the string is already in the given form.
+Returns `true` if the string is already in a form you specify.
 
 ```text
 unicode_normalized?(text, form)
@@ -234,7 +228,7 @@ unicode_normalized?(text, form)
 | Parameter | Description |
 | --- | --- |
 | text | The string to test. |
-| form | `nfc`, `nfd`, `nfkc`, or `nfkd`. |
+| form | The normalization form to test against: `nfc`, `nfd`, `nfkc`, or `nfkd`. Any other value raises `E225`. |
 
 A composed string is already NFC
 
@@ -270,9 +264,7 @@ false
 
 ### `unicode_compare`
 
-Compares two strings after normalizing both, returning `-1`, `0`, or `1`.
-
-`unicode_compare` is the reliable way to compare text from two different systems. Plain `==` compares what is stored. `unicode_compare` compares what is written.
+Compares the numeric value of Unicode code points in two strings after normalization.
 
 ```text
 unicode_compare(first, second, form)
@@ -282,7 +274,13 @@ unicode_compare(first, second, form)
 | --- | --- |
 | first | The first string. |
 | second | The second string. |
-| form | Optional normalization form. Defaults to `nfc`. |
+| form | Optional normalization form: `nfc`, `nfd`, `nfkc`, or `nfkd`. Defaults to `nfc`. Any other value raises `E225`. |
+
+Returns one of the following values:
+
+- `-1`: `first` sorts before `second`
+- `0`: Both are equal
+- `1`: `first` sorts after `second`.
 
 Compare a composed and a decomposed string
 
@@ -300,8 +298,6 @@ unicode_compare('café', unicode_normalize('café', 'nfd'))
 0
 ```
 
-The two arguments are stored differently and compare as equal, which is the entire point.
-
 ## Detect deceptive text
 
 Text arriving from outside can be built to mislead a person reading it. These functions surface that intent.
@@ -318,7 +314,7 @@ unicode_contains_suspicious?(text, options)
 | Parameter | Description |
 | --- | --- |
 | text | The string to test. |
-| options | Optional map of `Boolean` switches, one per check. `bidi_overrides`: Bidirectional overrides.; `zero_width`: Zero-width characters.; `controls`: Control characters.; `noncharacters`: Unicode non-character code points.; `replacement`: The Unicode replacement character.; `private_use`: Private-use code points.; `confusables`: Confusable lookalike characters.; `zalgo`: Zalgo stacking.; `zalgo_threshold`: An `Integer` threshold for Zalgo detection, rather than a `Boolean` switch. |
+| options | Optional map of `Boolean` switches, one per check. `bidi_overrides`: Bidirectional overrides.; `zero_width`: Zero-width characters.; `controls`: Control characters.; `noncharacters`: Unicode non-character code points.; `replacement`: The Unicode replacement character.; `private_use`: Private-use code points.; `confusables`: Confusable lookalike characters.; `zalgo`: Zalgo stacking.; `zalgo_threshold`: An `Integer` threshold for Zalgo detection, rather than a `Boolean` switch. Defaults to `4`. A negative value raises `E211`. An unrecognized key raises `E225`. |
 
 A plain domain isn't suspicious
 
@@ -360,7 +356,7 @@ true
 
 ### `unicode_contains_bidi?`
 
-Detects right-to-left characters.
+Detects right-to-left characters by checking for Unicode Bidi\_Class values of `R` (right-to-left) and `AL` (Arabic letter). Arabic-Indic digits, punctuation, and combining marks return `false`.
 
 Right-to-left characters are legitimate in Arabic and Hebrew text. They are also the mechanism behind attacks that make a string display in a different order from how it's stored, so treat a `true` result as a signal to look rather than an error on its own.
 
@@ -390,7 +386,7 @@ false
 
 ### `unicode_contains_emoji?`
 
-Detects emoji.
+Detects emoji by checking for the Unicode Emoji\_Presentation property. A character that defaults to text presentation (`❤`) only counts when it's followed by the `U+FE0F` variation selector that requests emoji presentation (`❤️`).
 
 ```text
 unicode_contains_emoji?(text)
@@ -438,7 +434,7 @@ Japanese systems distinguish two kana scripts and two character widths, and ofte
 
 ### `hiragana_to_katakana` and `katakana_to_hiragana`
 
-Convert between the two kana scripts.
+Convert between the two kana scripts. Conversion covers small kana, `ゔ`/`ヴ`, and the kana iteration marks. The long vowel mark `ー` stays unchanged, because it's shared by both scripts.
 
 ```text
 hiragana_to_katakana(text)
@@ -528,7 +524,7 @@ AB1
 
 ### `to_fullwidth_katakana` and `to_halfwidth_katakana`
 
-Convert katakana between full-width and half-width forms.
+Convert katakana between full-width and half-width forms. `to_halfwidth_katakana` splits a voiced or semi-voiced katakana character into a base character and a separate mark, and `to_fullwidth_katakana` merges them back. `ヰ`, `ヱ`, and the small `ヮ` have no half-width form, so `to_halfwidth_katakana` leaves them unchanged.
 
 ```text
 to_fullwidth_katakana(text)

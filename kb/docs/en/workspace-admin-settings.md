@@ -92,6 +92,7 @@ Enable and manage Workato AI features, such as Copilot and the AI by Workato app
 | Feature | Description |
 | --- | --- |
 | AIRO | AIRO is Workato's AI automation engineer that transforms intent into production-ready business solutions. You can enable or disable AIRO for your workspace. Learn more about [AIRO](/en/airo). |
+| Model Gateway | Single point of control between your applications and LLM providers. You can enable or disable Model Gateway for your workspace. Disabling it removes Model Gateway for all users and disables all existing access keys and routes. Learn more about [Model Gateway](/en/ai-gateway). |
 | Copilot | AI-powered assistant for building and managing recipes. You can enable or disable Copilot for all users in your workspace. Learn more about [Copilot](/en/ai-features/copilot). |
 | AI by Workato app | AI-powered application for enhanced automation capabilities. You can enable or disable the AI by Workato app for recipes in your workspace. Learn more about [AI by Workato](/en/connectors/ai-by-workato). |
 | IDP by Workato app | AI-powered intelligent document processing for extracting structured data from documents. You can enable or disable IDP by Workato for recipes in your workspace. Learn more about [IDP by Workato](/en/connectors/idp-by-workato). |

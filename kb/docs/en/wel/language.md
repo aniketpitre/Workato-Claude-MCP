@@ -18,10 +18,6 @@ This guide covers the syntax and rules that apply to WEL expressions. Refer to t
 > 
 > Refer to the [Data types](/en/wel/language/data-types) guide first. The wrong type at a boundary is a common cause of transformation bugs. Other guides in this section assume you understand data types already.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Related
 
 - [Standard library](/en/wel/stdlib): Information about every WEL function.

@@ -1,7 +1,7 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/conversion.md'
 description: >-
-  WEL conversion functions for casting values to Integer, Decimal, Float,
+  Use WEL conversion functions to cast values to Integer, Decimal, Float,
   String, Bool, Binary, temporal types, and the Null and Skip sentinels.
 ---
 
@@ -9,15 +9,11 @@ description: >-
 
 Conversion functions construct values of specific types. Each function uses the name of the type it produces and starts with a capital letter. For example, `Decimal('19.99')` creates a `Decimal` value.
 
-Conversion functions give you explicit control over a value's type where inbound data enters an expression, because inbound data usually arrives as strings. WEL doesn't convert an argument to make a call succeed, except for [string interpolation](/en/wel/language/strings#f-strings) and two configurable [Transform data](/en/wel/workato-expression-language-connector) flags. Explicit conversion at the boundary keeps downstream operations type-safe and predictable.
+Conversion functions give you explicit control over a value's type where inbound data enters an expression, because inbound data usually arrives as strings. WEL doesn't convert an argument to make a call succeed, except for [string interpolation](/en/wel/language/strings#f-strings) and one [Transform data](/en/wel/workato-expression-language-connector) flag that configures mixed precision coercion. Explicit conversion at the boundary keeps downstream operations type-safe and predictable.
 
 > **CONVERT ONCE, AT THE EDGE**
 > 
 > Convert each field to its intended type in one place at the start of the transformation. Use those typed values throughout the remaining expression. Scattered conversions through an expression make it hard to see which fields have been handled, and raise the chance that a number gets rounded twice.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Numbers
 
@@ -27,15 +23,13 @@ WEL has three numeric constructors, one for each numeric type.
 
 Converts to an `Integer`. Accepts an existing `Integer` or a string of digits.
 
-The conversion is strict. A string that contains anything other than a valid integer raises `E102`. For example, `Integer('3 items')` raises an error instead of returning `3`.
-
 ```text
 Integer(value)
 ```
 
 | Parameter | Description |
 | --- | --- |
-| value | An `Integer` or an integer string. |
+| value | An `Integer` or an integer string. An integer string can include underscores as separators, such as `Integer('1_000_000')`. A string that contains anything other than a valid integer raises `E102`. For example, `Integer('3 items')` raises an error instead of returning `3`. |
 
 Convert an integer string
 
@@ -83,7 +77,7 @@ Decimal(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A number or a numeric string. |
+| value | A number or a numeric string. A string that isn't a valid number, such as `Decimal('notanumber')`, raises `E020`. |
 
 Convert a decimal string
 
@@ -129,7 +123,7 @@ Float(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A number or a numeric string. |
+| value | A number or a numeric string. Enter `'inf'` and `'infinity'` for an infinite value. `'NaN'` and incomplete strings such as `'.5'` and `'5.'` raise `E102`. |
 
 Convert a numeric string to a Float
 
@@ -155,7 +149,7 @@ The following constructors convert to `String`, `Bool`, and `Binary`:
 
 Converts a scalar value to a `String`, using the **data-plane** locale.
 
-Rejects `Binary` and collections. A `List` or `Map` isn't turned into a string implicitly or by this function. Use [to\_json](/en/wel/stdlib/json) or `to_wel` to serialize a collection deliberately. This restriction exists because a silently stringified collection is one of the hardest transformation bugs to notice downstream.
+Rejects `Binary` and collections. A `List` or `Map` isn't turned into a string implicitly or by this function, and passing one raises `E100`. Use [to\_json](/en/wel/stdlib/json) or `to_wel` to serialize a collection deliberately. This restriction exists because a silently stringified collection is one of the hardest transformation bugs to notice downstream.
 
 ```text
 String(value)
@@ -201,7 +195,7 @@ String(Decimal('19.99'))
 
 Converts a value to a `Boolean`. Accepts an existing `Boolean`, or the strings `'true'` and `'false'`.
 
-`'yes'`, `'1'`, and `'Y'` aren't accepted because their meaning depends on the source system. Map source-specific values to a `Boolean` explicitly:
+`'yes'`, `'1'`, and `'Y'` aren't accepted because their meaning depends on the source system, and an unrecognized string raises `E102`. Map source-specific values to a `Boolean` explicitly:
 
 ```text
 if _.flag == 'Y' then true else false
@@ -233,9 +227,9 @@ true
 
 ### `Binary`
 
-Converts an ASCII string to `Binary` bytes.
+Converts an ASCII string to `Binary` bytes. An existing `Binary` value passes through unchanged.
 
-Use [encode\_string](/en/wel/stdlib/encoding), which takes an explicit encoding, for text that isn't ASCII. `Binary` raises `E008` on non-ASCII input rather than selecting one.
+Use [encode\_string](/en/wel/stdlib/encoding), which takes an explicit encoding, for text that isn't ASCII.
 
 ```text
 Binary(value)
@@ -243,7 +237,7 @@ Binary(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | An ASCII string. |
+| value | An ASCII string. Non-ASCII strings raise `E008`. Values that aren't a `String` or `Binary` and computed strings that become non-ASCII at runtime raise `E100`. |
 
 Convert an ASCII string to bytes
 
@@ -277,7 +271,7 @@ DateTime(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A `DateTime`, an ISO 8601 string, or a map of components. |
+| value | A `DateTime`, an ISO 8601 string, or a map of components. A map of components defaults `hour` and `minute` to `0`. A `String` argument must carry an explicit offset or `Z`. An invalid string raises `E020`, and an unsupported type raises `E100`. A map component outside its valid range raises `E211`. |
 
 Convert an ISO 8601 string with a zone
 
@@ -307,7 +301,7 @@ PlainDate(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | An ISO 8601 date string, or a value carrying a date. |
+| value | An ISO 8601 date string, or a value carrying a date. An invalid date, such as a day that doesn't exist in the given month, raises `E020`. |
 
 Convert an ISO 8601 date string
 
@@ -335,7 +329,7 @@ PlainTime(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A time-only string, or a map with `hour`, `minute`, and `second`. |
+| value | A time-only string, or a map with `hour`, `minute`, and `second`. An invalid time, such as an out-of-range hour, raises `E020`. |
 
 Convert an ISO 8601 time string
 
@@ -365,7 +359,7 @@ PlainDateTime(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A map of components, an ISO 8601 string, or a `DateTime`. |
+| value | A map of components, an ISO 8601 string, or a `DateTime`. A `PlainDate` raises `E102` because it has no time component to supply. A map component outside its valid range raises `E211`. |
 
 Convert an ISO 8601 date-time string
 
@@ -393,7 +387,7 @@ Duration(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | An ISO 8601 duration string, or a value carrying a duration. |
+| value | An ISO 8601 duration string, a value carrying a duration, or a map of components, such as `{hours: 1, minutes: 30}`. `Duration` normalizes negative component values and values above 60. The `month` and `year` components must be numbers. |
 
 Convert an ISO 8601 duration string
 
@@ -413,7 +407,7 @@ PT1H30M
 
 ## Sentinels
 
-The following constructors build the two markers WEL uses to represent an absence:
+WEL uses the `Null()` constructor or the `Skip` sentinel value to represent an absence.
 
 ### `Null`
 
@@ -441,12 +435,10 @@ null
 
 ### `Skip`
 
-Returns the `Skip` sentinel. It takes no arguments.
-
 `Skip` omits a field entirely instead of sending `null` for it. Refer to [Null and Skip](/en/wel/language/data-types#null-and-skip) for the full comparison, including how `Skip` filters a list inside `map_by`. Use `Skip` when a destination distinguishes an explicitly cleared field from an untouched one, which many CRM APIs do.
 
 ```text
-Skip()
+Skip
 ```
 
 ### Use case: Convert an inbound payload at the boundary
@@ -496,6 +488,6 @@ Every field arrives as a string, including ones that logically aren't. Convert t
 - [Data types](/en/wel/language/data-types): The 16 WEL data types and when to use each one.
 - [Numeric functions](/en/wel/stdlib/numeric): Round a `Decimal`.
 - [Temporal functions](/en/wel/stdlib/temporal): Work with dates after conversion.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E008` and `E102`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E008`, `E020`, `E100`, `E102`, and `E211`.
 
 ---

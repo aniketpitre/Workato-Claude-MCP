@@ -9,10 +9,6 @@ description: >-
 
 This page contains 26 worked examples of common integration problems, grouped by theme. Each example is self-contained, so you can paste it into the [`wel` binary](/en/wel/quickstart#start-with-the-binary) and run it as-is.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Reshape and extract
 
 The following solutions reshape payloads and extract values from nested structures:
@@ -224,7 +220,7 @@ do rows
 {"cpu": 72, "mem": 85, "disk": 40}
 ```
 
-[from\_entries](/en/wel/stdlib/map#from-entries) is the inverse of [entries](/en/wel/stdlib/map#entries): it takes a list of `{key, value}` pairs and rebuilds them into a single `Map`. This operation turns rows into columns.
+[from\_entries](/en/wel/stdlib/map#from-entries) is the inverse of [entries](/en/wel/stdlib/map#entries): It takes a list of `{key, value}` pairs and rebuilds them into a single `Map`. This operation turns rows into columns.
 
 ### Partition records into success and failure buckets
 
@@ -375,7 +371,7 @@ Most languages silently lose precision parsing large integers or decimals from J
 
 ```text
 let json = '{"tx_id": 9999999999999999999, "balance": 1234567890.1234567890}'
-do let data = parse_json(json, {decimal: true})
+do let data = parse_json(json, {numbers: 'decimal'})
 do {
   tx_id: data.tx_id,
   balance: data.balance,
@@ -390,7 +386,7 @@ do {
 {"tx_id": 9999999999999999999, "balance": 1234567890.1234567890, "balance_type": "Decimal", "cents": 123456789012.3456789000}
 ```
 
-`Integer` has no upper bound, so `tx_id` survives intact. The `decimal: true` option is what keeps `balance` as an exact `Decimal` instead of an approximate `Float`. Without it, fractional numbers parse using standard `Integer`/`Float` rules.
+`Integer` isn't limited to 64 bits, so `tx_id` survives intact. The `{numbers: 'decimal'}` option keeps `balance` as an exact `Decimal` instead of an approximate `Float`. Without it, fractional numbers parse using standard `Integer`/`Float` rules.
 
 ## Dates
 
@@ -669,9 +665,9 @@ An outbound record should omit a field entirely when it's blank, and not forward
 let src = {name: 'Dana', nickname: '', age: 30, internal_id: 'x-123'}
 do {
   name: src.name,
-  nickname: if not blank?(src.nickname) then src.nickname else Skip(),
+  nickname: if not blank?(src.nickname) then src.nickname else Skip,
   age: src.age,
-  internal_id: Skip()
+  internal_id: Skip
 }
 ```
 

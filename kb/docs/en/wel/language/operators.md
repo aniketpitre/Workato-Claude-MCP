@@ -14,10 +14,6 @@ Operators combine values into new values. Most, like arithmetic and comparison o
 
 `_` is the input your expression receives in these examples. Refer to [Input variables](/en/wel/language/expressions#input-variable) for more information.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Precedence
 
 The following table lists operators by precedence. Operators higher in the table run before ones lower in it, regardless of where each appears in the expression. Parentheses (`()`) override precedence order. Wrap part of an expression in parentheses to evaluate it first.
@@ -46,6 +42,8 @@ The following table lists operators by precedence. Operators higher in the table
 | `/`: Divide | `10 / 3` | `3` |
 | `%`: Modulo (remainder) | `10 % 3` | `1` |
 | `^`: Power (exponent) | `2 ^ 10` | `1024` |
+
+A negative exponent raises an `E211` error when the base is `Integer` or `Decimal`, since the exact result isn't representable in either type. Use `Float` as the base to resolve the error.
 
 > **INTEGER DIVISION TRUNCATES**
 > 
@@ -146,7 +144,7 @@ presence(_.display_name) | 'Unknown'
 | --- | --- | --- |
 | `|?`: Use a default value when the expression raises a catchable error | `1 / 0 |? 'error'` | `error` |
 
-Reading a field that doesn't exist raises `E104` rather than producing `null`, so `|` _won't_ catch it and `|?` will:
+Reading a field that doesn't exist raises `E104` rather than producing `null`, so `|` _doesn't_ catch it, but `|?` does:
 
 ```text
 _.customer.nickname |? 'none'
@@ -173,9 +171,17 @@ Refer to [Error codes](/en/wel/errors) for which errors are catchable.
 | `<=`: Less than or equal | `2 <= 2` | `true` |
 | `>=`: Greater than or equal | `2 >= 3` | `false` |
 
-Numeric comparison is by value, so an `Integer` and a `Float` holding the same number are equal.
+`==` and `!=` use the following rules to compare values:
 
-Text that looks identical isn't necessarily equal, because the same characters can be stored more than one way. Use [unicode\_compare](/en/wel/stdlib/unicode) to compare text from two different systems.
+| Behavior | Example |
+| --- | --- |
+| Numbers and strings don't equate. | `1 == '1'` returns `false`. |
+| `Integer` compares across type with `Float` and `Decimal`. `Float` and `Decimal` don't mix. | `1 == 1.0` and `1 == Decimal('1')` return `true`. `1.5 == Decimal('1.5')` raises `E103`. |
+| Comparison examines value, not construction. | `[1, 2] == range(1, 2)` returns `true`. `{a: 1} == from_entries([{key: 'a', value: 1}])` returns `true`. |
+| Strings that [normalize](/en/wel/stdlib/unicode#unicode-normalize) differently aren't equal. | `é` stored as one character and `e` followed by a combining accent render identically but aren't equal. Use [unicode\_compare](/en/wel/stdlib/unicode) to compare text from different systems. |
+| String comparison is case-sensitive. | `'A' == 'a'` returns `false`. |
+
+Ordering a number against a string with `<`, `>`, `<=`, or `>=` raises `E101`. `==` and `!=` find numbers and strings unequal without raising an error.
 
 ## Containment
 
@@ -199,6 +205,8 @@ Text that looks identical isn't necessarily equal, because the same characters c
 | `and`: Logical and | `5 > 3 and 2 < 1` | `false` |
 | `or`: Logical or | `5 > 3 or 2 < 1` | `true` |
 | `not`: Logical negation | `not true` | `false` |
+
+`and`, `or`, and `not` require `Bool` (or `Null` or `Skip`) operands. A non-`Bool` operand, such as `1 and 2`, raises a type mismatch rather than coercing the value to a truth value.
 
 ## Conditionals
 

@@ -1,6 +1,6 @@
 # Recipe design
 
-193 pages. Paths are relative to the repository root.
+195 pages. Paths are relative to the repository root.
 
 
 ## Recipe design
@@ -164,6 +164,8 @@
 - **XML tools by Workato - Transform XML using XSLT (Deprecated) action** - `kb/docs/en/features/transform-xml-using-xslt-deprecated.md` - This action applies an XSLT script to transform XML into another format. Supports XSLT 1.1 and earlier. This action is deprecated.
 - **XML tools by Workato - Transform XML using XSLT action** - `kb/docs/en/features/transform-xml-using-xslt.md` - This action applies an XSLT script to transform XML into another format. Supports XSLT 1.1 and earlier.
 - **Transformation maps** - `kb/docs/en/features/transformation-maps.md` - Use transformation maps to visually map input fields to an output schema and transform values with formulas.
+- **Create a transformation map** - `kb/docs/en/features/transformation-maps/create-map.md` - Define transformation map input and output schemas, map and transform fields with formulas, and test a map before you use it in a recipe.
+- **Example transformation maps** - `kb/docs/en/features/transformation-maps/map-examples.md` - Example transformation maps that reshape a list, aggregate a list by a key, chain formulas, flatten a nested array, and join two arrays.
 - **File tools by Workato - Uncompress a file action** - `kb/docs/en/features/uncompress-files.md` - Use the Uncompress a file action from File tools by Workato to extract .zip, .tar.gz, and .gz files from any connected app.
 - **XML tools by Workato - Validate XML document with XSD action** - `kb/docs/en/features/validate-xml-with-xsd.md` - Use XML tools by Workato to validate an XML document against an XSD schema, enforcing structure, element order, and data types.
 - **Variables by Workato** - `kb/docs/en/features/variables.md` - Variables by Workato lets you declare mutable, typed datapills that hold and update values within the scope of a single recipe job.

@@ -1,6 +1,6 @@
 # Connectors
 
-2966 pages. Paths are relative to the repository root.
+2980 pages. Paths are relative to the repository root.
 
 
 ## Connectors
@@ -2638,6 +2638,14 @@
 - **Redmine - Search records action** - `kb/docs/en/connectors/redmine/search-records-action.md` - The Search records action retrieves a list of issues from Redmine that match your search criteria.
 - **Redmine - Update record action** - `kb/docs/en/connectors/redmine/update-record-action.md` - The Update record action updates an issue in Redmine or adds a note to it.
 - **Redmine - Upload file action** - `kb/docs/en/connectors/redmine/upload-file-action.md` - The Upload file action uploads a file to Redmine and returns a token you can use to attach the file to an issue.
+- **Resend** - `kb/docs/en/connectors/resend.md` - Connect Resend to Workato to send and manage transactional emails, track delivery events, and manage scheduled emails.
+- **Resend - Cancel email action** - `kb/docs/en/connectors/resend/cancel-email-action.md` - Cancel a scheduled email in Resend before it's delivered.
+- **Resend - Get record action** - `kb/docs/en/connectors/resend/get-record-action.md` - Retrieve a record, such as a sent email, from Resend by its ID.
+- **Resend - New email event trigger** - `kb/docs/en/connectors/resend/new-email-event-trigger.md` - Invoke a recipe in real time when a Resend email bounces, receives a complaint, is delayed, or fails.
+- **Resend - Search records action** - `kb/docs/en/connectors/resend/search-records-action.md` - Retrieve a list of emails or sending domains from Resend.
+- **Resend - Send email action** - `kb/docs/en/connectors/resend/send-email-action.md` - Send an email to one or more recipients in Resend.
+- **Resend - Send emails action (batch)** - `kb/docs/en/connectors/resend/send-emails-action-batch.md` - Send up to 100 emails in one Resend API request, with per-email recipients, templates, and tags.
+- **Resend - Update record action** - `kb/docs/en/connectors/resend/update-record-action.md` - Reschedule a scheduled email in Resend.
 - **Workato connectors - RicherValues** - `kb/docs/en/connectors/richervalues.md` - The RicherValues connector lets you automate property valuation workflows by placing valuation and inspection orders for real estate and lending teams.
 - **RicherValues - Place order action** - `kb/docs/en/connectors/richervalues/place-order-action.md` - The Place order places a property evaluation, AVM, or inspection order in RicherValues.
 - **Workato connectors - S3 Data lake** - `kb/docs/en/connectors/s3-lake.md` - S3 Data Lake is a centralized AWS service that stores and manages structured and unstructured data at scale using Amazon S3 and AWS Glue.
@@ -2896,6 +2904,12 @@
 - **Workday ASOR - List agents action** - `kb/docs/en/connectors/workday-asor/list-agents-action.md` - The List agents action retrieves a list of agents in Workday ASOR.
 - **XML Creator** - `kb/docs/en/connectors/xml-creator.md` - The XML Creator connector generates XML documents from a sample XML template and mapped datapills, with optional support for namespaces, attributes, and element order.
 - **XML Creator - Create XML** - `kb/docs/en/connectors/xml-creator/create-xml.md` - Use the Create XML action to generate an XML document from a sample XML message and mapped datapills.
+- **YNAB** - `kb/docs/en/connectors/ynab.md` - YNAB (You Need A Budget) is a personal budgeting application built on zero-based budgeting that helps individuals and households plan their spending.
+- **YNAB - Get record action** - `kb/docs/en/connectors/ynab/get-record-action.md` - The Get record action retrieves a record of a selected object type from a plan in YNAB.
+- **YNAB - New/updated record trigger** - `kb/docs/en/connectors/ynab/new-updated-record-trigger.md` - The New/updated record trigger monitors YNAB for new or updated transactions in a plan.
+- **YNAB - Search records action** - `kb/docs/en/connectors/ynab/search-records-action.md` - The Search records action retrieves a list of plans, categories, transactions, or scheduled transactions from YNAB.
+- **YNAB - Update record action** - `kb/docs/en/connectors/ynab/update-record-action.md` - The Update record action updates a category or transaction in a plan in YNAB.
+- **YNAB - Update records (batch) action** - `kb/docs/en/connectors/ynab/update-records-action.md` - The Update records (batch) action updates multiple transactions in a plan in YNAB in a single call.
 - **Workato connectors - YouTube** - `kb/docs/en/connectors/youtube.md` - The YouTube connector lets you search videos, retrieve video and channel data, manage comments and playlists, and update video metadata in Workato.
 - **YouTube - Add to playlist action** - `kb/docs/en/connectors/youtube/add-to-playlist-action.md` - The Add to playlist action adds a video to a playlist on the connected channel in YouTube.
 - **YouTube - Create playlist action** - `kb/docs/en/connectors/youtube/create-playlist-action.md` - The Create playlist action creates a new playlist on the connected channel in YouTube.

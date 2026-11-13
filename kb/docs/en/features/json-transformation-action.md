@@ -8906,8 +8906,8 @@ We strongly recommend using API tokens, service account API tokens, OAuth 2.0, o
 > 
 > Authentication methods for the Jira connector have the following limitations:
 > 
-> - Real-time triggers aren't supported with OAuth 2.0 (Cloud - Atlassian-hosted Jira) or OAuth 2.0 (Data Center).
-> - On-prem Jira connections aren't supported with API token or service account (API token) authentication.
+> - OAuth 2.0 (Cloud - Atlassian-hosted Jira) and OAuth 2.0 (Data Center) don't support real-time triggers.
+> - API token and service account (API token) authentication don't support on-premise Jira connections.
 > - Atlassian deprecated basic authentication for cloud connections in December 2018. On-premise Jira is not affected.
 
 ### API token
@@ -9075,7 +9075,7 @@ OAuth 2.0 (Data Center) enables you to connect to an on-premise Jira Data Center
 
 > **REAL-TIME TRIGGERS NOT SUPPORTED**
 > 
-> OAuth 2.0 doesn't support real-time triggers because it's incompatible with webhooks. As an alternative, you can register the [Webhooks connector](/en/connectors/workato-webhooks) in Jira to use Jira's static webhook functionality. Refer to the [Jira Datacenter](https://confluence.atlassian.com/adminjiraserver/managing-webhooks-938846912.html) webhook documentation for registration steps.
+> OAuth 2.0 doesn't support real-time triggers because it's incompatible with webhooks. As an alternative, you can register the [Webhooks connector](/en/connectors/workato-webhooks) in Jira to use Jira's static webhook functionality. Refer to the [Jira Data Center](https://confluence.atlassian.com/adminjiraserver/managing-webhooks-938846912.html) webhook documentation for registration steps.
 
 #### Prerequisites
 

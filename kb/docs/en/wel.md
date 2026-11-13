@@ -11,10 +11,6 @@ WEL (Workato Expression Language) is Workato's transformation language. It resha
 
 WEL is part of the Workato platform, so there's nothing to install, nothing to connect to, and no runtime to manage. WEL runs on Workato's [data plane](#where-wel-runs) alongside your recipes.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Why WEL exists
 
 Integration is a translation problem. Systems agree on what an object is and disagree on its format. For example:

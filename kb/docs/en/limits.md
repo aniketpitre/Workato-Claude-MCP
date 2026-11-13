@@ -384,7 +384,11 @@ View XML tools by Workato quotas
 | --- | --- |
 | XML tools by Workato actions, default payload quota | 10 MB |
 | Parse XML document action, with streaming enabled | 200 MB |
-| Maximum number of fields for the Generate XML document from XSD action | 5000 fields |
+| Maximum number of fields for the Generate XML document from XSD action | 5,000 fields |
+| Maximum nesting depth of a schema built from XSD or sample XML | 300 |
+| Maximum number of properties, objects, and arrays in a schema built from XSD or sample XML | 15,000 |
+| Maximum number of child properties in a single object of an XML-derived schema | 5,000 |
+| Maximum time to build one XML schema, per request or response | 10 seconds |
 
 ### CSV tools by Workato quotas
 
@@ -430,6 +434,19 @@ View PDF tools by Workato quotas
 | PDF tools maximum file size per source file for all actions | 100 MB |
 | Merge PDF action maximum input | 50 files, 100 MB combined |
 | Split PDF action maximum output | 50 output files |
+
+### Dynamic schema building quotas
+
+View dynamic schema building quotas
+
+The following quotas apply to connectors that build their input and output schemas from your input at runtime, such as [XML tools by Workato](/en/connectors/xml-tools-workato).
+
+| Description | Quota |
+| --- | --- |
+| Maximum nesting depth of a schema returned by a connector that builds schemas dynamically | 300 |
+| Maximum number of properties, objects, and arrays in a single schema build | 15,000 |
+| Maximum number of child properties in a single object | 5,000 |
+| Maximum time to build one schema, per request or response | 10 seconds |
 
 ### Language connectors quotas
 

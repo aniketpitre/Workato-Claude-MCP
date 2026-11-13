@@ -1,7 +1,7 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/escape.md'
 description: >-
-  WEL escape functions for safely embedding values in CSV, HTML, XML, JSON,
+  Use WEL escape functions to safely embed values in CSV, HTML, XML, JSON,
   JavaScript, URLs, SOQL, OData, and regular expressions without breaking
   syntax.
 ---
@@ -20,17 +20,13 @@ Escape functions make values safe to embed in specific formats, such as queries,
 > 
 > The quotes form part of the query syntax. Escape only the value between them.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Query languages
 
 Inbound data inserted directly into a query can introduce unintended syntax. The following functions escape values so the query engine treats them as data instead of code.
 
 ### `escape_for_soql`
 
-Escapes a value for a SOQL string literal in Salesforce. Escapes `'` and `\`.
+Escapes a value for a SOQL string literal in Salesforce. Escapes `'` and `\`. Doesn't escape `%` and `_` wildcards.
 
 ```text
 escape_for_soql(value)
@@ -38,7 +34,7 @@ escape_for_soql(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | The value to escape. |
+| value | The value to escape. Raises `E100` for a `List`, `Map`, or `Binary` value. |
 
 Escape an apostrophe for SOQL
 
@@ -86,9 +82,7 @@ O''Brien
 
 ### `escape_for_regex`
 
-Escapes regular-expression metacharacters so the pattern matches the string literally.
-
-Use it whenever you build a pattern from data. Without escaping, a value containing `.` or `*` can change the pattern's behavior.
+Escapes regular-expression metacharacters so the pattern matches the string literally. Syntax characters get a preceding backslash, and punctuation becomes a `\xHH` escape.
 
 ```text
 escape_for_regex(value)
@@ -96,7 +90,7 @@ escape_for_regex(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | The value to escape. |
+| value | The value to escape. Raises `E100` for a `List`, `Map`, or `Binary` value. |
 
 Escape regex metacharacters
 
@@ -120,7 +114,9 @@ The following functions escape a value for HTML or XML markup:
 
 ### `escape_for_html`
 
-Escapes a value for HTML text or an attribute. Escapes `&`, `<`, `>`, `"`, `'`, and `/`.
+Escapes a value for HTML text or a quoted attribute value. Escapes `&`, `<`, `>`, `"`, `'`, and `/`.
+
+The result isn't safe inside a `<script>` or `<style>` element, or inside an unquoted attribute. Use `escape_for_javascript` first, then `escape_for_html` for JavaScript in an event-handler attribute.
 
 ```text
 escape_for_html(value)
@@ -128,7 +124,7 @@ escape_for_html(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | The value to escape. |
+| value | The value to escape. Raises `E100` for a `List`, `Map`, or `Binary` value. |
 
 Escape HTML markup characters
 
@@ -184,7 +180,7 @@ The following functions escape a value for a specific data or code format:
 
 Escapes a value for a CSV field, following RFC 4180 by quoting the field and doubling internal quotes when needed.
 
-Pass `'safe_formulas'` to prevent **CSV formula injection**. Spreadsheet applications treat a field beginning with `=`, `+`, `-`, or `@` as a formula, so a value from an untrusted source can run when someone opens the file. The option prefixes such a field with an apostrophe.
+Pass `'safe_formulas'` to prevent **CSV formula injection**. Spreadsheet applications otherwise treat a field beginning with a tab, a carriage return, a line feed, a negative number, `=`, `+`, `-`, `@`, or a full-width equivalent as a formula, so a value from an untrusted source can run when someone opens the file. `'safe_formulas'` prefixes potentially dangerous fields with an apostrophe (`'`).
 
 ```text
 escape_for_csv(value, 'safe_formulas')
@@ -192,8 +188,8 @@ escape_for_csv(value, 'safe_formulas')
 
 | Parameter | Description |
 | --- | --- |
-| value | The value to escape. |
-| 'safe\_formulas' | Optional. Pass this parameter to also neutralize leading formula characters. |
+| value | The value to escape. Raises `E100` for a `List`, `Map`, or `Binary` value. |
+| 'safe\_formulas' | Optional. Pass this parameter to also neutralize leading formula characters. Raises `E225` for an unrecognized mode. |
 
 Quote a field containing a comma
 
@@ -233,7 +229,7 @@ escape_for_csv('=1+1', 'safe_formulas')
 
 ### `escape_for_json_string`
 
-Escapes a value to embed inside a JSON string, without adding the surrounding quotes.
+Escapes a value to embed inside a JSON string, without adding the surrounding quotes. It escapes only `"`, `\`, and control characters, leaving `/` and non-ASCII characters unchanged.
 
 Use this when assembling JSON text by hand. Use [to\_json](/en/wel/stdlib/json), which handles escaping throughout, to serialize a whole value instead.
 
@@ -243,7 +239,7 @@ escape_for_json_string(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | The value to escape. |
+| value | The value to escape. Raises `E100` for a `List`, `Map`, or `Binary` value. |
 
 Escape a quote for a JSON string
 
@@ -263,7 +259,17 @@ He said \"hi\"
 
 ### `escape_for_javascript`
 
-Escapes a value to embed inside a JavaScript string literal, without the surrounding quotes.
+Escapes a value for use inside a single or double-quoted JavaScript string literal, without adding the quotes.
+
+| Character | Result |
+| --- | --- |
+| `'`, `"`, `\`, `/` | Gains a preceding backslash |
+| `<`, `>` | `\x3C`, `\x3E` |
+| Newline, CR, tab, backspace, form feed | Becomes `\n`, `\r`, `\t`, `\b`, `\f` |
+| `U+2028`, `U+2029` | Becomes `\u2028`, `\u2029` |
+| Other control characters | Becomes `\uXXXX` |
+
+Escaping `<` and `>` means the result can't close a `<script>` element. Backticks and `${` aren't escaped, so don't put the result in a template literal.
 
 ```text
 escape_for_javascript(value)
@@ -271,7 +277,7 @@ escape_for_javascript(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | The value to escape. |
+| value | Any scalar value. A number, `Boolean`, temporal value, or `null` is first converted to text by the [String](/en/wel/stdlib/conversion#string) rules, and `null` becomes `'null'`. Raises `E100` for a `List`, `Map`, or `Binary` value. |
 
 Escape an apostrophe for JavaScript
 
@@ -357,7 +363,7 @@ Kalani%20Park
 
 ### `uri_decode_www_form_component`
 
-Decodes a percent-encoded URI component.
+Decodes a percent-encoded URI component. A `+` passes through unchanged rather than becoming a space.
 
 ```text
 uri_decode_www_form_component(value)
@@ -365,7 +371,7 @@ uri_decode_www_form_component(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | The component to decode. |
+| value | The component to decode. Malformed percent-encoding raises `E226`. |
 
 Decode a percent-encoded component
 
@@ -385,7 +391,9 @@ Kalani Park
 
 ### `uri_encode_www_form`
 
-Encodes a `Map` as an `application/x-www-form-urlencoded` query string. Spaces become `+`.
+Encodes a `Map` as an `application/x-www-form-urlencoded` query string, with pairs joined by `&` in the map's order.
+
+Keys and values use the WHATWG form rules: A space becomes `+`, ASCII letters, digits, and `*`, `-`, `.`, `_` pass through unchanged, and every other byte becomes `%XX`. A `String` value is written as is. Any other scalar value is written in its canonical text form, so `true` becomes `true`, `null` becomes `null`, and a date becomes its ISO form.
 
 ```text
 uri_encode_www_form(map, options)
@@ -393,8 +401,8 @@ uri_encode_www_form(map, options)
 
 | Parameter | Description |
 | --- | --- |
-| map | The map of parameters. |
-| options | Optional map specifying the `dialect`. `'whatwg'` repeats the key for a list, and `'rack'` writes `key[]`. |
+| map | The map of parameters. A `List` value writes one pair for each item. An empty `List` raises `E218`. A `Map`, `Binary`, or nested `List` value raises `E100`. |
+| options | Optional map specifying the `dialect`. `'whatwg'` (default) repeats the key for each `List` item. `'rack'` writes `key[]` for each item, and raises `E218` for a key containing `[` or `]`. An unrecognized option key raises `E225`. An unrecognized `dialect` value raises `E225`. |
 
 Encode a map as a query string
 
@@ -414,7 +422,7 @@ status=open&q=blue+widget
 
 ### `uri_decode_www_form`
 
-Decodes a query string into a `Map`. A `+` becomes a space.
+Decodes a query string into a `Map`. The function decodes `+` to a space, skips empty pairs, decodes a pair with no `=` sign to an empty value, and keeps a leading `?` literally as part of the first key.
 
 ```text
 uri_decode_www_form(text, options)
@@ -422,8 +430,8 @@ uri_decode_www_form(text, options)
 
 | Parameter | Description |
 | --- | --- |
-| text | The query string to decode. |
-| options | Optional map to control decoding. `collect_duplicates`: When `true`, a repeated key collects into a list.; `dialect`: `'rack'` reads `key[]` arrays. `'whatwg'` treats keys as opaque. |
+| text | The query string to decode. Malformed percent-encoding raises `E226`. |
+| options | Optional map to control decoding. `collect_duplicates`: Makes repeated keys collect into a list. A duplicate key without `collect_duplicates` raises `E223`., `dialect`: `'rack'` reads `key[]` arrays. `'whatwg'` treats keys as opaque. An invalid `dialect` value raises `E225`. An unrecognized option key raises `E225`. |
 
 Decode a query string into a map
 

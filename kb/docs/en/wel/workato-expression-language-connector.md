@@ -7,10 +7,6 @@ description: Use WEL in recipes to reshape data for downstream recipe steps.
 
 The **Transform data (code)** action runs a [WEL](/en/wel) expression inside a recipe to reshape data for downstream recipe steps. The **Workato Expression Language** connector provides only this one recipe step.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Input
 
 | Input field | Description |
@@ -21,12 +17,12 @@ The **Transform data (code)** action runs a [WEL](/en/wel) expression inside a r
 | WEL snippet source | Select **Define manually** to write the expression directly in this action, or **Use a resource** to reference a snippet file managed in your Workato project. |
 | Code | Enter the WEL expression to run using the input data. |
 | Locale | Optional. Select the locale to use for engine error messages (the control-plane locale). Defaults to `EN`. |
-| Data plane locale | Optional. Use the fields in this section to override the currency, number, and date formatting to use for functions such as `to_local_string`, `to_local_currency`, and `format_date`. This section contains the following input fields: **Currency code**: Enter the ISO 4217 currency code. Defaults to `USD`.; **Currency symbol**: Enter the currency symbol, such as `$`, `€`, or `¥`. Defaults to `$`.; **Decimal separator**: Enter the decimal mark character. Defaults to `.`.; **Thousands separator**: Enter the thousands grouping character. Defaults to `,`.; **List separator**: Enter the separator to use when joining lists to strings. Defaults to `,` .; **Date format**: Enter the `strftime` format for `PlainDate`. Defaults to `%Y-%m-%d`.; **Datetime format**: Enter the `strftime` format for `DateTime`. Defaults to `%Y-%m-%dT%H:%M:%SZ`.; **Plain datetime format**: Enter the `strftime` format for `PlainDateTime`. Defaults to `%Y-%m-%dT%H:%M:%S`.; **Plain time format**: Enter the `strftime` format for `PlainTime`. Defaults to `%H:%M:%S%.f`. |
-| Flags | Optional. Use the fields in this section to override engine behavior for this step. This section contains the following input fields: **Mixed precision**: Select how to handle mixed `Decimal` and `Float` arithmetic. `allow` permits it silently, `warn` emits a diagnostic, and `deny` raises `E103`. Defaults to `allow`.; **Stdlib shadowing**: Select how to handle `let` or `fun` shadowing a standard library name. `allow` permits it silently, `warn` emits a diagnostic, and `deny` raises `E009`. Defaults to `warn`.; **Concat with null**: Select whether concatenating with `null` raises an error. `x ++ null` and `concat(x, null)` return `x` when this is `true`, or raise `E205` when it's `false`. Defaults to `false`.; **Coerce numbers to bool**: Select whether a number can stand in for a `Boolean` in a condition. A condition treats `0` as `false` and any nonzero number as `true` when this is `true`. A condition accepts only `Boolean` or `null` when this is `false`. Defaults to `true`.; **Nulls in aggregates**: Select whether an aggregate function skips `null` elements. Aggregate functions skip `null` elements when this is `true`, or raise `E202` when it's `false`. `E202` is the same code raised when a parent field is `null`. Defaults to `false`.; **Report all assertion failures in schema guards**: Select whether schema validation reports every failed assertion. Schema validation runs every assertion and reports every failure when this is `true`, or stops at the first failure when it's `false`. Defaults to `false`.; **Decimal scale sensitive eq**: Select whether trailing zeros affect `Decimal` equality. `Decimal('1.0')` and `Decimal('1.00')` are unequal when this is `true`, because trailing zeros encode precision. Equality is value-based when it's `false`. Defaults to `false`.; **Number literals as decimal**: Select how the engine types numeric literals and JSON numbers. Every float literal and JSON number becomes a `Decimal` for exact arithmetic when this is `true`, or a `Float` (IEEE 754) when it's `false`. Defaults to `false`. |
+| Data plane locale | Optional. Use the fields in this section to override the currency, number, and date formatting to use for functions such as `to_local_string`, `to_local_currency`, and `format_date`. This section contains the following input fields: **Currency code**: Enter the ISO 4217 currency code. Defaults to `USD`.; **Currency symbol**: Enter the currency symbol, such as `$`, `€`, or `¥`. Defaults to `$`.; **Decimal separator**: Enter the decimal mark character. Defaults to `.`.; **Thousands separator**: Enter the thousands grouping character. Defaults to `,`.; **List separator**: Enter the separator to use when joining lists to strings. Defaults to `,` .; **Date format**: Enter the `strftime` format for `PlainDate`. Defaults to `%Y-%m-%d`.; **Datetime format**: Enter the `strftime` format for `DateTime`. Defaults to `%Y-%m-%dT%H:%M:%SZ`.; **Plain datetime format**: Enter the `strftime` format for `PlainDateTime`. Defaults to `%Y-%m-%dT%H:%M:%S`.; **Plain time format**: Enter the `strftime` format for `PlainTime`. Defaults to `%H:%M:%S%.f`. These fields are validated as a set rather than accepted as-is: **Currency code** must be a three-letter ISO 4217 code, and **Decimal separator** and **Thousands separator** must differ from each other. |
+| Flags | Optional. Use the fields in this section to override engine behavior for this step. This section contains the following input fields: **Mixed precision**: Select how to handle mixed `Decimal` and `Float` arithmetic. `allow` permits it silently, `warn` emits a diagnostic, and `deny` raises `E103`. Defaults to `allow`.; **Stdlib shadowing**: Select how to handle `let` or `fun` shadowing a standard library name. `allow` permits it silently, `warn` emits a diagnostic, and `deny` raises `E009`. Defaults to `warn`.; **Concat with null**: Select whether concatenating with `null` raises an error. `x ++ null` and `concat(x, null)` return `x` when this is `true`, or raise `E205` when it's `false`. Defaults to `false`.; **Nulls in aggregates**: Select whether an aggregate function skips `null` elements. Aggregate functions skip `null` elements when this is `true`, or raise `E101` when it's `false`, the same as any other non-numeric or incomparable element. Defaults to `false`.; **Report all assertion failures in schema guards**: Select whether schema validation reports every failed assertion. Schema validation runs every assertion and reports every failure when this is `true`, or stops at the first failure when it's `false`. Defaults to `false`.; **Number literals as decimal**: Select how the engine types numeric literals and JSON numbers. Every float literal and JSON number becomes a `Decimal` for exact arithmetic when this is `true`, or a `Float` (IEEE 754) when it's `false`. Defaults to `false`. |
 
-> **TWO DEFAULTS ALREADY COERCE**
+> **MIXED PRECISION COERCES BY DEFAULT**
 > 
-> **Coerce numbers to bool** defaults to `true`, and **Mixed precision** defaults to `allow`. Both permit a coercion that's strict everywhere else in WEL. A number can stand in for a `Boolean` in a condition, and `Decimal` can mix silently with `Float`. Set **Coerce numbers to bool** to `false` and **Mixed precision** to `deny` to enforce WEL's usual strict behavior on this step.
+> **Mixed precision** defaults to `allow`, which permits `Decimal` to mix silently with `Float`. Set **Mixed precision** to `deny` to instead raise a catchable `E103` on that arithmetic, which fails the expression unless you catch it with `\|?`.
 
 ### How the expression sees your input
 
@@ -50,7 +46,7 @@ Inference gets structure right, such as nesting, lists of objects, and field nam
 > 
 > - **Numeric precision**: A sample `19.99` infers a floating-point number, not a Decimal. Set the type to Decimal manually for money and other precision-sensitive fields. The declared type is what the expression receives, and Decimal and Float don't mix in arithmetic (`E103`).
 > - **Dates and datetimes**: JSON has no temporal types, so a sample `"2024-01-15"` infers a plain string. Set that type in the designer if the field should reach the expression as a WEL date or timestamp. Otherwise the expression must parse the string itself.
-> - **Optional fields**: The designer infers every field present in the sample as a regular field. Mark optional fields yourself. An unmapped optional input field reaches the expression as `null`. A required output field the expression fails to produce raises `E220`.
+> - **Optional fields**: The designer infers every field present in the sample as a regular field. Mark optional fields yourself. An unmapped optional input field reaches the expression as `null`. A required output field the expression fails to produce raises `E500`.
 > - **Empty and null values**: The designer can't infer an item type from an empty list (`[]`) or a field type from `null`. Use a sample with at least one populated element and real values throughout.
 
 You can use the same sample document to test the expression locally. Refer to the [quickstart](/en/wel/quickstart#start-with-the-binary) for details.
@@ -69,7 +65,7 @@ A common case is mixing a number into a string with `++`:
 "Age: " ++ String(_.age) ++ " years"
 ```
 
-String interpolation is the one place conversion is automatic, other than with the [configurable coercion flags](#input). WEL coerces expressions interpolated inside `"..."` and `"""..."""` to String for you:
+String interpolation is the one place conversion is automatic, other than with the [Mixed precision flag](#input). WEL coerces expressions interpolated inside `"..."` and `"""..."""` to String for you:
 
 ```text
 "Order ${_.order_id} has ${length(_.items)} items"
@@ -121,7 +117,7 @@ Use `Skip` to omit an optional field from the output entirely rather than emitti
 ```text
 {
   id: _.id,
-  note: if blank?(_.note) then Skip() else _.note
+  note: if blank?(_.note) then Skip else _.note
 }
 ```
 
@@ -132,6 +128,6 @@ Use this when the field is genuinely absent, such as when omitting an optional A
 - [Workato Expression Language](/en/wel): The language this action runs.
 - [Quickstart](/en/wel/quickstart): An example showing different WEL workflows.
 - [Data types](/en/wel/language/data-types): The 16 WEL data types and when to use each one.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E100`, `E103`, `E202`, `E205`, `E009`, and `E220`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E100`, `E103`, `E202`, `E205`, `E009`, and `E500`.
 
 ---

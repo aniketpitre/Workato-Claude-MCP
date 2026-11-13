@@ -57,7 +57,7 @@ MCP clients that support elicitation, such as Claude Desktop and Claude web, use
 - **Missing or invalid connection** is detected during a tool call.
 - **A URL elicitation message is sent** by the MCP server asking the user to open the verified user access connection page.
 - **The user fixes or authorizes the connection** on the page.
-- **The tool call resumes and completes** without the user restarting or resubmitting the request.
+- **The user retries the tool** by restarting or resubmitting the request as tool calls don't resume automatically.
 
 ### Clients that don't support elicitation
 

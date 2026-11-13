@@ -1,21 +1,17 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/map.md'
 description: >-
-  WEL map functions for reading keys and values, merging maps, picking and
-  removing fields, and flattening nested objects into a single level.
+  Use WEL map functions to read keys and values, merge maps, pick and remove
+  fields, and flatten nested objects into a single level.
 ---
 
 # Map functions
 
-A `Map` is a set of key-value pairs: the WEL type for a JSON object. Map functions read its keys and values, combine one map with another, remove fields, and convert between a map and a list so that list functions can operate on it.
+A `Map` is a set of key-value pairs and the WEL type for a JSON object. Map functions read its keys and values, combine one map with another, remove fields, and convert between a map and a list so that list functions can operate on it.
 
 Keys are `String` by default. Insertion order is preserved, so a map built in a deliberate order serializes in that order.
 
 `_` is the input your expression receives in these examples. Refer to [Input variables](/en/wel/language/expressions#input-variable) for more information.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Call a map function
 
@@ -112,7 +108,7 @@ has_key?(map, key)
 | Parameter | Description |
 | --- | --- |
 | map | The map to test. |
-| key | The key name, as a `String`. |
+| key | The key name, as a `String`. Non-string data types raise `E100`. |
 
 A present key returns true
 
@@ -146,13 +142,42 @@ has_key?({sku: 'WID-1'}, 'qty')
 false
 ```
 
+### `at`
+
+Returns the value at an exact key. A key present with a `null` value returns `null` rather than raising an error. `at` also works on a [List](/en/wel/stdlib/list#at), where it takes an `Integer` index instead of a key.
+
+```text
+at(map, key)
+```
+
+| Parameter | Description |
+| --- | --- |
+| map | The map to read from. |
+| key | The key name as a `String`. A missing key raises catchable `E104`. Non-string data types raise `E100`. |
+
+Get the value at a key
+
+The following example gets the value at a key:
+
+**Formula**
+
+```text
+at({sku: 'WID-1', qty: 3}, 'qty')
+```
+
+**Output**
+
+```text
+3
+```
+
 ## Choose fields
 
 The following functions narrow a map to a smaller, safer set of fields:
 
 ### `pluck`
 
-Returns a map containing only the named keys. Keys that aren't present are skipped rather than raising an error.
+Returns a map containing only the named keys, in the order `keys` lists them rather than the map's own order. `pluck` skips keys that aren't present and deduplicates keys named more than once.
 
 Use it to narrow a large inbound record to the fields a destination actually accepts.
 
@@ -163,7 +188,7 @@ pluck(map, keys)
 | Parameter | Description |
 | --- | --- |
 | map | The map to read from. |
-| keys | A list of key names to keep. |
+| keys | A list of key names to keep. Non-string data types raise `E100`. |
 
 Keep only the named keys
 
@@ -199,7 +224,7 @@ pluck({id: 1}, ['id', 'missing'])
 
 ### `except`
 
-Returns a map with the named keys removed.
+Returns a map with the named keys removed. `except` skips keys named in `keys` but not present in the map.
 
 `pluck` and `except` are opposites, and the choice between them matters for safety. `pluck` is an allowlist, so a new field appearing upstream is dropped by default. `except` is a denylist, so a new field is forwarded by default. Prefer `pluck` when leaking a newly added field is the concern.
 
@@ -210,7 +235,7 @@ except(map, keys)
 | Parameter | Description |
 | --- | --- |
 | map | The map to read from. |
-| keys | A list of key names to remove. |
+| keys | A list of key names to remove. Non-string data types raise `E100`. |
 
 Remove the named keys
 
@@ -265,7 +290,7 @@ The following function combines two maps into one:
 
 ### `merge`
 
-Combines two maps. The second wins when both define the same key.
+Combines two maps. The second map wins when both define the same key, even when the winning value is `null`. `merge` places a key defined in both maps in the position it had in the first map, and appends a key only the second map at the end.
 
 ```text
 merge(first, second)
@@ -363,7 +388,7 @@ from_entries(list)
 
 | Parameter | Description |
 | --- | --- |
-| list | A list of maps, each with a `key` and a `value`. |
+| list | A list of maps, each with a `key` and a `value`. An element missing a `key` or `value` field raises `E100`. A non-`String` key, such as an `Integer` or a `Boolean`, is coerced to a `String`. Two elements that coerce to the same key raise catchable `E223`. |
 
 Convert a list of key/value maps back to a map
 
@@ -419,7 +444,7 @@ from_pairs(list)
 
 | Parameter | Description |
 | --- | --- |
-| list | A list of two-element lists. |
+| list | A list of two-element lists. A malformed element raises `E100`. A non-`String` key is coerced to a `String`. Two elements that coerce to the same key raise catchable `E223`. |
 
 Convert a list of key/value pairs back to a map
 
@@ -455,7 +480,7 @@ Collapses nested maps into a single level, joining the path into one key.
 
 The walk is depth-first in insertion order. Only maps are descended into. A list is treated as a leaf value and kept whole. An empty nested map is also a leaf.
 
-Two nested keys can collapse onto the same flattened key. The last write wins and an `E229` warning is emitted when that happens, so the collision is visible in the job rather than silent.
+Two nested keys can collapse onto the same flattened key. This raises catchable `E223` rather than silently keeping one write over the other.
 
 ```text
 flatten_map(map, options)
@@ -464,9 +489,7 @@ flatten_map(map, options)
 | Parameter | Description |
 | --- | --- |
 | map | The map to flatten. |
-| options | Optional map to control the flattening. `sep`: Key separator. Defaults to `.`., `max_depth`: How many levels to descend. Defaults to unlimited. |
-
-An unrecognized option key raises `E222` rather than being ignored.
+| options | Optional map to control the flattening. An unrecognized option key raises `E225` rather than being ignored. `sep`: Key separator. Defaults to `.`. A separator longer than 256 bytes raises `E211`., `max_depth`: How many levels to descend. Defaults to unlimited. A non-integer data type raises `E218`. A negative value raises `E211`. |
 
 Flatten a nested map with the default separator
 
@@ -542,6 +565,6 @@ The flattened keys are exactly the column headers the destination expects. Pass 
 - [List functions](/en/wel/stdlib/list): What to do with `entries`, `pairs`, `keys`, and `values`.
 - [Deep map functions](/en/wel/stdlib/deep-map): Reach through nesting rather than flattening it.
 - [Data types](/en/wel/language/data-types): `Map`, `Skip`, and `null`.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E104`, `E222`, and `E229`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E104`, `E218`, and `E223`.
 
 ---

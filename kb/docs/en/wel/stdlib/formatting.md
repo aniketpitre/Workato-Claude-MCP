@@ -1,9 +1,8 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/formatting.md'
 description: >-
-  WEL formatting functions for rendering dates, times, numbers, and currency as
-  display strings, parsing datetimes, joining lists, and serializing values to
-  WEL.
+  Use WEL formatting functions to render dates, times, numbers, and currency as
+  display strings, parse datetimes, join lists, and serialize values to WEL.
 ---
 
 # Formatting functions
@@ -12,13 +11,9 @@ Formatting functions turn values into the strings a person or a destination syst
 
 The distinction that matters here is between _formatting_ and _converting_. `format_date` produces text for display or for a system that demands a particular layout. It doesn't produce a date. The result is a `String`, which doesn't support arithmetic. Keep values in their original types until the final formatting step.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Format dates and times
 
-`format_date`, `format_datetime`, and `format_time` each take a [strftime](https://man7.org/linux/man-pages/man3/strftime.3.html) pattern or a named preset. The following table lists the common directives:
+`format_date`, `format_datetime`, and `format_time` each take a [strftime](https://man7.org/linux/man-pages/man3/strftime.3.html) pattern or a named preset. An unrecognized preset name doesn't raise an error. These functions treat it as a literal strftime pattern and return it unchanged, because it contains no directives to substitute. A malformed strftime pattern raises `E016`. The following table lists the common directives:
 
 | Directive | Meaning | Example |
 | --- | --- | --- |
@@ -123,9 +118,9 @@ Prefer `to_rfc3339` and `to_rfc2822` over a hand-written pattern when a protocol
 
 ### `to_rfc3339`
 
-Formats a `DateTime` as RFC 3339, the format most JSON APIs expect.
+Formats a `DateTime` as RFC 3339, the format most JSON APIs expect. This function drops fractional seconds.
 
-Rejects offsets with nonzero seconds.
+Produces the same output as [`to_iso8601`](/en/wel/stdlib/temporal#to-iso8601) for a `DateTime`.
 
 ```text
 to_rfc3339(datetime)
@@ -133,7 +128,7 @@ to_rfc3339(datetime)
 
 | Parameter | Description |
 | --- | --- |
-| datetime | The `DateTime` to format. |
+| datetime | The `DateTime` to format. Offsets with nonzero seconds raise `E212`. |
 
 Format a datetime as RFC 3339
 
@@ -153,9 +148,9 @@ to_rfc3339(DateTime('2026-03-15T09:30:00Z'))
 
 ### `to_rfc2822`
 
-Formats a `DateTime` as RFC 2822, the format used in email headers.
+Formats a `DateTime` as RFC 2822, the format used in email headers. This function drops fractional seconds.
 
-Rejects offsets with nonzero seconds.
+Renders the day and month names in English regardless of locale.
 
 ```text
 to_rfc2822(datetime)
@@ -163,7 +158,7 @@ to_rfc2822(datetime)
 
 | Parameter | Description |
 | --- | --- |
-| datetime | The `DateTime` to format. |
+| datetime | The `DateTime` to format. Offsets with nonzero seconds raise `E212`. |
 
 Format a datetime as RFC 2822
 
@@ -196,9 +191,9 @@ parse_datetime(text, options)
 | Parameter | Description |
 | --- | --- |
 | text | The string to parse. |
-| options | Optional map to control how the string is parsed. `format`: A strftime pattern describing the input., `default_tz`: Time zone to assume when the input carries none., `on_gap`: How to resolve a time that doesn't exist because a daylight-saving change skipped it., `on_fold`: How to resolve a time that occurs twice because a daylight-saving change repeated it. |
+| options | Optional map to control how the string is parsed. `format`: A strftime pattern describing the input., `default_tz`: Time zone to assume when the input carries none., `on_gap`: How to resolve a time that doesn't exist because a daylight-saving change skipped it., `on_fold`: How to resolve a time that occurs twice because a daylight-saving change repeated it. An unrecognized option key raises `E225`. An unknown `default_tz` zone name raises `E214`. An invalid `on_gap` or `on_fold` value raises `E225`. |
 
-An unrecognized option key raises `E222` rather than being ignored.
+A date-only ISO string with no `format` option, such as `'2024-03-15'`, raises `E212`.
 
 Parse an RFC 3339 datetime string
 
@@ -242,16 +237,14 @@ parse_datetime('15/03/2026', {format: '%d/%m/%Y'})
 
 Parses a string into a `PlainDateTime`, with no zone attached.
 
-The only option is `format`. An unrecognized option key raises `E222`.
-
 ```text
 parse_plain_datetime(text, options)
 ```
 
 | Parameter | Description |
 | --- | --- |
-| text | The string to parse. |
-| options | Optional map with a `format` key. |
+| text | The string to parse. A string carrying a UTC offset or zone designation raises `E102`, because a `PlainDateTime` has no zone to hold it. |
+| options | Optional map with a `format` key. An unrecognized option key raises `E225`. |
 
 Parse a plain datetime using a custom format
 
@@ -305,7 +298,7 @@ to_local_string(1234567.891)
 
 ### `to_local_currency`
 
-Formats a number as a currency amount, using the locale's currency symbol and conventions.
+Formats a number as a currency amount, using the locale's currency symbol and conventions. Rounds to the currency's standard number of fractional digits, for example 2 for USD and EUR, 0 for JPY, and 3 for BHD, and places the negative sign where the locale convention puts it. Renders `Infinity` as literal text rather than a numeric-looking string.
 
 ```text
 to_local_currency(number)
@@ -313,7 +306,7 @@ to_local_currency(number)
 
 | Parameter | Description |
 | --- | --- |
-| number | The number to format. |
+| number | The number to format. A non-number value raises `E100`. |
 
 Format a number as a currency amount
 
@@ -345,7 +338,7 @@ join_to_string(list, separator)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to join. |
+| list | The list to join. A `List`, `Map`, or `Binary` element raises `E100`. |
 | separator | Optional string placed between elements. |
 
 Join list elements with a separator
@@ -390,7 +383,7 @@ join_to_local_string(list, separator)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to join. |
+| list | The list to join. A `List`, `Map`, or `Binary` element raises `E100`. |
 | separator | Optional override for the locale's separator. |
 
 Join list elements using the locale separator
@@ -419,13 +412,15 @@ Serializes a value to a WEL literal that parses back to the same value.
 
 `to_wel` is useful for logging and for debugging a transformation, because it shows exactly what a value is rather than an approximation of it. Use [to\_json](/en/wel/stdlib/json) for data leaving the recipe.
 
+`to_wel` renders a constructed type as its constructor call, a `Binary` as a `0x"..."` literal, quotes a `Map` key only when it isn't a plain name, and serializes `Skip` as the literal `Skip`.
+
 ```text
 to_wel(value)
 ```
 
 | Parameter | Description |
 | --- | --- |
-| value | The value to serialize. |
+| value | The value to serialize. Raises `E107` for a lambda. |
 
 Serialize a map to a WEL literal
 

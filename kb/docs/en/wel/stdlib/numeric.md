@@ -1,8 +1,8 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/numeric.md'
 description: >-
-  WEL numeric functions for rounding to integers and decimal places, taking
-  absolute values, and testing for finite, infinite, or NaN numbers.
+  Use WEL numeric functions to round to integers and decimal places, take
+  absolute values, and test for finite, infinite, or NaN numbers.
 ---
 
 # Numeric functions
@@ -15,13 +15,9 @@ Numeric functions round numbers and test numeric values. Rounding functions help
 > 
 > Convert currency amounts to `Decimal` at the boundary, such as with `Decimal('12.50')`, and keep them as `Decimal` values throughout the transformation. Schema inference in the Transform Data action doesn't perform this conversion.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## Round to a whole number
 
-The following functions round a number to the nearest, next, or previous integer:
+The following functions round a number to the nearest, next, or previous integer.
 
 ### `round`
 
@@ -33,7 +29,7 @@ round(number)
 
 | Parameter | Description |
 | --- | --- |
-| number | The number to round. |
+| number | The number to round. A non-number argument raises `E100`. An infinite float or a `Decimal` beyond the numeric size limit raises `E211`. |
 
 Round up at the midpoint
 
@@ -129,7 +125,7 @@ The following functions round a `Decimal` to a fixed number of decimal places or
 
 ### `round_places`
 
-Rounds a `Decimal` to a given number of decimal places.
+Rounds and zero-pads a `Decimal` to a given number of decimal places.
 
 ```text
 round_places(decimal, places, options)
@@ -137,11 +133,9 @@ round_places(decimal, places, options)
 
 | Parameter | Description |
 | --- | --- |
-| decimal | The `Decimal` to round. |
-| places | How many decimal places to keep. |
-| options | Optional map to control the rounding mode. `mode`: How to round when a value falls exactly between two results. `half_up` (the default): Rounds away from zero.; `half_even`: Rounds to the nearest even digit rather than rounding up, so totals don't drift upward over many rows. Use it when reconciling against a system that requires it, or when totals differ by cents.; `half_down`, `up`, `down`, `ceiling`, `floor`: Standard rounding directions.; `exact`: Raises an error rather than rounding when the value doesn't fit in the requested places. Use it when silently losing precision would be a bug. |
-
-An unrecognized option key raises `E222` rather than being ignored.
+| decimal | The `Decimal` to round. Non-decimal data types raise `E100`. |
+| places | How many decimal places to keep. Negative values round to the left of the decimal point. A magnitude beyond 2,147,483,647 raises `E211`. Non-integer data types raise `E100`. |
+| options | Optional map to control the rounding mode. `mode`: How to round when a value falls exactly between two results. `half_up` (the default): Rounds away from zero.; `half_even`: Rounds to the nearest even digit rather than rounding up, so totals don't drift upward over many rows. Use it when reconciling against a system that requires it, or when totals differ by cents.; `half_down`, `up`, `down`, `ceiling`, `floor`: Standard rounding directions.; `exact`: Raises catchable `E228` rather than rounding when the value doesn't fit in the requested places. Use `exact` when silently losing precision would be a bug. An unrecognized option key raises `E225` rather than being ignored. |
 
 Default rounding (half up)
 
@@ -201,9 +195,9 @@ round_significant(decimal, digits, options)
 
 | Parameter | Description |
 | --- | --- |
-| decimal | The `Decimal` to round. |
-| digits | How many significant digits to keep. |
-| options | Optional map with the same `mode` values as `round_places`. |
+| decimal | The `Decimal` to round. Non-decimal data types raise `E100`. |
+| digits | How many significant digits to keep. Raises `E211` for values less than `1`. Non-integer data types raise `E100`. Zero stays zero regardless of `digits`. |
+| options | Optional map with the same `mode` values as `round_places`. An unrecognized option key raises `E225`. |
 
 Round to 3 significant digits
 
@@ -270,7 +264,7 @@ abs(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A `Number` or a `Duration`. |
+| value | A `Number` or a `Duration`. Non-number, non-duration data types raise `E100`. Negating the most negative representable `Duration` overflows and raises `E211`. |
 
 Absolute value of a negative number
 
@@ -366,7 +360,7 @@ true
 
 ### `nan?`
 
-Returns `true` if the value is the `Float` "not a number".
+Returns `true` if the value is the `Float` "not a number". `NaN` is outside WEL's value domain. Arithmetic raises `E200` instead of producing `NaN`. `Float('NaN')` raises `E102`.
 
 ```text
 nan?(number)
@@ -394,7 +388,7 @@ false
 
 > **THESE VALUES DON'T ARISE FROM DIVISION BY ZERO**
 > 
-> Dividing by zero raises `E200` rather than producing infinity, so a WEL expression doesn't silently generate one. `Infinity` and `NaN` appear when data arrives from a system that permits them. [present?](/en/wel/stdlib/common) already treats both as absent, so a [presence](/en/wel/stdlib/common) fallback catches them without an explicit check.
+> Dividing by zero raises `E200` rather than producing infinity, so a WEL expression doesn't silently generate one. `Infinity` can still arise from overflow, such as `1.0e308 * 10.0`. [present?](/en/wel/stdlib/common) treats `Infinity` as absent, so a [presence](/en/wel/stdlib/common) fallback catches it without an explicit check.
 
 ## Bit width
 
@@ -410,7 +404,7 @@ int_bit_size(integer)
 
 | Parameter | Description |
 | --- | --- |
-| integer | The integer to measure. |
+| integer | The integer to measure. Non-integer data types raise `E100`. Both `0` and `-1` require 1 bit. |
 
 Bits needed for 255
 

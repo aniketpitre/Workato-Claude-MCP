@@ -32,7 +32,7 @@ Additionally, the **Runs** tab provides the following capabilities:
   
 - Use the **Original run ID** search bar to find a sequence of attempts with the same `original_run_id` value. This includes the original attempt and all manual retries.
   
-- Click **Retry** on a failed row to retry a single transfer or click **Retry all failed** to retry all failed transfers.
+- Select one or more rows, then click **Retry runs** to [manually retry](/en/managed-file-transfer/error-handling-and-retries#manual-retry) them. You can retry both successful and failed runs.
   
 - Select a row to view its detailed [attempt history](#attempt-history).
   

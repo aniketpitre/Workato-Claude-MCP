@@ -22,7 +22,7 @@ File transfers automate file exchanges with built-in processing, scheduling, and
 
 [Schedule transfers](/en/managed-file-transfer/transfer-flows#schedule-transfers): Configure time-based schedules for file transfers using intervals or cron expressions.
 
-[Error handling and retries](/en/managed-file-transfer/error-handling-and-retries): Configure automatic retry behavior, including maximum retry duration and transfer auto-stop behavior.
+[Error handling and retries](/en/managed-file-transfer/error-handling-and-retries): Retry a transfer run manually and configure automatic retry behavior, including maximum retry duration and transfer auto-stop behavior.
 
 [Monitor transfer activity](/en/managed-file-transfer/alerts-and-monitoring#run-history-and-analytics): View run history and per-file status.
 

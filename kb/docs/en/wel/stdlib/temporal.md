@@ -1,17 +1,14 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/temporal.md'
 description: >-
-  WEL temporal functions for reading date and time components, calendar and
-  clock arithmetic, period boundaries, time zones, and durations, with examples.
+  Use WEL temporal functions to read date and time components, perform calendar
+  and clock arithmetic, find period boundaries, and handle time zones and
+  durations, with examples.
 ---
 
 # Temporal functions
 
 Temporal functions read, calculate with, and move between dates, times, instants, and durations. This is the largest category in the standard library. It's also where the most integration bugs live, such as a report that is off by one day, an SLA that fires an hour late twice a year, or a date that changes when it crosses a system boundary.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Pick the right type first
 
@@ -183,7 +180,7 @@ day_of_year(PlainDate('2026-03-15'))
 
 Returns the day of the week from 1 to 7, where 1 is the _locale's_ first day of the week.
 
-That makes the number locale-dependent: the same date is `1` where the week starts on Sunday and `7` where it starts on Monday. Prefer an explicit comparison against `day_of_week_name`, or confirm the recipe's locale, when the number is going into a destination system.
+That makes the number locale-dependent: The same date is `1` where the week starts on Sunday and `7` where it starts on Monday. Prefer an explicit comparison against `day_of_week_name`, or confirm the recipe's locale, when the number is going into a destination system.
 
 ```text
 day_of_week(value)
@@ -275,7 +272,7 @@ hour(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A `DateTime`, `PlainDateTime`, or `PlainTime`. |
+| value | A `DateTime`, `PlainDateTime`, or `PlainTime`. A `PlainDate`, which has no time component, raises `E100`. |
 
 Return the hour from a timestamp
 
@@ -303,7 +300,7 @@ minute(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A `DateTime`, `PlainDateTime`, or `PlainTime`. |
+| value | A `DateTime`, `PlainDateTime`, or `PlainTime`. A `PlainDate`, which has no time component, raises `E100`. |
 
 Return the minute from a timestamp
 
@@ -331,7 +328,7 @@ second(value)
 
 | Parameter | Description |
 | --- | --- |
-| value | A `DateTime`, `PlainDateTime`, or `PlainTime`. |
+| value | A `DateTime`, `PlainDateTime`, or `PlainTime`. A `PlainDate`, which has no time component, raises `E100`. |
 
 Return the second from a timestamp
 
@@ -359,8 +356,8 @@ time(datetime, timezone)
 
 | Parameter | Description |
 | --- | --- |
-| datetime | A `DateTime` or `PlainDateTime`. |
-| timezone | Optional IANA time zone name. |
+| datetime | A `DateTime` or `PlainDateTime`. A `PlainDate`, which has no time component, raises `E100`. |
+| timezone | Optional IANA time zone name. Only applies to a `DateTime`. Passing `timezone` with a `PlainDateTime` raises `E100`. An unrecognized zone raises `E214`. |
 
 Return the wall-clock time with no time zone given
 
@@ -396,7 +393,7 @@ time(DateTime('2026-03-15T09:30:45Z'), 'Asia/Tokyo')
 
 ### `to_map`
 
-Decomposes any temporal value, including `Duration`, into a map of its components.
+Decomposes any temporal value, including `Duration`, into a map of its components. A `DateTime`'s map also includes an `offset` key. A `Duration`'s `hours` component isn't capped at 24, so a 30-hour duration reports `hours: 30` rather than rolling over into days.
 
 ```text
 to_map(value)
@@ -457,6 +454,8 @@ add_months(date, months)
 | date | The `PlainDate` to advance. |
 | months | The number of months to add. A negative value moves the date backward instead. |
 
+A result outside the years 1 to 9999 raises catchable `E211`.
+
 Clamp to the last day of a shorter month
 
 The following example clamps to the last day of a shorter month:
@@ -493,7 +492,7 @@ add_months(PlainDate('2026-03-15'), -2)
 
 Advances a `PlainDate` by any combination of years, months, and days.
 
-`advance_date` _raises an error_ rather than clamping when the result wouldn't be a real date, unlike `add_months`. Use it when an impossible date means the input was wrong and you would rather the job fail than silently move the day.
+`advance_date` raises catchable `E212` rather than clamping when the result wouldn't be a real date, unlike `add_months`. Use it when an impossible date means the input was wrong. A result outside the years 1 to 9999 raises `E211` instead.
 
 ```text
 advance_date(date, delta)
@@ -502,7 +501,7 @@ advance_date(date, delta)
 | Parameter | Description |
 | --- | --- |
 | date | The `PlainDate` to advance. |
-| delta | A map with any of `years`, `months`, `days`. An unrecognized key raises `E222`. |
+| delta | A map with any of `years`, `months`, `days`. An unrecognized key raises `E225`. A non-integer data type raises `E218`. |
 
 Advance a date by a number of days
 
@@ -594,10 +593,12 @@ advance_datetime(datetime, delta, timezone, on_gap, on_fold)
 | Parameter | Description |
 | --- | --- |
 | datetime | The `DateTime` to advance. |
-| delta | A map with any of `years`, `months`, `days`, `hours`, `minutes`, `seconds`. An unrecognized key raises `E222`. |
-| timezone | Optional IANA time zone in which to do the calendar arithmetic. |
+| delta | A map with any of `years`, `months`, `days`, `hours`, `minutes`, `seconds`. An unrecognized key raises `E225`. A non-integer data type raises `E218`. |
+| timezone | Optional IANA time zone in which to do the calendar arithmetic. An unrecognized zone raises `E214`. |
 | on\_gap | Optional. How to resolve a local time that a daylight-saving change skipped. |
 | on\_fold | Optional. How to resolve a local time that a daylight-saving change repeated. |
+
+A result whose calendar date is out of range raises catchable `E212`.
 
 Advance a datetime by hours
 
@@ -632,9 +633,11 @@ datetime_add_duration(datetime, duration, timezone, on_gap, on_fold)
 | Parameter | Description |
 | --- | --- |
 | datetime | The `DateTime` to advance. |
-| duration | An ISO 8601 duration string. |
-| timezone | Optional IANA time zone. |
+| duration | An ISO 8601 duration string. A malformed string raises catchable `E102`. |
+| timezone | Optional IANA time zone. An unrecognized zone raises `E214`. |
 | on\_gap, on\_fold | Optional daylight-saving resolution. |
+
+A result whose calendar date is out of range raises catchable `E212`.
 
 Add a clock duration to a datetime
 
@@ -654,7 +657,7 @@ datetime_add_duration(DateTime('2026-03-15T09:30:00Z'), 'PT2H')
 
 ### `datetime_sub_duration`
 
-Subtracts a duration from a `DateTime`. Takes the same arguments as `datetime_add_duration`.
+Subtracts a duration from a `DateTime`.
 
 ```text
 datetime_sub_duration(datetime, duration, timezone, on_gap, on_fold)
@@ -662,9 +665,9 @@ datetime_sub_duration(datetime, duration, timezone, on_gap, on_fold)
 
 | Parameter | Description |
 | --- | --- |
-| datetime | The `DateTime` to move back. |
-| duration | An ISO 8601 duration string. |
-| timezone | Optional IANA time zone. |
+| datetime | The `DateTime` to advance. |
+| duration | An ISO 8601 duration string. A malformed string raises catchable `E102`. |
+| timezone | Optional IANA time zone. An unrecognized zone raises `E214`. |
 | on\_gap, on\_fold | Optional daylight-saving resolution. |
 
 Subtract a calendar duration from a datetime
@@ -874,7 +877,7 @@ This example uses `now()` at `2026-07-12T12:34:56.789Z`. This formula computes `
 
 These snap a value to the start or end of a period, the usual way to build a reporting window or bucket records by month.
 
-Each accepts no arguments for the current instant in UTC, one argument for a supplied value, or two for a `DateTime` and a time zone.
+Each accepts no arguments for the current instant in UTC, one argument for a supplied value, or two for a `DateTime` and a time zone. Passing a time zone with a `PlainDate`, which carries no instant to convert, raises `E100`. A result outside the years 1 to 9999 raises `E211`.
 
 ### `start_of_day` and `end_of_day`
 
@@ -888,7 +891,7 @@ end_of_day(datetime, timezone)
 | Parameter | Description |
 | --- | --- |
 | datetime | Optional `DateTime`. Defaults to now, in UTC. |
-| timezone | Optional IANA time zone. |
+| timezone | Optional IANA time zone. An unrecognized time zone raises `E214`. |
 
 Find the first instant of the day
 
@@ -935,7 +938,7 @@ start_of_hour(datetime, timezone)
 | Parameter | Description |
 | --- | --- |
 | datetime | Optional `DateTime`. Defaults to now, in UTC. |
-| timezone | Optional IANA time zone. |
+| timezone | Optional IANA time zone. An unrecognized time zone raises `E214`. |
 
 Find the first instant of the hour
 
@@ -964,8 +967,8 @@ end_of_week(value, timezone)
 
 | Parameter | Description |
 | --- | --- |
-| value | Optional `PlainDate` or `DateTime`. Defaults to now, in UTC. |
-| timezone | Optional IANA time zone, when the value is a `DateTime`. |
+| value | Optional `PlainDate` or `DateTime`. Defaults to now, in UTC. A result outside the years 1 to 9999 raises catchable `E211`. |
+| timezone | Optional IANA time zone, when the value is a `DateTime`. An unrecognized time zone raises `E214`. |
 
 Find the first day of the week
 
@@ -1011,7 +1014,7 @@ end_of_month(value, timezone)
 | Parameter | Description |
 | --- | --- |
 | value | Optional `PlainDate` or `DateTime`. Defaults to now, in UTC. |
-| timezone | Optional IANA time zone, when the value is a `DateTime`. |
+| timezone | Optional IANA time zone, when the value is a `DateTime`. An unrecognized time zone raises `E214`. |
 
 Find the first day of the month
 
@@ -1057,7 +1060,7 @@ end_of_quarter(value, timezone)
 | Parameter | Description |
 | --- | --- |
 | value | Optional `PlainDate` or `DateTime`. Defaults to now, in UTC. |
-| timezone | Optional IANA time zone, when the value is a `DateTime`. |
+| timezone | Optional IANA time zone, when the value is a `DateTime`. An unrecognized time zone raises `E214`. |
 
 Find the first day of the quarter
 
@@ -1103,7 +1106,7 @@ end_of_year(value, timezone)
 | Parameter | Description |
 | --- | --- |
 | value | Optional `PlainDate` or `DateTime`. Defaults to now, in UTC. |
-| timezone | Optional IANA time zone, when the value is a `DateTime`. |
+| timezone | Optional IANA time zone, when the value is a `DateTime`. An unrecognized time zone raises `E214`. |
 
 Find the first day of the year
 
@@ -1162,7 +1165,7 @@ A report needs the first and last day of the current calendar month. Build both 
 {"from": "2026-07-01", "to": "2026-07-31"}
 ```
 
-This example uses `now()` at `2026-07-12T12:34:56.789Z`. Convert to `PlainDate` first: reporting APIs expect calendar dates, and an instant's day depends on the reader's zone.
+This example uses `now()` at `2026-07-12T12:34:56.789Z`. Convert to `PlainDate` first: Reporting APIs expect calendar dates, and an instant's day depends on the reader's zone.
 
 ## Time zones
 
@@ -1178,8 +1181,8 @@ in_tz(datetime, timezone)
 
 | Parameter | Description |
 | --- | --- |
-| datetime | The `DateTime` to re-render. |
-| timezone | An IANA time zone name, such as `Asia/Tokyo`. |
+| datetime | The `DateTime` to re-render. A `PlainDateTime`, which carries no instant to re-render, raises `E100`. |
+| timezone | An IANA time zone name, such as `Asia/Tokyo`. The match is case-insensitive. A fixed-offset or unrecognized name raises `E214`. |
 
 Re-render an instant in another time zone
 
@@ -1209,8 +1212,8 @@ assume_tz(plain_datetime, timezone, on_gap, on_fold)
 
 | Parameter | Description |
 | --- | --- |
-| plain\_datetime | The reading, with no zone. |
-| timezone | An IANA time zone name. |
+| plain\_datetime | The reading, with no zone. A `DateTime`, which already carries a zone, raises `E100`. |
+| timezone | An IANA time zone name. An unrecognized zone raises `E214`. |
 | on\_gap | Optional. How to resolve a time that a daylight-saving change skipped. |
 | on\_fold | Optional. How to resolve a time that a daylight-saving change repeated. |
 
@@ -1232,7 +1235,7 @@ assume_tz(PlainDateTime('2026-03-15T09:30:00'), 'Europe/London')
 
 ### `utc_offset`
 
-Returns the offset from UTC as a canonical string: `Z`, or a signed offset such as `+02:00`.
+Returns the offset from UTC as a canonical string: `Z`, or a signed offset such as `+02:00`. A historical offset that carries seconds prints as `+HH:MM:SS` instead.
 
 ```text
 utc_offset(datetime)
@@ -1284,8 +1287,8 @@ is_dst?(datetime, timezone)
 
 | Parameter | Description |
 | --- | --- |
-| datetime | The instant to test. |
-| timezone | An IANA time zone name. |
+| datetime | The instant to test. Any offset the `DateTime` itself carries is ignored in favor of `timezone`. |
+| timezone | An IANA time zone name. An unrecognized zone raises `E214`. |
 
 Detect daylight saving time in effect
 
@@ -1321,7 +1324,7 @@ false
 
 ### `observes_dst?`
 
-Returns `true` if the time zone observes daylight saving at all, in a given year.
+Returns `true` if the time zone observes daylight saving at all, in a given year. A one-time change to a zone's standard-time offset, such as a country abandoning daylight saving entirely, doesn't count as observing it.
 
 ```text
 observes_dst?(timezone)
@@ -1330,8 +1333,8 @@ observes_dst?(timezone, year)
 
 | Parameter | Description |
 | --- | --- |
-| timezone | An IANA time zone name. |
-| year | Optional year. Defaults to the current year. |
+| timezone | An IANA time zone name. An unrecognized zone raises `E214`. |
+| year | Optional year. Defaults to the current year. A year outside the range 1 to 9999 raises `E211`. |
 
 Check a time zone that observes daylight saving
 
@@ -1357,6 +1360,22 @@ The following example checks a time zone that doesn't observe daylight saving:
 
 ```text
 observes_dst?('Asia/Tokyo')
+```
+
+**Output**
+
+```text
+false
+```
+
+A one-time standard-time change doesn't count as observing daylight saving
+
+Russia abandoned daylight saving permanently in 2014, shifting its standard-time offset instead. The following example confirms that one-time change doesn't count as observing daylight saving that year:
+
+**Formula**
+
+```text
+observes_dst?('Europe/Moscow', 2014)
 ```
 
 **Output**
@@ -1422,7 +1441,7 @@ epoch(seconds)
 
 | Parameter | Description |
 | --- | --- |
-| seconds | Unix epoch seconds. |
+| seconds | Unix epoch seconds, as an `Integer`, `Float`, or `Decimal`. Nanoseconds beyond `Decimal` precision are rounded. A result outside the years 1 to 9999 raises catchable `E211`. |
 
 Build a datetime from Unix epoch seconds
 
@@ -1470,7 +1489,7 @@ to_epoch(DateTime('2026-03-15T09:30:00Z'))
 
 ### `to_iso8601`
 
-Formats a `DateTime` as ISO 8601 with its offset.
+Formats a `DateTime` as ISO 8601 with its offset. A fractional-second component prints with no trailing zeros.
 
 ```text
 to_iso8601(datetime)
@@ -1501,6 +1520,6 @@ to_iso8601(DateTime('2026-03-15T09:30:00Z'))
 - [Conversion functions](/en/wel/stdlib/conversion): How to construct each data type, such as `DateTime`, `PlainDate`, and `Duration`.
 - [Formatting functions](/en/wel/stdlib/formatting): `format_date`, `parse_datetime`, `to_rfc3339`.
 - [Data types](/en/wel/language/data-types): More information about the temporal types.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E020` and `E222`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E020` and `E218`.
 
 ---

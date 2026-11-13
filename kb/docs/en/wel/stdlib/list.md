@@ -1,9 +1,8 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/list.md'
 description: >-
-  WEL list functions for selecting, transforming, ordering, grouping, and
-  aggregating collections of records in recipe data, with syntax and examples
-  for each.
+  Use WEL list functions to select, transform, order, group, and aggregate
+  collections of records in recipe data, with syntax and examples for each.
 ---
 
 # List functions
@@ -11,10 +10,6 @@ description: >-
 List functions work on ordered collections. Most integration work is list work. A webhook delivers an array of records, an API returns pages of results, and a destination system expects a different shape, a different order, or a single aggregated number.
 
 `_` is the input your expression receives in these examples. Refer to [Input variables](/en/wel/language/expressions#input-variable) for more information.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Call a list function
 
@@ -49,13 +44,15 @@ _.items >> map_with_index_by((item, index) ~> f"{index + 1}. {item.name}")
 > 
 > WEL exclusively uses `~>` for lambdas. Writing `x -> x * 2` or `x => x * 2` raises a parse error. This is the most common mistake for people and AI more familiar with other languages, which often use `->` or `=>` for lambdas. Refer to the [WEL kit](/en/wel/quickstart#start-with-ai) to provide an AI agent the necessary context to work with WEL.
 
+A predicate lambda, such as the one `filter_by` or `find_by` takes, must return a `Boolean`, `null`, or `Skip`. `null` and `Skip` count as false. Any other return type raises `E100`.
+
 ## Inspect a list
 
 The following functions read a list without changing it:
 
 ### `count`
 
-Returns the number of elements.
+Returns the number of elements. Raises `E100` for a `String` or `Map`. Use [length](/en/wel/stdlib/common#length) for those instead.
 
 ```text
 count(list)
@@ -171,7 +168,7 @@ shipped
 
 ### `at`
 
-Returns the element at a zero-based index. A negative index counts back from the end.
+Returns the element at a zero-based index. A negative index counts back from the end. `at` also works on a [Map](/en/wel/stdlib/map#at), where it takes a `String` key instead of an index.
 
 An index outside the list raises `E201`. Use `first` or `last` for just an end. Use `find_by` to search for an element rather than a position.
 
@@ -428,7 +425,7 @@ take(list, count)
 | Parameter | Description |
 | --- | --- |
 | list | The list to read from. |
-| count | How many elements. Negative takes from the end. |
+| count | The number of elements to return. Negative takes from the end. Raises `E211` if `count` is outside the 64-bit integer range. |
 
 Take elements from the start
 
@@ -473,7 +470,7 @@ drop(list, count)
 | Parameter | Description |
 | --- | --- |
 | list | The list to read from. |
-| count | How many elements to remove. Negative removes from the end. |
+| count | The number of elements to remove. Negative removes from the end. Raises `E211` if `count` is outside the 64-bit integer range. |
 
 Remove elements from the start
 
@@ -493,7 +490,7 @@ drop(['a', 'b', 'c', 'd'], 2)
 
 ### `compact`
 
-Removes `null` and `Skip` values.
+Removes `null` values.
 
 Useful directly after a `map_by` that produces a value only for some elements, and for cleaning optional fields out of an inbound payload.
 
@@ -523,7 +520,15 @@ compact(['a', null, 'b'])
 
 ### `unique`
 
-Removes duplicates, keeping the first occurrence of each value in its original position.
+Removes duplicates, keeping the first occurrence of each value in its original position. Elements count as duplicates when WEL's [comparison](/en/wel/language/operators#comparison) rules treat them as equal:
+
+| Behavior | Example |
+| --- | --- |
+| Numbers and strings don't equate. | `1 == '1'` returns `false`. |
+| `Integer` compares across type with `Float` and `Decimal`. `Float` and `Decimal` don't mix. | `1 == 1.0` and `1 == Decimal('1')` return `true`. `1.5 == Decimal('1.5')` raises `E103`. |
+| Comparison examines value, not construction. | `[1, 2] == range(1, 2)` returns `true`. `{a: 1} == from_entries([{key: 'a', value: 1}])` returns `true`. |
+| Strings that [normalize](/en/wel/stdlib/unicode#unicode-normalize) differently aren't equal. | `é` stored as one character and `e` followed by a combining accent render identically but aren't equal. Use [unicode\_compare](/en/wel/stdlib/unicode) to compare text from different systems. |
+| String comparison is case-sensitive. | `'A' == 'a'` returns `false`. |
 
 ```text
 unique(list)
@@ -531,7 +536,7 @@ unique(list)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to deduplicate. |
+| list | The list to deduplicate. Raises `E103` if `list` mixes `Float` and `Decimal` elements. |
 
 Remove duplicate values from a list
 
@@ -562,7 +567,7 @@ unique_by(list, key)
 | Parameter | Description |
 | --- | --- |
 | list | The list to deduplicate. |
-| key | A lambda returning the value to compare on. |
+| key | A lambda returning the value to compare on. Raises `E100` if the lambda returns `Skip` for an element. |
 
 Deduplicate records by a key field
 
@@ -620,9 +625,7 @@ The following functions return a list of the same length, or reshape the structu
 
 ### `map_by`
 
-Applies a lambda to every element and returns the results.
-
-An element whose lambda returns `Skip` is omitted, so `map_by` can filter and transform in the same pass.
+Applies a lambda to every element and returns the results. `map_by` omits elements that return `Skip`, so the function can filter and transform in the same pass.
 
 ```text
 map_by(list, transform)
@@ -630,7 +633,7 @@ map_by(list, transform)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to transform. |
+| list | The list to transform. `map_by` only accepts a `List`. A `Map` input raises `E100`. |
 | transform | A lambda returning the new value for each element. |
 
 Double each element of a list
@@ -651,7 +654,7 @@ The following example doubles each element of a list:
 
 ### `map_with_index_by`
 
-Applies a two-parameter lambda receiving the element and its zero-based index.
+Applies a two-parameter lambda receiving the element and its zero-based index. `map_with_index_by` omits elements that return `Skip`, so the function can filter and transform in the same pass.
 
 ```text
 map_with_index_by(list, transform)
@@ -801,7 +804,7 @@ The following functions sort a list, ascending and stable:
 
 ### `sort`
 
-Sorts in ascending order. The sort is stable, so elements that compare equal keep their original relative order.
+Sorts in ascending order. The sort is stable, so elements that compare equal keep their original relative order. Compares strings by code point, not locale rules.
 
 ```text
 sort(list)
@@ -809,7 +812,7 @@ sort(list)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to sort. |
+| list | The list to sort. Raises `E101` if the list contains elements of incomparable types, such as a number and a string, or a `null` element. Raises `E103` if the list mixes `Float` and `Decimal` elements. |
 
 Sort a list in ascending order
 
@@ -856,7 +859,7 @@ sort_by(list, key)
 | Parameter | Description |
 | --- | --- |
 | list | The list to sort. |
-| key | A lambda returning the value to sort on. |
+| key | A lambda returning the value to sort on. Comparing incomparable types, such as a number and a string, or a `null` value, raises `E101`. Mixing `Float` and `Decimal` values raises `E103`. |
 
 Sort records by a field
 
@@ -922,7 +925,7 @@ group_by(list, key)
 | Parameter | Description |
 | --- | --- |
 | list | The list to group. |
-| key | A lambda returning the grouping key. |
+| key | A lambda returning the grouping key. Must return a `String`, `Integer`, or `Bool`. Any other type, including `null`, raises `E100`. Keys that stringify the same, such as `1` and `'1'`, collide into a single group. |
 
 Group records by a key field
 
@@ -942,9 +945,7 @@ The following example groups records by their SKU:
 
 ### `partition_by`
 
-Splits a list into exactly two lists: the elements matching the predicate, then the elements that don't.
-
-The result is a two-element list, so read it with `at(0)` and `at(1)`.
+Partitions a list into two nested lists. Index `0` contains a list of elements that match the predicate, and index `1` contains a list of elements that don't. Read the two inner lists with `at(0)` and `at(1)`.
 
 ```text
 partition_by(list, predicate)
@@ -1023,11 +1024,16 @@ do {
 
 ## Aggregate
 
-The following functions reduce a list to one value:
+The following functions reduce a list to one value.
+
+Null handling for `sum`, `avg`, `min`, and `max` depends on the **Nulls in aggregates** flag:
+
+- Off (the default): A `null` element raises `E101`.
+- On: `null` elements are skipped. A list of only `null` values is then treated the same as an empty list.
 
 ### `sum`
 
-Adds the numeric elements. An empty list sums to `0`.
+Adds the numeric elements. An empty list sums to `0`. A non-numeric element raises `E101`. Raises `E103` if the list mixes `Float` and `Decimal` elements.
 
 ```text
 sum(list)
@@ -1093,7 +1099,7 @@ sum([])
 
 ### `avg`
 
-Returns the mean of the numeric elements. An empty list raises `E207`, because there is no meaningful average of nothing.
+Returns the mean of the numeric elements. A non-numeric element raises `E101`. An empty list raises `E207`, because there is no meaningful average of nothing.
 
 ```text
 avg(list)
@@ -1121,7 +1127,7 @@ avg([10, 20, 30])
 
 ### `min`
 
-Returns the smallest element. Works on strings as well as numbers.
+Returns the smallest element. Works on strings as well as numbers. `min` returns the first tied element when more than one shares the smallest value. An empty list raises `E207`.
 
 ```text
 min(list)
@@ -1129,7 +1135,7 @@ min(list)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to reduce. |
+| list | The list to reduce. Comparing elements of incomparable types, such as a string and a number, raises `E101`. Mixing `Float` and `Decimal` elements raises `E103`. |
 
 Find the smallest number in a list
 
@@ -1149,7 +1155,7 @@ min([5, 2, 9])
 
 ### `max`
 
-Returns the largest element. Works on strings as well as numbers.
+Returns the largest element. Works on strings as well as numbers. `max` returns the first tied element when more than one shares the largest value. An empty list raises `E207`.
 
 ```text
 max(list)
@@ -1157,7 +1163,7 @@ max(list)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to reduce. |
+| list | The list to reduce. Comparing elements of incomparable types, such as a string and a number, raises `E101`. Mixing `Float` and `Decimal` elements raises `E103`. |
 
 Find the largest number in a list
 
@@ -1205,7 +1211,7 @@ reduce_by(list, initial, accumulate)
 | --- | --- |
 | list | The list to fold. |
 | initial | The starting value of the accumulator. |
-| accumulate | A lambda taking `(accumulator, element)` and returning the new accumulator. |
+| accumulate | A lambda taking `(accumulator, element)` and returning the new accumulator. Raises `E100` if it returns `Skip`. |
 
 Fold a list into a total
 
@@ -1263,7 +1269,7 @@ The following functions produce a new list rather than transforming an existing 
 
 ### `range`
 
-Builds a list of integers from start to end, inclusive. The list descends when start is greater than end.
+Builds a list of integers from start to end, inclusive. The list descends when start is greater than end. Raises `E211` if the range would hold more than 10,000,000 elements, and `E100` if `start` or `end` isn't an `Integer`.
 
 ```text
 range(start, end)
@@ -1318,13 +1324,13 @@ random_choice(list)
 
 | Parameter | Description |
 | --- | --- |
-| list | The list to pick from. |
+| list | The list to pick from. Raises `E207` for an empty list. |
 
 ## Related
 
 - [Map functions](/en/wel/stdlib/map): Work with the `Map` that `group_by` returns.
 - [Deep map functions](/en/wel/stdlib/deep-map): Reach through deeply nested structures.
 - [Operators](/en/wel/language/operators): More information about the pipeline family of operators.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E201`, `E204`, and `E207`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E101`, `E201`, `E204`, and `E207`.
 
 ---

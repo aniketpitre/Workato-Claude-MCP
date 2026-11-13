@@ -342,7 +342,7 @@ Complete the following steps to configure automatic retry settings:
 
 ## Manual retry
 
-Complete the following steps to manually retry transfers that have reached the automatic retry quota. Manual retries don't count toward the transfer's [consecutive run error threshold](#transfer-auto-stop).
+Complete the following steps to manually retry a transfer run. Manual retries don't count toward the transfer's [consecutive run error threshold](#transfer-auto-stop).
 
 1. Select the **File transfer** asset that you plan to retry.
    

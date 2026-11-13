@@ -11,23 +11,30 @@ A transformation often needs to build a string out of data, such as a display na
 
 `_` is the input your expression receives in these examples. Refer to [Input variables](/en/wel/language/expressions#input-variable) for more information.
 
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
-
 ## String literals
 
-Single and double quotes are equivalent.
+WEL has three ways to write a string literal: Single quotes, double quotes, and triple quotes. Single and double quotes both create a `String`, but only double quotes interpolate. Use three single or double quotes (`'''...'''` or `"""..."""`) to write a string that spans more than one line.
 
 | Formula | Result |
 | --- | --- |
 | `'single quotes'` | `single quotes` |
 | `"double quotes"` | `double quotes` |
+| `'literal ${1 + 1}'` | `literal ${1 + 1}` |
+| `"interpolated ${1 + 1}"` | `interpolated 2` |
 
-Pick whichever avoids escaping. A string containing an apostrophe is easiest in double quotes:
+A single-quoted string recognizes only `\\` and `\'` as escapes, so `${...}` passes through as plain text. Use single quotes for a value that might contain `${`, such as a regex pattern. Use double quotes, or an [f-string](#f-strings), when the string needs to embed a value.
+
+Use double quotes for strings containing apostrophes to avoid closing the string early:
 
 ```text
 "O'Brien"
+```
+
+A raw line break in a single or double-quoted string leaves the literal unterminated and raises an `E003` error. A double-quoted string can use `\n` or `\r` instead. Write the string in a triple-quoted form (`'''...'''` or `"""..."""`) to include a literal line break in either quote style:
+
+```text
+'''First line
+Second line'''
 ```
 
 Strings are UTF-8, and `length` counts code points rather than bytes. Refer to [Data types](/en/wel/language/data-types) for how WEL counts and stores text.
@@ -81,6 +88,8 @@ The following table lists the common forms:
 | `>N` | Right-align in a field N wide |
 | `<N` | Left-align in a field N wide |
 | `^N` | Center in a field N wide |
+| `n` | Locale-formatted number |
+| `c` | Locale-formatted currency |
 
 An invalid specification raises `E016` at parse time, so a malformed format is caught before the expression ever runs.
 
@@ -109,6 +118,15 @@ f"{_.customer_name}: {to_local_currency(_.total)}"
 ```
 
 `to_local_currency` and `to_local_string` use the **data-plane** locale configured on the Transform Data action, so the same expression is correct for a recipe set up for another region. Refer to [Formatting functions](/en/wel/stdlib/formatting) and the [Transform data](/en/wel/workato-expression-language-connector) action.
+
+The `c` [format specification](#format-specs) produces the same output as `to_local_currency`. `to_local_string` formats to two decimal places, while `n` defaults to full precision. Use an explicit `.2` precision with `n` to match the output of `to_local_string`:
+
+| Formula | Equivalent |
+| --- | --- |
+| `f"{_.total:.2n}"` | `to_local_string(_.total)` |
+| `f"{_.total:c}"` | `to_local_currency(_.total)` |
+
+Use the function form when the value needs to compose with the rest of the expression, and the format specification form to keep a template on one line, such as when a number is already inside an f-string.
 
 ## Escaping
 

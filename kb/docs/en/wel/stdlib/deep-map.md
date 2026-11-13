@@ -1,17 +1,13 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib/deep-map.md'
 description: >-
-  WEL deep map functions for collecting values and transforming leaf values
+  Use WEL deep map functions to collect values and transform leaf values
   anywhere inside a deeply nested API response, regardless of depth.
 ---
 
 # Deep map functions
 
 Deep map functions walk an entire structure, through every nested map and list, instead of operating on one level. Use them when the shape of an API response varies, when the target value could be at any depth, or when a rule must apply to every leaf regardless of where it sits.
-
-> **FEATURE AVAILABILITY**
-> 
-> WEL is currently available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
 ## Use cases
 
@@ -25,9 +21,9 @@ Use a deep function when:
 
 Use [json\_path](/en/wel/stdlib/json) instead for path queries with wildcards, indexing, or slices.
 
-> **A DEEP WALK MATCHES MORE THAN YOU MEANT**
+> **DEEP WALKS MATCH BROADLY**
 > 
-> `deep_collect(_, 'id')` returns _every_ `id` in the payload: the order's, the customer's, each line item's. That is the point of the function, and also its main hazard. Name its path to get only one of them.
+> `deep_collect(_, 'id')` returns _every_ `id` in the payload, including for the order, the customer, and each line item. Use a direct field access path instead, such as `_.order.id`, to return one ID.
 
 ## Collect values
 
@@ -35,7 +31,7 @@ Both collectors do a depth-first, pre-order walk through maps and lists. A match
 
 ### `deep_collect`
 
-Collects every value whose map key matches the given name, at any depth.
+Collects every value whose map key matches the given name, at any depth. Returns an empty list when nothing matches.
 
 ```text
 deep_collect(value, key, shallow)
@@ -74,7 +70,7 @@ deep_collect_by(value, predicate, shallow)
 | Parameter | Description |
 | --- | --- |
 | value | The structure to walk. |
-| predicate | A lambda taking `(key, value)` and returning a `Boolean`. |
+| predicate | A lambda taking `(key, value)` and returning a `Boolean`. A predicate that doesn't return a `Boolean` raises `E100`. A predicate that doesn't take exactly two parameters raises `E105`. |
 | shallow | Optional `Boolean`. A matched container is collected but not descended into when `true`. Defaults to `false`. |
 
 Collect values matching a key-and-value predicate
@@ -140,7 +136,7 @@ deep_map_values_by(value, transform, condition)
 | Parameter | Description |
 | --- | --- |
 | value | The structure to walk. |
-| transform | A lambda returning the new value for each selected leaf. |
+| transform | A lambda returning the new value for each selected leaf. The function removes entries from the list or map where `transform` returns `Skip`. |
 | condition | Optional lambda returning a `Boolean` for each leaf. Every leaf is transformed when omitted. |
 
 Multiply every leaf value

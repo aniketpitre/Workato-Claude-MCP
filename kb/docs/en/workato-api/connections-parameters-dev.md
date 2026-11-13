@@ -9191,7 +9191,7 @@ View connection parameters JSON
     "input": [
         {
             "label": "Auth type",
-            "hint": "Select the authentication type for your Jira account. Jira Server and Jira Data center do not support OAuth 2.0.",
+            "hint": "Select the authentication type for your Jira account. Jira Server and Jira Data Center don't support OAuth 2.0.",
             "type": "string",
             "name": "auth_type",
             "pick_list": [
@@ -9338,7 +9338,7 @@ View connection parameters JSON
     "input": [
         {
             "label": "Auth type",
-            "hint": "Select the authentication type for your Jira account. Jira Server and Jira Data center do not support OAuth 2.0.",
+            "hint": "Select the authentication type for your Jira account. Jira Server and Jira Data Center don't support OAuth 2.0.",
             "type": "string",
             "name": "auth_type",
             "pick_list": [

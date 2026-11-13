@@ -6,7 +6,7 @@
 ## MCP
 
 - **MCP** - `kb/docs/en/mcp.md` - Learn how Model Context Protocol (MCP) connects AI agents to business tools and data, and how to build and use Workato MCP servers in AI Hub.
-- **Workato Developer API MCP server** - `kb/docs/en/mcp/developer-api-mcp.md` - Expose Workato Developer and Embedded APIs as a remote MCP server so AI tools like Claude Desktop and Cursor can manage assets and projects.
+- **Workato Developer and Embedded API MCP server** - `kb/docs/en/mcp/developer-api-mcp.md` - Expose Workato Developer and Embedded APIs as a remote MCP server so AI tools like Claude Desktop and Cursor can manage assets and projects.
 - **Enterprise Context MCP** - `kb/docs/en/mcp/enterprise-context-mcp.md` - Give AI clients like Claude, Cursor, and ChatGPT governed, real-time access to your connected data sources and knowledge bases through a native MCP server.
 - **MCP - FAQs** - `kb/docs/en/mcp/faqs.md` - Answers to common questions about Model Context Protocol (MCP), including setup, authentication, Verified User Access, and troubleshooting.
 - **MCP Gateway** - `kb/docs/en/mcp/mcp-gateway.md` - The MCP Gateway governs MCP servers across your organization, enforcing authorization, traffic limits, audit data, and governance policies.
