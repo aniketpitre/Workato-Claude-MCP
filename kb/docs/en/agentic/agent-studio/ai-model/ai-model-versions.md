@@ -885,16 +885,16 @@ The [custom chat interface](/en/agentic/agent-studio/chat-interface/chat-interfa
 
 > **HEADLESS API ENDPOINTS REQUIRE A CUSTOM CHAT INTERFACE**
 > 
-> Headless API endpoints are only compatible with the [custom chat interface](/en/agentic/agent-studio/chat-interface/chat-interface#configure-a-custom-chat-interface) option.
+> Headless API endpoints are only compatible with the [custom chat interface](/en/agentic/agent-studio/chat-interface/chat-interface#configure-a-custom-chat-interface) option. A genie can have multiple interfaces and clients. Each client identifies the chat interface your application uses to reach the genie.
 
-The custom chat interface includes API endpoints to manage conversations and send and receive genie messages. This API is separate from the [Agent Studio Developer API](/en/workato-api/agent-studio#agent-studio), which lets you create, configure, and maintain genies.
+The custom chat interface includes API endpoints to manage conversations and send and receive genie messages. This API is separate from the [Agent Studio Developer API](/en/workato-api/agent-studio#agent-studio), which lets you create, configure, and maintain genies. Manage clients and interfaces programmatically with the Agent Studio Developer API.
 
 ## Headless API prerequisites
 
 Confirm you have the following requirements to use Headless API:
 
 - You have a genie in Agent Studio.
-- You've set up the genie's [custom chat interface](/en/agentic/agent-studio/chat-interface/chat-interface#configure-a-custom-chat-interface) from the Agent Studio UI, including creating and attaching a genie client with either API key or OAuth 2.0 (PKCE) credentials. Refer to [Genie clients](/en/workato-api/agent-studio#genie-clients) in the Developer API if you provision the client programmatically instead of through the UI.
+- You've added a custom chat interface to the genie, including creating and attaching a genie client with either API key or OAuth 2.0 (PKCE) credentials. Refer to [Chat interface](/en/agentic/agent-studio/chat-interface/chat-interface) for more information.
 - Your builder role has the **Custom chat interface** privilege under **Genie building**. Refer to [collaborator privileges](/en/privileges#custom-chat-interface) for more information on configuring builder roles.
 
 ## Headless API base URLs
@@ -923,6 +923,8 @@ X-IDP-User-Id: <idp_user_id>
 ```http
 Authorization: Bearer <access_token>
 ```
+
+Credentials belong to a specific genie client. The API key, or the OAuth `client_id`, identifies the client and therefore the chat interface. Use the credentials of the client for the chat interface you plan to call if a genie has multiple clients.
 
 ### Authorization methods comparison
 
@@ -1008,7 +1010,7 @@ You must complete the following steps to use this authorization flow:
    Refresh tokens are single-use and rotating: each refresh returns a new `refresh_token`. Persist the new value for the next refresh. Request the default `openid profile email` scope and don't add `offline_access`, which Workato Identity rejects.
    
 
-The redirect URL must match the `oauth_redirect_url` registered on the client. Perform the code exchange in the preceding steps from a same-origin backend rather than directly in the browser. This ensures the flow is free of cross-origin (CORS) concerns and keeps token handling server-side.
+The redirect URL must match the `oauth_redirect_url` registered on the client. You can update a client's redirect URL after you create it. Refer to [Genie clients](/en/workato-api/agent-studio#genie-clients) in the Developer API. Perform the code exchange in the preceding steps from a same-origin backend rather than directly in the browser. This ensures the flow is free of cross-origin (CORS) concerns and keeps token handling server-side.
 
 * * *
 
@@ -1466,7 +1468,7 @@ Send a task to a genie and get a result synchronously or asynchronously. Use thi
 
 > **SEND A GENIE TASK ONLY FOR HEADLESS API**
 > 
-> This endpoint uses the Headless API gateway, not the Developer API. It supports API key authentication only. OAuth 2.0 isn't supported. Send only `Authorization: Bearer <api_key>`. Don't send the `X-IDP-User-Id` header. No user ID is required.
+> This endpoint uses the Headless API gateway, not the Developer API. It supports API key authentication only. OAuth 2.0 isn't supported. Send only `Authorization: Bearer <api_key>`, using the API key of an API key client attached to the genie. Don't send the `X-IDP-User-Id` header. No user ID is required.
 
 <api-code no-copy-method>
 
@@ -1553,7 +1555,7 @@ The `processing.finished` event includes a `reason` field:
 The stream runs the following sequence when a skill requires a connection the user hasn't authorized:
 
 - The genie emits `runtime_connection.auth_required` with a `runtime_connection_attempt_id`.
-- Calls [Get a runtime connection link](#get-a-runtime-connection-link) and shows `auth_link.url` to the user. No user action is needed if the `status` is `authorized`.
+- Call [Get a runtime connection link](#get-a-runtime-connection-link) and show `auth_link.url` to the user. No user action is needed if the `status` is `authorized`.
 - Authentication flow either:
   - The user authenticates, and the genie emits `runtime_connection.auth_success`. The skill resumes.
   - The user declines, and [Reject a runtime connection](#reject-a-runtime-connection) is called. The genie emits `runtime_connection.auth_failed` with `reason` set to `rejected_by_user`.
@@ -1564,7 +1566,7 @@ Headless API endpoints have the following limitations:
 
 - [Action Board](/en/agentic/agent-studio/action-board) isn't supported
 - [App Events](/en/agentic/agent-studio/app-events) aren't supported
-- A genie supports a single attached client. The client-to-genie relationship is **1:1**: attaching a second client returns a `409` conflict. [Detach](/en/workato-api/agent-studio#detach-a-client-from-a-genie) the existing client first to re-point it.
+- A genie can have multiple clients attached. Each client can be attached to only one genie. Refer to [Genie clients](/en/workato-api/agent-studio#genie-clients) and [Chat interface](/en/agentic/agent-studio/chat-interface/chat-interface) for more information.
 
 ## Quotas
 
@@ -1734,8 +1736,8 @@ Use this guide to build a backend that holds credentials and proxies requests an
 
 - [Step 1: Stand up a backend](#step-1-backend) between the browser and the API.
 - [Step 2: Open the stream and run a render loop](#step-2-render-loop) that dispatches each event.
-- [Step 3: Handle each event type](#step-3-skill-events), such as skill activity, approvals, connection requests, and messages.
-- [Step 4: Track state and recover](#step-7-state-and-recovery) after reloads and dropped streams.
+- [Steps 3–6: Handle each event type](#step-3-skill-events), such as skill activity, approvals, connection requests, and messages.
+- [Step 7: Track state and recover](#step-7-state-and-recovery) after reloads and dropped streams.
 
 Each step builds on the previous one. The render loop in step 2 is the spine: every later step is a handler the loop dispatches into.
 
@@ -1743,13 +1745,15 @@ Each step builds on the previous one. The render loop in step 2 is the spine: ev
 
 Don't call the Headless API directly from the browser. Stand up a small same-origin backend that the browser talks to, and let the backend talk to Workato. This protects credentials and avoids cross-origin (CORS) problems.
 
-- **Don't expose the Developer API token (`wrkaus-…`)** in client-side code. It's a builder secret used only for provisioning. The browser should only ever see the public OAuth `client_id` and the end user's own OAuth access token.
-- **Relay the OAuth token exchange through the backend.** The browser runs the PKCE flow and receives the authorization `code`, then your backend exchanges the `code` (and later the `refresh_token`) at `id.workato.com/oauth/token`. This keeps token handling server-side and avoids cross-origin requests to the identity host.
+Credentials belong to a specific genie client. Use the API key or OAuth `client_id` of the client for the interface you're building if your genie has multiple clients.
+
+- **Don't expose the Developer API token (`wrkaus-…`)** in client-side code. It's a builder secret used only for provisioning. The browser should only see the public OAuth `client_id` and the end user's own OAuth access token.
+- **Relay the OAuth token exchange through the backend.** The browser runs the PKCE flow and receives the authorization `code`, then your backend exchanges the `code` (and later the `refresh_token`) at `id.workato.com/oauth/token`. This keeps token handling server-side and avoids cross-origin requests to the identity host. The `redirect_uri` must match the redirect URL you registered for the client. You can update a client's redirect URL after you create it. Refer to [Genie clients](/en/workato-api/agent-studio#genie-clients) for more information.
 - **For API-key integrations, inject auth on the backend.** The backend holds the API key and adds the `Authorization` and `X-IDP-User-Id` headers to each runtime request, then proxies the SSE stream back to the browser.
 
 > **CHOOSE OAUTH FOR USER-FACING UIS**
 > 
-> Use OAuth 2.0 (PKCE) for any UI that real users sign in to. API-key auth uses a single static key for all callers, so it's only appropriate for trusted server-to-server backends, not browsers. See [Authentication](/en/agentic/agent-studio/chat-interface/headless-api#authentication).
+> Use OAuth 2.0 (PKCE) for any UI that real users sign in to. API-key auth uses a single static key per client for all callers. Use this only for trusted server-to-server backends, not browsers. Refer to [Authentication](/en/agentic/agent-studio/chat-interface/headless-api#authentication) for more information.
 
 ## Step 2: Open the stream and run a render loop
 
@@ -1926,7 +1930,7 @@ Use this page to resolve common [Headless API](/en/agentic/agent-studio/chat-int
 
 **Solution**: Grant the role **Custom chat interface** access with privileges to at least **Create**. You don't need to rotate the token after adding a privilege.
 
-**Related**: Attaching a client returns `409` when the genie already has a client. The relationship is [1:1](/en/workato-api/agent-studio#genie-clients). Detach the existing client first.
+**Related**: A genie can have multiple clients, but each client can be attached to only one genie. [Detach](/en/workato-api/agent-studio#detach-a-client-from-a-genie) the client from its current genie first.
 
 ## Empty stream or repeated blank events
 
@@ -1968,7 +1972,7 @@ Use this page to resolve common [Headless API](/en/agentic/agent-studio/chat-int
 GET /api/v1/genies/:genie_handle/chat/conversations/:conversation_id/genie-runs/:genie_run_id?since_seq_num=<last_seq_num>
 ```
 
-If you receive a `system.stream_interrupted` event, use `last_seq_num` and wait `retry_after_ms` before reconnecting. Don't reconnect after a `processing.finished` event with the reason `business_approval_pending`. Refer to [Processing finished reasons](/en/agentic/agent-studio/chat-interface/headless-api#processing-finished-reasons). Deduplicate replayed events by `event_id`. Refer to [Duplicate events or event IDs](#duplicate-events-or-event-ids) for more information.
+Use `last_seq_num` and wait `retry_after_ms` before reconnecting if you receive a `system.stream_interrupted` event. Don't reconnect after a `processing.finished` event with the reason `business_approval_pending`. Refer to [Processing finished reasons](/en/agentic/agent-studio/chat-interface/headless-api#processing-finished-reasons). Deduplicate replayed events by `event_id`. Refer to [Duplicate events or event IDs](#duplicate-events-or-event-ids) for more information.
 
 ## Event recovery returns nothing
 

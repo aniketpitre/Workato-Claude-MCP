@@ -91,14 +91,15 @@ View answer
 
 Insights provides metrics to evaluate the performance of automated workflows. For example, you can track the total number of orders processed in an Order-to-Cash process, the average order processing time, and order breakdown by region. These metrics help identify performance bottlenecks and improve [workflow performance](/en/insights#workflow-performance).
 
-## How does Insights work in Embedded workspaces?
+## How does Insights work in Automation HQ and Embedded workspaces?
 
 View answer
 
-Insights is available in Embedded workspaces with the following limitations:
+Insights is available in Admin and HQ workspaces with the following behavior and limitations:
 
-- **Data Aggregation:** You can create Insights dashboards in either the Embedded Admin workspace or individual customer workspaces. However, you can't aggregate data from multiple customer workspaces into a single dashboard in the Embedded Admin workspace.
-  
-- **Dashboard Sharing:** You must create Insights dashboards separately in each workspace. You can't create a dashboard in one workspace and share it with another workspace.
+- **Usage data aggregation**: Dashboards you build in the parent workspace include [usage](/en/insights/data-sources#usage) metrics for the parent workspace and all child workspaces by default. Child workspaces see only their own data. No other data aggregates across workspaces.
+- **Dashboard sharing**: You must create Insights dashboards separately in each workspace. You can't create a dashboard in one workspace and share it with another workspace.
+
+Refer to [Insights in Automation HQ and Embedded](/en/insights/multiple-workspaces) for more information.
 
 ---

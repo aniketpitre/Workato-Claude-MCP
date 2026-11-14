@@ -40,7 +40,7 @@ A webhook delivers an order. The destination system expects a flat record with a
 
 **Formula**
 
-```text
+```wel
 {
   order_id: upper(_.order_id),
   customer_name: f"{capitalize(_.customer.first_name)} {capitalize(_.customer.last_name)}",
@@ -149,7 +149,7 @@ Recipes are the most common way to work with WEL. This connector doesn't require
     
 18. Paste the following expression into the **Code** field to define the transformations to perform on input values to create output datapills:
     
-    ```text
+    ```wel
     {
       order_id: upper(_.order_id),
       customer_name: f"{capitalize(_.customer.first_name)} {capitalize(_.customer.last_name)}",
@@ -193,7 +193,7 @@ Complete the following steps to work with the `wel` binary for the provided [exa
    
    Save the following expression as `order.wel`:
    
-   ```text
+   ```wel
    {
      order_id: upper(_.order_id),
      customer_name: f"{capitalize(_.customer.first_name)} {capitalize(_.customer.last_name)}",
@@ -232,7 +232,7 @@ Complete the following steps to work with the `wel` binary for the provided [exa
    
    The expression outputs the following:
    
-   ```text
+   ```wel
    {order_id: "SO-1001", customer_name: "Kalani Park", email: "kalani@example.com", order_date: 2026-03-15, item_count: 2, total: 136.50}
    ```
    

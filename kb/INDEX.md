@@ -27,9 +27,9 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 | MCP | 27 | [index/mcp.md](index/mcp.md) |
 | Embedded | 27 | [index/embedded.md](index/embedded.md) |
 | Troubleshooting | 27 | [index/troubleshooting.md](index/troubleshooting.md) |
+| Insights | 26 | [index/insights.md](index/insights.md) |
 | Workato Expression Language | 26 | [index/workato-expression-language.md](index/workato-expression-language.md) |
 | CI/CD and operations | 25 | [index/ci-cd-and-operations.md](index/ci-cd-and-operations.md) |
-| Insights | 25 | [index/insights.md](index/insights.md) |
 | Workato Genies | 22 | [index/workato-genies.md](index/workato-genies.md) |
 | Workato GO | 19 | [index/workato-go.md](index/workato-go.md) |
 | AIRO | 19 | [index/airo.md](index/airo.md) |

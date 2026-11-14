@@ -50,7 +50,7 @@ All hash functions accept a `String` or a `Binary`.
 
 SHA-256 is the default choice for new work.
 
-```text
+```wel
 hex_sha256(value)
 sha256(value)
 ```
@@ -65,7 +65,7 @@ The following example hashes a string with SHA-256 and returns the hex digest:
 
 **Formula**
 
-```text
+```wel
 hex_sha256('acme')
 ```
 
@@ -81,13 +81,13 @@ The following example measures the byte length of the raw binary digest:
 
 **Formula**
 
-```text
+```wel
 byte_length(sha256('acme'))
 ```
 
 **Output**
 
-```text
+```wel
 32
 ```
 
@@ -95,7 +95,7 @@ byte_length(sha256('acme'))
 
 SHA-512 produces a longer digest from the same family.
 
-```text
+```wel
 hex_sha512(value)
 sha512(value)
 ```
@@ -110,13 +110,13 @@ The following example measures the byte length of the raw binary digest:
 
 **Formula**
 
-```text
+```wel
 byte_length(sha512('acme'))
 ```
 
 **Output**
 
-```text
+```wel
 64
 ```
 
@@ -126,7 +126,7 @@ SHA-512/256 produces a 256-bit digest and avoids the length-extension property o
 
 Use it when hashing a secret and a message. An HMAC handles that case more directly, though, and is usually the better choice.
 
-```text
+```wel
 hex_sha512_256(value)
 sha512_256(value)
 ```
@@ -141,7 +141,7 @@ The following example hashes a string with SHA-512/256 and returns the hex diges
 
 **Formula**
 
-```text
+```wel
 hex_sha512_256('acme')
 ```
 
@@ -155,7 +155,7 @@ hex_sha512_256('acme')
 
 SHA-1 is **legacy only**, kept for compatibility with systems that still require it.
 
-```text
+```wel
 hex_sha1(value)
 sha1(value)
 ```
@@ -170,7 +170,7 @@ The following example hashes a string with SHA-1 and returns the hex digest:
 
 **Formula**
 
-```text
+```wel
 hex_sha1('acme')
 ```
 
@@ -184,7 +184,7 @@ hex_sha1('acme')
 
 MD5 is **legacy only**, suitable for a non-adversarial checksum and nothing else.
 
-```text
+```wel
 hex_md5(value)
 md5(value)
 ```
@@ -199,7 +199,7 @@ The following example hashes a string with MD5 and returns the hex digest:
 
 **Formula**
 
-```text
+```wel
 hex_md5('acme')
 ```
 
@@ -219,7 +219,7 @@ Every HMAC function takes the _message first and the key second_.
 
 Compute an HMAC with the algorithm named as an argument.
 
-```text
+```wel
 hmac_hex(message, key, algorithm)
 hmac(message, key, algorithm)
 ```
@@ -236,7 +236,7 @@ The following example computes an HMAC-SHA256 signature and returns it as a hex 
 
 **Formula**
 
-```text
+```wel
 hmac_hex('payload', 'secret', 'sha256')
 ```
 
@@ -252,13 +252,13 @@ The following example measures the byte length of the raw binary HMAC digest:
 
 **Formula**
 
-```text
+```wel
 byte_length(hmac('payload', 'secret', 'sha256'))
 ```
 
 **Output**
 
-```text
+```wel
 32
 ```
 
@@ -266,7 +266,7 @@ byte_length(hmac('payload', 'secret', 'sha256'))
 
 Lists the supported HMAC algorithms.
 
-```text
+```wel
 hmac_algos()
 ```
 
@@ -276,13 +276,13 @@ The following example lists the supported HMAC algorithms:
 
 **Formula**
 
-```text
+```wel
 hmac_algos()
 ```
 
 **Output**
 
-```text
+```wel
 ["md5", "sha1", "sha256", "sha384", "sha512"]
 ```
 
@@ -290,7 +290,7 @@ hmac_algos()
 
 Most webhook providers use HMAC-SHA256.
 
-```text
+```wel
 hmac_hex_sha256(message, key)
 hmac_sha256(message, key)
 ```
@@ -306,7 +306,7 @@ The following example computes an HMAC-SHA256 signature and returns it as a hex 
 
 **Formula**
 
-```text
+```wel
 hmac_hex_sha256('payload', 'secret')
 ```
 
@@ -320,7 +320,7 @@ b82fcb791acec57859b989b430a826488ce2e479fdf92326bd0a2e8375a42ba4
 
 HMAC-SHA384 works like HMAC-SHA256, with a longer digest.
 
-```text
+```wel
 hmac_hex_sha384(message, key)
 hmac_sha384(message, key)
 ```
@@ -336,13 +336,13 @@ The following example measures the byte length of the raw binary HMAC digest:
 
 **Formula**
 
-```text
+```wel
 byte_length(hmac_sha384('payload', 'secret'))
 ```
 
 **Output**
 
-```text
+```wel
 48
 ```
 
@@ -350,7 +350,7 @@ byte_length(hmac_sha384('payload', 'secret'))
 
 HMAC-SHA512 works like HMAC-SHA256, with an even longer digest than HMAC-SHA384.
 
-```text
+```wel
 hmac_hex_sha512(message, key)
 hmac_sha512(message, key)
 ```
@@ -366,13 +366,13 @@ The following example measures the byte length of the raw binary HMAC digest:
 
 **Formula**
 
-```text
+```wel
 byte_length(hmac_sha512('payload', 'secret'))
 ```
 
 **Output**
 
-```text
+```wel
 64
 ```
 
@@ -380,7 +380,7 @@ byte_length(hmac_sha512('payload', 'secret'))
 
 HMAC-SHA1 is **legacy only**, kept for compatibility with systems that still require it.
 
-```text
+```wel
 hmac_hex_sha1(message, key)
 hmac_sha1(message, key)
 ```
@@ -396,13 +396,13 @@ The following example measures the byte length of the raw binary HMAC digest:
 
 **Formula**
 
-```text
+```wel
 byte_length(hmac_sha1('payload', 'secret'))
 ```
 
 **Output**
 
-```text
+```wel
 20
 ```
 
@@ -410,7 +410,7 @@ byte_length(hmac_sha1('payload', 'secret'))
 
 HMAC-MD5 is **legacy only**, kept for compatibility with systems that still require it.
 
-```text
+```wel
 hmac_hex_md5(message, key)
 hmac_md5(message, key)
 ```
@@ -426,13 +426,13 @@ The following example measures the byte length of the raw binary HMAC digest:
 
 **Formula**
 
-```text
+```wel
 byte_length(hmac_md5('payload', 'secret'))
 ```
 
 **Output**
 
-```text
+```wel
 16
 ```
 
@@ -452,7 +452,7 @@ The provider signs the raw body with a shared secret and sends the result in a h
 
 **Formula**
 
-```text
+```wel
 {
   expected: hmac_hex_sha256(_.body, _.secret),
   valid: hmac_hex_sha256(_.body, _.secret) == _.signature_header
@@ -478,7 +478,7 @@ WEL supports HMAC-signed JWTs: `HS256`, `HS384`, and `HS512`.
 
 Builds and signs a JWT.
 
-```text
+```wel
 jwt_encode(payload, key, algorithm, headers)
 ```
 
@@ -495,7 +495,7 @@ The following example builds and signs a JWT with HS256:
 
 **Formula**
 
-```text
+```wel
 jwt_encode({sub: 'user-1'}, '0123456789abcdef0123456789abcdef', 'HS256')
 ```
 
@@ -515,7 +515,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEifQ.FKuUN7RwYyegTHXiye1j
 
 Decodes a JWT _and verifies its signature_. A token whose signature doesn't match raises an error rather than returning its contents.
 
-```text
+```wel
 jwt_decode(token, key, algorithm, options)
 ```
 
@@ -532,13 +532,13 @@ The following example decodes a JWT and verifies its signature:
 
 **Formula**
 
-```text
+```wel
 jwt_decode(jwt_encode({sub: 'user-1'}, '0123456789abcdef0123456789abcdef', 'HS256'), '0123456789abcdef0123456789abcdef', 'HS256')
 ```
 
 **Output**
 
-```text
+```wel
 {header: {alg: "HS256", typ: "JWT"}, payload: {sub: "user-1"}}
 ```
 
@@ -550,7 +550,7 @@ jwt_decode(jwt_encode({sub: 'user-1'}, '0123456789abcdef0123456789abcdef', 'HS25
 
 Lists the supported JWT signing algorithms.
 
-```text
+```wel
 jwt_algos()
 ```
 
@@ -560,13 +560,13 @@ The following example lists the supported JWT signing algorithms:
 
 **Formula**
 
-```text
+```wel
 jwt_algos()
 ```
 
 **Output**
 
-```text
+```wel
 ["HS256", "HS384", "HS512"]
 ```
 
@@ -580,7 +580,7 @@ Derives a key from a password using PBKDF2.
 
 A higher iteration count makes guessing the password more expensive, so use the highest value the destination system permits. Take the salt from [random\_bytes](/en/wel/stdlib/random) rather than writing a fixed one.
 
-```text
+```wel
 pbkdf2(password, salt, iterations, key_length, algorithm)
 ```
 
@@ -598,7 +598,7 @@ The following example derives a key from a password and returns it as hexadecima
 
 **Formula**
 
-```text
+```wel
 encode_hex_string(pbkdf2('password', 'salt', 1000, 16, 'sha256'))
 ```
 
@@ -616,7 +616,7 @@ The following functions encrypt and decrypt data with AES in CBC mode:
 
 Encrypts data with AES in CBC mode, applying PKCS7 padding.
 
-```text
+```wel
 aes_cbc_encrypt(data, key, iv)
 ```
 
@@ -632,7 +632,7 @@ The following example encrypts data with AES-CBC and renders the ciphertext as b
 
 **Formula**
 
-```text
+```wel
 encode_base64(aes_cbc_encrypt('secret data!!!!!', '0123456789abcdef', 'abcdef0123456789'))
 ```
 
@@ -652,7 +652,7 @@ NsFUgzVrilJO5OF/imH/gbF6NPToZkf1hbVBJkaXXoY=
 
 Decrypts AES-CBC data and removes PKCS7 padding.
 
-```text
+```wel
 aes_cbc_decrypt(data, key, iv)
 ```
 
@@ -668,7 +668,7 @@ The following example encrypts data and then decrypts it back to the original te
 
 **Formula**
 
-```text
+```wel
 decode_string(aes_cbc_decrypt(aes_cbc_encrypt('secret data!!!!!', '0123456789abcdef', 'abcdef0123456789'), '0123456789abcdef', 'abcdef0123456789'), 'UTF-8')
 ```
 

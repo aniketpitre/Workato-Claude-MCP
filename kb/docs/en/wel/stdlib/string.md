@@ -15,20 +15,20 @@ String functions read and reshape text. Use them to clean inbound payloads, extr
 
 Call a function directly, or pipe a value into it with `>>`:
 
-```text
+```wel
 upper(_.status)
 _.status >> upper
 ```
 
 The pipe form reads left to right, which makes it the better choice when you chain several steps:
 
-```text
+```wel
 _.email >> trim >> lower
 ```
 
 The piped value fills the function's first argument. Write any other arguments normally:
 
-```text
+```wel
 _.order_id >> starts_with?('SO-')
 ```
 
@@ -44,7 +44,7 @@ The following functions return a `Boolean`. Use them in conditions, in `filter_b
 
 Returns `true` if the string is empty or contains only whitespace.
 
-```text
+```wel
 blank?(string)
 ```
 
@@ -58,13 +58,13 @@ The following example tests a whitespace-only string:
 
 **Formula**
 
-```text
+```wel
 blank?('   ')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -74,13 +74,13 @@ The following example tests a non-empty string:
 
 **Formula**
 
-```text
+```wel
 blank?('SO-1001')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -88,7 +88,7 @@ false
 
 Returns `true` if the value has no content. It works on a `String`, `List`, `Map`, or `Binary` value, and unlike `blank?`, it returns `true` for `null`.
 
-```text
+```wel
 empty?(value)
 ```
 
@@ -102,13 +102,13 @@ The following example tests an empty string:
 
 **Formula**
 
-```text
+```wel
 empty?('')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -118,13 +118,13 @@ The following example tests a `null` value:
 
 **Formula**
 
-```text
+```wel
 empty?(null)
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -146,7 +146,7 @@ Returns `true` if a string contains the substring, or if a list has an element t
 
 Nested lists and maps match by their full contents rather than by reference, for example: `contains?([[1, 2], [3, 4]], [1, 2])` returns `true`.
 
-```text
+```wel
 contains?(input, substring)
 ```
 
@@ -161,13 +161,13 @@ The following example tests a substring that matches case exactly:
 
 **Formula**
 
-```text
+```wel
 contains?('Partner account', 'Partner')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -177,13 +177,13 @@ The following example tests a substring that matches except for case:
 
 **Formula**
 
-```text
+```wel
 contains?('Partner account', 'partner')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -191,7 +191,7 @@ false
 
 Returns `true` if the string begins with the prefix.
 
-```text
+```wel
 starts_with?(string, prefix)
 ```
 
@@ -206,13 +206,13 @@ The following example tests a string that starts with the given prefix:
 
 **Formula**
 
-```text
+```wel
 starts_with?('SO-1001', 'SO-')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -220,7 +220,7 @@ true
 
 Returns `true` if the string ends with the suffix.
 
-```text
+```wel
 ends_with?(string, suffix)
 ```
 
@@ -235,13 +235,13 @@ The following example tests a string that ends with the given suffix:
 
 **Formula**
 
-```text
+```wel
 ends_with?('invoice.pdf', '.pdf')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -249,7 +249,7 @@ true
 
 Returns `true` if the string is a valid email address, as defined in RFC 5321 and RFC 5322. `valid_email?` accepts a quoted local part, an IP-literal domain such as `[127.0.0.1]`, a domain with no dot such as `user@localhost`, and non-ASCII characters. A display-name form, such as `'Jane Doe <jane@example.com>'`, and leading or trailing whitespace invalidate an address.
 
-```text
+```wel
 valid_email?(string)
 ```
 
@@ -263,13 +263,13 @@ The following example tests a valid email address:
 
 **Formula**
 
-```text
+```wel
 valid_email?('nur@example.com')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -279,13 +279,13 @@ The following example tests an address with a doubled `@`:
 
 **Formula**
 
-```text
+```wel
 valid_email?('nur@@example.com')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -293,7 +293,7 @@ false
 
 Returns `true` if the string is a valid URL. Pass a list of schemes to restrict which are accepted. Entries in `schemes` omit the trailing `:`, for example `['http']` rather than `['http:']`. An empty `schemes` list rejects every URL.
 
-```text
+```wel
 valid_url?(string)
 valid_url?(string, schemes)
 ```
@@ -309,13 +309,13 @@ The following example tests a valid URL with no scheme restriction:
 
 **Formula**
 
-```text
+```wel
 valid_url?('https://example.com/orders')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -325,13 +325,13 @@ The following example tests a URL whose scheme isn't in the allowed list:
 
 **Formula**
 
-```text
+```wel
 valid_url?('ftp://example.com', ['http', 'https'])
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -339,7 +339,7 @@ false
 
 Returns `true` if the string matches a regular expression. WEL uses ECMAScript regular expression syntax.
 
-```text
+```wel
 match?(string, pattern)
 ```
 
@@ -354,13 +354,13 @@ The following example tests a string against a pattern it matches:
 
 **Formula**
 
-```text
+```wel
 match?('SO-1001', '^SO-\d+$')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -378,7 +378,7 @@ A webhook delivers recipients as one comma-separated string with inconsistent sp
 
 **Formula**
 
-```text
+```wel
 _.recipients
   >> split(',')
   >> map_by(e ~> trim(e) >> lower)
@@ -401,7 +401,7 @@ The following functions change the case of a string's characters:
 
 Converts the string to uppercase.
 
-```text
+```wel
 upper(string)
 ```
 
@@ -415,7 +415,7 @@ The following example converts a string to uppercase:
 
 **Formula**
 
-```text
+```wel
 upper('acme corp')
 ```
 
@@ -429,7 +429,7 @@ ACME CORP
 
 Converts the string to lowercase. Use it to normalize email addresses and codes before comparing or deduplicating them.
 
-```text
+```wel
 lower(string)
 ```
 
@@ -443,7 +443,7 @@ The following example converts a string to lowercase:
 
 **Formula**
 
-```text
+```wel
 lower('ACME Corp')
 ```
 
@@ -457,7 +457,7 @@ acme corp
 
 Converts the first character to uppercase and the rest to lowercase.
 
-```text
+```wel
 capitalize(string)
 ```
 
@@ -471,7 +471,7 @@ The following example capitalizes a lowercase word:
 
 **Formula**
 
-```text
+```wel
 capitalize('acme')
 ```
 
@@ -485,7 +485,7 @@ Acme
 
 Converts the first character of each whitespace-separated word to uppercase and the rest to lowercase.
 
-```text
+```wel
 titleize(string)
 ```
 
@@ -499,7 +499,7 @@ The following example title-cases a lowercase phrase:
 
 **Formula**
 
-```text
+```wel
 titleize('acme widgets inc')
 ```
 
@@ -517,7 +517,7 @@ The following functions remove whitespace or pad a string to a fixed width:
 
 Removes leading and trailing whitespace.
 
-```text
+```wel
 trim(string)
 ```
 
@@ -531,7 +531,7 @@ The following example trims whitespace from both ends of a string:
 
 **Formula**
 
-```text
+```wel
 trim('  SO-1001  ')
 ```
 
@@ -545,7 +545,7 @@ SO-1001
 
 Removes leading whitespace.
 
-```text
+```wel
 ltrim(string)
 ```
 
@@ -559,7 +559,7 @@ The following example trims whitespace from the start of a string:
 
 **Formula**
 
-```text
+```wel
 ltrim('  SO-1001')
 ```
 
@@ -573,7 +573,7 @@ SO-1001
 
 Removes trailing whitespace.
 
-```text
+```wel
 rtrim(string)
 ```
 
@@ -587,7 +587,7 @@ The following example trims whitespace from the end of a string:
 
 **Formula**
 
-```text
+```wel
 rtrim('SO-1001  ')
 ```
 
@@ -601,7 +601,7 @@ SO-1001
 
 Pads the start of the string until it reaches the given width. Use it for zero-padded reference numbers and fixed-width records. An input with `width` characters or more returns unchanged rather than truncated.
 
-```text
+```wel
 lpad(string, width, pad)
 ```
 
@@ -617,13 +617,13 @@ The following example zero-pads a number to a fixed width:
 
 **Formula**
 
-```text
+```wel
 lpad('42', 8, '0')
 ```
 
 **Output**
 
-```text
+```wel
 00000042
 ```
 
@@ -631,7 +631,7 @@ lpad('42', 8, '0')
 
 Pads the end of the string until it reaches the given width. An input with `width` characters or more returns unchanged rather than truncated.
 
-```text
+```wel
 rpad(string, width, pad)
 ```
 
@@ -647,13 +647,13 @@ The following example space-pads a string to a fixed width:
 
 **Formula**
 
-```text
+```wel
 rpad('A-100', 8, ' ')
 ```
 
 **Output**
 
-```text
+```wel
 "A-100   "
 ```
 
@@ -663,7 +663,7 @@ Padded to 8 characters.
 
 Rewrites CRLF, CR, and LF line terminators to a single convention. Defaults to LF.
 
-```text
+```wel
 normalize_newlines(string, terminator)
 ```
 
@@ -678,13 +678,13 @@ The following example normalizes mixed line terminators to LF:
 
 **Formula**
 
-```text
+```wel
 normalize_newlines("a\r\nb\rc")
 ```
 
 **Output**
 
-```text
+```wel
 "a\nb\nc"
 ```
 
@@ -703,7 +703,7 @@ Many ERP and mainframe systems accept fixed-width records rather than JSON. Use 
 
 **Formula**
 
-```text
+```wel
 rpad(_.sku, 10, ' ') ++ lpad(String(_.qty), 5, '0')
 ```
 
@@ -723,7 +723,7 @@ The following functions read or extract part of a string without changing the re
 
 Extracts part of a string by code-point index. A negative start counts back from the end.
 
-```text
+```wel
 substring(string, start, length)
 ```
 
@@ -739,13 +739,13 @@ The following example extracts from a start index to the end of the string:
 
 **Formula**
 
-```text
+```wel
 substring('SO-1001', 3)
 ```
 
 **Output**
 
-```text
+```wel
 1001
 ```
 
@@ -755,7 +755,7 @@ The following example extracts a fixed-length substring:
 
 **Formula**
 
-```text
+```wel
 substring('SO-1001', 0, 2)
 ```
 
@@ -771,13 +771,13 @@ The following example extracts using a negative start index counting back from t
 
 **Formula**
 
-```text
+```wel
 substring('SO-1001', -4)
 ```
 
 **Output**
 
-```text
+```wel
 1001
 ```
 
@@ -789,7 +789,7 @@ substring('SO-1001', -4)
 
 Returns the zero-based index of the first occurrence of a substring, or `-1` if it isn't found. `List` inputs search for an element equal to `substring` instead of a literal occurrence.
 
-```text
+```wel
 index_of(input, substring)
 ```
 
@@ -804,13 +804,13 @@ The following example finds the index of a substring:
 
 **Formula**
 
-```text
+```wel
 index_of('orders/SO-1001', '/')
 ```
 
 **Output**
 
-```text
+```wel
 6
 ```
 
@@ -818,7 +818,7 @@ index_of('orders/SO-1001', '/')
 
 Splits a string into a list on a literal separator.
 
-```text
+```wel
 split(string, separator)
 ```
 
@@ -833,13 +833,13 @@ The following example splits a string on a literal separator:
 
 **Formula**
 
-```text
+```wel
 split('a@example.com,b@example.com', ',')
 ```
 
 **Output**
 
-```text
+```wel
 ["a@example.com", "b@example.com"]
 ```
 
@@ -847,7 +847,7 @@ split('a@example.com,b@example.com', ',')
 
 Splits a string into a list on a regular expression. Use it when the delimiter varies. Each capture group in `pattern` adds its own matched text between the pieces, as in JavaScript. For example, `split_regex('a1b', '(\d)')` returns `['a', '1', 'b']`. Use `(?:...)` to group without capturing. An empty match at the start or end of the string doesn't split.
 
-```text
+```wel
 split_regex(string, pattern)
 ```
 
@@ -862,13 +862,13 @@ The following example splits a string on a delimiter that varies between entries
 
 **Formula**
 
-```text
+```wel
 split_regex('A-100; B-220,C-050', '[;,]\s*')
 ```
 
 **Output**
 
-```text
+```wel
 ["A-100", "B-220", "C-050"]
 ```
 
@@ -876,7 +876,7 @@ split_regex('A-100; B-220,C-050', '[;,]\s*')
 
 Returns the first regular expression match as a map, or `null` if there is no match. Key `0` is the full match, numeric keys hold each capture group, and named captures are also available by name.
 
-```text
+```wel
 match(string, pattern)
 ```
 
@@ -891,13 +891,13 @@ The following example matches a pattern with named capture groups:
 
 **Formula**
 
-```text
+```wel
 match('SO-1001', '^(?<prefix>[A-Z]+)-(?<number>\d+)$')
 ```
 
 **Output**
 
-```text
+```wel
 {"0": "SO-1001", "1": "SO", "2": "1001", prefix: "SO", number: "1001"}
 ```
 
@@ -909,7 +909,7 @@ match('SO-1001', '^(?<prefix>[A-Z]+)-(?<number>\d+)$')
 
 Returns every regular expression match as a list of maps, using the same key structure as `match`. A pattern that can match an empty string, such as `match_all('ab', '')`, still steps forward one code point at a time, so it returns one empty match for each position rather than looping. A result over 1,000,000 matches raises `E211`.
 
-```text
+```wel
 match_all(string, pattern)
 ```
 
@@ -924,13 +924,13 @@ The following example matches every occurrence of a pattern:
 
 **Formula**
 
-```text
+```wel
 match_all('A-100 B-220', '[A-Z]-\d+')
 ```
 
 **Output**
 
-```text
+```wel
 [{"0": "A-100"}, {"0": "B-220"}]
 ```
 
@@ -938,7 +938,7 @@ match_all('A-100 B-220', '[A-Z]-\d+')
 
 Parses a URL into its components. The `host` returns lowercase and in Punycode when it contains non-ASCII characters. `port` is `null` when the URL omits a port and relies on the scheme's default.
 
-```text
+```wel
 parse_url(string)
 ```
 
@@ -952,13 +952,13 @@ The following example parses a URL into its components:
 
 **Formula**
 
-```text
+```wel
 parse_url('https://api.example.com:8443/v2/orders?status=open#top')
 ```
 
 **Output**
 
-```text
+```wel
 {scheme: "https", host: "api.example.com", port: 8443, path: "/v2/orders", query: "status=open", fragment: "top"}
 ```
 
@@ -976,7 +976,7 @@ An inbound callback carries the order number inside a URL path. Use a named capt
 
 **Formula**
 
-```text
+```wel
 match(_.path, '/orders/(?<order>[A-Z]{2}-\d+)/').order
 ```
 
@@ -1005,7 +1005,7 @@ In `replacement`, `$1` and `$<name>` insert a numbered or named capture group, `
 
 Replaces every occurrence of a literal substring.
 
-```text
+```wel
 replace_all(string, pattern, replacement)
 ```
 
@@ -1021,7 +1021,7 @@ The following example removes every occurrence of a literal substring:
 
 **Formula**
 
-```text
+```wel
 replace_all('A-100-X', '-', '')
 ```
 
@@ -1035,7 +1035,7 @@ A100X
 
 Replaces the first occurrence of a literal substring.
 
-```text
+```wel
 replace_first(string, pattern, replacement)
 ```
 
@@ -1051,7 +1051,7 @@ The following example removes the first occurrence of a literal substring:
 
 **Formula**
 
-```text
+```wel
 replace_first('A-100-X', '-', '')
 ```
 
@@ -1065,7 +1065,7 @@ A100-X
 
 Replaces every regular expression match. `gsub` is an alias.
 
-```text
+```wel
 replace_all_regex(string, pattern, replacement)
 ```
 
@@ -1081,7 +1081,7 @@ The following example collapses repeated whitespace into a single space:
 
 **Formula**
 
-```text
+```wel
 replace_all_regex('SO 1001  extra', '\s+', ' ')
 ```
 
@@ -1097,13 +1097,13 @@ The following example strips every non-digit character using the `gsub` alias:
 
 **Formula**
 
-```text
+```wel
 gsub('(555) 123-4567', '[^0-9]', '')
 ```
 
 **Output**
 
-```text
+```wel
 5551234567
 ```
 
@@ -1111,7 +1111,7 @@ gsub('(555) 123-4567', '[^0-9]', '')
 
 Replaces the first regular expression match. `sub` is an alias.
 
-```text
+```wel
 replace_first_regex(string, pattern, replacement)
 ```
 
@@ -1127,7 +1127,7 @@ The following example replaces the first regular expression match using the `sub
 
 **Formula**
 
-```text
+```wel
 sub('SO-1001', '^SO', 'PO')
 ```
 
@@ -1146,7 +1146,7 @@ Null handling depends on the **Concat with null** flag:
 - Off (the default): A `null` operand raises `E205`.
 - On: `concat` returns the non-`null` operand unchanged, if there is one, or returns `null` when both operands are `null`.
 
-```text
+```wel
 concat(first, second)
 ```
 
@@ -1161,7 +1161,7 @@ The following example joins two strings:
 
 **Formula**
 
-```text
+```wel
 concat('Josh', ' Ito')
 ```
 
@@ -1175,7 +1175,7 @@ Josh Ito
 > 
 > `concat` isn't variadic. Use `++` to join several values, or interpolation to embed them in a template:
 > 
-> ```text
+> ```wel
 > _.first_name ++ ' ' ++ _.last_name
 > "Order ${_.order_id} for ${_.customer}"
 > ```
@@ -1198,7 +1198,7 @@ A signup webhook delivers names with inconsistent spacing and casing, and an ema
 
 **Formula**
 
-```text
+```wel
 {
   full_name: titleize(trim(_.first_name) ++ ' ' ++ trim(_.last_name)),
   email: lower(trim(_.email))

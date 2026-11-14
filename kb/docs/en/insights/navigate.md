@@ -89,6 +89,10 @@ Click **Save to page** to save your chart. Click **Exit** to return to the dashb
 
 The query builder is a step-by-step interface for complex data transformations. You can access it by dragging the **Chart** component onto your dashboard canvas, or **Chart (Custom Query)** if you have [report builder](#report-builder) access.
 
+> **MULTIPLE WORKSPACES**
+> 
+> Use the [report builder](#report-builder) instead of the query builder to aggregate usage data across child workspaces in a [parent workspace](/en/insights/multiple-workspaces). The query builder's data sources report on the current workspace only.
+
 ![Query builder](/assets/chart-editor-query-builder-1.m9ccgaBx.png)_The query builder. This example returns unused recipes, or active recipes that didn't process any jobs since the start of the year._
 
 The query builder has four main areas:

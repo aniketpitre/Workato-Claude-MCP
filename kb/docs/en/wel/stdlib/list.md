@@ -15,14 +15,14 @@ List functions work on ordered collections. Most integration work is list work. 
 
 Call a function directly, or pipe a value into it with `>>`:
 
-```text
+```wel
 count(_.line_items)
 _.line_items >> count
 ```
 
 List functions chain well, and the pipe form is what makes a multi-step transformation readable:
 
-```text
+```wel
 _.orders >> filter_by(o ~> o.status == 'open') >> map_by(o ~> o.id)
 ```
 
@@ -30,13 +30,13 @@ _.orders >> filter_by(o ~> o.status == 'open') >> map_by(o ~> o.id)
 
 Many list functions take a lambda, a small inline function written with `~>`:
 
-```text
+```wel
 _.orders >> filter_by(order ~> order.total > 100)
 ```
 
 Choose any name for the parameter before `~>`. It refers to one element at a time. Wrap two or more parameters in parentheses (`()`):
 
-```text
+```wel
 _.items >> map_with_index_by((item, index) ~> f"{index + 1}. {item.name}")
 ```
 
@@ -54,7 +54,7 @@ The following functions read a list without changing it:
 
 Returns the number of elements. Raises `E100` for a `String` or `Map`. Use [length](/en/wel/stdlib/common#length) for those instead.
 
-```text
+```wel
 count(list)
 ```
 
@@ -68,13 +68,13 @@ The following example counts the elements of a non-empty list:
 
 **Formula**
 
-```text
+```wel
 count(['SO-1', 'SO-2', 'SO-3'])
 ```
 
 **Output**
 
-```text
+```wel
 3
 ```
 
@@ -84,13 +84,13 @@ The following example counts the elements of an empty list:
 
 **Formula**
 
-```text
+```wel
 count([])
 ```
 
 **Output**
 
-```text
+```wel
 0
 ```
 
@@ -98,7 +98,7 @@ count([])
 
 Returns the first element, or `null` if the list is empty.
 
-```text
+```wel
 first(list)
 ```
 
@@ -112,7 +112,7 @@ The following example gets the first element of a list:
 
 **Formula**
 
-```text
+```wel
 first(['pending', 'shipped'])
 ```
 
@@ -128,13 +128,13 @@ The following example returns `null` for an empty list:
 
 **Formula**
 
-```text
+```wel
 first([])
 ```
 
 **Output**
 
-```text
+```wel
 null
 ```
 
@@ -142,7 +142,7 @@ null
 
 Returns the last element, or `null` if the list is empty.
 
-```text
+```wel
 last(list)
 ```
 
@@ -156,7 +156,7 @@ The following example gets the last element of a list:
 
 **Formula**
 
-```text
+```wel
 last(['pending', 'shipped'])
 ```
 
@@ -172,7 +172,7 @@ Returns the element at a zero-based index. A negative index counts back from the
 
 An index outside the list raises `E201`. Use `first` or `last` for just an end. Use `find_by` to search for an element rather than a position.
 
-```text
+```wel
 at(list, index)
 ```
 
@@ -187,7 +187,7 @@ The following example gets the element at index 0:
 
 **Formula**
 
-```text
+```wel
 at(['pending', 'shipped', 'closed'], 0)
 ```
 
@@ -203,7 +203,7 @@ The following example gets the last element using a negative index:
 
 **Formula**
 
-```text
+```wel
 at(['pending', 'shipped', 'closed'], -1)
 ```
 
@@ -219,7 +219,7 @@ Returns the single element of a one-element list, and raises `E204` for any othe
 
 Use it as an assertion. `one!` turns "zero or many" into a job that fails loudly instead of a transformation that quietly proceeds with the wrong record when a lookup must match exactly one record.
 
-```text
+```wel
 one!(list)
 ```
 
@@ -233,7 +233,7 @@ The following example extracts the single element of a one-element list:
 
 **Formula**
 
-```text
+```wel
 one!(['SO-1001'])
 ```
 
@@ -251,7 +251,7 @@ The following functions answer a question about a list rather than returning a n
 
 Returns `true` if every element satisfies the predicate. An empty list returns `true`.
 
-```text
+```wel
 all?(list, predicate)
 ```
 
@@ -266,13 +266,13 @@ The following example tests whether every element is `'open'`:
 
 **Formula**
 
-```text
+```wel
 ['open', 'open'] >> all?(s ~> s == 'open')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -280,7 +280,7 @@ true
 
 Returns `true` if at least one element satisfies the predicate.
 
-```text
+```wel
 any?(list, predicate)
 ```
 
@@ -295,13 +295,13 @@ The following example tests whether any element is greater than 100:
 
 **Formula**
 
-```text
+```wel
 [199, 42, 8] >> any?(n ~> n > 100)
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -309,7 +309,7 @@ true
 
 Returns the first element satisfying the predicate, or `null` if none does.
 
-```text
+```wel
 find_by(list, predicate)
 ```
 
@@ -324,13 +324,13 @@ The following example finds the first record whose SKU matches:
 
 **Formula**
 
-```text
+```wel
 [{id: 1, sku: 'WID-1'}, {id: 2, sku: 'GAD-7'}] >> find_by(r ~> r.sku == 'GAD-7')
 ```
 
 **Output**
 
-```text
+```wel
 {id: 2, sku: "GAD-7"}
 ```
 
@@ -338,7 +338,7 @@ The following example finds the first record whose SKU matches:
 
 Returns the zero-based index of the first element satisfying the predicate, or `-1` if none does.
 
-```text
+```wel
 find_first_index(list, predicate)
 ```
 
@@ -353,13 +353,13 @@ The following example finds the index of the element equal to `'c'`:
 
 **Formula**
 
-```text
+```wel
 ['a', 'b', 'c'] >> find_first_index(s ~> s == 'c')
 ```
 
 **Output**
 
-```text
+```wel
 2
 ```
 
@@ -369,13 +369,13 @@ The following example returns `-1` when no element matches:
 
 **Formula**
 
-```text
+```wel
 ['a', 'b'] >> find_first_index(s ~> s == 'z')
 ```
 
 **Output**
 
-```text
+```wel
 -1
 ```
 
@@ -389,7 +389,7 @@ Keeps the elements for which the predicate returns `true`.
 
 Also accepts a `Map`, in which case the lambda receives two parameters, the key and the value. The result is a `Map` too.
 
-```text
+```wel
 filter_by(list, predicate)
 ```
 
@@ -404,13 +404,13 @@ The following example keeps only the elements greater than 2:
 
 **Formula**
 
-```text
+```wel
 [1, 2, 3, 4] >> filter_by(n ~> n > 2)
 ```
 
 **Output**
 
-```text
+```wel
 [3, 4]
 ```
 
@@ -418,7 +418,7 @@ The following example keeps only the elements greater than 2:
 
 Returns the first `count` elements, or the last `count` elements if `count` is negative. A request for more than the list holds returns the whole list rather than raising an error.
 
-```text
+```wel
 take(list, count)
 ```
 
@@ -433,13 +433,13 @@ The following example takes the first 2 elements:
 
 **Formula**
 
-```text
+```wel
 take(['a', 'b', 'c', 'd'], 2)
 ```
 
 **Output**
 
-```text
+```wel
 ["a", "b"]
 ```
 
@@ -449,13 +449,13 @@ The following example takes the last 2 elements using a negative count:
 
 **Formula**
 
-```text
+```wel
 take(['a', 'b', 'c', 'd'], -2)
 ```
 
 **Output**
 
-```text
+```wel
 ["c", "d"]
 ```
 
@@ -463,7 +463,7 @@ take(['a', 'b', 'c', 'd'], -2)
 
 Removes the first `count` elements, or the last `count` elements if `count` is negative.
 
-```text
+```wel
 drop(list, count)
 ```
 
@@ -478,13 +478,13 @@ The following example removes the first 2 elements:
 
 **Formula**
 
-```text
+```wel
 drop(['a', 'b', 'c', 'd'], 2)
 ```
 
 **Output**
 
-```text
+```wel
 ["c", "d"]
 ```
 
@@ -494,7 +494,7 @@ Removes `null` values.
 
 Useful directly after a `map_by` that produces a value only for some elements, and for cleaning optional fields out of an inbound payload.
 
-```text
+```wel
 compact(list)
 ```
 
@@ -508,13 +508,13 @@ The following example removes the `null` value from a list:
 
 **Formula**
 
-```text
+```wel
 compact(['a', null, 'b'])
 ```
 
 **Output**
 
-```text
+```wel
 ["a", "b"]
 ```
 
@@ -530,7 +530,7 @@ Removes duplicates, keeping the first occurrence of each value in its original p
 | Strings that [normalize](/en/wel/stdlib/unicode#unicode-normalize) differently aren't equal. | `é` stored as one character and `e` followed by a combining accent render identically but aren't equal. Use [unicode\_compare](/en/wel/stdlib/unicode) to compare text from different systems. |
 | String comparison is case-sensitive. | `'A' == 'a'` returns `false`. |
 
-```text
+```wel
 unique(list)
 ```
 
@@ -544,13 +544,13 @@ The following example removes the duplicate value while keeping the first occurr
 
 **Formula**
 
-```text
+```wel
 unique(['WID-1', 'GAD-7', 'WID-1'])
 ```
 
 **Output**
 
-```text
+```wel
 ["WID-1", "GAD-7"]
 ```
 
@@ -560,7 +560,7 @@ Removes duplicates by a key function, keeping the first element for each key.
 
 Use it with records, where two entries are "the same" because they share an identifier even though the whole objects differ.
 
-```text
+```wel
 unique_by(list, key)
 ```
 
@@ -575,13 +575,13 @@ The following example keeps the first record for each SKU:
 
 **Formula**
 
-```text
+```wel
 [{sku: 'WID-1'}, {sku: 'WID-1'}] >> unique_by(r ~> r.sku)
 ```
 
 **Output**
 
-```text
+```wel
 [{sku: "WID-1"}]
 ```
 
@@ -604,7 +604,7 @@ A webhook delivers a batch in which some records are missing an email address an
 
 **Formula**
 
-```text
+```wel
 _.contacts
   >> unique_by(c ~> c.id)
   >> filter_by(c ~> present?(c.email))
@@ -627,7 +627,7 @@ The following functions return a list of the same length, or reshape the structu
 
 Applies a lambda to every element and returns the results. `map_by` omits elements that return `Skip`, so the function can filter and transform in the same pass.
 
-```text
+```wel
 map_by(list, transform)
 ```
 
@@ -642,13 +642,13 @@ The following example doubles each element of a list:
 
 **Formula**
 
-```text
+```wel
 [1, 2, 3] >> map_by(n ~> n * 2)
 ```
 
 **Output**
 
-```text
+```wel
 [2, 4, 6]
 ```
 
@@ -656,7 +656,7 @@ The following example doubles each element of a list:
 
 Applies a two-parameter lambda receiving the element and its zero-based index. `map_with_index_by` omits elements that return `Skip`, so the function can filter and transform in the same pass.
 
-```text
+```wel
 map_with_index_by(list, transform)
 ```
 
@@ -671,13 +671,13 @@ The following example numbers each element using its index:
 
 **Formula**
 
-```text
+```wel
 ['a', 'b'] >> map_with_index_by((s, i) ~> f"{i + 1}. {s}")
 ```
 
 **Output**
 
-```text
+```wel
 ["1. a", "2. b"]
 ```
 
@@ -685,7 +685,7 @@ The following example numbers each element using its index:
 
 Flattens one level of nesting, and only one level. A list nested two deep keeps its inner list, so call `flatten` again to go further.
 
-```text
+```wel
 flatten(list)
 ```
 
@@ -699,13 +699,13 @@ The following example flattens a list of lists by one level:
 
 **Formula**
 
-```text
+```wel
 flatten([[1, 2], [3]])
 ```
 
 **Output**
 
-```text
+```wel
 [1, 2, 3]
 ```
 
@@ -715,13 +715,13 @@ The following example shows that a list nested two levels deep keeps its inner l
 
 **Formula**
 
-```text
+```wel
 [[1, 2], [3, [4]]] >> flatten
 ```
 
 **Output**
 
-```text
+```wel
 [1, 2, 3, [4]]
 ```
 
@@ -729,7 +729,7 @@ The following example shows that a list nested two levels deep keeps its inner l
 
 Pairs elements from two lists into two-element lists. The shorter list determines the length.
 
-```text
+```wel
 zip(first, second)
 ```
 
@@ -744,13 +744,13 @@ The following example pairs two lists of equal length:
 
 **Formula**
 
-```text
+```wel
 zip(['sku', 'qty'], ['WID-1', 3])
 ```
 
 **Output**
 
-```text
+```wel
 [["sku", "WID-1"], ["qty", 3]]
 ```
 
@@ -760,13 +760,13 @@ The following example shows the shorter list determining the result length:
 
 **Formula**
 
-```text
+```wel
 zip(['a', 'b', 'c'], [1])
 ```
 
 **Output**
 
-```text
+```wel
 [["a", 1]]
 ```
 
@@ -774,7 +774,7 @@ zip(['a', 'b', 'c'], [1])
 
 Reverses the order of elements.
 
-```text
+```wel
 reverse(list)
 ```
 
@@ -788,13 +788,13 @@ The following example reverses the order of a list:
 
 **Formula**
 
-```text
+```wel
 reverse(['a', 'b', 'c'])
 ```
 
 **Output**
 
-```text
+```wel
 ["c", "b", "a"]
 ```
 
@@ -806,7 +806,7 @@ The following functions sort a list, ascending and stable:
 
 Sorts in ascending order. The sort is stable, so elements that compare equal keep their original relative order. Compares strings by code point, not locale rules.
 
-```text
+```wel
 sort(list)
 ```
 
@@ -820,13 +820,13 @@ The following example sorts a list in ascending order:
 
 **Formula**
 
-```text
+```wel
 sort([3, 1, 2])
 ```
 
 **Output**
 
-```text
+```wel
 [1, 2, 3]
 ```
 
@@ -836,13 +836,13 @@ The following example sorts ascending, then reverses to get descending order:
 
 **Formula**
 
-```text
+```wel
 [3, 1, 2] >> sort >> reverse
 ```
 
 **Output**
 
-```text
+```wel
 [3, 2, 1]
 ```
 
@@ -852,7 +852,7 @@ Sorts by a key function, ascending and stable.
 
 There is no descending variant. Pipe the result into `reverse` for descending order.
 
-```text
+```wel
 sort_by(list, key)
 ```
 
@@ -867,13 +867,13 @@ The following example sorts records by their `n` field:
 
 **Formula**
 
-```text
+```wel
 [{n: 'b'}, {n: 'a'}] >> sort_by(r ~> r.n)
 ```
 
 **Output**
 
-```text
+```wel
 [{n: "a"}, {n: "b"}]
 ```
 
@@ -896,7 +896,7 @@ A report needs the three largest orders pulled from a batch. Sort ascending, rev
 
 **Formula**
 
-```text
+```wel
 _.orders
   >> sort_by(o ~> o.amount)
   >> reverse
@@ -918,7 +918,7 @@ The following functions divide a list into groups or two buckets, based on a key
 
 Groups elements into a `Map` keyed by the result of the key function. Each value is the list of elements sharing that key.
 
-```text
+```wel
 group_by(list, key)
 ```
 
@@ -933,13 +933,13 @@ The following example groups records by their SKU:
 
 **Formula**
 
-```text
+```wel
 [{sku: 'WID-1', q: 1}, {sku: 'GAD-7', q: 2}, {sku: 'WID-1', q: 5}] >> group_by(r ~> r.sku)
 ```
 
 **Output**
 
-```text
+```wel
 {"WID-1": [{sku: "WID-1", q: 1}, {sku: "WID-1", q: 5}], "GAD-7": [{sku: "GAD-7", q: 2}]}
 ```
 
@@ -947,7 +947,7 @@ The following example groups records by their SKU:
 
 Partitions a list into two nested lists. Index `0` contains a list of elements that match the predicate, and index `1` contains a list of elements that don't. Read the two inner lists with `at(0)` and `at(1)`.
 
-```text
+```wel
 partition_by(list, predicate)
 ```
 
@@ -962,13 +962,13 @@ The following example splits a list into matching and non-matching elements:
 
 **Formula**
 
-```text
+```wel
 [1, 2, 3, 4] >> partition_by(n ~> n > 2)
 ```
 
 **Output**
 
-```text
+```wel
 [[3, 4], [1, 2]]
 ```
 
@@ -978,13 +978,13 @@ The following example reads only the matching elements from the partitioned resu
 
 **Formula**
 
-```text
+```wel
 [1, 2, 3, 4] >> partition_by(n ~> n > 2) >> at(0)
 ```
 
 **Output**
 
-```text
+```wel
 [3, 4]
 ```
 
@@ -1006,7 +1006,7 @@ A bulk API returns one record per row with a per-row status. Use `partition_by` 
 
 **Formula**
 
-```text
+```wel
 let parts = _.results >> partition_by(r ~> r.status == 'ok')
 do {
   succeeded: parts >> at(0) >> map_by(r ~> r.id),
@@ -1035,7 +1035,7 @@ Null handling for `sum`, `avg`, `min`, and `max` depends on the **Nulls in aggre
 
 Adds the numeric elements. An empty list sums to `0`. A non-numeric element raises `E101`. Raises `E103` if the list mixes `Float` and `Decimal` elements.
 
-```text
+```wel
 sum(list)
 ```
 
@@ -1049,13 +1049,13 @@ The following example sums a list of floats:
 
 **Formula**
 
-```text
+```wel
 sum([12.50, 99.00])
 ```
 
 **Output**
 
-```text
+```wel
 111.5
 ```
 
@@ -1065,13 +1065,13 @@ The following example sums a list of `Decimal` values, preserving the original s
 
 **Formula**
 
-```text
+```wel
 sum([Decimal('12.50'), Decimal('99.00')])
 ```
 
 **Output**
 
-```text
+```wel
 111.50
 ```
 
@@ -1081,13 +1081,13 @@ The following example sums an empty list:
 
 **Formula**
 
-```text
+```wel
 sum([])
 ```
 
 **Output**
 
-```text
+```wel
 0
 ```
 
@@ -1101,7 +1101,7 @@ sum([])
 
 Returns the mean of the numeric elements. A non-numeric element raises `E101`. An empty list raises `E207`, because there is no meaningful average of nothing.
 
-```text
+```wel
 avg(list)
 ```
 
@@ -1115,13 +1115,13 @@ The following example averages a list of numbers:
 
 **Formula**
 
-```text
+```wel
 avg([10, 20, 30])
 ```
 
 **Output**
 
-```text
+```wel
 20
 ```
 
@@ -1129,7 +1129,7 @@ avg([10, 20, 30])
 
 Returns the smallest element. Works on strings as well as numbers. `min` returns the first tied element when more than one shares the smallest value. An empty list raises `E207`.
 
-```text
+```wel
 min(list)
 ```
 
@@ -1143,13 +1143,13 @@ The following example finds the smallest number in a list:
 
 **Formula**
 
-```text
+```wel
 min([5, 2, 9])
 ```
 
 **Output**
 
-```text
+```wel
 2
 ```
 
@@ -1157,7 +1157,7 @@ min([5, 2, 9])
 
 Returns the largest element. Works on strings as well as numbers. `max` returns the first tied element when more than one shares the largest value. An empty list raises `E207`.
 
-```text
+```wel
 max(list)
 ```
 
@@ -1171,13 +1171,13 @@ The following example finds the largest number in a list:
 
 **Formula**
 
-```text
+```wel
 max([5, 2, 9])
 ```
 
 **Output**
 
-```text
+```wel
 9
 ```
 
@@ -1187,7 +1187,7 @@ The following example finds the largest string in a list:
 
 **Formula**
 
-```text
+```wel
 max(['apple', 'pear'])
 ```
 
@@ -1203,7 +1203,7 @@ Folds a list into a single value using an accumulator.
 
 Use it when the result isn't a plain total, such as building a `Map`, concatenating, or carrying state across elements. Use `sum` and `avg` instead for a straight sum or average, because their names say what they mean.
 
-```text
+```wel
 reduce_by(list, initial, accumulate)
 ```
 
@@ -1219,13 +1219,13 @@ The following example folds a list into a running total:
 
 **Formula**
 
-```text
+```wel
 [1, 2, 3] >> reduce_by(0, (acc, n) ~> acc + n)
 ```
 
 **Output**
 
-```text
+```wel
 6
 ```
 
@@ -1247,7 +1247,7 @@ Line items arrive one row per shipment, so the same SKU appears more than once. 
 
 **Formula**
 
-```text
+```wel
 _.line_items
   >> group_by(li ~> li.sku)
   >> entries
@@ -1271,7 +1271,7 @@ The following functions produce a new list rather than transforming an existing 
 
 Builds a list of integers from start to end, inclusive. The list descends when start is greater than end. Raises `E211` if the range would hold more than 10,000,000 elements, and `E100` if `start` or `end` isn't an `Integer`.
 
-```text
+```wel
 range(start, end)
 ```
 
@@ -1286,13 +1286,13 @@ The following example builds an ascending range of integers:
 
 **Formula**
 
-```text
+```wel
 range(1, 5)
 ```
 
 **Output**
 
-```text
+```wel
 [1, 2, 3, 4, 5]
 ```
 
@@ -1302,13 +1302,13 @@ The following example builds a descending range when the start is greater than t
 
 **Formula**
 
-```text
+```wel
 range(5, 1)
 ```
 
 **Output**
 
-```text
+```wel
 [5, 4, 3, 2, 1]
 ```
 
@@ -1318,7 +1318,7 @@ Returns one randomly selected element.
 
 The result differs on every evaluation, so don't use it for anything a later step must reproduce. Refer to [Random functions](/en/wel/stdlib/random) for other ways to generate a value that doesn't need to repeat.
 
-```text
+```wel
 random_choice(list)
 ```
 

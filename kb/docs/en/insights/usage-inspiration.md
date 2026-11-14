@@ -32,6 +32,10 @@ Use Insights to build custom dashboards to visualize your data for a variety of 
   - Time savings
   - Adoption rates
 
+> **MULTIPLE WORKSPACES**
+> 
+> These metrics are scoped to the current workspace, even in a parent workspace. Only the report builder's usage metrics, such as credits, aggregate across child workspaces. Refer to [Insights in Automation HQ and Embedded](/en/insights/multiple-workspaces) for details.
+
 ## Example ROI dashboard
 
 You can build a dashboard to visualize your ROI (return on investment) and provide actionable analytics that helps you understand how your business performs. From here, you can plan corrective actions to increase your operational efficiency and productivity.

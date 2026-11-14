@@ -19,7 +19,7 @@ A CRM sends names with inconsistent spacing and casing. Clean each field, then b
 
 **Formula**
 
-```text
+```wel
 let raw = {first: '  dana ', last: ' SMITH  '}
 do {
   first: raw.first >> trim >> capitalize,
@@ -42,7 +42,7 @@ Two optional fields are missing. Supply a default for each rather than passing `
 
 **Formula**
 
-```text
+```wel
 let contact = {name: 'Kai', email: null, phone: null}
 do {
   name: contact.name,
@@ -65,7 +65,7 @@ An API response contains the same field name at several levels. Extract every oc
 
 **Formula**
 
-```text
+```wel
 let api_response = {
   data: {
     users: [
@@ -91,7 +91,7 @@ A document carries file attachments at an unpredictable depth. Encode every bina
 
 **Formula**
 
-```text
+```wel
 let doc = {
   title: 'Report',
   attachments: [
@@ -124,7 +124,7 @@ Orders arrive with their line items nested underneath them. Produce one flat row
 
 **Formula**
 
-```text
+```wel
 let orders = [
   {id: 'A1', items: [{sku: 'X', qty: 2}, {sku: 'Y', qty: 1}]},
   {id: 'A2', items: [{sku: 'Z', qty: 5}]}
@@ -152,7 +152,7 @@ The same SKU appears across several orders. Total the quantity for each one.
 
 **Formula**
 
-```text
+```wel
 let lines = [
   {sku: 'X', qty: 2}, {sku: 'Y', qty: 1},
   {sku: 'X', qty: 3}, {sku: 'Y', qty: 4}
@@ -177,7 +177,7 @@ The same record ID appears multiple times with different timestamps. Keep only t
 
 **Formula**
 
-```text
+```wel
 let events = [
   {id: 'a', ts: 1, status: 'pending'},
   {id: 'b', ts: 2, status: 'active'},
@@ -203,7 +203,7 @@ A metrics API returns one row per metric. Reshape it into a single record with o
 
 **Formula**
 
-```text
+```wel
 let rows = [
   {metric: 'cpu', value: 72},
   {metric: 'mem', value: 85},
@@ -228,7 +228,7 @@ A batch job needs to route successes and failures differently. Split a mixed lis
 
 **Formula**
 
-```text
+```wel
 let results = [
   {id: 1, status: 'ok'}, {id: 2, status: 'error'},
   {id: 3, status: 'ok'}, {id: 4, status: 'error'}
@@ -258,7 +258,7 @@ Two lists share a key. Return only records with a match in both lists.
 
 **Formula**
 
-```text
+```wel
 let users = [{id: 1, name: 'Dana'}, {id: 2, name: 'Kai'}],
     orders = [{user_id: 1, item: 'Book'}, {user_id: 1, item: 'Pen'}, {user_id: 3, item: 'Tape'}]
 do users
@@ -282,7 +282,7 @@ Every record on the left side of a join must appear in the result, matched or no
 
 **Formula**
 
-```text
+```wel
 let users = [{id: 1, name: 'Dana'}, {id: 2, name: 'Kai'}],
     orders = [{user_id: 1, item: 'Book'}]
 do users
@@ -308,7 +308,7 @@ The same entity exists in two systems, sometimes only in one of them. Combine bo
 
 **Formula**
 
-```text
+```wel
 let crm = [{id: '1', name: 'Dana', source: 'crm'}, {id: '2', name: 'Kai', source: 'crm'}],
     erp = [{id: '2', name: 'Lucian', source: 'erp'}, {id: '3', name: 'Sasha', source: 'erp'}]
 do let all_ids = (crm ++ erp) >> map_by(r ~> r.id) >> unique
@@ -345,7 +345,7 @@ An invoice amount needs converting to another currency. Round the result to cent
 
 **Formula**
 
-```text
+```wel
 let invoice = {amount: Decimal('1234.56'), rate: Decimal('0.85')}
 do let converted = invoice.amount * invoice.rate
 do {
@@ -369,7 +369,7 @@ Most languages silently lose precision parsing large integers or decimals from J
 
 **Formula**
 
-```text
+```wel
 let json = '{"tx_id": 9999999999999999999, "balance": 1234567890.1234567890}'
 do let data = parse_json(json, {numbers: 'decimal'})
 do {
@@ -398,7 +398,7 @@ A record requires routing based on whether its date falls on a weekend, the numb
 
 **Formula**
 
-```text
+```wel
 let event_date = PlainDate('2025-03-15')
 do let dow = day_of_week(event_date)
 do let month_end = end_of_month(event_date)
@@ -427,7 +427,7 @@ A webhook delivers its body as a JSON string. Parse it, then reject the payload 
 
 **Formula**
 
-```text
+```wel
 let payload = '{"amount": "42.50", "currency": "USD"}'
 do let data = parse_json(payload)
 do let amount = Decimal(data.amount)
@@ -449,7 +449,7 @@ A batch of API responses mixes successes and failures. Report how many of each, 
 
 **Formula**
 
-```text
+```wel
 let responses = [
   {code: 200, body: 'ok'},
   {code: 422, body: 'validation failed'},
@@ -478,7 +478,7 @@ A batch of email addresses arrives with inconsistent casing, stray whitespace, b
 
 **Formula**
 
-```text
+```wel
 let raw = ['dana@co.com', 'bad-email', '  KAI@CO.COM  ', '', 'sasha@co.com']
 do raw
   >> map_by(e ~> trim(e) >> lower)
@@ -500,7 +500,7 @@ A tax calculation depends on a rate that arrives as a string and must fall withi
 
 **Formula**
 
-```text
+```wel
 let payload = {items: [{price: 10, qty: 2}, {price: 25, qty: 1}], tax_rate: '0.08'}
 do let tax = Decimal(payload.tax_rate)
 guard tax >= 0 and tax < 1 else 'invalid tax rate'
@@ -526,7 +526,7 @@ A batch of values needs converting to `Integer`, but some of them aren't valid n
 
 **Formula**
 
-```text
+```wel
 let inputs = ['42', 'bad', '100', '', '7.5']
 do inputs >> map_by(v ~> {
   raw: v,
@@ -559,14 +559,14 @@ A search term entered by a user can contain characters that would otherwise brea
 
 **Formula**
 
-```text
+```wel
 let search = "O'Brien & Sons"
 do "SELECT Id, Name FROM Account WHERE Name = '" ++ escape_for_soql(search) ++ "'"
 ```
 
 **Output**
 
-```text
+```sql
 SELECT Id, Name FROM Account WHERE Name = 'O\'Brien & Sons'
 ```
 
@@ -578,7 +578,7 @@ A destination expects a CSV file, and some field values contain commas. Escape t
 
 **Formula**
 
-```text
+```wel
 let records = [
   {name: 'Dana', email: 'dana@co.com', amount: 100},
   {name: 'Kai, Jr.', email: 'kai@co.com', amount: 250}
@@ -591,7 +591,7 @@ do [header] ++ rows >> join_to_string('\n')
 
 **Output**
 
-```text
+```csv
 Name,Email,Amount
 Dana,dana@co.com,100
 "Kai, Jr.",kai@co.com,250
@@ -605,7 +605,7 @@ An outbound API call needs a signed, time-limited token proving who issued it.
 
 **Formula**
 
-```text
+```wel
 let issued_at = now() >> to_epoch >> floor,
     key = '0123456789abcdef0123456789abcdef'
 do let payload = {sub: 'service-account', iat: issued_at, exp: issued_at + 3600}
@@ -618,10 +618,10 @@ do {
 
 **Output**
 
-```text
+```wel
 {
   authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  decoded: {header: {alg: "HS256", typ: "JWT"}, payload: {sub: "service-account", iat: ..., exp: ...}}
+  decoded: {header: {alg: "HS256", typ: "JWT"}, payload: {sub: "service-account", iat: 1773567000, exp: 1773570600}}
 }
 ```
 
@@ -633,7 +633,7 @@ A list of items needs rendering as numbered, uppercased lines for a plain-text r
 
 **Formula**
 
-```text
+```wel
 let items = ['alpha', 'beta', 'gamma', 'delta']
 do items
   >> map_with_index_by((item, i) ~> String(i + 1) ++ '. ' ++ upper(item))
@@ -661,7 +661,7 @@ An outbound record should omit a field entirely when it's blank, and not forward
 
 **Formula**
 
-```text
+```wel
 let src = {name: 'Dana', nickname: '', age: 30, internal_id: 'x-123'}
 do {
   name: src.name,
@@ -685,7 +685,7 @@ The same masking rule applies to more than one field. Name it once instead of wr
 
 **Formula**
 
-```text
+```wel
 fun mask = s ~>
   if length(s) > 4
   then substring(s, 0, 2) ++ '***' ++ substring(s, length(s) - 2, 2)

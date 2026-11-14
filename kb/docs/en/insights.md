@@ -16,6 +16,8 @@ The basic building blocks of Insights consist of data sources, query components,
 > **FEATURE AVAILABILITY**
 > 
 > Insights is available to customers on specific pricing plans. Additionally, access to Insights dashboards within [Workflow apps](/en/workflow-apps) is determined by whether your plan includes the Workflow apps feature. Refer to your pricing plan and contract to learn more.
+> 
+> Insights is also available in parent workspaces. Refer to [Insights in Automation HQ and Embedded](/en/insights/multiple-workspaces) to learn more.
 
 ## Supported data sources
 
@@ -69,6 +71,12 @@ Sample metrics include:
   
   - The total number of tasks consumed in a workspace
   - The total number of active recipes in a workspace
+
+For platform consumption, use the report builder's [usage metrics](/en/insights/data-sources#usage-metrics) instead.
+
+> **MULTIPLE WORKSPACES**
+> 
+> These metrics are scoped to the current workspace, even in a parent workspace. Only the report builder's usage metrics, such as credits, aggregate across child workspaces. Refer to [Insights in Automation HQ and Embedded](/en/insights/multiple-workspaces) for details.
 
 ### Automation impact
 

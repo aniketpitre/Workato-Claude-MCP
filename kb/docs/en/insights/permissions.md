@@ -52,6 +52,8 @@ You can [manage privileges](/en/user-accounts-and-teams/role-based-access/new-mo
 
 ## How roles and privileges affect data source access
 
+Access to the usage data source requires the [Insights](/en/user-accounts-and-teams/role-based-access/new-model/privileges-reference#insights) privilege and the [Usage dashboard](/en/user-accounts-and-teams/role-based-access/new-model/privileges-reference#billing-usage) privilege.
+
 Your collaborator role and feature access determine which data sources you can use. If you don't have access to a data source, it affects what you can do with charts and filters:
 
 - **Building a chart**: The data source isn't available as an option.

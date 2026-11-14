@@ -13533,12 +13533,13 @@ url: >-
   https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-oracle.md
 description: >-
   Configure Oracle as a data pipeline source to extract database table records
-  and sync them to your destination with full or incremental sync.
+  and sync them to your destination with full sync, incremental sync, or Change
+  Data Capture (CDC).
 ---
 
 # Configure Oracle as your data pipeline source
 
-Set up Oracle as a data pipeline source to extract and sync records into your destination using the SuiteAnalytics Connect service. This guide includes connection setup, pipeline configuration, and key behavior for working with NetSuite2 as a source.
+Set up Oracle as a data pipeline source to extract and sync records into your destination. This guide includes database preparation for Change Data Capture (CDC), connection setup, pipeline configuration, and key behavior for working with Oracle as a source.
 
 ## Oracle features supported
 
@@ -13546,6 +13547,7 @@ The following features are supported when using Oracle as a data pipeline source
 
 - Extract data from Oracle database tables
 - Support for full and incremental sync
+- Change Data Capture (CDC) through Oracle LogMiner for incremental sync
 - Field-level selection for table extraction
 - Schema drift detection and handling
 - Field-level data masking
@@ -13566,6 +13568,94 @@ Ensure you have the following configuration before creating the Oracle connectio
   - Database username and password
 - Ensure an **on-prem agent** is configured and active if the Oracle database runs inside a private network.
   
+
+CDC has the following additional requirements:
+
+- An on-prem agent running version **34.0 or later**
+- Enough disk space on the on-prem agent host to store CDC changes until the pipeline reads them
+- An Oracle database prepared for CDC. Refer to [Enable Change Data Capture](#enable-change-data-capture) for setup steps.
+
+## Enable Change Data Capture
+
+Incremental sync by Change Data Capture (CDC) uses Oracle LogMiner to read inserts, updates, and deletes from the database's archive logs. Your database administrator must prepare the database before you can select CDC for a table.
+
+Run the statements in this section as `SYSDBA` in `CDB$ROOT` unless a step specifies otherwise. Replace the sample names `C##CDCUSER` and `MYPDB` with your own.
+
+### Enable ARCHIVELOG mode
+
+Run the following statements to put the database in `ARCHIVELOG` mode. These statements restart the database:
+
+```sql
+SHUTDOWN IMMEDIATE;
+STARTUP MOUNT;
+ALTER DATABASE ARCHIVELOG;
+ALTER DATABASE OPEN;
+```
+
+Ensure the archive destination has enough space for your redo volume and retention period.
+
+### Enable supplemental logging
+
+Run the following statement to enable minimal supplemental logging. CDC requires this setting:
+
+```sql
+ALTER DATABASE ADD SUPPLEMENTAL LOG DATA;
+```
+
+Run the following statement to enable all-column logging for every table in the database:
+
+```sql
+ALTER DATABASE ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS;
+```
+
+Alternatively, enable all-column logging only for the tables you plan to sync with CDC. Run the following statements in the pluggable database (PDB) and repeat the `ALTER TABLE` statement for each table:
+
+```sql
+ALTER SESSION SET CONTAINER = MYPDB;
+ALTER TABLE HR.EMPLOYEES ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS;
+```
+
+### Create the CDC user
+
+CDC requires a common user, which has a name that starts with `C##`. Run the following statements in `CDB$ROOT` to create the user and grant LogMiner access:
+
+```sql
+CREATE USER C##CDCUSER IDENTIFIED BY "<password>"
+  DEFAULT TABLESPACE USERS QUOTA UNLIMITED ON USERS
+  CONTAINER = ALL;
+
+GRANT CREATE SESSION TO C##CDCUSER CONTAINER = ALL;
+GRANT SET CONTAINER TO C##CDCUSER CONTAINER = ALL;
+GRANT LOGMINING TO C##CDCUSER;
+GRANT EXECUTE_CATALOG_ROLE TO C##CDCUSER;
+
+GRANT SELECT ON SYS.V_$DATABASE TO C##CDCUSER;
+GRANT SELECT ON SYS.V_$PARAMETER TO C##CDCUSER;
+GRANT SELECT ON SYS.V_$LOG TO C##CDCUSER;
+GRANT SELECT ON SYS.V_$LOGFILE TO C##CDCUSER;
+GRANT SELECT ON SYS.V_$ARCHIVED_LOG TO C##CDCUSER;
+GRANT SELECT ON SYS.V_$LOGMNR_LOGS TO C##CDCUSER;
+GRANT SELECT ON SYS.V_$LOGMNR_CONTENTS TO C##CDCUSER;
+GRANT SELECT ON SYS.V_$TRANSACTION TO C##CDCUSER;
+```
+
+Run the following statements in the PDB that contains the tables you plan to sync:
+
+```sql
+ALTER SESSION SET CONTAINER = MYPDB;
+GRANT SELECT ON SYS.V_$DATABASE TO C##CDCUSER;
+GRANT SELECT ANY TABLE TO C##CDCUSER;
+```
+
+You can grant `SELECT` on each table you plan to sync instead of `SELECT ANY TABLE`.
+
+### Configure archive log retention
+
+CDC reads data changes from archive logs, so the logs must remain available between pipeline runs. Configure a retention policy that keeps the logs for several hours to several days. The following Oracle Recovery Manager (RMAN) command sets a four-day recovery window:
+
+```sql
+CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 4 DAYS;
+```
 
 ## How to connect
 
@@ -13626,6 +13716,8 @@ At a minimum, the database user account must have the `SELECT` permission for th
 > +---------+---------+------------+---------+-----------+-----------+-----------+
 > 3 rows in set (0.61 sec)
 > ```
+
+Use the common user from [Create the CDC user](#create-the-cdc-user) instead if you plan to sync tables with CDC.
 
 ## Step 2: Connect Oracle to Workato
 
@@ -13737,6 +13829,17 @@ Complete the following steps to connect to Oracle using an on-prem agent (OPA):
     
 15. Click **Connect**.
     
+
+### Connection requirements for CDC
+
+A connection used for CDC must meet the following requirements:
+
+- Use an [on-prem agent connection](#oracle-opa-connection).
+- Enter the common user from [Create the CDC user](#create-the-cdc-user) in the **User name** field.
+- Connect to `CDB$ROOT`. CDC doesn't support connections to a PDB.
+- Add a `pdb_name` property to capture data from a specific PDB. Expand **Additional properties for Oracle connection**, click **Add parameter**, enter `pdb_name` as the key, and enter your PDB name as the value.
+
+![Add pdb\_name property](/assets/oracle-cdc-pdb-name.Bz8PtSLt.png)_Add pdb\_name property_
 
 ## Database types
 
@@ -13857,19 +13960,28 @@ Complete the following steps to configure Oracle as your data pipeline source:
        
        1. Select **Incremental** to sync only new and updated records.
           
-       2. Select a **Change tracking column** for incremental syncs. This column detects new and updated records.
+       2. Use the **Sync strategy** drop-down menu to select how the pipeline detects changes:
+          
+          - **By cursor**: Detects new and updated records with a change tracking column.
+          - **Change Data Capture**: Reads inserts, updates, and deletes from the archive logs through LogMiner. This option appears only for tables that Workato determines are eligible for CDC. CDC doesn't require a timestamp column. Refer to [Enable Change Data Capture](#enable-change-data-capture) for setup steps.
+          
+          ![Select sync strategy](/assets/oracle-cdc-sync-strategy.DQNo8h5r.png)_Select sync strategy_
+          
+       3. Select a **Change tracking column** if you selected **By cursor**. This column detects new and updated records.
           
           ![Configure sync settings](/assets/configure-sync-settings.BYz_qWjn.png)_Configure sync settings_
           
-          The selected tracking column is required for incremental syncs and can't be deselected.
+          The selected tracking column is required for **By cursor** syncs and can't be deselected.
           
           The following occurs if the table doesn't contain a valid timestamp or change tracking column:
           
-          - Incremental sync isn't available
-          - The pipeline defaults to **Full sync**
+          - **By cursor** isn't available
           - The **Change tracking column** field is disabled
-          - The pipeline reloads all records on each run
-       3. Click **Save**.
+          - The pipeline defaults to **Full sync**, which reloads all records on each run
+          
+          Select **Change Data Capture** instead to sync the table incrementally if it's eligible for CDC.
+          
+       4. Click **Save**.
           
        
        **Full sync**
@@ -13953,6 +14065,45 @@ The tables available for selection depend on:
 
 - The schema configured in the Oracle database
 - The permissions granted to the database user used for the connection
+
+## CDC sync behavior
+
+The pipeline starts collecting CDC changes when its first run starts. The first run performs a full sync of each CDC table. Later runs extract only the changes since the previous run and apply them to the destination table.
+
+The on-prem agent stores CDC changes on disk until the pipeline requests them. Each pipeline runs its own LogMiner session. The agent stops the LogMiner session if the pipeline doesn't request changes for at least two sync intervals.
+
+Only one agent runs the LogMiner session when your on-prem group has multiple agents. The pipeline fails over to another agent in the group if the active agent fails or becomes unreachable.
+
+## Oracle limitations
+
+The following limitations apply to CDC:
+
+- CDC doesn't capture `LOB` or `XMLType` column contents.
+- CDC doesn't support databases with `MAX_STRING_SIZE = EXTENDED`.
+- CDC doesn't support Oracle ASM, RAC, or TDE.
+- Schema, table, and column names can't exceed 30 characters.
+- Table and schema names are case-insensitive.
+- CDC delivers only `INSERT`, `UPDATE`, and `DELETE` changes. `TRUNCATE` and other DDL statements that modify data aren't delivered as changes.
+- Oracle LogMiner limitations for your database version also apply.
+
+## Troubleshoot CDC
+
+CDC errors and warnings appear in the on-prem agent log and the data pipeline UI.
+
+Resolve the following CDC errors:
+
+| Error | Cause | Solution |
+| --- | --- | --- |
+| `Could not find a log file with a dictionary dump before SCN ...` | The archive logs were deleted or aren't archived yet. | Re-create the pipeline. |
+| `CDC delta is missing for table <table_name>. Please perform full re-sync` | The LogMiner session restarted from a position past the table's last read position. | [Re-sync](/en/data-orchestration/data-pipeline-recipe/monitor#view-synced-objects-and-statuses) the table. |
+| `Cannot modify parameters of a running CDC session` | The table list changed while the CDC session was running. | Stop the pipeline and start it again. |
+
+The following warnings indicate that CDC is falling behind:
+
+| Warning | Cause | Solution |
+| --- | --- | --- |
+| `CDC batch extraction took ... s (exceeds the threshold ...)` | Change extraction is falling behind the database. | Reduce the number of tables in the pipeline or increase the on-prem agent's CPU, memory, or disk. To change the threshold, add the `cdc_source_lag_warn_threshold_ms` property in **Additional properties for Oracle connection**. The default is `300000` ms. |
+| `Unconsumed CDC data for table ... is ... MiB (exceeds the configured threshold ...)` | The pipeline reads CDC changes slower than they accumulate. | Increase the pipeline's sync frequency. To change the threshold, add the `cdc_store_backlog_warn_threshold_mb` property in **Additional properties for Oracle connection**. The default is `1024` MB. |
 
 ---
 

@@ -23,7 +23,7 @@ The following functions round a number to the nearest, next, or previous integer
 
 Rounds to the nearest integer.
 
-```text
+```wel
 round(number)
 ```
 
@@ -37,13 +37,13 @@ The following example rounds a number up at the midpoint:
 
 **Formula**
 
-```text
+```wel
 round(3.5)
 ```
 
 **Output**
 
-```text
+```wel
 4
 ```
 
@@ -53,13 +53,13 @@ The following example rounds a number down when it's below the midpoint:
 
 **Formula**
 
-```text
+```wel
 round(2.4)
 ```
 
 **Output**
 
-```text
+```wel
 2
 ```
 
@@ -67,7 +67,7 @@ round(2.4)
 
 Rounds up to the next integer.
 
-```text
+```wel
 ceil(number)
 ```
 
@@ -81,13 +81,13 @@ The following example rounds the number up regardless of its decimal:
 
 **Formula**
 
-```text
+```wel
 ceil(3.2)
 ```
 
 **Output**
 
-```text
+```wel
 4
 ```
 
@@ -95,7 +95,7 @@ ceil(3.2)
 
 Rounds down to the previous integer.
 
-```text
+```wel
 floor(number)
 ```
 
@@ -109,13 +109,13 @@ The following example rounds the number down regardless of its decimal:
 
 **Formula**
 
-```text
+```wel
 floor(3.9)
 ```
 
 **Output**
 
-```text
+```wel
 3
 ```
 
@@ -127,7 +127,7 @@ The following functions round a `Decimal` to a fixed number of decimal places or
 
 Rounds and zero-pads a `Decimal` to a given number of decimal places.
 
-```text
+```wel
 round_places(decimal, places, options)
 ```
 
@@ -143,13 +143,13 @@ The following example rounds using the default half-up mode:
 
 **Formula**
 
-```text
+```wel
 round_places(Decimal('11.545'), 2)
 ```
 
 **Output**
 
-```text
+```wel
 11.55
 ```
 
@@ -159,13 +159,13 @@ The following example rounds using banker's rounding, half to even:
 
 **Formula**
 
-```text
+```wel
 round_places(Decimal('11.545'), 2, {mode: 'half_even'})
 ```
 
 **Output**
 
-```text
+```wel
 11.54
 ```
 
@@ -175,13 +175,13 @@ The following example rounds using floor mode:
 
 **Formula**
 
-```text
+```wel
 round_places(Decimal('11.545'), 2, {mode: 'floor'})
 ```
 
 **Output**
 
-```text
+```wel
 11.54
 ```
 
@@ -189,7 +189,7 @@ round_places(Decimal('11.545'), 2, {mode: 'floor'})
 
 Rounds a `Decimal` to a number of significant digits rather than decimal places, without padding.
 
-```text
+```wel
 round_significant(decimal, digits, options)
 ```
 
@@ -205,13 +205,13 @@ The following example rounds a number to 3 significant digits:
 
 **Formula**
 
-```text
+```wel
 round_significant(Decimal('1234.5'), 3)
 ```
 
 **Output**
 
-```text
+```wel
 1230
 ```
 
@@ -232,7 +232,7 @@ Unit prices arrive with three decimal places, but the destination accounting sys
 
 **Formula**
 
-```text
+```wel
 _.lines >> map_by(l ~> {
   sku: l.sku,
   total: round_places(Decimal(l.unit_price) * l.qty, 2)
@@ -258,7 +258,7 @@ The following function returns a number's magnitude, discarding its sign:
 
 Returns the magnitude of a number, discarding its sign. Also accepts a `Duration`.
 
-```text
+```wel
 abs(value)
 ```
 
@@ -272,13 +272,13 @@ The following example returns the absolute value of a negative number:
 
 **Formula**
 
-```text
+```wel
 abs(-42)
 ```
 
 **Output**
 
-```text
+```wel
 42
 ```
 
@@ -290,7 +290,7 @@ The following functions distinguish an ordinary number from the special `Float` 
 
 Returns `true` for an `Integer`, a `Decimal`, or a `Float` that is an ordinary number.
 
-```text
+```wel
 finite?(number)
 ```
 
@@ -304,13 +304,13 @@ The following example tests an ordinary float:
 
 **Formula**
 
-```text
+```wel
 finite?(1.0)
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -320,13 +320,13 @@ The following example tests positive infinity:
 
 **Formula**
 
-```text
+```wel
 finite?(Float('Infinity'))
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -334,7 +334,7 @@ false
 
 Returns `true` if the value is positive or negative infinity.
 
-```text
+```wel
 infinite?(number)
 ```
 
@@ -348,13 +348,13 @@ The following example tests positive infinity:
 
 **Formula**
 
-```text
+```wel
 infinite?(Float('Infinity'))
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -362,7 +362,7 @@ true
 
 Returns `true` if the value is the `Float` "not a number". `NaN` is outside WEL's value domain. Arithmetic raises `E200` instead of producing `NaN`. `Float('NaN')` raises `E102`.
 
-```text
+```wel
 nan?(number)
 ```
 
@@ -376,13 +376,13 @@ The following example tests an ordinary number:
 
 **Formula**
 
-```text
+```wel
 nan?(1.0)
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -398,7 +398,7 @@ The following function measures how many bits an integer needs to represent:
 
 Returns the number of bits needed to represent an integer in bit-complementary encoding.
 
-```text
+```wel
 int_bit_size(integer)
 ```
 
@@ -412,13 +412,13 @@ The following example measures the bits needed for 255:
 
 **Formula**
 
-```text
+```wel
 int_bit_size(255)
 ```
 
 **Output**
 
-```text
+```wel
 9
 ```
 

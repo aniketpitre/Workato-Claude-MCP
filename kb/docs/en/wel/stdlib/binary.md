@@ -26,7 +26,7 @@ Base64 is the standard way to embed raw bytes in a JSON field or a URL.
 
 Encodes bytes or an ASCII string as a base64 string.
 
-```text
+```wel
 encode_base64(binary, mode)
 ```
 
@@ -41,7 +41,7 @@ The following example encodes bytes as a base64 string:
 
 **Formula**
 
-```text
+```wel
 encode_base64(Binary('ABC'))
 ```
 
@@ -59,7 +59,7 @@ QUJD
 
 Decodes a base64 string to bytes. Tolerates missing padding.
 
-```text
+```wel
 decode_base64(text, mode)
 ```
 
@@ -74,13 +74,13 @@ The following example decodes a base64 string to bytes:
 
 **Formula**
 
-```text
+```wel
 decode_base64('QUJD')
 ```
 
 **Output**
 
-```text
+```wel
 0x"414243"
 ```
 
@@ -94,7 +94,7 @@ Converts bytes or an ASCII string to a hexadecimal string, two characters per by
 
 Hex requires more space than base64 but provides a human-readable representation. Checksums and digests commonly use this format.
 
-```text
+```wel
 encode_hex_string(binary, mode)
 ```
 
@@ -109,13 +109,13 @@ The following example encodes bytes as a hexadecimal string:
 
 **Formula**
 
-```text
+```wel
 encode_hex_string(Binary('ABC'))
 ```
 
 **Output**
 
-```text
+```wel
 414243
 ```
 
@@ -123,7 +123,7 @@ encode_hex_string(Binary('ABC'))
 
 Converts a hexadecimal string to bytes. Strips a leading `0x` or a trailing `h` unless the mode is `'strict'`.
 
-```text
+```wel
 decode_hex_string(text, mode)
 ```
 
@@ -138,13 +138,13 @@ The following example decodes a hexadecimal string to bytes:
 
 **Formula**
 
-```text
+```wel
 decode_hex_string('414243')
 ```
 
 **Output**
 
-```text
+```wel
 0x"414243"
 ```
 
@@ -158,7 +158,7 @@ Encodes bytes as MIME quoted-printable, as defined in RFC 2045, with 76-column s
 
 Email bodies use quoted-printable when the content consists mostly of ASCII and readability matters more than compactness.
 
-```text
+```wel
 encode_quoted_printable(binary)
 ```
 
@@ -172,7 +172,7 @@ The following example encodes bytes containing an equals sign as quoted-printabl
 
 **Formula**
 
-```text
+```wel
 encode_quoted_printable(Binary('a=b'))
 ```
 
@@ -186,7 +186,7 @@ a=3Db
 
 Decodes MIME quoted-printable text to bytes.
 
-```text
+```wel
 decode_quoted_printable(text)
 ```
 
@@ -200,13 +200,13 @@ The following example decodes a quoted-printable string back to bytes:
 
 **Formula**
 
-```text
+```wel
 decode_quoted_printable('a=3Db')
 ```
 
 **Output**
 
-```text
+```wel
 0x"613D62"
 ```
 
@@ -220,7 +220,7 @@ Returns the number of bytes in a binary or an ASCII string.
 
 `byte_length` returns a byte count, not a character count. `length` counts code points in text, and [grapheme\_length](/en/wel/stdlib/unicode#grapheme-length) counts user-perceived characters (grapheme clusters) instead. `length` and `grapheme_length` can differ for anything outside ASCII. `byte_length` raises `E100` on non-ASCII text instead of returning a third count.
 
-```text
+```wel
 byte_length(binary)
 ```
 
@@ -234,13 +234,13 @@ The following example measures the byte length of an ASCII string:
 
 **Formula**
 
-```text
+```wel
 byte_length(Binary('ABC'))
 ```
 
 **Output**
 
-```text
+```wel
 3
 ```
 
@@ -248,7 +248,7 @@ byte_length(Binary('ABC'))
 
 Extracts a run of bytes from a binary or an ASCII string by offset and length.
 
-```text
+```wel
 byte_slice(binary, offset, length)
 ```
 
@@ -264,13 +264,13 @@ The following example extracts 3 bytes starting at offset 1:
 
 **Formula**
 
-```text
+```wel
 byte_slice(Binary('ABCDEF'), 1, 3)
 ```
 
 **Output**
 
-```text
+```wel
 0x"424344"
 ```
 
@@ -295,7 +295,7 @@ A destination expects base64-encoded file content in a JSON field and a SHA-256 
 
 **Formula**
 
-```text
+```wel
 let bytes = Binary(_.content)
 do {
   filename: _.filename,

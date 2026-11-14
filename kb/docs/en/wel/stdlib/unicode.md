@@ -24,7 +24,7 @@ Use grapheme functions for displays and human-facing character counts, such as w
 
 Counts user-perceived characters (grapheme clusters).
 
-```text
+```wel
 grapheme_length(text)
 ```
 
@@ -38,13 +38,13 @@ The following example counts the grapheme clusters in a family emoji made of sev
 
 **Formula**
 
-```text
+```wel
 grapheme_length('👨‍👩‍👧')
 ```
 
 **Output**
 
-```text
+```wel
 1
 ```
 
@@ -52,7 +52,7 @@ grapheme_length('👨‍👩‍👧')
 
 Extracts text by grapheme-cluster index without splitting characters that contain multiple code points.
 
-```text
+```wel
 grapheme_substring(text, start, length)
 ```
 
@@ -68,7 +68,7 @@ The following example extracts a two-grapheme substring from an accented word:
 
 **Formula**
 
-```text
+```wel
 grapheme_substring('héllo', 0, 2)
 ```
 
@@ -82,7 +82,7 @@ hé
 
 Reverses a string by grapheme clusters.
 
-```text
+```wel
 grapheme_reverse(text)
 ```
 
@@ -96,7 +96,7 @@ The following example reverses a string by grapheme clusters:
 
 **Formula**
 
-```text
+```wel
 grapheme_reverse('abc')
 ```
 
@@ -112,7 +112,7 @@ Pad a string to a width measured in grapheme clusters.
 
 Use these rather than [lpad](/en/wel/stdlib/string#lpad) and [rpad](/en/wel/stdlib/string#rpad) for fixed-width output containing non-ASCII text, so the columns line up for a reader.
 
-```text
+```wel
 grapheme_lpad(text, width, pad)
 grapheme_rpad(text, width, pad)
 ```
@@ -129,13 +129,13 @@ The following example pads a string on the left to a width of 5 grapheme cluster
 
 **Formula**
 
-```text
+```wel
 grapheme_lpad('42', 5, '0')
 ```
 
 **Output**
 
-```text
+```wel
 00042
 ```
 
@@ -145,13 +145,13 @@ The following example pads a string on the right to a width of 5 grapheme cluste
 
 **Formula**
 
-```text
+```wel
 grapheme_rpad('42', 5, '0')
 ```
 
 **Output**
 
-```text
+```wel
 42000
 ```
 
@@ -174,7 +174,7 @@ Normalize to `nfc` when data arrives, and comparisons downstream behave. An unre
 
 Converts a string to the normalization form you specify.
 
-```text
+```wel
 unicode_normalize(text, form)
 ```
 
@@ -189,13 +189,13 @@ The following example measures the length of the composed form:
 
 **Formula**
 
-```text
+```wel
 length('café')
 ```
 
 **Output**
 
-```text
+```wel
 4
 ```
 
@@ -205,13 +205,13 @@ The following example measures the length after converting the string to NFD:
 
 **Formula**
 
-```text
+```wel
 length(unicode_normalize('café', 'nfd'))
 ```
 
 **Output**
 
-```text
+```wel
 5
 ```
 
@@ -221,7 +221,7 @@ The decomposed form is one unit longer because the accent becomes a separate com
 
 Returns `true` if the string is already in a form you specify.
 
-```text
+```wel
 unicode_normalized?(text, form)
 ```
 
@@ -236,13 +236,13 @@ The following example tests a composed string against the NFC form:
 
 **Formula**
 
-```text
+```wel
 unicode_normalized?('café', 'nfc')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -252,13 +252,13 @@ The following example tests a decomposed string against the NFC form:
 
 **Formula**
 
-```text
+```wel
 unicode_normalized?(unicode_normalize('café', 'nfd'), 'nfc')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -266,7 +266,7 @@ false
 
 Compares the numeric value of Unicode code points in two strings after normalization.
 
-```text
+```wel
 unicode_compare(first, second, form)
 ```
 
@@ -288,13 +288,13 @@ The following example compares a composed string against its decomposed form:
 
 **Formula**
 
-```text
+```wel
 unicode_compare('café', unicode_normalize('café', 'nfd'))
 ```
 
 **Output**
 
-```text
+```wel
 0
 ```
 
@@ -306,7 +306,7 @@ Text arriving from outside can be built to mislead a person reading it. These fu
 
 Detects text designed to deceive, such as bidirectional overrides, zero-width characters, confusable lookalike characters, Zalgo stacking, or private-use code points.
 
-```text
+```wel
 unicode_contains_suspicious?(text)
 unicode_contains_suspicious?(text, options)
 ```
@@ -322,13 +322,13 @@ The following example tests a domain made entirely of Latin characters:
 
 **Formula**
 
-```text
+```wel
 unicode_contains_suspicious?('paypal.com')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -338,13 +338,13 @@ The following example tests a domain containing a Cyrillic lookalike character:
 
 **Formula**
 
-```text
+```wel
 unicode_contains_suspicious?('pаypal.com')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -360,7 +360,7 @@ Detects right-to-left characters by checking for Unicode Bidi\_Class values of `
 
 Right-to-left characters are legitimate in Arabic and Hebrew text. They are also the mechanism behind attacks that make a string display in a different order from how it's stored, so treat a `true` result as a signal to look rather than an error on its own.
 
-```text
+```wel
 unicode_contains_bidi?(text)
 ```
 
@@ -374,13 +374,13 @@ The following example tests plain ASCII text:
 
 **Formula**
 
-```text
+```wel
 unicode_contains_bidi?('hello')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -388,7 +388,7 @@ false
 
 Detects emoji by checking for the Unicode Emoji\_Presentation property. A character that defaults to text presentation (`❤`) only counts when it's followed by the `U+FE0F` variation selector that requests emoji presentation (`❤️`).
 
-```text
+```wel
 unicode_contains_emoji?(text)
 ```
 
@@ -402,13 +402,13 @@ The following example tests a string containing an emoji:
 
 **Formula**
 
-```text
+```wel
 unicode_contains_emoji?('ok 👍')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -418,13 +418,13 @@ The following example tests a string with no emoji:
 
 **Formula**
 
-```text
+```wel
 unicode_contains_emoji?('plain')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -436,7 +436,7 @@ Japanese systems distinguish two kana scripts and two character widths, and ofte
 
 Convert between the two kana scripts. Conversion covers small kana, `ゔ`/`ヴ`, and the kana iteration marks. The long vowel mark `ー` stays unchanged, because it's shared by both scripts.
 
-```text
+```wel
 hiragana_to_katakana(text)
 katakana_to_hiragana(text)
 ```
@@ -451,7 +451,7 @@ The following example converts hiragana to katakana:
 
 **Formula**
 
-```text
+```wel
 hiragana_to_katakana('ひらがな')
 ```
 
@@ -467,7 +467,7 @@ The following example converts katakana to hiragana:
 
 **Formula**
 
-```text
+```wel
 katakana_to_hiragana('カタカナ')
 ```
 
@@ -481,7 +481,7 @@ katakana_to_hiragana('カタカナ')
 
 Convert ASCII characters between full-width and half-width forms.
 
-```text
+```wel
 to_fullwidth_ascii(text)
 to_halfwidth_ascii(text)
 ```
@@ -496,7 +496,7 @@ The following example converts ASCII characters to their full-width form:
 
 **Formula**
 
-```text
+```wel
 to_fullwidth_ascii('AB1')
 ```
 
@@ -512,7 +512,7 @@ The following example converts full-width characters back to their half-width AS
 
 **Formula**
 
-```text
+```wel
 to_halfwidth_ascii('ＡＢ１')
 ```
 
@@ -526,7 +526,7 @@ AB1
 
 Convert katakana between full-width and half-width forms. `to_halfwidth_katakana` splits a voiced or semi-voiced katakana character into a base character and a separate mark, and `to_fullwidth_katakana` merges them back. `ヰ`, `ヱ`, and the small `ヮ` have no half-width form, so `to_halfwidth_katakana` leaves them unchanged.
 
-```text
+```wel
 to_fullwidth_katakana(text)
 to_halfwidth_katakana(text)
 ```
@@ -541,7 +541,7 @@ The following example converts half-width katakana to its full-width form:
 
 **Formula**
 
-```text
+```wel
 to_fullwidth_katakana('ｶﾀｶﾅ')
 ```
 
@@ -557,7 +557,7 @@ The following example converts full-width katakana to its half-width form:
 
 **Formula**
 
-```text
+```wel
 to_halfwidth_katakana('カタカナ')
 ```
 
@@ -582,7 +582,7 @@ Two systems hold the same customer, but one stored the name decomposed. Use Unic
 
 **Formula**
 
-```text
+```wel
 {
   equal_as_stored: _.crm_name == _.erp_name,
   equal_normalized: unicode_compare(_.crm_name, _.erp_name) == 0,

@@ -41,7 +41,7 @@ Use this page to resolve common [Headless API](/en/agentic/agent-studio/chat-int
 
 **Solution**: Grant the role **Custom chat interface** access with privileges to at least **Create**. You don't need to rotate the token after adding a privilege.
 
-**Related**: Attaching a client returns `409` when the genie already has a client. The relationship is [1:1](/en/workato-api/agent-studio#genie-clients). Detach the existing client first.
+**Related**: A genie can have multiple clients, but each client can be attached to only one genie. [Detach](/en/workato-api/agent-studio#detach-a-client-from-a-genie) the client from its current genie first.
 
 ## Empty stream or repeated blank events
 
@@ -83,7 +83,7 @@ Use this page to resolve common [Headless API](/en/agentic/agent-studio/chat-int
 GET /api/v1/genies/:genie_handle/chat/conversations/:conversation_id/genie-runs/:genie_run_id?since_seq_num=<last_seq_num>
 ```
 
-If you receive a `system.stream_interrupted` event, use `last_seq_num` and wait `retry_after_ms` before reconnecting. Don't reconnect after a `processing.finished` event with the reason `business_approval_pending`. Refer to [Processing finished reasons](/en/agentic/agent-studio/chat-interface/headless-api#processing-finished-reasons). Deduplicate replayed events by `event_id`. Refer to [Duplicate events or event IDs](#duplicate-events-or-event-ids) for more information.
+Use `last_seq_num` and wait `retry_after_ms` before reconnecting if you receive a `system.stream_interrupted` event. Don't reconnect after a `processing.finished` event with the reason `business_approval_pending`. Refer to [Processing finished reasons](/en/agentic/agent-studio/chat-interface/headless-api#processing-finished-reasons). Deduplicate replayed events by `event_id`. Refer to [Duplicate events or event IDs](#duplicate-events-or-event-ids) for more information.
 
 ## Event recovery returns nothing
 

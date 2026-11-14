@@ -95,5 +95,10 @@ Complete the following steps to apply a filter to your dashboard:
 7. Provide a **Label** for the filter.
    
 8. Click **Done** and then **Save** to apply the filter to your dashboard.
+   
+
+> **MULTIPLE WORKSPACES**
+> 
+> Dashboards in a parent workspace include data from all child workspaces by default, but only for usage metrics. Refer to [Filter usage data by workspace](/en/insights/multiple-workspaces#filter-by-workspace) to show individual workspaces.
 
 ---

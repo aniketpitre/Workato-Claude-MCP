@@ -25,7 +25,7 @@ Converts a string to `Binary` using a named encoding.
 
 Use `encode_string` instead of `Binary()` when text can contain non-ASCII characters. `Binary()` raises `E008` for non-ASCII input instead of selecting an encoding.
 
-```text
+```wel
 encode_string(text, encoding)
 ```
 
@@ -40,13 +40,13 @@ The following example encodes an accented string as UTF-8 bytes:
 
 **Formula**
 
-```text
+```wel
 encode_string('café', 'UTF-8')
 ```
 
 **Output**
 
-```text
+```wel
 0x"636166C3A9"
 ```
 
@@ -56,7 +56,7 @@ The `é` occupies two bytes, `C3A9`, so the 4-code-point string `café` encodes 
 
 Converts `Binary` to a string using a named encoding. This conversion strips leading byte-order marks.
 
-```text
+```wel
 decode_string(binary, encoding, options)
 ```
 
@@ -74,7 +74,7 @@ The following example decodes UTF-8 bytes back to the original string:
 
 **Formula**
 
-```text
+```wel
 decode_string(encode_string('café', 'UTF-8'), 'UTF-8')
 ```
 
@@ -90,7 +90,7 @@ Decodes bytes using the charset named in an HTTP `Content-Type` header, rather t
 
 Use it when handling an HTTP response whose encoding you don't control.
 
-```text
+```wel
 decode_string_by_content_type(binary, content_type, options)
 ```
 
@@ -108,7 +108,7 @@ The following functions test whether text or bytes support a specified encoding:
 
 Returns `true` if the string contains only ASCII characters.
 
-```text
+```wel
 ascii_string?(text)
 ```
 
@@ -122,13 +122,13 @@ The following example tests a plain ASCII string:
 
 **Formula**
 
-```text
+```wel
 ascii_string?('plain')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -138,13 +138,13 @@ The following example tests a string containing an accented character:
 
 **Formula**
 
-```text
+```wel
 ascii_string?('café')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -154,7 +154,7 @@ Returns `true` if the given encoding can represent the string without losing any
 
 Check convertibility before sending text to a system with a restricted character set. It's better to reject a record here than to deliver one with characters silently replaced.
 
-```text
+```wel
 convertible_to_encoding?(text, encoding)
 ```
 
@@ -169,13 +169,13 @@ The following example tests whether an accented string can convert to ASCII with
 
 **Formula**
 
-```text
+```wel
 convertible_to_encoding?('café', 'ASCII')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -183,7 +183,7 @@ false
 
 Returns `true` if the bytes are valid in the given encoding and can be decoded.
 
-```text
+```wel
 valid_string?(binary, encoding)
 ```
 
@@ -198,13 +198,13 @@ The following example tests bytes that are valid UTF-8:
 
 **Formula**
 
-```text
+```wel
 valid_string?(Binary('AB'), 'UTF-8')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -212,7 +212,7 @@ true
 
 Lists the encoding types that other encoding functions accept. Encoding names are case-insensitive.
 
-```text
+```wel
 encodings(include_synonyms)
 ```
 
@@ -228,7 +228,7 @@ An email header can only carry ASCII. RFC 2047 wraps anything outside that range
 
 Encodes text as RFC 2047 encoded-words for an email header.
 
-```text
+```wel
 encode_mime_header(text, encoding, mode)
 ```
 
@@ -246,7 +246,7 @@ The following example encodes an accented string as an RFC 2047 encoded-word:
 
 **Formula**
 
-```text
+```wel
 encode_mime_header('café', 'UTF-8')
 ```
 
@@ -260,7 +260,7 @@ encode_mime_header('café', 'UTF-8')
 
 Decodes RFC 2047 encoded-words in an email header back to text. `decode_mime_header` drops whitespace between adjacent encoded-words. Adjacent words can use different charsets.
 
-```text
+```wel
 decode_mime_header(text)
 ```
 
@@ -274,7 +274,7 @@ The following example decodes an RFC 2047 encoded-word back to text:
 
 **Formula**
 
-```text
+```wel
 decode_mime_header('=?UTF-8?B?SGVsbG8=?=')
 ```
 
@@ -298,7 +298,7 @@ The destination exclusively accepts ASCII. Use `convertible_to_encoding?` to che
 
 **Formula**
 
-```text
+```wel
 let parts = _.names >> partition_by(n ~> convertible_to_encoding?(n, 'ASCII'))
 do {
   send: parts >> at(0),

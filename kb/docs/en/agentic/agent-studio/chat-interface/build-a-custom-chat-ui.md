@@ -18,8 +18,8 @@ Use this guide to build a backend that holds credentials and proxies requests an
 
 - [Step 1: Stand up a backend](#step-1-backend) between the browser and the API.
 - [Step 2: Open the stream and run a render loop](#step-2-render-loop) that dispatches each event.
-- [Step 3: Handle each event type](#step-3-skill-events), such as skill activity, approvals, connection requests, and messages.
-- [Step 4: Track state and recover](#step-7-state-and-recovery) after reloads and dropped streams.
+- [Steps 3–6: Handle each event type](#step-3-skill-events), such as skill activity, approvals, connection requests, and messages.
+- [Step 7: Track state and recover](#step-7-state-and-recovery) after reloads and dropped streams.
 
 Each step builds on the previous one. The render loop in step 2 is the spine: every later step is a handler the loop dispatches into.
 
@@ -27,13 +27,15 @@ Each step builds on the previous one. The render loop in step 2 is the spine: ev
 
 Don't call the Headless API directly from the browser. Stand up a small same-origin backend that the browser talks to, and let the backend talk to Workato. This protects credentials and avoids cross-origin (CORS) problems.
 
-- **Don't expose the Developer API token (`wrkaus-…`)** in client-side code. It's a builder secret used only for provisioning. The browser should only ever see the public OAuth `client_id` and the end user's own OAuth access token.
-- **Relay the OAuth token exchange through the backend.** The browser runs the PKCE flow and receives the authorization `code`, then your backend exchanges the `code` (and later the `refresh_token`) at `id.workato.com/oauth/token`. This keeps token handling server-side and avoids cross-origin requests to the identity host.
+Credentials belong to a specific genie client. Use the API key or OAuth `client_id` of the client for the interface you're building if your genie has multiple clients.
+
+- **Don't expose the Developer API token (`wrkaus-…`)** in client-side code. It's a builder secret used only for provisioning. The browser should only see the public OAuth `client_id` and the end user's own OAuth access token.
+- **Relay the OAuth token exchange through the backend.** The browser runs the PKCE flow and receives the authorization `code`, then your backend exchanges the `code` (and later the `refresh_token`) at `id.workato.com/oauth/token`. This keeps token handling server-side and avoids cross-origin requests to the identity host. The `redirect_uri` must match the redirect URL you registered for the client. You can update a client's redirect URL after you create it. Refer to [Genie clients](/en/workato-api/agent-studio#genie-clients) for more information.
 - **For API-key integrations, inject auth on the backend.** The backend holds the API key and adds the `Authorization` and `X-IDP-User-Id` headers to each runtime request, then proxies the SSE stream back to the browser.
 
 > **CHOOSE OAUTH FOR USER-FACING UIS**
 > 
-> Use OAuth 2.0 (PKCE) for any UI that real users sign in to. API-key auth uses a single static key for all callers, so it's only appropriate for trusted server-to-server backends, not browsers. See [Authentication](/en/agentic/agent-studio/chat-interface/headless-api#authentication).
+> Use OAuth 2.0 (PKCE) for any UI that real users sign in to. API-key auth uses a single static key per client for all callers. Use this only for trusted server-to-server backends, not browsers. Refer to [Authentication](/en/agentic/agent-studio/chat-interface/headless-api#authentication) for more information.
 
 ## Step 2: Open the stream and run a render loop
 

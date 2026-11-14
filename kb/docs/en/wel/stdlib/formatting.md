@@ -29,7 +29,7 @@ The distinction that matters here is between _formatting_ and _converting_. `for
 
 Formats a `PlainDate`.
 
-```text
+```wel
 format_date(date, pattern)
 ```
 
@@ -44,7 +44,7 @@ The following example formats a date using a day/month/year pattern:
 
 **Formula**
 
-```text
+```wel
 format_date(PlainDate('2026-03-15'), '%d/%m/%Y')
 ```
 
@@ -58,7 +58,7 @@ format_date(PlainDate('2026-03-15'), '%d/%m/%Y')
 
 Formats a `DateTime` or a `PlainDateTime`.
 
-```text
+```wel
 format_datetime(datetime, pattern)
 ```
 
@@ -73,7 +73,7 @@ The following example formats a datetime showing both the date and time:
 
 **Formula**
 
-```text
+```wel
 format_datetime(DateTime('2026-03-15T09:30:00Z'), '%Y-%m-%d %H:%M')
 ```
 
@@ -87,7 +87,7 @@ format_datetime(DateTime('2026-03-15T09:30:00Z'), '%Y-%m-%d %H:%M')
 
 Formats a `PlainTime`.
 
-```text
+```wel
 format_time(time, pattern)
 ```
 
@@ -102,7 +102,7 @@ The following example formats a time as hour and minute:
 
 **Formula**
 
-```text
+```wel
 format_time(PlainTime('09:30:00'), '%H:%M')
 ```
 
@@ -122,7 +122,7 @@ Formats a `DateTime` as RFC 3339, the format most JSON APIs expect. This functio
 
 Produces the same output as [`to_iso8601`](/en/wel/stdlib/temporal#to-iso8601) for a `DateTime`.
 
-```text
+```wel
 to_rfc3339(datetime)
 ```
 
@@ -136,7 +136,7 @@ The following example formats a datetime as RFC 3339:
 
 **Formula**
 
-```text
+```wel
 to_rfc3339(DateTime('2026-03-15T09:30:00Z'))
 ```
 
@@ -152,7 +152,7 @@ Formats a `DateTime` as RFC 2822, the format used in email headers. This functio
 
 Renders the day and month names in English regardless of locale.
 
-```text
+```wel
 to_rfc2822(datetime)
 ```
 
@@ -166,7 +166,7 @@ The following example formats a datetime as RFC 2822:
 
 **Formula**
 
-```text
+```wel
 to_rfc2822(DateTime('2026-03-15T09:30:00Z'))
 ```
 
@@ -184,7 +184,7 @@ The following functions parse a string into a temporal type, the inverse of form
 
 Parses a string into a `DateTime`.
 
-```text
+```wel
 parse_datetime(text, options)
 ```
 
@@ -201,7 +201,7 @@ The following example parses a datetime string in RFC 3339 format:
 
 **Formula**
 
-```text
+```wel
 parse_datetime('2026-03-15T09:30:00Z')
 ```
 
@@ -217,7 +217,7 @@ The following example parses a datetime string using a custom day/month/year for
 
 **Formula**
 
-```text
+```wel
 parse_datetime('15/03/2026', {format: '%d/%m/%Y'})
 ```
 
@@ -237,7 +237,7 @@ parse_datetime('15/03/2026', {format: '%d/%m/%Y'})
 
 Parses a string into a `PlainDateTime`, with no zone attached.
 
-```text
+```wel
 parse_plain_datetime(text, options)
 ```
 
@@ -252,7 +252,7 @@ The following example parses a plain datetime string using a custom format:
 
 **Formula**
 
-```text
+```wel
 parse_plain_datetime('2026-03-15 09:30', {format: '%Y-%m-%d %H:%M'})
 ```
 
@@ -272,7 +272,7 @@ The following examples show the default locale, `en-US`.
 
 Formats a number using the locale's grouping and decimal separators.
 
-```text
+```wel
 to_local_string(number)
 ```
 
@@ -286,7 +286,7 @@ The following example formats a number using the locale's grouping and decimal s
 
 **Formula**
 
-```text
+```wel
 to_local_string(1234567.891)
 ```
 
@@ -300,7 +300,7 @@ to_local_string(1234567.891)
 
 Formats a number as a currency amount, using the locale's currency symbol and conventions. Rounds to the currency's standard number of fractional digits, for example 2 for USD and EUR, 0 for JPY, and 3 for BHD, and places the negative sign where the locale convention puts it. Renders `Infinity` as literal text rather than a numeric-looking string.
 
-```text
+```wel
 to_local_currency(number)
 ```
 
@@ -314,7 +314,7 @@ The following example formats a number as a currency amount:
 
 **Formula**
 
-```text
+```wel
 to_local_currency(1234.5)
 ```
 
@@ -332,7 +332,7 @@ The following functions join a list's elements into a single delimited string:
 
 Joins the elements of a list into one string, with an optional separator. Omitting the separator concatenates the elements directly.
 
-```text
+```wel
 join_to_string(list, separator)
 ```
 
@@ -347,7 +347,7 @@ The following example joins list elements with a comma separator:
 
 **Formula**
 
-```text
+```wel
 join_to_string(['a', 'b', 'c'], ', ')
 ```
 
@@ -363,7 +363,7 @@ The following example joins list elements directly, with no separator:
 
 **Formula**
 
-```text
+```wel
 join_to_string(['a', 'b'])
 ```
 
@@ -377,7 +377,7 @@ ab
 
 Joins the elements using the list separator from the **data-plane** locale, rather than one you supply.
 
-```text
+```wel
 join_to_local_string(list, separator)
 ```
 
@@ -392,7 +392,7 @@ The following example joins list elements using the data-plane locale's separato
 
 **Formula**
 
-```text
+```wel
 join_to_local_string(['a', 'b', 'c'])
 ```
 
@@ -414,7 +414,7 @@ Serializes a value to a WEL literal that parses back to the same value.
 
 `to_wel` renders a constructed type as its constructor call, a `Binary` as a `0x"..."` literal, quotes a `Map` key only when it isn't a plain name, and serializes `Skip` as the literal `Skip`.
 
-```text
+```wel
 to_wel(value)
 ```
 
@@ -428,13 +428,13 @@ The following example serializes a map to a WEL literal:
 
 **Formula**
 
-```text
+```wel
 to_wel({sku: 'WID-1', qty: 3})
 ```
 
 **Output**
 
-```text
+```wel
 {sku: 'WID-1', qty: 3}
 ```
 
@@ -454,7 +454,7 @@ An order confirmation line needs several values combined into one finished sente
 
 **Formula**
 
-```text
+```wel
 f"Order {_.id} ships {format_date(PlainDate(_.ship_date), '%d %b %Y')} for {to_local_currency(_.total)}"
 ```
 

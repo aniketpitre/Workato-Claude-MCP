@@ -30,7 +30,7 @@ The underscore (`_`) is the variable that contains the expression's input values
 
 The following formulas use input fields `name` (string), `quantity` (integer), and `items` (list of objects):
 
-```text
+```wel
 _.name           // The value mapped into the name input field
 _.quantity * 2   // Double the value of quantity. Arithmetic works directly on integers.
 _.items          // The whole list
@@ -57,7 +57,7 @@ WEL doesn't implicitly convert between types. Operators and functions check oper
 
 A common case is mixing a number into a string with `++`:
 
-```text
+```wel
 // Error E101: ++ requires both sides to be String
 "Age: " ++ _.age
 
@@ -67,7 +67,7 @@ A common case is mixing a number into a string with `++`:
 
 String interpolation is the one place conversion is automatic, other than with the [Mixed precision flag](#input). WEL coerces expressions interpolated inside `"..."` and `"""..."""` to String for you:
 
-```text
+```wel
 "Order ${_.order_id} has ${length(_.items)} items"
 ```
 
@@ -89,7 +89,7 @@ This action returns the expression's output value as datapills according to the 
 
 A common shaping pattern is to derive a result, then return a map literal whose keys match the output schema:
 
-```text
+```wel
 let items = _.order.items
               >> filter_by(i ~> i.qty * i.unit_price > 50) do
 {
@@ -114,7 +114,7 @@ Workato applies the following rules when matching the expression's result to the
 
 Use `Skip` to omit an optional field from the output entirely rather than emitting it as `null`. WEL strips `Skip` from the result before returning it:
 
-```text
+```wel
 {
   id: _.id,
   note: if blank?(_.note) then Skip else _.note

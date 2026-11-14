@@ -19,7 +19,7 @@ Returns the element of a `List` at an index, or the value of a `Map` at a key.
 
 `at` behaves the same whether `collection` is a `List` or a `Map`. Refer to [List functions](/en/wel/stdlib/list#at) and [Map functions](/en/wel/stdlib/map#at) for type-specific examples and related functions like `find_by` and `pluck`.
 
-```text
+```wel
 at(collection, index)
 ```
 
@@ -34,7 +34,7 @@ The following example returns the element at index `0`:
 
 **Formula**
 
-```text
+```wel
 at(['pending', 'shipped', 'closed'], 0)
 ```
 
@@ -50,13 +50,13 @@ The following example returns the value at a key:
 
 **Formula**
 
-```text
+```wel
 at({sku: 'WID-1', qty: 3}, 'qty')
 ```
 
 **Output**
 
-```text
+```wel
 3
 ```
 
@@ -70,7 +70,7 @@ Returns the length of a `String` in code points, the number of elements in a `Li
 
 `length` counts code points, not bytes, for a string. Some emoji and accented letters are made of several code points combined into a single user-perceived character (grapheme cluster). Refer to [Unicode functions](/en/wel/stdlib/unicode) for grapheme clusters.
 
-```text
+```wel
 length(value)
 ```
 
@@ -84,13 +84,13 @@ The following example counts each code point in the string:
 
 **Formula**
 
-```text
+```wel
 length('hello')
 ```
 
 **Output**
 
-```text
+```wel
 5
 ```
 
@@ -100,13 +100,13 @@ The following example counts each element in the list:
 
 **Formula**
 
-```text
+```wel
 length(['a', 'b'])
 ```
 
 **Output**
 
-```text
+```wel
 2
 ```
 
@@ -116,13 +116,13 @@ The following example counts each key in the map:
 
 **Formula**
 
-```text
+```wel
 length({a: 1, b: 2, c: 3})
 ```
 
 **Output**
 
-```text
+```wel
 3
 ```
 
@@ -136,7 +136,7 @@ Returns `true` when a value is actually usable: Not `null`, not empty, not white
 
 `false` returns as `true` because it's a meaningful value in a pipeline, not an absence. This differs from Ruby's `blank?`.
 
-```text
+```wel
 present?(value)
 ```
 
@@ -150,13 +150,13 @@ The following example tests a non-empty string:
 
 **Formula**
 
-```text
+```wel
 present?('SO-1001')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -166,13 +166,13 @@ The following example tests a whitespace-only string:
 
 **Formula**
 
-```text
+```wel
 present?('   ')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -182,13 +182,13 @@ The following example tests a `null` value:
 
 **Formula**
 
-```text
+```wel
 present?(null)
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -198,13 +198,13 @@ The following example tests an empty list:
 
 **Formula**
 
-```text
+```wel
 present?([])
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -214,13 +214,13 @@ The following example tests a boolean `false` value, which is meaningful data, n
 
 **Formula**
 
-```text
+```wel
 present?(false)
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -230,13 +230,13 @@ Returns the value when it's present, and `null` when it isn't or when the value 
 
 `presence` is the companion to `present?`, and the two are for different jobs. `present?` gives you a `Boolean` to branch on. `presence` normalizes every kind of absence: Empty string, whitespace-only string, empty list or map, `Infinity`, down to a single `null`. This lets the fallback operator `|` catch all of them at once:
 
-```text
+```wel
 presence(_.nickname) | 'none'
 ```
 
 Without `presence`, a field containing `' '` isn't `null`, so `|` would pass the whitespace straight through.
 
-```text
+```wel
 presence(value)
 ```
 
@@ -250,7 +250,7 @@ The following example passes a usable value through unchanged:
 
 **Formula**
 
-```text
+```wel
 presence('SO-1001')
 ```
 
@@ -266,13 +266,13 @@ The following example normalizes a whitespace-only string to `null`:
 
 **Formula**
 
-```text
+```wel
 presence('   ')
 ```
 
 **Output**
 
-```text
+```wel
 null
 ```
 
@@ -294,7 +294,7 @@ A CRM export supplies a display name that is sometimes blank and a legal name th
 
 **Formula**
 
-```text
+```wel
 _.contacts >> map_by(c ~> {
   id: c.id,
   name: presence(c.display_name) | presence(c.legal_name) | 'Unknown'
@@ -323,7 +323,7 @@ Returns the name of a value's type as a `String`. Calling `type_of` on a lambda 
 
 Most useful for writing condition lambdas, which decide which leaves of a payload a rule should apply to, and for diagnosing a transformation that is failing on unexpected input.
 
-```text
+```wel
 type_of(value)
 ```
 
@@ -337,7 +337,7 @@ The following example returns the type of a string:
 
 **Formula**
 
-```text
+```wel
 type_of('SO-1001')
 ```
 
@@ -353,7 +353,7 @@ The following example returns the type of an integer:
 
 **Formula**
 
-```text
+```wel
 type_of(42)
 ```
 
@@ -369,7 +369,7 @@ The following example returns the type of a decimal:
 
 **Formula**
 
-```text
+```wel
 type_of(Decimal('1.50'))
 ```
 
@@ -385,7 +385,7 @@ The following example returns the type of a list:
 
 **Formula**
 
-```text
+```wel
 type_of([1])
 ```
 
@@ -401,7 +401,7 @@ The following example returns the type of a map:
 
 **Formula**
 
-```text
+```wel
 type_of({a: 1})
 ```
 
@@ -417,7 +417,7 @@ The following example returns the type of a `null` value:
 
 **Formula**
 
-```text
+```wel
 type_of(null)
 ```
 

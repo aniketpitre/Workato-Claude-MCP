@@ -29,7 +29,7 @@ Generates a version 4 UUID as a 36-character string, in the standard `8-4-4-4-12
 
 Use `uuid` by default. Its length makes a collision impractical, and every system that accepts an identifier recognizes the format. It takes no arguments.
 
-```text
+```wel
 uuid()
 ```
 
@@ -39,13 +39,13 @@ The following example generates a UUID and measures its length:
 
 **Formula**
 
-```text
+```wel
 length(uuid())
 ```
 
 **Output**
 
-```text
+```wel
 36
 ```
 
@@ -57,7 +57,7 @@ Generates a given number of random bytes and returns them as twice as many hexad
 
 Use it where a system wants an opaque token but doesn't accept the hyphens in a UUID.
 
-```text
+```wel
 random_hex(bytes)
 ```
 
@@ -71,13 +71,13 @@ The following example generates a random hex string and measures its length:
 
 **Formula**
 
-```text
+```wel
 length(random_hex(16))
 ```
 
 **Output**
 
-```text
+```wel
 32
 ```
 
@@ -91,7 +91,7 @@ Returns a random integer between `min` and `max`, both included.
 
 `min` and `max` must be `Integer` values within the 64-bit signed integer range. Non-integer data types raise `E100`. A value outside the 64-bit signed integer range raises `E211`. Values that set `max` less than `min` raise `E211` instead of swapping the bounds. `random_int` returns the shared value when `min` and `max` are equal.
 
-```text
+```wel
 random_int(min, max)
 ```
 
@@ -106,7 +106,7 @@ Returns a random `Float` between `0.0` and `1.0`, including the lower bound but 
 
 Don't use `random_float` for anything requiring exact decimal arithmetic, because it returns a `Float`. Refer to [Data types](/en/wel/language/data-types). It takes no arguments.
 
-```text
+```wel
 random_float()
 ```
 
@@ -120,7 +120,7 @@ Returns a given number of random bytes as a `Binary` value.
 
 Use it where you genuinely need a byte sequence, such as a salt or an initialization vector for [crypto functions](/en/wel/stdlib/crypto). `random_hex` or `uuid` gives you a string directly for an identifier you intend to put in a field or a URL.
 
-```text
+```wel
 random_bytes(count)
 ```
 
@@ -134,13 +134,13 @@ The following example generates random bytes and measures their length:
 
 **Formula**
 
-```text
+```wel
 byte_length(random_bytes(8))
 ```
 
 **Output**
 
-```text
+```wel
 8
 ```
 

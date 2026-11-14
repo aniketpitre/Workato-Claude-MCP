@@ -40,7 +40,7 @@ These take a `PlainDate`, `DateTime`, or `PlainDateTime` and return one part of 
 
 Returns the year.
 
-```text
+```wel
 year(value)
 ```
 
@@ -54,13 +54,13 @@ The following example returns the year from a calendar date:
 
 **Formula**
 
-```text
+```wel
 year(PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 2026
 ```
 
@@ -68,7 +68,7 @@ year(PlainDate('2026-03-15'))
 
 Returns the month as a number from 1 to 12.
 
-```text
+```wel
 month(value)
 ```
 
@@ -82,13 +82,13 @@ The following example returns the month number from a calendar date:
 
 **Formula**
 
-```text
+```wel
 month(PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 3
 ```
 
@@ -96,7 +96,7 @@ month(PlainDate('2026-03-15'))
 
 Returns the day of the month, from 1 to 31.
 
-```text
+```wel
 day(value)
 ```
 
@@ -110,13 +110,13 @@ The following example returns the day of the month from a calendar date:
 
 **Formula**
 
-```text
+```wel
 day(PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 15
 ```
 
@@ -124,7 +124,7 @@ day(PlainDate('2026-03-15'))
 
 Returns the calendar quarter, from 1 to 4.
 
-```text
+```wel
 quarter(value)
 ```
 
@@ -138,13 +138,13 @@ The following example returns the calendar quarter from a date:
 
 **Formula**
 
-```text
+```wel
 quarter(PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 1
 ```
 
@@ -152,7 +152,7 @@ quarter(PlainDate('2026-03-15'))
 
 Returns the day of the year, from 1 to 366.
 
-```text
+```wel
 day_of_year(value)
 ```
 
@@ -166,13 +166,13 @@ The following example returns the day number within the year:
 
 **Formula**
 
-```text
+```wel
 day_of_year(PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 74
 ```
 
@@ -182,7 +182,7 @@ Returns the day of the week from 1 to 7, where 1 is the _locale's_ first day of 
 
 That makes the number locale-dependent: The same date is `1` where the week starts on Sunday and `7` where it starts on Monday. Prefer an explicit comparison against `day_of_week_name`, or confirm the recipe's locale, when the number is going into a destination system.
 
-```text
+```wel
 day_of_week(value)
 ```
 
@@ -196,13 +196,13 @@ The following example returns the day of the week as a locale-dependent number:
 
 **Formula**
 
-```text
+```wel
 day_of_week(PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 1
 ```
 
@@ -210,7 +210,7 @@ day_of_week(PlainDate('2026-03-15'))
 
 Returns the localized name of the day.
 
-```text
+```wel
 day_of_week_name(value)
 ```
 
@@ -224,7 +224,7 @@ The following example returns the localized name of the day:
 
 **Formula**
 
-```text
+```wel
 day_of_week_name(PlainDate('2026-03-15'))
 ```
 
@@ -238,7 +238,7 @@ Sunday
 
 Returns the localized name of the month.
 
-```text
+```wel
 month_name(value)
 ```
 
@@ -252,7 +252,7 @@ The following example returns the localized name of the month:
 
 **Formula**
 
-```text
+```wel
 month_name(PlainDate('2026-03-15'))
 ```
 
@@ -266,7 +266,7 @@ March
 
 Returns the hour, from 0 to 23.
 
-```text
+```wel
 hour(value)
 ```
 
@@ -280,13 +280,13 @@ The following example returns the hour from a timestamp:
 
 **Formula**
 
-```text
+```wel
 hour(DateTime('2026-03-15T09:30:45Z'))
 ```
 
 **Output**
 
-```text
+```wel
 9
 ```
 
@@ -294,7 +294,7 @@ hour(DateTime('2026-03-15T09:30:45Z'))
 
 Returns the minute, from 0 to 59.
 
-```text
+```wel
 minute(value)
 ```
 
@@ -308,13 +308,13 @@ The following example returns the minute from a timestamp:
 
 **Formula**
 
-```text
+```wel
 minute(DateTime('2026-03-15T09:30:45Z'))
 ```
 
 **Output**
 
-```text
+```wel
 30
 ```
 
@@ -322,7 +322,7 @@ minute(DateTime('2026-03-15T09:30:45Z'))
 
 Returns the second as a `Decimal`, so fractional precision is preserved.
 
-```text
+```wel
 second(value)
 ```
 
@@ -336,13 +336,13 @@ The following example returns the second from a timestamp:
 
 **Formula**
 
-```text
+```wel
 second(DateTime('2026-03-15T09:30:45Z'))
 ```
 
 **Output**
 
-```text
+```wel
 45
 ```
 
@@ -350,7 +350,7 @@ second(DateTime('2026-03-15T09:30:45Z'))
 
 Returns the wall-clock time as a `PlainTime`. With a time zone argument, it returns the local time in that zone instead.
 
-```text
+```wel
 time(datetime, timezone)
 ```
 
@@ -365,7 +365,7 @@ The following example returns the wall-clock time with no time zone given:
 
 **Formula**
 
-```text
+```wel
 time(DateTime('2026-03-15T09:30:45Z'))
 ```
 
@@ -381,7 +381,7 @@ The following example returns the wall-clock time as read in Tokyo:
 
 **Formula**
 
-```text
+```wel
 time(DateTime('2026-03-15T09:30:45Z'), 'Asia/Tokyo')
 ```
 
@@ -395,7 +395,7 @@ time(DateTime('2026-03-15T09:30:45Z'), 'Asia/Tokyo')
 
 Decomposes any temporal value, including `Duration`, into a map of its components. A `DateTime`'s map also includes an `offset` key. A `Duration`'s `hours` component isn't capped at 24, so a 30-hour duration reports `hours: 30` rather than rolling over into days.
 
-```text
+```wel
 to_map(value)
 ```
 
@@ -409,13 +409,13 @@ The following example decomposes a calendar date into its components:
 
 **Formula**
 
-```text
+```wel
 to_map(PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 {year: 2026, month: 3, day: 15}
 ```
 
@@ -425,13 +425,13 @@ The following example decomposes a duration into its components:
 
 **Formula**
 
-```text
+```wel
 to_map(Duration('PT2H30M'))
 ```
 
 **Output**
 
-```text
+```wel
 {hours: 2, minutes: 30, seconds: 0}
 ```
 
@@ -445,7 +445,7 @@ Adds a number of months, _clamping_ to the end of the month when the target has 
 
 January 31 plus one month is February 28, or 29 in a leap year. Use this when a business rule means "the same date next month, or the last day if there isn't one," which describes most billing and subscription rules.
 
-```text
+```wel
 add_months(date, months)
 ```
 
@@ -462,7 +462,7 @@ The following example clamps to the last day of a shorter month:
 
 **Formula**
 
-```text
+```wel
 add_months(PlainDate('2026-01-31'), 1)
 ```
 
@@ -478,7 +478,7 @@ The following example moves a date backward using a negative number of months:
 
 **Formula**
 
-```text
+```wel
 add_months(PlainDate('2026-03-15'), -2)
 ```
 
@@ -494,7 +494,7 @@ Advances a `PlainDate` by any combination of years, months, and days.
 
 `advance_date` raises catchable `E212` rather than clamping when the result wouldn't be a real date, unlike `add_months`. Use it when an impossible date means the input was wrong. A result outside the years 1 to 9999 raises `E211` instead.
 
-```text
+```wel
 advance_date(date, delta)
 ```
 
@@ -509,7 +509,7 @@ The following example advances a date by a number of days:
 
 **Formula**
 
-```text
+```wel
 advance_date(PlainDate('2026-03-15'), {days: 10})
 ```
 
@@ -525,7 +525,7 @@ The following example advances a date by years and months together:
 
 **Formula**
 
-```text
+```wel
 advance_date(PlainDate('2026-03-15'), {years: 1, months: 2})
 ```
 
@@ -541,7 +541,7 @@ Decomposes the gap between two dates into years, months, and days.
 
 `date_diff` measures _from the first date to the second_, so a second date that is earlier gives negative components.
 
-```text
+```wel
 date_diff(from, to)
 ```
 
@@ -556,13 +556,13 @@ The following example measures the gap from an earlier date to a later one:
 
 **Formula**
 
-```text
+```wel
 date_diff(PlainDate('2025-01-10'), PlainDate('2026-03-15'))
 ```
 
 **Output**
 
-```text
+```wel
 {years: 1, months: 2, days: 5}
 ```
 
@@ -572,13 +572,13 @@ The following example measures the gap from a later date to an earlier one, whic
 
 **Formula**
 
-```text
+```wel
 date_diff(PlainDate('2026-03-15'), PlainDate('2025-01-10'))
 ```
 
 **Output**
 
-```text
+```wel
 {years: -1, months: -2, days: -5}
 ```
 
@@ -586,7 +586,7 @@ date_diff(PlainDate('2026-03-15'), PlainDate('2025-01-10'))
 
 Advances a `DateTime` by years, months, days, hours, minutes, or seconds, in a given time zone.
 
-```text
+```wel
 advance_datetime(datetime, delta, timezone, on_gap, on_fold)
 ```
 
@@ -606,7 +606,7 @@ The following example advances a datetime by hours:
 
 **Formula**
 
-```text
+```wel
 advance_datetime(DateTime('2026-03-15T09:30:00Z'), {hours: 5})
 ```
 
@@ -626,7 +626,7 @@ Adds a duration, written as an ISO 8601 string, to a `DateTime`.
 
 Clock-only durations such as `PT2H` preserve the offset. Calendar durations such as `P1D` apply in the given time zone, or the locale's, so that "one day later" stays the same wall-clock time across a daylight-saving change.
 
-```text
+```wel
 datetime_add_duration(datetime, duration, timezone, on_gap, on_fold)
 ```
 
@@ -645,7 +645,7 @@ The following example adds a clock duration to a datetime:
 
 **Formula**
 
-```text
+```wel
 datetime_add_duration(DateTime('2026-03-15T09:30:00Z'), 'PT2H')
 ```
 
@@ -659,7 +659,7 @@ datetime_add_duration(DateTime('2026-03-15T09:30:00Z'), 'PT2H')
 
 Subtracts a duration from a `DateTime`.
 
-```text
+```wel
 datetime_sub_duration(datetime, duration, timezone, on_gap, on_fold)
 ```
 
@@ -676,7 +676,7 @@ The following example subtracts a calendar duration from a datetime:
 
 **Formula**
 
-```text
+```wel
 datetime_sub_duration(DateTime('2026-03-15T09:30:00Z'), 'P1D')
 ```
 
@@ -694,7 +694,7 @@ The following functions measure the interval between two instants, as a `Duratio
 
 Returns the signed duration from the first instant to the second.
 
-```text
+```wel
 until(from, to)
 ```
 
@@ -709,7 +709,7 @@ The following example measures the duration from an earlier instant to a later o
 
 **Formula**
 
-```text
+```wel
 until(DateTime('2026-03-15T09:00:00Z'), DateTime('2026-03-15T11:30:00Z'))
 ```
 
@@ -725,7 +725,7 @@ Returns the signed duration between two instants, taking the _second from the fi
 
 `since(now(), created_at)` matches how the question is normally phrased: "how long since it was created?"
 
-```text
+```wel
 since(later, earlier)
 ```
 
@@ -740,7 +740,7 @@ The following example measures how long has passed since an earlier instant:
 
 **Formula**
 
-```text
+```wel
 since(DateTime('2026-03-15T11:30:00Z'), DateTime('2026-03-15T09:00:00Z'))
 ```
 
@@ -754,7 +754,7 @@ PT2H30M
 
 Convert a `Duration` to a whole number of the named unit, truncating rather than rounding. `PT150M` is `2` hours, not `3`.
 
-```text
+```wel
 in_days(duration)
 in_hours(duration)
 in_minutes(duration)
@@ -771,13 +771,13 @@ The following example converts a duration to whole hours, truncating the remaind
 
 **Formula**
 
-```text
+```wel
 in_hours(Duration('PT150M'))
 ```
 
 **Output**
 
-```text
+```wel
 2
 ```
 
@@ -787,13 +787,13 @@ The following example converts a duration to whole minutes:
 
 **Formula**
 
-```text
+```wel
 in_minutes(Duration('PT2H30M'))
 ```
 
 **Output**
 
-```text
+```wel
 150
 ```
 
@@ -803,13 +803,13 @@ The following example converts a duration to whole seconds:
 
 **Formula**
 
-```text
+```wel
 in_seconds(Duration('PT1M30S'))
 ```
 
 **Output**
 
-```text
+```wel
 90
 ```
 
@@ -819,13 +819,13 @@ The following example converts a duration to whole days:
 
 **Formula**
 
-```text
+```wel
 in_days(Duration('PT72H'))
 ```
 
 **Output**
 
-```text
+```wel
 3
 ```
 
@@ -854,7 +854,7 @@ A support queue needs tickets flagged once they've been open too long. Measure e
 
 **Formula**
 
-```text
+```wel
 _.tickets >> map_by(t ~> {
   id: t.id,
   age_hours: in_hours(since(now(), DateTime(t.created_at))),
@@ -883,7 +883,7 @@ Each accepts no arguments for the current instant in UTC, one argument for a sup
 
 Return the first and last instant of the calendar day.
 
-```text
+```wel
 start_of_day(datetime)
 end_of_day(datetime, timezone)
 ```
@@ -899,7 +899,7 @@ The following example finds the first instant of the day:
 
 **Formula**
 
-```text
+```wel
 start_of_day(DateTime('2026-03-15T09:30:00Z'))
 ```
 
@@ -915,7 +915,7 @@ The following example finds the last instant of the day:
 
 **Formula**
 
-```text
+```wel
 end_of_day(DateTime('2026-03-15T09:30:00Z'))
 ```
 
@@ -931,7 +931,7 @@ end_of_day(DateTime('2026-03-15T09:30:00Z'))
 
 Returns the first instant of the hour.
 
-```text
+```wel
 start_of_hour(datetime, timezone)
 ```
 
@@ -946,7 +946,7 @@ The following example finds the first instant of the hour:
 
 **Formula**
 
-```text
+```wel
 start_of_hour(DateTime('2026-03-15T09:30:45Z'))
 ```
 
@@ -960,7 +960,7 @@ start_of_hour(DateTime('2026-03-15T09:30:45Z'))
 
 These functions are locale-aware. Which day the week starts on depends on the recipe's locale.
 
-```text
+```wel
 start_of_week(value)
 end_of_week(value, timezone)
 ```
@@ -976,7 +976,7 @@ The following example finds the first day of the week:
 
 **Formula**
 
-```text
+```wel
 start_of_week(PlainDate('2026-03-15'))
 ```
 
@@ -992,7 +992,7 @@ The following example finds the last day of the week:
 
 **Formula**
 
-```text
+```wel
 end_of_week(PlainDate('2026-03-15'))
 ```
 
@@ -1006,7 +1006,7 @@ end_of_week(PlainDate('2026-03-15'))
 
 Return the first and last day of the calendar month.
 
-```text
+```wel
 start_of_month(value)
 end_of_month(value, timezone)
 ```
@@ -1022,7 +1022,7 @@ The following example finds the first day of the month:
 
 **Formula**
 
-```text
+```wel
 start_of_month(PlainDate('2026-03-15'))
 ```
 
@@ -1038,7 +1038,7 @@ The following example finds the last day of the month:
 
 **Formula**
 
-```text
+```wel
 end_of_month(PlainDate('2026-03-15'))
 ```
 
@@ -1052,7 +1052,7 @@ end_of_month(PlainDate('2026-03-15'))
 
 Return the first and last day of the calendar quarter.
 
-```text
+```wel
 start_of_quarter(value)
 end_of_quarter(value, timezone)
 ```
@@ -1068,7 +1068,7 @@ The following example finds the first day of the quarter:
 
 **Formula**
 
-```text
+```wel
 start_of_quarter(PlainDate('2026-03-15'))
 ```
 
@@ -1084,7 +1084,7 @@ The following example finds the last day of the quarter:
 
 **Formula**
 
-```text
+```wel
 end_of_quarter(PlainDate('2026-03-15'))
 ```
 
@@ -1098,7 +1098,7 @@ end_of_quarter(PlainDate('2026-03-15'))
 
 Return the first and last day of the calendar year.
 
-```text
+```wel
 start_of_year(value)
 end_of_year(value, timezone)
 ```
@@ -1114,7 +1114,7 @@ The following example finds the first day of the year:
 
 **Formula**
 
-```text
+```wel
 start_of_year(PlainDate('2026-03-15'))
 ```
 
@@ -1130,7 +1130,7 @@ The following example finds the last day of the year:
 
 **Formula**
 
-```text
+```wel
 end_of_year(PlainDate('2026-03-15'))
 ```
 
@@ -1152,7 +1152,7 @@ A report needs the first and last day of the current calendar month. Build both 
 
 **Formula**
 
-```text
+```wel
 {
   from: start_of_month(PlainDate(now())),
   to: end_of_month(PlainDate(now()))
@@ -1175,7 +1175,7 @@ The following functions convert a `DateTime` between time zones and inspect its 
 
 Re-renders the same instant in another time zone. The instant doesn't change, only how it reads.
 
-```text
+```wel
 in_tz(datetime, timezone)
 ```
 
@@ -1190,7 +1190,7 @@ The following example re-renders an instant in another time zone:
 
 **Formula**
 
-```text
+```wel
 in_tz(DateTime('2026-03-15T09:30:00Z'), 'Asia/Tokyo')
 ```
 
@@ -1206,7 +1206,7 @@ Interprets a `PlainDateTime`'s wall-clock reading as occurring in a given time z
 
 `assume_tz` is the opposite direction to `in_tz`. `in_tz` keeps the instant and changes the reading. `assume_tz` keeps the reading and determines the instant. Use it when a source system sends a local time and tells you the zone separately.
 
-```text
+```wel
 assume_tz(plain_datetime, timezone, on_gap, on_fold)
 ```
 
@@ -1223,7 +1223,7 @@ The following example interprets a wall-clock reading as occurring in a given ti
 
 **Formula**
 
-```text
+```wel
 assume_tz(PlainDateTime('2026-03-15T09:30:00'), 'Europe/London')
 ```
 
@@ -1237,7 +1237,7 @@ assume_tz(PlainDateTime('2026-03-15T09:30:00'), 'Europe/London')
 
 Returns the offset from UTC as a canonical string: `Z`, or a signed offset such as `+02:00`. A historical offset that carries seconds prints as `+HH:MM:SS` instead.
 
-```text
+```wel
 utc_offset(datetime)
 ```
 
@@ -1251,7 +1251,7 @@ The following example gets the offset for an instant in UTC:
 
 **Formula**
 
-```text
+```wel
 utc_offset(DateTime('2026-03-15T09:30:00Z'))
 ```
 
@@ -1267,7 +1267,7 @@ The following example gets the offset after converting to another time zone:
 
 **Formula**
 
-```text
+```wel
 utc_offset(in_tz(DateTime('2026-07-15T09:30:00Z'), 'Asia/Tokyo'))
 ```
 
@@ -1281,7 +1281,7 @@ utc_offset(in_tz(DateTime('2026-07-15T09:30:00Z'), 'Asia/Tokyo'))
 
 Returns `true` if daylight saving time is in effect at that instant in that zone.
 
-```text
+```wel
 is_dst?(datetime, timezone)
 ```
 
@@ -1296,13 +1296,13 @@ The following example detects daylight saving time in effect during summer in Lo
 
 **Formula**
 
-```text
+```wel
 is_dst?(DateTime('2026-07-15T09:30:00Z'), 'Europe/London')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -1312,13 +1312,13 @@ The following example detects standard time in London during winter, with no day
 
 **Formula**
 
-```text
+```wel
 is_dst?(DateTime('2026-01-15T09:30:00Z'), 'Europe/London')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -1326,7 +1326,7 @@ false
 
 Returns `true` if the time zone observes daylight saving at all, in a given year. A one-time change to a zone's standard-time offset, such as a country abandoning daylight saving entirely, doesn't count as observing it.
 
-```text
+```wel
 observes_dst?(timezone)
 observes_dst?(timezone, year)
 ```
@@ -1342,13 +1342,13 @@ The following example checks a time zone that observes daylight saving:
 
 **Formula**
 
-```text
+```wel
 observes_dst?('Europe/London')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -1358,13 +1358,13 @@ The following example checks a time zone that doesn't observe daylight saving:
 
 **Formula**
 
-```text
+```wel
 observes_dst?('Asia/Tokyo')
 ```
 
 **Output**
 
-```text
+```wel
 false
 ```
 
@@ -1374,13 +1374,12 @@ Russia abandoned daylight saving permanently in 2014, shifting its standard-time
 
 **Formula**
 
-```text
-observes_dst?('Europe/Moscow', 2014)
+observes\_dst?('Europe/Moscow', 2014)
+
 ```
 
 **Output**
 
-```text
 false
 ```
 
@@ -1401,7 +1400,7 @@ Two events on the same UTC day fall on different calendar dates in Tokyo. Conver
 
 **Formula**
 
-```text
+```wel
 _.events >> map_by(e ~> {
   id: e.id,
   tokyo_date: PlainDate(in_tz(DateTime(e.at), 'Asia/Tokyo'))
@@ -1427,7 +1426,7 @@ The following functions read the current instant, or convert to and from Unix ep
 
 Returns the current instant with a UTC offset that's fixed for the whole step. It takes no arguments.
 
-```text
+```wel
 now()
 ```
 
@@ -1435,7 +1434,7 @@ now()
 
 Builds a `DateTime` from Unix epoch seconds.
 
-```text
+```wel
 epoch(seconds)
 ```
 
@@ -1449,7 +1448,7 @@ The following example builds a datetime from Unix epoch seconds:
 
 **Formula**
 
-```text
+```wel
 epoch(1773567000)
 ```
 
@@ -1463,7 +1462,7 @@ epoch(1773567000)
 
 Converts a `DateTime` to Unix epoch seconds, as a `Decimal` so nanosecond precision survives.
 
-```text
+```wel
 to_epoch(datetime)
 ```
 
@@ -1477,13 +1476,13 @@ The following example converts a datetime to Unix epoch seconds:
 
 **Formula**
 
-```text
+```wel
 to_epoch(DateTime('2026-03-15T09:30:00Z'))
 ```
 
 **Output**
 
-```text
+```wel
 1773567000
 ```
 
@@ -1491,7 +1490,7 @@ to_epoch(DateTime('2026-03-15T09:30:00Z'))
 
 Formats a `DateTime` as ISO 8601 with its offset. A fractional-second component prints with no trailing zeros.
 
-```text
+```wel
 to_iso8601(datetime)
 ```
 
@@ -1505,7 +1504,7 @@ The following example formats a datetime as ISO 8601:
 
 **Formula**
 
-```text
+```wel
 to_iso8601(DateTime('2026-03-15T09:30:00Z'))
 ```
 

@@ -90,13 +90,13 @@ Mixing types raises `E101`. `'x' ++ 1` is an error, not `x1`. Convert with `Stri
 
 Pipelines read left to right, in the order the steps run. In the following examples `lower` runs first, then `trim`, then `upper`:
 
-```text
+```wel
 _.email >> lower >> trim >> upper
 ```
 
 Nested calls can achieve the same result as pipelines, but they force you to read the transformation inside-out:
 
-```text
+```wel
 upper(trim(lower(_.email)))
 ```
 
@@ -104,13 +104,13 @@ This is especially important with lambdas, where nesting quickly becomes unreada
 
 **Nested call**
 
-```text
+```wel
 take(reverse(sort_by(filter_by(_.orders, o ~> o.status == 'open'), o ~> o.total)), 3)
 ```
 
 **Pipeline call**
 
-```text
+```wel
 _.orders
   >> filter_by(o ~> o.status == 'open')
   >> sort_by(o ~> o.total)
@@ -132,7 +132,7 @@ The fallback operators solve different problems:
 
 [presence](/en/wel/stdlib/common#presence-function) reports every kind of absence as `null` so one fallback operator (`|` ) catches them all, including empty strings, whitespace-only strings, empty lists, and empty maps.
 
-```text
+```wel
 presence(_.display_name) | 'Unknown'
 ```
 
@@ -146,7 +146,7 @@ presence(_.display_name) | 'Unknown'
 
 Reading a field that doesn't exist raises `E104` rather than producing `null`, so `|` _doesn't_ catch it, but `|?` does:
 
-```text
+```wel
 _.customer.nickname |? 'none'
 ```
 
@@ -218,7 +218,7 @@ Ordering a number against a string with `<`, `>`, `<=`, or `>=` raises `E101`. `
 
 The following example shows a conditional inside a map:
 
-```text
+```wel
 {
   tier: if _.total > 1000 then 'gold' else 'standard'
 }

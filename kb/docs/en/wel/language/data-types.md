@@ -141,7 +141,7 @@ Concatenation with [++](/en/wel/language/operators#concatenation) requires match
 
 Convert the element first with [String(...)](/en/wel/stdlib/conversion#string), or use an f-string, which converts as it interpolates:
 
-```text
+```wel
 f"Order {_.id} has {_.count} items"
 ```
 
@@ -268,7 +268,7 @@ Each type has a constructor, such as [Integer(...)](/en/wel/stdlib/conversion#in
 
 The most reliable shape for a transformation is to convert every field at the start:
 
-```text
+```wel
 {
   order_id: String(_.id),
   qty: Integer(_.qty),

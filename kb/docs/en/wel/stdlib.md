@@ -36,7 +36,7 @@ WEL organizes functions into the following categories:
 
 Call a function directly, or pipe a value into it with `>>`:
 
-```text
+```wel
 upper(_.status)
 _.status >> upper
 ```
@@ -45,13 +45,13 @@ _.status >> upper
 
 The piped value fills the function's first argument. Write any other arguments normally:
 
-```text
+```wel
 _.order_id >> starts_with?('SO-')
 ```
 
 The pipe form reads left to right, which makes it the better choice when you chain several steps:
 
-```text
+```wel
 _.email >> trim >> lower
 ```
 

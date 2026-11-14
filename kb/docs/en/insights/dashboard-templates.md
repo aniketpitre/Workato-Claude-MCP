@@ -26,6 +26,10 @@ The workspace overview template provides an overview of the operational health o
 
 ![Workspace overview template](/assets/workspace-template.B3Ks-UoA.png)_Workspace overview template_
 
+> **MULTIPLE WORKSPACES**
+> 
+> Template charts show data for the current workspace only. Build a chart in the report builder using [usage metrics](/en/insights/data-sources#usage-metrics) to aggregate data across a [parent workspace](/en/insights/multiple-workspaces) and its child workspaces.
+
 ### Metrics
 
 The workspace overview template comes preconfigured with metrics and queries that report on high level numbers, task usage over time, and the projects and recipes that consume the most tasks.

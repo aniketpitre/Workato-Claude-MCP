@@ -33,7 +33,7 @@ Both collectors do a depth-first, pre-order walk through maps and lists. A match
 
 Collects every value whose map key matches the given name, at any depth. Returns an empty list when nothing matches.
 
-```text
+```wel
 deep_collect(value, key, shallow)
 ```
 
@@ -49,13 +49,13 @@ The following example collects every `id` value at any depth:
 
 **Formula**
 
-```text
+```wel
 deep_collect({order: {id: 'SO-1', customer: {id: 'C-9'}}}, 'id')
 ```
 
 **Output**
 
-```text
+```wel
 ["SO-1", "C-9"]
 ```
 
@@ -63,7 +63,7 @@ deep_collect({order: {id: 'SO-1', customer: {id: 'C-9'}}}, 'id')
 
 Collects every value for which a predicate returns `true`. The predicate receives the key and the value, so it can match on either or both.
 
-```text
+```wel
 deep_collect_by(value, predicate, shallow)
 ```
 
@@ -79,13 +79,13 @@ The following example collects values whose key is `Amount` and whose value exce
 
 **Formula**
 
-```text
+```wel
 deep_collect_by({order: {Amount: 5}, items: [{Amount: 20}]}, (k, v) ~> k == 'Amount' and v > 10)
 ```
 
 **Output**
 
-```text
+```wel
 [20]
 ```
 
@@ -107,7 +107,7 @@ A CRM response carries addresses in several places, and the same one can appear 
 
 **Formula**
 
-```text
+```wel
 deep_collect(_, 'email') >> unique
 ```
 
@@ -129,7 +129,7 @@ Walks the whole structure and applies a transform to leaf values, returning a st
 
 An optional second lambda selects which leaves to transform. Values it rejects are left exactly as they are. This behavior makes a type-specific rule safe to apply across a payload of mixed types.
 
-```text
+```wel
 deep_map_values_by(value, transform, condition)
 ```
 
@@ -145,13 +145,13 @@ The following example multiplies every leaf value in a nested structure:
 
 **Formula**
 
-```text
+```wel
 deep_map_values_by({a: 1, b: [2, 3]}, x ~> x * 10)
 ```
 
 **Output**
 
-```text
+```wel
 {a: 10, b: [20, 30]}
 ```
 
@@ -173,7 +173,7 @@ Whitespace from a source system can appear on any field at any depth. Use deep m
 
 **Formula**
 
-```text
+```wel
 deep_map_values_by(
   _,
   v ~> trim(v),

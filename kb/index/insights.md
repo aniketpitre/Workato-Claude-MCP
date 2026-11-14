@@ -1,6 +1,6 @@
 # Insights
 
-25 pages. Paths are relative to the repository root.
+26 pages. Paths are relative to the repository root.
 
 
 ## Insights
@@ -11,6 +11,7 @@
 
 ## Administration
 
+- **Insights in Automation HQ and Embedded** - `kb/docs/en/insights/multiple-workspaces.md` - Learn which Insights data aggregates across parent and child workspaces, and which is scoped to the current workspace.
 - **Insights permissions** - `kb/docs/en/insights/permissions.md` - Manage Insights roles and privileges with role-based access control, including how to create a custom environment role with the Insights privilege.
 
 ## Build Insights

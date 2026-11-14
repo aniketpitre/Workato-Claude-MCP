@@ -14,7 +14,7 @@ Escape functions make values safe to embed in specific formats, such as queries,
 > 
 > Escape each value before you insert it. Don't escape the completed string. Escaping the completed string can alter valid syntax, while skipping escaping can allow injection.
 > 
-> ```text
+> ```wel
 > f"SELECT Id FROM Account WHERE Name = '{escape_for_soql(_.name)}'"
 > ```
 > 
@@ -28,7 +28,7 @@ Inbound data inserted directly into a query can introduce unintended syntax. The
 
 Escapes a value for a SOQL string literal in Salesforce. Escapes `'` and `\`. Doesn't escape `%` and `_` wildcards.
 
-```text
+```wel
 escape_for_soql(value)
 ```
 
@@ -42,7 +42,7 @@ The following example escapes an apostrophe for a SOQL string literal:
 
 **Formula**
 
-```text
+```wel
 escape_for_soql("O'Brien")
 ```
 
@@ -56,7 +56,7 @@ O\'Brien
 
 Escapes a value for an OData filter string literal by doubling each single quote. OData expects a doubled quote instead of a backslash escape.
 
-```text
+```wel
 escape_for_odata(value)
 ```
 
@@ -70,7 +70,7 @@ The following example escapes an apostrophe for an OData filter string literal:
 
 **Formula**
 
-```text
+```wel
 escape_for_odata("O'Brien")
 ```
 
@@ -84,7 +84,7 @@ O''Brien
 
 Escapes regular-expression metacharacters so the pattern matches the string literally. Syntax characters get a preceding backslash, and punctuation becomes a `\xHH` escape.
 
-```text
+```wel
 escape_for_regex(value)
 ```
 
@@ -98,7 +98,7 @@ The following example escapes the regex metacharacters in a string:
 
 **Formula**
 
-```text
+```wel
 escape_for_regex('a.b*c')
 ```
 
@@ -118,7 +118,7 @@ Escapes a value for HTML text or a quoted attribute value. Escapes `&`, `<`, `>`
 
 The result isn't safe inside a `<script>` or `<style>` element, or inside an unquoted attribute. Use `escape_for_javascript` first, then `escape_for_html` for JavaScript in an event-handler attribute.
 
-```text
+```wel
 escape_for_html(value)
 ```
 
@@ -132,7 +132,7 @@ The following example escapes the markup characters in an HTML string:
 
 **Formula**
 
-```text
+```wel
 escape_for_html('<b>Tom & Jerry</b>')
 ```
 
@@ -148,7 +148,7 @@ Escapes a value for XML text or an attribute, and strips code points that are il
 
 Removing these code points prevents source-system control characters from producing XML that a parser can't process.
 
-```text
+```wel
 escape_for_xml(value)
 ```
 
@@ -162,7 +162,7 @@ The following example escapes the markup characters in an XML string:
 
 **Formula**
 
-```text
+```wel
 escape_for_xml('<tag> & more')
 ```
 
@@ -182,7 +182,7 @@ Escapes a value for a CSV field, following RFC 4180 by quoting the field and dou
 
 Pass `'safe_formulas'` to prevent **CSV formula injection**. Spreadsheet applications otherwise treat a field beginning with a tab, a carriage return, a line feed, a negative number, `=`, `+`, `-`, `@`, or a full-width equivalent as a formula, so a value from an untrusted source can run when someone opens the file. `'safe_formulas'` prefixes potentially dangerous fields with an apostrophe (`'`).
 
-```text
+```wel
 escape_for_csv(value, 'safe_formulas')
 ```
 
@@ -197,13 +197,13 @@ The following example quotes a CSV field containing a comma:
 
 **Formula**
 
-```text
+```wel
 escape_for_csv('Smith, Josh')
 ```
 
 **Output**
 
-```text
+```wel
 "Smith, Josh"
 ```
 
@@ -213,13 +213,13 @@ The following example neutralizes a leading formula character with `'safe_formul
 
 **Formula**
 
-```text
+```wel
 escape_for_csv('=1+1', 'safe_formulas')
 ```
 
 **Output**
 
-```text
+```wel
 "'=1+1"
 ```
 
@@ -233,7 +233,7 @@ Escapes a value to embed inside a JSON string, without adding the surrounding qu
 
 Use this when assembling JSON text by hand. Use [to\_json](/en/wel/stdlib/json), which handles escaping throughout, to serialize a whole value instead.
 
-```text
+```wel
 escape_for_json_string(value)
 ```
 
@@ -247,7 +247,7 @@ The following example escapes a double quote for embedding inside a JSON string:
 
 **Formula**
 
-```text
+```wel
 escape_for_json_string('He said "hi"')
 ```
 
@@ -271,7 +271,7 @@ Escapes a value for use inside a single or double-quoted JavaScript string liter
 
 Escaping `<` and `>` means the result can't close a `<script>` element. Backticks and `${` aren't escaped, so don't put the result in a template literal.
 
-```text
+```wel
 escape_for_javascript(value)
 ```
 
@@ -285,7 +285,7 @@ The following example escapes an apostrophe for a JavaScript string literal:
 
 **Formula**
 
-```text
+```wel
 escape_for_javascript("O'Brien")
 ```
 
@@ -309,7 +309,7 @@ These three related functions handle spaces differently. Choose the function tha
 
 Percent-encodes a string as defined in RFC 3986.
 
-```text
+```wel
 escape_for_url(value)
 ```
 
@@ -323,7 +323,7 @@ The following example percent-encodes a whole string as defined in RFC 3986:
 
 **Formula**
 
-```text
+```wel
 escape_for_url('name=Kalani Park&x=1')
 ```
 
@@ -337,7 +337,7 @@ name%3DKalani%20Park%26x%3D1
 
 Percent-encodes a single URI component. Unreserved characters pass through unchanged.
 
-```text
+```wel
 uri_encode_www_form_component(value)
 ```
 
@@ -351,7 +351,7 @@ The following example percent-encodes a single URI component:
 
 **Formula**
 
-```text
+```wel
 uri_encode_www_form_component('Kalani Park')
 ```
 
@@ -365,7 +365,7 @@ Kalani%20Park
 
 Decodes a percent-encoded URI component. A `+` passes through unchanged rather than becoming a space.
 
-```text
+```wel
 uri_decode_www_form_component(value)
 ```
 
@@ -379,7 +379,7 @@ The following example decodes a percent-encoded URI component:
 
 **Formula**
 
-```text
+```wel
 uri_decode_www_form_component('Kalani%20Park')
 ```
 
@@ -395,7 +395,7 @@ Encodes a `Map` as an `application/x-www-form-urlencoded` query string, with pai
 
 Keys and values use the WHATWG form rules: A space becomes `+`, ASCII letters, digits, and `*`, `-`, `.`, `_` pass through unchanged, and every other byte becomes `%XX`. A `String` value is written as is. Any other scalar value is written in its canonical text form, so `true` becomes `true`, `null` becomes `null`, and a date becomes its ISO form.
 
-```text
+```wel
 uri_encode_www_form(map, options)
 ```
 
@@ -410,7 +410,7 @@ The following example encodes a map as a form-urlencoded query string:
 
 **Formula**
 
-```text
+```wel
 uri_encode_www_form({status: 'open', q: 'blue widget'})
 ```
 
@@ -424,7 +424,7 @@ status=open&q=blue+widget
 
 Decodes a query string into a `Map`. The function decodes `+` to a space, skips empty pairs, decodes a pair with no `=` sign to an empty value, and keeps a leading `?` literally as part of the first key.
 
-```text
+```wel
 uri_decode_www_form(text, options)
 ```
 
@@ -439,13 +439,13 @@ The following example decodes a form-urlencoded query string into a map:
 
 **Formula**
 
-```text
+```wel
 uri_decode_www_form('status=open&q=blue+widget')
 ```
 
 **Output**
 
-```text
+```wel
 {status: "open", q: "blue widget"}
 ```
 
@@ -464,7 +464,7 @@ Search terms from inbound data can contain spaces and punctuation. Encode the pa
 
 **Formula**
 
-```text
+```wel
 f"/api/v2/orders?{uri_encode_www_form({status: _.status, q: _.search})}"
 ```
 

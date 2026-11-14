@@ -1,5 +1,53 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-14T10:35:41+00:00 (incremental)
+
+- Pages: 4541 | added 1 | changed 41 | removed 0
+- Added:
+  - https://docs.workato.com/en/insights/multiple-workspaces.md
+- Changed:
+  - https://docs.workato.com/en/agentic/agent-studio/ai-model/ai-model-versions.md
+  - https://docs.workato.com/en/agentic/agent-studio/chat-interface/build-a-custom-chat-ui.md
+  - https://docs.workato.com/en/agentic/agent-studio/chat-interface/headless-api-troubleshooting.md
+  - https://docs.workato.com/en/agentic/agent-studio/chat-interface/headless-api.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-oracle.md
+  - https://docs.workato.com/en/datacenter/datacenter-overview.md
+  - https://docs.workato.com/en/features/json-transformation-action.md
+  - https://docs.workato.com/en/insights.md
+  - https://docs.workato.com/en/insights/concepts.md
+  - https://docs.workato.com/en/insights/dashboard-templates.md
+  - https://docs.workato.com/en/insights/data-sources.md
+  - https://docs.workato.com/en/insights/filter-groups.md
+  - https://docs.workato.com/en/insights/insights-faqs.md
+  - https://docs.workato.com/en/insights/navigate.md
+  - https://docs.workato.com/en/insights/permissions.md
+  - https://docs.workato.com/en/insights/usage-inspiration.md
+  - https://docs.workato.com/en/wel/cookbook.md
+  - https://docs.workato.com/en/wel/errors.md
+  - https://docs.workato.com/en/wel/language/data-types.md
+  - https://docs.workato.com/en/wel/language/expressions.md
+  - https://docs.workato.com/en/wel/language/operators.md
+  - https://docs.workato.com/en/wel/language/strings.md
+  - https://docs.workato.com/en/wel/quickstart.md
+  - https://docs.workato.com/en/wel/stdlib.md
+  - https://docs.workato.com/en/wel/stdlib/binary.md
+  - https://docs.workato.com/en/wel/stdlib/common.md
+  - https://docs.workato.com/en/wel/stdlib/conversion.md
+  - https://docs.workato.com/en/wel/stdlib/crypto.md
+  - https://docs.workato.com/en/wel/stdlib/deep-map.md
+  - https://docs.workato.com/en/wel/stdlib/encoding.md
+  - https://docs.workato.com/en/wel/stdlib/escape.md
+  - https://docs.workato.com/en/wel/stdlib/formatting.md
+  - https://docs.workato.com/en/wel/stdlib/json.md
+  - https://docs.workato.com/en/wel/stdlib/list.md
+  - https://docs.workato.com/en/wel/stdlib/map.md
+  - https://docs.workato.com/en/wel/stdlib/numeric.md
+  - https://docs.workato.com/en/wel/stdlib/random.md
+  - https://docs.workato.com/en/wel/stdlib/string.md
+  - https://docs.workato.com/en/wel/stdlib/temporal.md
+  - https://docs.workato.com/en/wel/stdlib/unicode.md
+  - https://docs.workato.com/en/wel/workato-expression-language-connector.md
+
 ## 2026-11-13T11:08:19+00:00 (incremental)
 
 - Pages: 4540 | added 16 | changed 49 | removed 0

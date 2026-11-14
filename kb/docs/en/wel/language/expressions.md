@@ -17,7 +17,7 @@ The underscore (`_`) is the **input variable**. It holds the input fields you de
 
 A period (`.`) reads a field from `_`:
 
-```text
+```wel
 _                    // the whole input
 _.order_id           // the order_id field
 _.customer.email     // email, inside the customer field
@@ -32,7 +32,7 @@ Refer to the [Transform data](/en/wel/workato-expression-language-connector) act
 
 Use a period (`.`) for a plain name, and brackets (`[]`) when the key is computed or isn't a bare identifier:
 
-```text
+```wel
 _.customer.email
 _.customer['email']
 _['order-id']
@@ -40,7 +40,7 @@ _['order-id']
 
 Reading a key that doesn't exist raises `E104` rather than producing `null`. This prevents a typo in a field name from silently propagating a missing value. Use `|?` to mark a field as genuinely optional:
 
-```text
+```wel
 _.customer.nickname |? 'none'
 ```
 
@@ -50,7 +50,7 @@ Refer to [Operators](/en/wel/language/operators) for the difference between `|`,
 
 Most transformations are a map literal whose values are expressions:
 
-```text
+```wel
 {
   order_id: upper(_.order_id),
   email: lower(trim(_.customer.email)),
@@ -71,7 +71,7 @@ Write keys as bare identifiers. Values can be anything, such as a field, a call,
 
 Use `else if` to chain more than two branches. The whole conditional is a value, so it goes directly into the output:
 
-```text
+```wel
 {
   tier: if _.total > 1000 then 'gold'
         else if _.total > 100 then 'silver'
@@ -92,7 +92,7 @@ Separate several bindings with commas. Later bindings can use earlier ones.
 
 Use `let` to reuse a value more than once:
 
-```text
+```wel
 let parts = _.results >> partition_by(r ~> r.status == 'ok')
 do {
   succeeded: parts >> at(0),
@@ -118,7 +118,7 @@ do {
 > 
 > The 64-scalar limit gives scripts like Japanese and Cyrillic the same effective length limit as other languages. For example:
 > 
-> ```text
+> ```wel
 > let 注文数 = 2 do 注文数
 > ```
 
@@ -128,7 +128,7 @@ WEL normalizes names in the expression to NFC, so `café` written with a precomp
 
 A guard tests a condition and raises `E203` when the condition is false.
 
-```text
+```wel
 let total = _.total
 guard total > 0
 do total
@@ -136,7 +136,7 @@ do total
 
 An optional `else` supplies a custom message:
 
-```text
+```wel
 let total = _.total
 guard total > 0 else 'total must be positive'
 do total
@@ -177,7 +177,7 @@ Pass a named function to a higher-order function like any other lambda:
 
 Each `fun` has its own `do`, and later definitions can call earlier ones:
 
-```text
+```wel
 fun net = li ~> Decimal(li.unit_price) * li.qty do
 fun taxed = li ~> net(li) * Decimal('1.20') do
 _.line_items >> map_by(taxed) >> sum
@@ -187,7 +187,7 @@ Use `fun` when a rule appears more than once.
 
 ## Put it together
 
-```text
+```wel
 let items = _.line_items
 guard count(items) > 0 else 'order has no line items'
 do {

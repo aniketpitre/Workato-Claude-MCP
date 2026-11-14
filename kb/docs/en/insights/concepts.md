@@ -25,10 +25,13 @@ A chart displays your data as a table, graph, or other visualization. You config
 
 ![Chart editor](/assets/chart-editor-query-builder.BxOSqqKW.png)_The chart editor_
 
-The chart editor offers two ways to define what your chart displays:
+The chart editor offers two ways to define what your chart displays: The [report builder](/en/insights/navigate#report-builder) _(private beta)_ and the [query builder](/en/insights/navigate#query-builder).
 
-- **Report builder** _(private beta)_: A simplified builder for most use cases. Choose what to measure and how to group your data to populate your chart.
-- **Query builder**: A step-by-step builder for complex or advanced needs, using steps such as Filter, Summarize, and Sort. Use this when the report builder doesn't cover your use case. Refer to [Query components](/en/insights/queries) for a full list of available query steps.
+|  | Report builder | Query builder |
+| --- | --- | --- |
+| **Best for** | Most charts, built quickly from [prebuilt metrics and dimensions](/en/insights/data-sources#report-builder). | Complex transformations, built step by step with [query components](/en/insights/queries) such as Filter, Summarize, and Sort. |
+| **Add to a dashboard** | Drag a chart type, such as **Bar**, **Pie**, or **KPI**. | Drag the **Chart** component. This is named **Chart (Custom Query)** if you have report builder access. |
+| **Cross-workspace data** | Aggregates [usage](/en/insights/data-sources#usage) metrics across child workspaces when you build in a [parent workspace](/en/insights/multiple-workspaces). | Current workspace only. |
 
 ## Metric and dimension
 

@@ -227,19 +227,25 @@ Track workspace activity: who joined, what connections changed, and recipe lifec
 
 Measure platform consumption, which is useful for chargeback and tracking credit consumption on your plan.
 
+> **MULTIPLE WORKSPACES**
+> 
+> The following usage metrics and dimensions aggregate data across a parent workspace and all of its child workspaces by default. Use the **Workspace name** dimension to break down or filter results by workspace. No other metrics aggregate across workspaces. Refer to [Insights in Automation HQ and Embedded](/en/insights/multiple-workspaces) for more information.
+
 #### Metrics
 
 | Metric | Description |
 | --- | --- |
-| Business actions count | A business action is a successful trigger or action step in a workflow recipe. Certain Workato utilities are excluded. |
-| API calls | Usage for managed API recipes. |
-| API proxy calls | API calls routed through Workato's API Gateway. |
 | Credits | Credits consumed. |
-| Events processed | The usage unit for Event Streams. Counts publish actions only. Event Streams triggers are excluded. |
+| Tasks | Workflow recipe usage. |
+| API calls | Managed API usage. |
+| API proxy calls | API calls routed through Workato's API Gateway. |
+| Events processed | The usage unit for Event streams. Counts publish operations, such as actions and API requests. Event streams triggers are excluded. |
 | Genie actions | A Genie input and response (one turn). |
 | IDP pages processed | Pages processed by Intelligent Document Processing (IDP). |
 | MCP tool calls | A successful MCP tool call. |
 | Rows consumed | Rows consumed by data pipelines. |
+
+Refer to [Usage metrics](/en/pricing/usage-metrics#metrics) to learn how Workato measures each metric.
 
 #### Dimensions
 
@@ -262,6 +268,7 @@ Measure platform consumption, which is useful for chargeback and tracking credit
 > 
 > - **Project name**, **Recipe name**, and **Asset tags** aren't available on the **API proxy calls**, **Genie actions**, or **MCP tool calls** metrics. For these metrics, group and filter usage by **Workspace name** and **Environment name** instead.
 > - **Collection name** and **Endpoint name** are available on the **API proxy calls** and **API calls** metrics only.
+> - **Workspace name** is the dimension to use for chargeback and breakdowns across child workspaces in a parent workspace.
 
 > **FURTHER READING**
 > 

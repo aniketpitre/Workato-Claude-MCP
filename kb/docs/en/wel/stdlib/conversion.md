@@ -23,7 +23,7 @@ WEL has three numeric constructors, one for each numeric type.
 
 Converts to an `Integer`. Accepts an existing `Integer` or a string of digits.
 
-```text
+```wel
 Integer(value)
 ```
 
@@ -37,13 +37,13 @@ The following example converts an integer string:
 
 **Formula**
 
-```text
+```wel
 Integer('42')
 ```
 
 **Output**
 
-```text
+```wel
 42
 ```
 
@@ -53,13 +53,13 @@ The following example passes an existing `Integer` through unchanged:
 
 **Formula**
 
-```text
+```wel
 Integer(42)
 ```
 
 **Output**
 
-```text
+```wel
 42
 ```
 
@@ -71,7 +71,7 @@ Use `Decimal` for money. Pass the value as a string, such as `Decimal('19.99')`,
 
 `Decimal` also preserves scale, so `Decimal('12.50')` keeps its trailing zero through arithmetic and a total stays a currency amount rather than becoming `12.5`.
 
-```text
+```wel
 Decimal(value)
 ```
 
@@ -85,13 +85,13 @@ The following example converts a decimal string:
 
 **Formula**
 
-```text
+```wel
 Decimal('19.99')
 ```
 
 **Output**
 
-```text
+```wel
 19.99
 ```
 
@@ -101,13 +101,13 @@ The following example converts an integer to a `Decimal`:
 
 **Formula**
 
-```text
+```wel
 Decimal(5)
 ```
 
 **Output**
 
-```text
+```wel
 5
 ```
 
@@ -117,7 +117,7 @@ Converts to a `Float`, a binary floating-point number.
 
 Appropriate for measurements, ratios, and scientific values, where approximate precision is acceptable. Not appropriate for money, because a `Float` can't represent most decimal fractions exactly. Refer to [Decimal](#decimal) for exact arithmetic instead.
 
-```text
+```wel
 Float(value)
 ```
 
@@ -131,13 +131,13 @@ The following example converts a numeric string to a `Float`:
 
 **Formula**
 
-```text
+```wel
 Float('3.14')
 ```
 
 **Output**
 
-```text
+```wel
 3.14
 ```
 
@@ -151,7 +151,7 @@ Converts a scalar value to a `String`, using the **data-plane** locale.
 
 Rejects `Binary` and collections. A `List` or `Map` isn't turned into a string implicitly or by this function, and passing one raises `E100`. Use [to\_json](/en/wel/stdlib/json) or `to_wel` to serialize a collection deliberately. This restriction exists because a silently stringified collection is one of the hardest transformation bugs to notice downstream.
 
-```text
+```wel
 String(value)
 ```
 
@@ -165,13 +165,13 @@ The following example converts an integer to a string:
 
 **Formula**
 
-```text
+```wel
 String(42)
 ```
 
 **Output**
 
-```text
+```wel
 42
 ```
 
@@ -181,13 +181,13 @@ The following example converts a `Decimal` to a string:
 
 **Formula**
 
-```text
+```wel
 String(Decimal('19.99'))
 ```
 
 **Output**
 
-```text
+```wel
 19.99
 ```
 
@@ -197,11 +197,11 @@ Converts a value to a `Boolean`. Accepts an existing `Boolean`, or the strings `
 
 `'yes'`, `'1'`, and `'Y'` aren't accepted because their meaning depends on the source system, and an unrecognized string raises `E102`. Map source-specific values to a `Boolean` explicitly:
 
-```text
+```wel
 if _.flag == 'Y' then true else false
 ```
 
-```text
+```wel
 Bool(value)
 ```
 
@@ -215,13 +215,13 @@ The following example converts the string `'true'` to a `Boolean`:
 
 **Formula**
 
-```text
+```wel
 Bool('true')
 ```
 
 **Output**
 
-```text
+```wel
 true
 ```
 
@@ -231,7 +231,7 @@ Converts an ASCII string to `Binary` bytes. An existing `Binary` value passes th
 
 Use [encode\_string](/en/wel/stdlib/encoding), which takes an explicit encoding, for text that isn't ASCII.
 
-```text
+```wel
 Binary(value)
 ```
 
@@ -245,13 +245,13 @@ The following example converts an ASCII string to `Binary` bytes:
 
 **Formula**
 
-```text
+```wel
 Binary('AB')
 ```
 
 **Output**
 
-```text
+```wel
 0x"4142"
 ```
 
@@ -265,7 +265,7 @@ Converts to a `DateTime`, an exact instant with a time zone.
 
 Use it to record an event happening, such as a creation timestamp, an event time, or an audit record.
 
-```text
+```wel
 DateTime(value)
 ```
 
@@ -279,7 +279,7 @@ The following example converts an ISO 8601 string with a time zone:
 
 **Formula**
 
-```text
+```wel
 DateTime('2026-03-15T09:30:00Z')
 ```
 
@@ -295,7 +295,7 @@ Converts to a `PlainDate`, a calendar date with no time and no zone.
 
 Use it for a date that is the same everywhere, such as an invoice date, a birth date, or a contract start. A `DateTime` stored in place of a `PlainDate` can shift a day when it crosses a zone boundary.
 
-```text
+```wel
 PlainDate(value)
 ```
 
@@ -309,7 +309,7 @@ The following example converts an ISO 8601 date string:
 
 **Formula**
 
-```text
+```wel
 PlainDate('2026-03-15')
 ```
 
@@ -323,7 +323,7 @@ PlainDate('2026-03-15')
 
 Converts to a `PlainTime`, a time of day with no date and no zone, such as a store opening time.
 
-```text
+```wel
 PlainTime(value)
 ```
 
@@ -337,7 +337,7 @@ The following example converts an ISO 8601 time string:
 
 **Formula**
 
-```text
+```wel
 PlainTime('09:30:00')
 ```
 
@@ -353,7 +353,7 @@ Converts to a `PlainDateTime`, a date and time with no zone.
 
 `PlainDateTime` strips the zone from a `DateTime` argument rather than converting it, so the wall-clock reading is kept as-is.
 
-```text
+```wel
 PlainDateTime(value)
 ```
 
@@ -367,7 +367,7 @@ The following example converts an ISO 8601 date-time string:
 
 **Formula**
 
-```text
+```wel
 PlainDateTime('2026-03-15T09:30:00')
 ```
 
@@ -381,7 +381,7 @@ PlainDateTime('2026-03-15T09:30:00')
 
 Converts to a `Duration`, a length of time written in ISO 8601 duration form. For example, `PT1H30M`.
 
-```text
+```wel
 Duration(value)
 ```
 
@@ -395,7 +395,7 @@ The following example converts an ISO 8601 duration string:
 
 **Formula**
 
-```text
+```wel
 Duration('PT1H30M')
 ```
 
@@ -413,7 +413,7 @@ WEL uses the `Null()` constructor or the `Skip` sentinel value to represent an a
 
 Returns `null`. Takes no arguments.
 
-```text
+```wel
 Null()
 ```
 
@@ -423,13 +423,13 @@ The following example returns `null`:
 
 **Formula**
 
-```text
+```wel
 Null()
 ```
 
 **Output**
 
-```text
+```wel
 null
 ```
 
@@ -437,7 +437,7 @@ null
 
 `Skip` omits a field entirely instead of sending `null` for it. Refer to [Null and Skip](/en/wel/language/data-types#null-and-skip) for the full comparison, including how `Skip` filters a list inside `map_by`. Use `Skip` when a destination distinguishes an explicitly cleared field from an untouched one, which many CRM APIs do.
 
-```text
+```wel
 Skip
 ```
 
@@ -459,7 +459,7 @@ Every field arrives as a string, including ones that logically aren't. Convert t
 
 **Formula**
 
-```text
+```wel
 {
   order_id: String(_.id),
   qty: Integer(_.qty),

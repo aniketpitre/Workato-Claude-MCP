@@ -19,7 +19,7 @@ The following functions convert between JSON text and WEL values:
 
 Parses a JSON string into a WEL value.
 
-```text
+```wel
 parse_json(text, options)
 ```
 
@@ -34,13 +34,13 @@ The following example parses a JSON string into a WEL value:
 
 **Formula**
 
-```text
+```wel
 parse_json('{"sku": "WID-1", "qty": 3}')
 ```
 
 **Output**
 
-```text
+```wel
 {sku: "WID-1", qty: 3}
 ```
 
@@ -54,7 +54,7 @@ Serializes a WEL value to a JSON string.
 
 WEL doesn't implicitly convert a `List` or `Map` to a string, because an accidental stringified collection is one of the hardest transformation bugs to spot downstream. Call this function or another explicit serializer to turn one into text instead.
 
-```text
+```wel
 to_json(value, options)
 ```
 
@@ -69,13 +69,13 @@ The following example serializes a WEL value to a JSON string:
 
 **Formula**
 
-```text
+```wel
 to_json({sku: 'WID-1', qty: 3})
 ```
 
 **Output**
 
-```text
+```wel
 {"sku":"WID-1","qty":3}
 ```
 
@@ -93,7 +93,7 @@ A webhook delivers its body as a single string field. Use JSON functions to pars
 
 **Formula**
 
-```text
+```wel
 parse_json(_.payload) >> pluck(['order_id', 'total'])
 ```
 
@@ -126,7 +126,7 @@ Supported selectors:
 
 Filters, unions, and function extensions are real RFC 9535 features, however WEL doesn't support them, so they raise `E220`. Use [deep\_collect\_by](/en/wel/stdlib/deep-map) or [filter\_by](/en/wel/stdlib/list) instead. An invalid selector raises `E219`.
 
-```text
+```wel
 json_path(value, path)
 ```
 
@@ -141,13 +141,13 @@ The following example collects every price from a nested list using a wildcard:
 
 **Formula**
 
-```text
+```wel
 json_path({store: {book: [{price: 10}, {price: 20}]}}, '$.store.book[*].price')
 ```
 
 **Output**
 
-```text
+```wel
 [10, 20]
 ```
 
@@ -157,13 +157,13 @@ The following example finds a key at any depth using recursive descent:
 
 **Formula**
 
-```text
+```wel
 json_path({a: {b: {c: 'x'}}}, '$..c')
 ```
 
 **Output**
 
-```text
+```wel
 ["x"]
 ```
 
@@ -173,13 +173,13 @@ The following example returns an empty list when the path matches nothing:
 
 **Formula**
 
-```text
+```wel
 json_path({a: 1}, '$.missing')
 ```
 
 **Output**
 
-```text
+```wel
 []
 ```
 
@@ -200,7 +200,7 @@ An API returns orders, each with its own line items. Use a JSONPath expression t
 
 **Formula**
 
-```text
+```wel
 json_path(_, '$..line_items[*].sku')
 ```
 
@@ -216,7 +216,7 @@ The result is a list, so a payload with no orders yields `[]`. The following ste
 
 Resolves one value using an [RFC 6901](https://www.rfc-editor.org/rfc/rfc6901) JSON pointer, such as `/a/b/0`. Unlike `json_path`, a pointer addresses exactly one location, so the result is the value itself rather than a `List`.
 
-```text
+```wel
 json_pointer(value, pointer)
 ```
 
@@ -235,13 +235,13 @@ Look up a nested field by pointer
 
 **Formula**
 
-```text
+```wel
 json_pointer(parse_json('{"a":{"b":1}}'), '/a/b')
 ```
 
 **Output**
 
-```text
+```wel
 1
 ```
 

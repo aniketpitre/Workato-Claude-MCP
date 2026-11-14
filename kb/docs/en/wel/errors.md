@@ -41,7 +41,7 @@ The error family identifies the source of the error.
 
 The try-fallback operator `|?` catches a catchable error and returns a fallback instead. A non-catchable error propagates.
 
-```text
+```wel
 _.customer.email |? 'unknown'
 Integer(_.qty) |? 0
 ```
@@ -57,14 +57,14 @@ The distinction between `|?` and `|` matters most of all, and a mix-up here is a
 
 Reading a field that doesn't exist raises `E104`. It doesn't produce `null`, so `|` won't save you:
 
-```text
+```wel
 _.customer.nickname | 'none'      // still raises E104
 _.customer.nickname |? 'none'     // returns 'none'
 ```
 
 Use `|` when the key exists and its value may be `null` or blank, usually with [presence](/en/wel/stdlib/common), which normalizes every kind of absence to `null`:
 
-```text
+```wel
 presence(_.display_name) | 'Unknown'
 ```
 

@@ -26,13 +26,13 @@ A single-quoted string recognizes only `\\` and `\'` as escapes, so `${...}` pas
 
 Use double quotes for strings containing apostrophes to avoid closing the string early:
 
-```text
+```wel
 "O'Brien"
 ```
 
 A raw line break in a single or double-quoted string leaves the literal unterminated and raises an `E003` error. A double-quoted string can use `\n` or `\r` instead. Write the string in a triple-quoted form (`'''...'''` or `"""..."""`) to include a literal line break in either quote style:
 
-```text
+```wel
 '''First line
 Second line'''
 ```
@@ -49,7 +49,7 @@ Prefixing a string with `f` evaluates and inserts any `{...}` inside it.
 
 Anything that produces a value can go inside the braces, including a field, a function call, arithmetic, or a whole pipeline:
 
-```text
+```wel
 f"{capitalize(_.first_name)} {capitalize(_.last_name)} <{lower(trim(_.email))}>"
 ```
 
@@ -57,13 +57,13 @@ f"{capitalize(_.first_name)} {capitalize(_.last_name)} <{lower(trim(_.email))}>"
 
 `++` requires matching types on both sides, so a message built from mixed data needs every piece converted first:
 
-```text
+```wel
 'Order ' ++ String(_.id) ++ ' has ' ++ String(_.count) ++ ' items'
 ```
 
 An f-string converts as it interpolates, and the result reads like the sentence it produces:
 
-```text
+```wel
 f"Order {_.id} has {_.count} items"
 ```
 
@@ -103,7 +103,7 @@ An invalid specification raises `E016` at parse time, so a malformed format is c
 
 Format specifications cover most cases. For padding applied to a value rather than inside a template, use [`lpad` and `rpad`](/en/wel/stdlib/string):
 
-```text
+```wel
 lpad(String(_.line_no), 5, '0')
 ```
 
@@ -113,7 +113,7 @@ Use [`grapheme_lpad` and `grapheme_rpad`](/en/wel/stdlib/unicode) instead for fi
 
 Numbers, currency, and dates that a person reads should go through the locale rather than a hand-written pattern:
 
-```text
+```wel
 f"{_.customer_name}: {to_local_currency(_.total)}"
 ```
 
@@ -132,7 +132,7 @@ Use the function form when the value needs to compose with the rest of the expre
 
 Escape a value as you insert it when the string is going into another format, such as a URL, a CSV field, a query, or HTML:
 
-```text
+```wel
 f"SELECT Id FROM Account WHERE Name = '{escape_for_soql(_.name)}'"
 ```
 
