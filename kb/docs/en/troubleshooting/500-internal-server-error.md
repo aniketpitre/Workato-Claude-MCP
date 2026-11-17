@@ -22,6 +22,6 @@ The error message typically doesn't provide enough detail to identify the cause.
 
 ## What to do next
 
-You can't resolve 500 errors directly in Workato. Contact [Workato support](https://support.workato.com/en/support/tickets/new) to help diagnose the issue.
+You can't resolve 500 errors directly in Workato. Contact [Workato support](https://workato.zendesk.com/hc/en-us/requests/new) to help diagnose the issue.
 
 ---

@@ -14,6 +14,10 @@ After you build and save a recipe, Performance Copilot generates a health score 
 
 ![Use Performance Copilot to optimize your recipes](/assets/performance-copilot.NxAHj8q5.gif)_Use Performance Copilot to optimize your recipes_
 
+> **FEATURE AVAILABILITY**
+> 
+> Performance Copilot is available to select customers. Contact your Customer Success Representative to confirm whether it's available in your workspace.
+
 ## Key capabilities
 
 Performance Copilot offers the following key capabilities:

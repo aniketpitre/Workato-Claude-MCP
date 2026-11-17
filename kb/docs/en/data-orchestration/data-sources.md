@@ -30,7 +30,7 @@ Workato provides documentation with step-by-step instructions on how to connect 
 
 Workato supports the following data sources for data orchestration:
 
-If a connector is missing from this list, reach out to [Workato support](https://support.workato.com/support/tickets).
+If a connector is missing from this list, reach out to [Workato support](https://workato.zendesk.com/hc/en-us/requests/new).
 
 You can also visit our [app integrations directory](https://www.workato.com/integrations) to search by category.
 

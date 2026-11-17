@@ -116,6 +116,6 @@ You can also ask AIRO to list open tickets, check a ticket's status, or update i
 
 ![AIRO chat response showing a support ticket's status, priority, and a link to view it on Freshdesk.](/assets/manage-support-tickets.BYM4GbiF.png)_Ticket status and details shown in chat_
 
-Use the [Workato support portal](https://support.workato.com/en/support/home) to file a ticket manually if AIRO can't create one.
+Use the [Workato support portal](https://support.workato.com) to file a ticket manually if AIRO can't create one.
 
 ---

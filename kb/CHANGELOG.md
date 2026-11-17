@@ -1,5 +1,31 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-17T11:59:27+00:00 (incremental)
+
+- Pages: 4541 | added 0 | changed 21 | removed 0
+- Changed:
+  - https://docs.workato.com/en/agentic/agent-studio/create-a-genie.md
+  - https://docs.workato.com/en/airo/chat.md
+  - https://docs.workato.com/en/connectors/email-by-workato.md
+  - https://docs.workato.com/en/connectors/email-by-workato/troubleshoot-runtime.md
+  - https://docs.workato.com/en/connectors/netsuite/netsuite-faq.md
+  - https://docs.workato.com/en/connectors/pipedrive.md
+  - https://docs.workato.com/en/connectors/pipedrive/connector-upgrade-to-api-v2.md
+  - https://docs.workato.com/en/connectors/prebuilt-connectors.md
+  - https://docs.workato.com/en/connectors/sap/sap-troubleshooting.md
+  - https://docs.workato.com/en/contact-us.md
+  - https://docs.workato.com/en/control-plane/manage-workspaces.md
+  - https://docs.workato.com/en/data-orchestration/data-sources.md
+  - https://docs.workato.com/en/datacenter/datacenter-overview.md
+  - https://docs.workato.com/en/getting-started.md
+  - https://docs.workato.com/en/oem/admin-console/customers.md
+  - https://docs.workato.com/en/recipes/performance-copilot.md
+  - https://docs.workato.com/en/troubleshooting/500-internal-server-error.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access/new-model/privileges-reference.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access/new-model/system-project-roles.md
+  - https://docs.workato.com/en/workato-api/recipes.md
+
 ## 2026-11-14T10:35:41+00:00 (incremental)
 
 - Pages: 4541 | added 1 | changed 41 | removed 0

@@ -32,8 +32,8 @@ The **Help** panel provides the following options:
 
 ![The Help panel showing help and support options](/assets/help-panel.BFW2a3cR.png)_The **Help** panel._
 
-- **Share an idea**: [Submit feedback and feature requests](https://support.workato.com/en/support/tickets/new?ticket_form=enhancement_requests) through the Workato support portal.
-- **Submit support ticket**: [Report bugs or get help troubleshooting issues](https://support.workato.com/en/support/home).
+- **Share an idea**: [Submit feedback and feature requests](https://workato.zendesk.com/hc/en-us/requests/new) through the Workato support portal.
+- **Submit support ticket**: [Report bugs or get help troubleshooting issues](https://support.workato.com).
 - **Workato Academy**: [Access courses and learning paths](https://academy.workato.com/learn) to build your Workato skills.
 - **Join our community**: [Connect with other Workato users](https://systematic.workato.com/) in the community.
 - **Do more with Workato**: Explore additional Workato products, including [API Platform](https://www.workato.com/platform/api-management), [Workbot](https://www.workato.com/platform/workbot), [Event Streams](https://www.workato.com/integrations/workato_pub_sub), [Workflow apps](https://www.workato.com/platform/workflow-apps), and [Data Orchestration](https://www.workato.com/platform/data-orchestration).

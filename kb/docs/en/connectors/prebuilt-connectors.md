@@ -35,7 +35,7 @@ The **Pre-built connectors** section contains the following information:
 
 The following directory lists all officially supported platform connectors. You can select a letter in the sidebar on the right to jump to connectors starting with that letter.
 
-If a connector is missing from this list, reach out to [Workato support](https://support.workato.com/support/tickets).
+If a connector is missing from this list, reach out to [Workato support](https://workato.zendesk.com/hc/en-us/requests/new).
 
 You can also visit our [app integrations directory](https://www.workato.com/integrations) to search by category.
 

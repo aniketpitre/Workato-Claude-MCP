@@ -119,7 +119,7 @@ This error occurs when the agent creates a trigger before it completes metadata 
 
 ## Contact support
 
-If the issue you encounter isn't listed here and you need help, check the `agent.log` file or contact [Workato Support](https://support.workato.com/en/support/home). Ensure that you provide the support TRACE level OPA logs for further analysis. Verify that you can reproduce the error by stopping the OPA and renaming the existing `agent.log` file to generate fresh logs. The following configuration settings must be applied in the `config.yml` file located in the **"conf"** folder in the OPA installation directory:
+If the issue you encounter isn't listed here and you need help, check the `agent.log` file or contact [Workato Support](https://support.workato.com). Ensure that you provide the support TRACE level OPA logs for further analysis. Verify that you can reproduce the error by stopping the OPA and renaming the existing `agent.log` file to generate fresh logs. The following configuration settings must be applied in the `config.yml` file located in the **"conf"** folder in the OPA installation directory:
 
 ```yaml
 logging:

@@ -43,16 +43,14 @@ Recipe resources have the following rate limits:
 | GET | [/api/recipes/:recipe\_id/health](#get-recipe-health) | Retrieve the most recent optimization report for a recipe. |
 | POST | [/api/recipes/:recipe\_id/health](#start-analyzing-recipe-health) | Queue a performance scan using [Performance Copilot](/en/recipes/performance-copilot). |
 
-> **PRIVATE BETA**
+> **FEATURE AVAILABILITY**
 > 
-> The following endpoints are in private beta:
+> The following endpoints are available to select customers:
 > 
 > - [Get recipe health](#get-recipe-health)
 > - [Start analyzing recipe health](#start-analyzing-recipe-health)
 > 
-> Private beta features are available in production but only to selected customers. Customers must opt in and be accepted into the beta.
-> 
-> During the private beta, Workato may update its functionality or change its availability without prior notice.
+> Contact your Customer Success Representative to confirm whether they're available in your workspace.
 
 ## Get recipe details
 

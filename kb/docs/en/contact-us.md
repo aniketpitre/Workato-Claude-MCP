@@ -17,7 +17,7 @@ Search our documentation to find answers to your questions.
 
 Have questions or noticed an issue?
 
-- [Raise a support ticket](https://support.workato.com/en/support/tickets/new) to report bugs or troubleshoot issues, or [ask AIRO](/en/airo/chat#support-tickets-in-chat) to file, check, or update a ticket for you directly in chat.
+- [Raise a support ticket](https://workato.zendesk.com/hc/en-us/requests/new) to report bugs or troubleshoot issues, or [ask AIRO](/en/airo/chat#support-tickets-in-chat) to file, check, or update a ticket for you directly in chat.
 - Start a live chat from the [Help panel](/en/getting-started#help) within the Workato platform.
 - Contact your Customer Success Manager for personalized guidance.
 
@@ -29,7 +29,7 @@ Have questions or noticed an issue?
 
 Share your feedback about the platform or documentation, or submit ideas for new features and enhancement requests.
 
-- [Submit an enhancement request](https://support.workato.com/en/support/tickets/new?ticket_form=enhancement_requests) through the Workato support portal.
+- [Submit an enhancement request](https://workato.zendesk.com/hc/en-us/requests/new) through the Workato support portal.
 
 ## Learn about Workato
 

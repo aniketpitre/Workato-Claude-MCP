@@ -25,7 +25,7 @@ Update each affected recipe before July 31, 2026. Affected recipes include any t
 4. Review all downstream actions to confirm datapills are still valid and adjust as needed.
    
 
-Contact your Customer Success Manager or [Workato Support](https://support.workato.com/en/support/login) for assistance.
+Contact your Customer Success Manager or [Workato Support](https://support.workato.com) for assistance.
 
 | Deprecated trigger/action | Replacement trigger/action |
 | --- | --- |

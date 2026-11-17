@@ -116,7 +116,7 @@ Complete the following steps to accept an invitation to link your workspace to a
    
 3. Click **View invitation** in the body of the email.
    
-   ![Control plane email invitation](/assets/control-plane-email-invitation.BXyOXjKX.png)_Control plane email invitation_
+   ![Control plane email invitation](/assets/control-plane-email-invitation.BsVRwmkS.png)_Control plane email invitation_
    
 4. Sign in to your Workato account when redirected to the login screen.
    

@@ -33,4 +33,4 @@ Complete the following troubleshooting steps to resolve this error:
    
 2. Send a test email to the recipient's email address to ensure that the email address is valid.
    
-3. [Contact Workato support](https://support.workato.com/en/support/home) to check if the email is blocked by Workato if the preceding steps didn't work.
+3. [Contact Workato support](https://support.workato.com) to check if the email is blocked by Workato if the preceding steps didn't work.

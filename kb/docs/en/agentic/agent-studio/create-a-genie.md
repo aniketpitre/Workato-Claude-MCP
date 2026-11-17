@@ -216,9 +216,14 @@ Complete the following steps to configure a connection to your LLM:
 
 The **Chat interface** is the platform through which end users access and interact with your genie. Chat interfaces can only be changed after you stop your genie. Refer to [Getting started with genies: Chat interface](/en/agentic/agent-studio/chat-interface/chat-interface) for more information.
 
-> **CHAT INTERFACE CONFIGURATION**
-> 
-> The genies feature can only be configured to use Slack, Microsoft Teams, or [Workato GO](/en/agentic/workato-go) as the chat interface. Support for additional chat interface apps is in development.
+Agent Studio supports the following chat interfaces:
+
+- Slack
+- Microsoft Teams
+- Workato GO
+- Custom chat interface
+
+The [custom chat interface](/en/agentic/agent-studio/chat-interface/chat-interface#configure-a-custom-chat-interface) option supports a [Headless API](/en/agentic/agent-studio/chat-interface/headless-api) capability that connects your genie to any application you build and control. Your application talks to your genie directly over a REST API, also called a Headless API, instead of routing users through a chat interface. Refer to [Build a custom chat UI](/en/agentic/agent-studio/chat-interface/build-a-custom-chat-ui) for more information.
 
 Complete the following steps to configure your chat interface:
 

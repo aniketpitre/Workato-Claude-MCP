@@ -1151,6 +1151,14 @@ The following privileges control access to create and manage MCP servers:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+
 #### Genie building
 
 The following privileges control access to the core assets used to build genies, including the knowledge bases that power genies, and custom chat interfaces where end users interact with genies:
@@ -1252,6 +1260,14 @@ The following privileges control access to create and manage MCP servers:
 | Privilege | Full access | View | Edit | Create | Delete | Manage access | Publish/Unpublish |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 #### Genie building
 
@@ -1356,6 +1372,14 @@ The following privileges control access to create and manage MCP servers:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ❌ | ✔ | ✔ | ✔ | ❌ | ✔ | ❌ |
 
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ❌ | ✔ | ✔ | ✔ | ❌ | ✔ |
+
 #### Genie building
 
 The following privileges control access to the core assets used to build genies, including the knowledge bases that power genies, and custom chat interfaces where end users interact with genies:
@@ -1457,6 +1481,14 @@ The following privileges control access to create and manage MCP servers:
 | Privilege | Full access | View | Edit | Create | Delete | Manage access | Publish/Unpublish |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ❌ | ✔ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ❌ | ✔ | ❌ | ❌ | ❌ | ❌ |
 
 #### Genie building
 
@@ -2519,6 +2551,7 @@ Project-level privileges are grouped into the following categories:
 
 - [Project assets](#project-assets)
 - [MCP servers](#mcp-servers)
+- [Model Gateway](#model-gateway)
 - [Genie building](#genie-building)
 - [Project settings](#project-settings)
 - [Low-code apps](#low-code-apps)
@@ -2765,6 +2798,41 @@ The following privileges control access to create and manage MCP servers:
 > **SKILL ACCESS FOR GENIES AND MCP**
 > 
 > Users with either the **Workato Genies** privilege or the **MCP servers** privilege can view and manage [skills](/en/agentic/skills) built with the [Workato Skill connector](/en/agentic/agent-studio/connectors/workato-skill-connector/workato-skill-connector). This lets builders on Business MCP and Enterprise MCP plans create and manage skills without an Agent Studio license.
+
+### Model Gateway
+
+The following privileges control access to [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+- Model Gateway
+  
+- Controls access to manage Model Gateway [routes](/en/ai-gateway/routes), [policies](/en/ai-gateway/policies), and [access keys](/en/ai-gateway/access-keys).
+  
+  - Full access
+    
+  - Grants all Model Gateway permissions.
+    
+  - View
+    
+  - View existing routes, policies, and access keys.
+    
+  - Edit
+    
+  - Update routes, policies, and access keys, including the routes an access key can use.
+    
+  - Create
+    
+  - Create new routes, policies, and access keys.
+    
+  - Delete
+    
+  - Remove existing routes, policies, and access keys.
+    
+  - Manage access
+    
+  - [Refresh access keys](/en/ai-gateway/access-keys#refresh-an-access-key) to generate a new token.
+    
+
+The **Create** privilege requires **View** and **Edit**. The **Edit**, **Delete**, and **Manage access** privileges require **View**.
 
 ### Genie building
 

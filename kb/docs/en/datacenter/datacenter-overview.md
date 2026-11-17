@@ -58,7 +58,7 @@ Refer to the [Privacy policy](https://www.workato.com/legal/privacy-policy) for 
 
 > **CUSTOMER SUPPORT**
 > 
-> Workato maintains a globally-distributed support team to offer product support to our customers in all timezones. Refer to the [Workato Success Center](https://support.workato.com/en/support/home) to connect with the support team.
+> Workato maintains a globally-distributed support team to offer product support to our customers in all timezones. Refer to the [Workato Success Center](https://support.workato.com) to connect with the support team.
 
 ## Can I share assets across data centers?
 

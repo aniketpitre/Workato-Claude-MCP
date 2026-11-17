@@ -7,7 +7,7 @@ description: >-
 
 # NetSuite FAQ
 
-Get answers to frequently asked questions (FAQs) about the NetSuite connector. Contact [Workato Support](https://support.workato.com/support/tickets) to report bugs or troubleshoot issues with this connector.
+Get answers to frequently asked questions (FAQs) about the NetSuite connector. Contact [Workato Support](https://workato.zendesk.com/hc/en-us/requests/new) to report bugs or troubleshoot issues with this connector.
 
 ## How to create a NetSuite invoice from CSV file
 

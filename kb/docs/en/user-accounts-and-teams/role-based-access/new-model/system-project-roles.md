@@ -65,6 +65,14 @@ The following privileges control access to create and manage MCP servers:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+
 #### Genie building
 
 The following privileges control access to the core assets used to build genies, including the knowledge bases that power genies, and custom chat interfaces where end users interact with genies:
@@ -166,6 +174,14 @@ The following privileges control access to create and manage MCP servers:
 | Privilege | Full access | View | Edit | Create | Delete | Manage access | Publish/Unpublish |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 #### Genie building
 
@@ -270,6 +286,14 @@ The following privileges control access to create and manage MCP servers:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ❌ | ✔ | ✔ | ✔ | ❌ | ✔ | ❌ |
 
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ❌ | ✔ | ✔ | ✔ | ❌ | ✔ |
+
 #### Genie building
 
 The following privileges control access to the core assets used to build genies, including the knowledge bases that power genies, and custom chat interfaces where end users interact with genies:
@@ -371,6 +395,14 @@ The following privileges control access to create and manage MCP servers:
 | Privilege | Full access | View | Edit | Create | Delete | Manage access | Publish/Unpublish |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MCP servers | ❌ | ✔ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+#### Model Gateway
+
+The following privileges control access to create and manage [Model Gateway](/en/ai-gateway) routes, policies, and access keys:
+
+| Privilege | Full access | View | Edit | Create | Delete | Manage access |
+| --- | --- | --- | --- | --- | --- | --- |
+| Model Gateway | ❌ | ✔ | ❌ | ❌ | ❌ | ❌ |
 
 #### Genie building
 
