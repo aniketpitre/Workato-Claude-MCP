@@ -9,6 +9,10 @@ description: >-
 
 **JMS tools by Workato** is an on-premise connector that allows Workato to interact with Java Message Service (JMS) providers. You can use this connector to subscribe to topic/queue and publish to topic/queue.
 
+> **COMMON DATA MODELS ARE TRANSITIONING TO PROJECT ASSETS**
+> 
+> Common data models are transitioning to project assets that belong to a folder or project and appear in the **Assets** view. Refer to [Common data models as project assets](/en/features/common-data-model#common-data-models-as-project-assets) for more information.
+
 ## Prerequisites
 
 You must have the following prerequisites to use the JMS tools by Workato connector:

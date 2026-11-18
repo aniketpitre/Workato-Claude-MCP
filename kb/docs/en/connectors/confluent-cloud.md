@@ -11,6 +11,10 @@ description: >-
 
 The Confluent Cloud connector allows you to build real-time data pipelines and streaming applications. It integrates with the [Confluent Cloud Schema Registry](https://docs.confluent.io/cloud/current/sr/index.html), which provides schema management for Kafka and ensures data standardization and compatibility as schemas evolve.
 
+> **COMMON DATA MODELS ARE TRANSITIONING TO PROJECT ASSETS**
+> 
+> Common data models are transitioning to project assets that belong to a folder or project and appear in the **Assets** view. Refer to [Common data models as project assets](/en/features/common-data-model#common-data-models-as-project-assets) for more information.
+
 ## API version
 
 The Confluent Cloud connector uses the Confluent Cloud API.

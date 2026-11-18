@@ -1,8 +1,9 @@
 ---
 url: 'https://docs.workato.com/en/wel/stdlib.md'
 description: >-
-  The 245 built-in functions in WEL, spanning 16 categories - strings, lists,
-  maps, temporal, numeric, crypto, encoding, escaping, and conversion.
+  Understand the 250 built-in functions in WEL, spanning 16 categories,
+  including strings, lists, maps, temporal, numeric, crypto, encoding, escaping,
+  and conversion.
 ---
 
 # WEL standard library

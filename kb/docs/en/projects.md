@@ -124,7 +124,7 @@ The **Assets** page provides the following filters:
 
 - All assets
   
-- Filter by all types of assets, including recipes, connections, pages, genies, skills, knowledge bases, and event streams.
+- Filter by all types of assets, including recipes, connections, pages, genies, skills, knowledge bases, event streams, and common data models.
   
 - App
   
@@ -220,6 +220,13 @@ Event streams
 | --- | --- |
 | Edited by | Filter by the user who edited the event stream. |
 | Tag | Filter event streams by tags. |
+
+Common data models
+
+| Sub-filter | Description |
+| --- | --- |
+| Edited by | Filter by the user who edited the common data model. |
+| Tag | Filter common data models by tags. |
 
 ### Search assets
 

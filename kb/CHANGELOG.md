@@ -1,5 +1,62 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-18T11:51:06+00:00 (incremental)
+
+- Pages: 4561 | added 20 | changed 31 | removed 0
+- Added:
+  - https://docs.workato.com/en/agentic/agent-studio/code-interpreter.md
+  - https://docs.workato.com/en/connectors/clay.md
+  - https://docs.workato.com/en/connectors/clay/get-company-funding-action.md
+  - https://docs.workato.com/en/connectors/clay/get-company-profile-action.md
+  - https://docs.workato.com/en/connectors/clay/get-person-profile-action.md
+  - https://docs.workato.com/en/connectors/clay/search-companies-action.md
+  - https://docs.workato.com/en/connectors/clay/search-people-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/add-slide-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/copy-slide-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/delete-slide-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/find-and-replace-text-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/get-presentation-info-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/get-slide-content-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/get-slide-elements-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/list-slide-layouts-action-batch.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/update-speaker-notes-action.md
+  - https://docs.workato.com/en/connectors/microsoft-powerpoint/update-text-content-action.md
+  - https://docs.workato.com/en/oem/oem-api/agent-studio.md
+  - https://docs.workato.com/en/oem/oem-api/workato-identity-iam.md
+- Changed:
+  - https://docs.workato.com/en/agentic/agent-studio.md
+  - https://docs.workato.com/en/connectors/confluent-cloud.md
+  - https://docs.workato.com/en/connectors/jms.md
+  - https://docs.workato.com/en/connectors/kafka.md
+  - https://docs.workato.com/en/connectors/mapper.md
+  - https://docs.workato.com/en/features/activity-audit-log-reference.md
+  - https://docs.workato.com/en/features/common-data-model.md
+  - https://docs.workato.com/en/features/transformation-maps/map-examples.md
+  - https://docs.workato.com/en/limits.md
+  - https://docs.workato.com/en/mcp/prebuilt-mcps/canva-mcp-server.md
+  - https://docs.workato.com/en/mcp/prebuilt-mcps/clay-contact-company-explorer-mcp-server.md
+  - https://docs.workato.com/en/mcp/prebuilt-mcps/linear-issues-mcp-server.md
+  - https://docs.workato.com/en/mcp/prebuilt-mcps/microsoft-powerpoint-mcp-server.md
+  - https://docs.workato.com/en/oem/oem-api/activity-reference.md
+  - https://docs.workato.com/en/oem/oem-api/jobs.md
+  - https://docs.workato.com/en/oem/oem-api/limits.md
+  - https://docs.workato.com/en/oem/oem-api/resources.md
+  - https://docs.workato.com/en/privileges.md
+  - https://docs.workato.com/en/projects.md
+  - https://docs.workato.com/en/recipe-development-lifecycle/import.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access/new-model/privileges-reference.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access/new-model/system-project-roles.md
+  - https://docs.workato.com/en/wel.md
+  - https://docs.workato.com/en/wel/errors.md
+  - https://docs.workato.com/en/wel/stdlib.md
+  - https://docs.workato.com/en/wel/stdlib/conversion.md
+  - https://docs.workato.com/en/wel/stdlib/deep-map.md
+  - https://docs.workato.com/en/wel/stdlib/map.md
+  - https://docs.workato.com/en/workato-api/activity-reference.md
+  - https://docs.workato.com/en/workato-api/agent-studio.md
+
 ## 2026-11-17T11:59:27+00:00 (incremental)
 
 - Pages: 4541 | added 0 | changed 21 | removed 0

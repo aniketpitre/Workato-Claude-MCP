@@ -1,13 +1,13 @@
 ---
 url: 'https://docs.workato.com/en/oem/oem-api/jobs.md'
 description: >-
-  Reference for the Embedded API jobs endpoints to list jobs and retrieve job
-  details for recipes in customer workspaces.
+  Reference for the Embedded API jobs endpoints to list, resume, repeat, and
+  cancel jobs for recipes in customer workspaces.
 ---
 
 # Embedded API - Jobs
 
-Use the following endpoints to view jobs for recipes in customer workspaces.
+Use the following endpoints to manage jobs for recipes in customer workspaces.
 
 To use this API, you must first [edit the API client's role](/en/workato-api/api-clients#edit-a-client-role) to enable access to jobs in the customer workspace.
 
@@ -15,9 +15,12 @@ To use this API, you must first [edit the API client's role](/en/workato-api/api
    
 2. Select **Projects** in the **Customer workspaces** section.
    
-3. Check the box for **List** and/or **Get details** to give the API client access to list jobs or get a single job's details.
+3. Check the box for each job operation you plan to use:
    
-   ![Editing an API client's role](/assets/oem-jobs-edit-api-client-role.yoMeWHo3.png) _Editing an API client's role to allow access to the jobs API_
+   - In **Recipes**: **Repeat jobs** and **Cancel jobs**.
+   - In **Jobs**: **List**, **Get details**, and **Resume suspended job**.
+   
+   ![Editing an API client's role](/assets/oem-jobs-edit-api-client-role.CvI-zonP.png) _Editing an API client's role to allow access to the jobs API_
    
 
 ## Rate limits
@@ -27,13 +30,15 @@ Job resources have the following rate limits:
 | Type | Resource | Quota |
 | --- | --- | --- |
 | POST | Repeat jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/repeat\_jobs](/en/oem/oem-api/jobs.html#repeat-jobs) | 1 request per second |
+| POST | Cancel jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/cancel\_jobs](/en/oem/oem-api/jobs.html#cancel-jobs) | 1 request per second |
 | All | All other [Jobs](/en/oem/oem-api/jobs.html) endpoints | 1,000 requests per minute |
 
-Additionally, [Repeat jobs](#repeat-jobs) has the following payload quota:
+Additionally, [Repeat jobs](#repeat-jobs) and [Cancel jobs](#cancel-jobs) have the following payload quota:
 
 | Type | Resource | Quota |
 | --- | --- | --- |
 | POST | Repeat jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/repeat\_jobs](/en/oem/oem-api/jobs.html#repeat-jobs) | 25 jobs per request |
+| POST | Cancel jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/cancel\_jobs](/en/oem/oem-api/jobs.html#cancel-jobs) | 25 jobs per request |
 
 ### Quick reference
 
@@ -41,7 +46,9 @@ Additionally, [Repeat jobs](#repeat-jobs) has the following payload quota:
 | --- | --- | --- |
 | GET | [/api/managed\_users/:id/recipes/:recipe\_id/jobs](#list-jobs) | List jobs for a recipe. |
 | GET | [/api/managed\_users/:id/recipes/:recipe\_id/jobs/:job\_id](#get-job-details) | Get job details. |
+| POST | [/api/managed\_users/:managed\_user\_id/job/resume](#job-resume) | Resumes a job based on the `resume_token` you provide. A successful request returns a `204 No Content` status code with no response body. This endpoint is used by [SDK Wait for resume actions](/en/developing-connectors/sdk/guides/building-actions/wait-for-resume-actions). |
 | POST | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/repeat\_jobs](#repeat-jobs) | Repeats jobs you specify in a customer workspace. |
+| POST | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/cancel\_jobs](#cancel-jobs) | Cancels ongoing jobs you specify in a customer workspace. |
 
 ## List jobs
 
@@ -410,6 +417,53 @@ View a sample response.
 > 
 > `job_correlation_id` returns the `x-correlation-id` header from the originating webhook request. It's populated for jobs triggered by static webhooks, where the webhook carries the payload directly into the job. This field is `null` for hybrid triggers, where the webhook only signals a time-based poller to run and header metadata isn't retained.
 
+## Resume a job
+
+Resumes a job based on the `resume_token` you provide.
+
+This endpoint is invoked by third-party apps when using [SDK Wait for resume actions](/en/developing-connectors/sdk/guides/building-actions/wait-for-resume-actions).
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/job/resume
+```
+
+</api-code>
+
+### Path parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an `E` (for example, `EA2300`). |
+
+### Request body
+
+| Name | Type | Description |
+| --- | --- | --- |
+| token | **string** _required_ | The `resume_token` that matches the job you plan to resume. |
+| data | **hash** _optional_ | Any contextual data you plan to pass back to the job. This data is accessible by the action in the `before_resume` lambda. The payload's quota is 50 MB. For payloads larger than the quota, you can send a reference and allow the action's `execute` lambda to make a secondary request to retrieve the data. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl -X POST 'https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/job/resume' \
+     -H "Authorization: Bearer <api_token>" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "token": ":token",
+       "data": :data
+     }'
+```
+
+</api-code>
+
+### Response
+
+A successful request returns a `204 No Content` status code with no response body.
+
 ## Repeat jobs in a customer workspace
 
 Repeats jobs you specify in a customer workspace. Repeats use the latest recipe version.
@@ -525,6 +579,103 @@ You may receive a `400 Bad Request` error for several reasons. For example, the 
 
 ```json
 { "message": "param is missing or the value is empty or invalid: job_ids" }
+```
+
+## Cancel jobs in a customer workspace
+
+Cancels one or more ongoing jobs you specify by their job ID in a customer workspace. You can only cancel jobs that are in a `running` state.
+
+<api-code no-copy-method>
+
+```
+POST https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/cancel_jobs
+```
+
+</api-code>
+
+### Path parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| managed\_user\_id | **string** _required_ | Embedded customer ID/external ID. The External ID must be URL encoded and prefixed with an `E` (for example, `EA2300`). |
+| recipe\_id | **string** _required_ | The ID of the recipe the jobs belong to. |
+
+### Request body
+
+| Name | Type | Description |
+| --- | --- | --- |
+| job\_ids | **array** _required_ | Contains the job IDs of ongoing jobs to cancel. Maximum 25 per request. You can retrieve a job ID using the [List jobs](#list-jobs) endpoint or the [Jobs](/en/recipes/jobs#job-metadata-and-statuses) page in Workato. |
+
+### Sample request
+
+<api-code>
+
+```shell
+curl -X POST 'https://YOUR_DATA_CENTER/api/managed_users/:managed_user_id/recipes/:recipe_id/cancel_jobs' \
+     -H "Authorization: Bearer <api_token>" \
+     -H "Content-Type: application/json" \
+     -d '{
+          "job_ids": [
+            ":job_id_1",
+            ":job_id_2"
+            ]
+          }'
+```
+
+</api-code>
+
+### Response
+
+200 OK
+
+A `200 OK` status indicates the request was processed successfully. Check the `results` array for the status of each job and the `summary` for totals.
+
+```json
+{
+  "results": [
+    {
+      "requested_job_id": "j-AYBHXEFo-PQQBDT-B6",
+      "status": "cancel_requested"
+    },
+    {
+      "requested_job_id": "j-AYBHQNCp-oEpBXN-B6",
+      "status": "failed",
+      "error": {
+        "type_id": "err.item.not_found",
+        "message": "Job not found"
+      }
+    },
+    {
+      "requested_job_id": "j-AYBGmRND-bB6TH3-B6",
+      "status": "failed",
+      "error": {
+        "type_id": "err.job.cancel.noncancellable",
+        "message": "Job j-AYBGmRND-bB6TH3-B6 is not ongoing (status: succeeded) and cannot be cancelled."
+      }
+    }
+  ],
+  "summary": {
+    "total_requested": 3,
+    "total_succeeded": 1,
+    "total_failed": 2
+  }
+}
+```
+
+400 Bad Request
+
+You may receive a `400 Bad Request` error for several reasons. For example, the request contains more than 25 jobs, an empty or missing `job_ids` array, duplicate `job_ids`, or a malformed body. Refer to the [400 Bad Request](/en/troubleshooting/400-bad-request-error) troubleshooting guide for more information.
+
+```json
+{ "message": "Maximum 25 jobs can be cancelled in a single request. Received 26" }
+```
+
+```json
+{ "message": "param is missing or the value is empty or invalid: job_ids" }
+```
+
+```json
+{ "message": "Duplicate job IDs are not allowed in a single request" }
 ```
 
 ---

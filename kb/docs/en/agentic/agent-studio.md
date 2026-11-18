@@ -90,15 +90,15 @@ The maximum supported image size is 5MB per file. Agent Studio supports the foll
 
 Refer to [Agent Studio upload files and images](/en/agentic/agent-studio/upload-files-and-images) for more information.
 
-### Advanced file and data analysis
+### Code Interpreter
 
-Advanced file and data analysis allows you to upload `csv`, `xlsx`, `json`, and `xml` files to perform data and statistical analysis or process data in file. This enables you to perform the following tasks:
+Code Interpreter allows you to upload `csv`, `xlsx`, `json`, and `xml` files to perform data and statistical analysis or process data in file. This enables you to perform the following tasks:
 
-- Provide custom queries for calculations
-- Use isolated and persistent code sandboxes to execute code in the cloud also referred as Code Interpreter
+- Use isolated code sandboxes to execute code in the cloud
+- Use isolated and persistent code sandboxes to execute code in the cloud
 - Upload files to a sandbox to work with files generated from code within skills
 
-Refer to [Advanced file and data analysis](/en/agentic/agent-studio/advanced-file-and-data-analysis) for more information.
+Refer to [Code Interpreter](/en/agentic/agent-studio/code-interpreter) for more information.
 
 ### MCP client
 

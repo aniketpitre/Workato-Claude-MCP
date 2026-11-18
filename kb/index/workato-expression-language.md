@@ -5,12 +5,12 @@
 
 ## Workato Expression Language
 
-- **Workato Expression Language** - `kb/docs/en/wel.md` - WEL is Workato's transformation language - 245 built-in functions, 16 data types, and exact decimal arithmetic, running natively alongside your recipe.
+- **Workato Expression Language** - `kb/docs/en/wel.md` - WEL is Workato's transformation language, including 250 built-in functions, 16 data types, and exact decimal arithmetic and runs natively alongside your recipe.
 - **WEL cookbook** - `kb/docs/en/wel/cookbook.md` - Worked WEL examples of common integration problems - joins, grouping, deduplication, CSV and JWT generation, and error-tolerant batch processing.
 - **WEL error codes** - `kb/docs/en/wel/errors.md` - Learn what a WEL error code means, whether it's catchable, and how to troubleshoot it.
 - **WEL language guide** - `kb/docs/en/wel/language.md` - The syntax and rules behind every WEL expression, the 16 data types, operators and precedence, how expressions are structured, and string formatting.
 - **WEL quickstart** - `kb/docs/en/wel/quickstart.md` - Get started with WEL three ways - in the Transform Data action, with an external AI client, or with the wel command-line binary for fast local iteration.
-- **WEL standard library** - `kb/docs/en/wel/stdlib.md` - The 245 built-in functions in WEL, spanning 16 categories - strings, lists, maps, temporal, numeric, crypto, encoding, escaping, and conversion.
+- **WEL standard library** - `kb/docs/en/wel/stdlib.md` - Understand the 250 built-in functions in WEL, spanning 16 categories, including strings, lists, maps, temporal, numeric, crypto, encoding, escaping, and conversion.
 
 ## Language guide
 

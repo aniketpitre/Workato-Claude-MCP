@@ -13,6 +13,10 @@ Using Workato Apache Kafka connector you can link with your local or web Kafka c
 - Consume messages using the [New message trigger](/en/connectors/kafka/new-message-trigger) or [New messages trigger (batch)](/en/connectors/kafka/new-messages-trigger-batch).
 - Send messages using the [Publish message action](/en/connectors/kafka/publish-message) or [Publish messages action (batch)](/en/connectors/kafka/publish-messages-batch).
 
+> **COMMON DATA MODELS ARE TRANSITIONING TO PROJECT ASSETS**
+> 
+> Common data models are transitioning to project assets that belong to a folder or project and appear in the **Assets** view. Refer to [Common data models as project assets](/en/features/common-data-model#common-data-models-as-project-assets) for more information.
+
 ## How to connect to Apache Kafka in Workato
 
 Complete the following steps to establish a connection to Apache Kafka in Workato using a cloud profile OPA:

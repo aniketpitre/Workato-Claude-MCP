@@ -23,6 +23,16 @@ In addition, Embedded API resources have the following rate and payload quotas:
 
 | Collection | Type | Resource | Quota |
 | --- | --- | --- | --- |
+| **Agent Studio** | GET | List genies: [/api/managed\_users/:managed\_user\_id/agentic/genies](https://docs.workato.com/en/oem/oem-api/agent-studio.html#list-genies) | 1,000 requests per minute |
+| **Agent Studio** | GET | Get a genie by ID: [/api/managed\_users/:managed\_user\_id/agentic/genies/:id](https://docs.workato.com/en/oem/oem-api/agent-studio.html#get-a-genie-by-id) | 1,000 requests per minute |
+| **Agent Studio** | GET | All [genie conversation](https://docs.workato.com/en/oem/oem-api/agent-studio.html#conversations) endpoints | 10 requests per second |
+| **Agent Studio** | All | All other [genie](https://docs.workato.com/en/oem/oem-api/agent-studio.html#genies) endpoints | 60 requests per minute |
+| **Agent Studio** | GET | List Knowledge bases: [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases](https://docs.workato.com/en/oem/oem-api/agent-studio.html#list-knowledge-bases) | 1,000 requests per minute |
+| **Agent Studio** | GET | Get a Knowledge base by ID: [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases/:id](https://docs.workato.com/en/oem/oem-api/agent-studio.html#get-a-knowledge-base-by-id) | 1,000 requests per minute |
+| **Agent Studio** | All | All other [Knowledge bases](https://docs.workato.com/en/oem/oem-api/agent-studio.html#knowledge-bases) endpoints | 60 requests per minute |
+| **Agent Studio** | GET | List Skills: [/api/managed\_users/:managed\_user\_id/agentic/skills](https://docs.workato.com/en/oem/oem-api/agent-studio.html#list-skills) | 1,000 requests per minute |
+| **Agent Studio** | GET | Get a skill by ID: [/api/managed\_users/:managed\_user\_id/agentic/skills/:id](https://docs.workato.com/en/oem/oem-api/agent-studio.html#get-a-skill-by-id) | 1,000 requests per minute |
+| **Agent Studio** | All | All other [Skills](https://docs.workato.com/en/oem/oem-api/agent-studio.html#skills) endpoints | 60 requests per minute |
 | **API clients** | GET | List Developer API Clients: [/api/v2/managed\_users/:managed\_user\_id /developer\_api\_clients](/en/oem/oem-api/api-clients.html#list-developer-api-clients) | 1,000 requests per minute |
 | **API clients** | GET | List Developer API Client roles: [/api/v2/managed\_users/:managed\_user\_id /developer\_api\_client\_roles](/en/oem/oem-api/api-clients.html#list-developer-api-client-roles) | 1,000 requests per minute |
 | **API clients** | All | All other [API Client](/en/oem/oem-api/api-clients.html) endpoints | 60 requests per minute |
@@ -54,6 +64,8 @@ In addition, Embedded API resources have the following rate and payload quotas:
 | **Folders** | All | All [Folders](/en/oem/oem-api/folders.html) endpoints | 60 requests per minute |
 | **Jobs** | POST | Repeat jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/repeat\_jobs](/en/oem/oem-api/jobs.html#repeat-jobs) | 25 jobs per request |
 | **Jobs** | POST | Repeat jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/repeat\_jobs](/en/oem/oem-api/jobs.html#repeat-jobs) | 1 request per second |
+| **Jobs** | POST | Cancel jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/cancel\_jobs](/en/oem/oem-api/jobs.html#cancel-jobs) | 25 jobs per request |
+| **Jobs** | POST | Cancel jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/cancel\_jobs](/en/oem/oem-api/jobs.html#cancel-jobs) | 1 request per second |
 | **Jobs** | POST | Force an on-demand run of a recipe: [/api/managed\_users/:managed\_user\_id /recipes/:recipe\_id/force\_run](/en/oem/oem-api/recipes.html#force-run-a-recipe) | 1 request per second |
 | **Jobs** | All | All other [Jobs](/en/oem/oem-api/jobs.html) endpoints | 1,000 requests per minute |
 | **JWT Public Key** | All | All [JWT public key](/en/oem/oem-api/jwt-direct-link-configurations.html) endpoints | 60 requests per minute |
@@ -83,6 +95,7 @@ In addition, Embedded API resources have the following rate and payload quotas:
 | **Role migration** | All[](/en/oem/oem-api/role-migration.html) | All [Role migration](/en/oem/oem-api/role-migration.html) endpoints | 60 requests per minute |
 | **Tag assignments** | All | All [Tag assignments](/en/oem/oem-api/tag-assignments.html) endpoints | 1,000 requests per minute |
 | **Test Automation** | All | All [Test Automation](/en/oem/oem-api/test-automation.html) endpoints | 60 requests per minute |
+| **Workato Identity IAM** | All | All [Workato Identity IAM](/en/oem/oem-api/workato-identity-iam.html) embedded endpoints | 60 requests per minute |
 
 > **FURTHER READING**
 > 

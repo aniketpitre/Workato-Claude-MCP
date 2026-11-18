@@ -75,6 +75,16 @@ Agent Studio resources have the following rate limits:
 
 Agent Studio genies support the following endpoints and configurations:
 
+### Code Interpreter setting
+
+The `code_interpreter_enabled` field turns [Code Interpreter](/en/agentic/agent-studio/code-interpreter) on or off for a genie. `code_interpreter_enabled` is available for [List genies](#list-genies), [Get a genie by ID](#get-a-genie-by-id), [Create a genie](#create-a-genie), and [Update a genie](#update-a-genie). No additional privileges are required.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| code\_interpreter\_enabled | **boolean** | When `true`, the genie can run code for file and data analysis. A genie without a stored value returns `false`. |
+
+Reading the `code_interpreter_enabled` field isn't gated. List and get requests return the stored value, even when Code Interpreter isn't enabled for your workspace. The value takes effect only when the feature is enabled for your workspace.
+
 ### List genies
 
 Returns a list of genies. Each genie includes a `triggers[]` array. Refer to [Genie triggers](#genie-triggers) for more information.
@@ -112,6 +122,8 @@ curl  -X GET https://YOUR_DATA_CENTER/api/agentic/genies?per_page=:per_page_valu
 
 Channel configuration fields are returned using the default values when no explicit configuration is set.
 
+Each genie includes `code_interpreter_enabled`. Refer to [Code Interpreter setting](#code-interpreter-setting) for more information.
+
 The response includes a `Deprecation: true` header. The top-level `connection_id`, `custom_oauth_key_id`, and channel fields are deprecated. Use `triggers[]` instead.
 
 ```json
@@ -148,6 +160,7 @@ The response includes a `Deprecation: true` header. The top-level `connection_id
       "user_groups_count": 0,
       "active_recipes_count": 0,
       "inactive_skills_count": 5,
+      "code_interpreter_enabled": false,
       "logo_url": "https://example.com/logo.png",
       "created_at": "2025-07-15T11:07:34.060-07:00",
       "updated_at": "2026-02-24T08:38:29.099-08:00"
@@ -184,6 +197,7 @@ The response includes a `Deprecation: true` header. The top-level `connection_id
       "user_groups_count": 0,
       "active_recipes_count": 0,
       "inactive_skills_count": 5,
+      "code_interpreter_enabled": false,
       "logo_url": "https://example.com/logo.png",
       "created_at": "2026-02-24T08:54:34.585-08:00",
       "updated_at": "2026-02-25T09:34:14.013-08:00"
@@ -215,6 +229,7 @@ POST https://YOUR_DATA_CENTER/api/agentic/genies
 | ai\_provider | **string** _optional_ | The internal provider engine that powers your genie. Accepted values are `open_ai`, `anthropic`, or `byollm`. Use with `ai_model`. |
 | ai\_provider\_type | **string** _optional_ | The type of AI provider that powers your genie. Use with `ai_provider_id`. |
 | ai\_provider\_id | **string** _optional_ | The ID of the AI provider that powers your genie. Use with `ai_provider_type`. |
+| code\_interpreter\_enabled | **boolean** _optional_ | Turns Code Interpreter on or off for the genie. Refer to [Code Interpreter setting](#code-interpreter-setting). |
 | shared\_account\_id | **integer** _required_ | The Connection ID of your genie. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | custom\_oauth\_key\_id | **integer** _required_ | Custom OAuth key ID. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | matrix | **boolean** _required_ | Determines whether Workato GO is enabled as your chat interface or not. Accepted values are `true` or `false`. |
@@ -223,6 +238,14 @@ POST https://YOUR_DATA_CENTER/api/agentic/genies
 | response\_mode | **string** _optional_ | Controls how the genie is triggered in a channel. Accepted values are `on_mention` or `helpdesk`. Defaults to `on_mention`. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | channel\_whitelist | **string\[\]** _optional_ | An array of Slack channel IDs the genie is permitted to respond in. Only applies when `channel_scope` is `specific`. Defaults to `[]`. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | triggers | **array of object** _optional_ | The chat triggers of the genie. The server generates an `id` for each entry. Refer to [Genie triggers](#genie-triggers) for the schema, validation rules, and legacy field behavior. |
+
+##### Code Interpreter behavior
+
+| Situation | Result |
+| --- | --- |
+| Code Interpreter is enabled for your workspace and you omit the parameter | `true` |
+| Code Interpreter is enabled for your workspace and you send `true` or `false` | The value you send |
+| Code Interpreter isn't enabled for your workspace and you send or omit a value | `false`. The parameter is ignored without an error. |
 
 ##### Sample request
 
@@ -283,6 +306,25 @@ curl -X POST https://YOUR_DATA_CENTER/api/agentic/genies \
 
 </api-code>
 
+Create a genie with Code Interpreter turned off:
+
+<api-code>
+
+```shell
+curl -X POST https://YOUR_DATA_CENTER/api/agentic/genies \
+     -H 'Authorization: Bearer <api_token>' \
+     -H 'Content-Type: application/json' \
+     -d '{
+           "name": ":genie_name",
+           "description": ":description",
+           "folder_id": ":folder_id",
+           "instructions": ":instructions",
+           "code_interpreter_enabled": false
+         }'
+```
+
+</api-code>
+
 ##### Sample response
 
 ```json
@@ -316,6 +358,7 @@ PUT https://YOUR_DATA_CENTER/api/agentic/genies/:id
 | ai\_model | **string** _optional_ | The model the genie uses. For example: `gpt-4o`. Use with `ai_provider`. Returns `null` for custom providers. |
 | ai\_provider\_type | **string** _optional_ | The type of AI provider that powers your genie. Use with `ai_provider_id`. |
 | ai\_provider\_id | **string** _optional_ | The ID of the AI provider that powers your genie. Use with `ai_provider_type`. |
+| code\_interpreter\_enabled | **boolean** _optional_ | Turns Code Interpreter on or off for the genie. Refer to [Code Interpreter setting](#code-interpreter-setting). |
 | shared\_account\_id | **integer** _optional_ | The Connection ID of your genie. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | custom\_oauth\_key\_id | **integer** _optional_ | Custom OAuth key ID. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | matrix | **boolean** _optional_ | Determines whether Workato GO is enabled as your chat interface or not. Accepted values are `true` or `false`. |
@@ -324,6 +367,14 @@ PUT https://YOUR_DATA_CENTER/api/agentic/genies/:id
 | response\_mode | **string** _optional_ | Controls how the genie is triggered in a channel. Accepted values are `on_mention` or `helpdesk`. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | channel\_whitelist | **string\[\]** _optional_ | An array of Slack channel IDs the genie is permitted to respond in. Only applies when `channel_scope` is `specific`. Pass an empty array to clear the list. Deprecated in favor of `triggers[]`. Ignored when you send `triggers[]`. |
 | triggers | **array of object** _optional_ | The complete list of chat triggers for the genie. This replaces all existing triggers atomically. Refer to [Genie triggers](#genie-triggers) for the replacement semantics, validation rules, and legacy field behavior. |
+
+##### Code Interpreter behavior
+
+| Situation | Result |
+| --- | --- |
+| Code Interpreter is enabled for your workspace and you send `true` or `false` | The value is saved. |
+| You omit the parameter | The current value is kept. |
+| Code Interpreter isn't enabled for your workspace | The parameter is ignored. The response is still `200` and the value doesn't change. |
 
 ##### Sample request
 
@@ -375,6 +426,19 @@ curl -X PUT https://YOUR_DATA_CENTER/api/agentic/genies/:id \
 
 </api-code>
 
+Turn on Code Interpreter:
+
+<api-code>
+
+```shell
+curl -X PUT https://YOUR_DATA_CENTER/api/agentic/genies/:id \
+     -H 'Authorization: Bearer <api_token>' \
+     -H 'Content-Type: application/json' \
+     -d '{ "code_interpreter_enabled": true }'
+```
+
+</api-code>
+
 ##### Sample response
 
 ```json
@@ -400,7 +464,7 @@ curl -X PUT https://YOUR_DATA_CENTER/api/agentic/genies/:id \
 
 ### Get a genie by ID
 
-Returns the genie associated with the ID you specify. The genie includes a `triggers[]` array and the LLM configuration, `ai_provider_type` and `ai_provider_id`. Refer to [Genie triggers](#genie-triggers) for more information.
+Returns the genie associated with the ID you specify. The genie includes a `triggers[]` array, the LLM configuration (`ai_provider_type` and `ai_provider_id`), and the `code_interpreter_enabled` setting. Refer to [Genie triggers](#genie-triggers) and [Code Interpreter setting](#code-interpreter-setting) for more information.
 
 <api-code no-copy-method>
 
@@ -435,24 +499,44 @@ The response includes a `Deprecation: true` header. The top-level `connection_id
 
 ```json
 {
-  "data": {
-    "id": "gin-ZWSMPR4a-TaG7S9",
-    "name": "Customer Support Genie v2",
-    "description": "Updated to handle billing inquiries in addition to general support.",
-    "state": "inactive",
-    "folder_id": 21285720,
-    "project_id": 93761783,
-    "instructions": "You are a knowledgeable, polite support assistant. Always prioritize clear, concise answers.",
-    "ai_provider": "anthropic",
-    "chat_interface": "slack",
-    "skills_count": 5,
-    "knowledge_bases_count": 3,
-    "user_groups_count": 0,
-    "active_recipes_count": 0,
-    "inactive_skills_count": 5,
-    "custom_oauth_key_id": 5678,
-    "connection_id": null,
-    "folders": [
+  "id": "gin-ZWSMPR4a-TaG7S9",
+  "name": "Customer Support Genie v2",
+  "description": "Updated to handle billing inquiries in addition to general support.",
+  "state": "stopped",
+  "folder_id": 21285720,
+  "project_id": 93761783,
+  "instructions": "You are a knowledgeable, polite support assistant. Always prioritize clear, concise answers.",
+  "ai_provider": "open_ai",
+  "ai_provider_type": "<ai_provider_type>",
+  "ai_provider_id": "<ai_provider_id>",
+  "chat_interface": "slack",
+  "channel_mode": "dms_only",
+  "channel_scope": "specific",
+  "response_mode": "on_mention",
+  "channel_whitelist": [],
+  "triggers": [
+    {
+      "id": "ginct-abc123",
+      "platform": "slack",
+      "name": "Slack - Acme",
+      "status": "active",
+      "shared_account_id": null,
+      "custom_oauth_key_id": 5678,
+      "channel_mode": "dms_only",
+      "channel_scope": "specific",
+      "response_mode": "on_mention",
+      "channel_whitelist": []
+    }
+  ],
+  "skills_count": 5,
+  "knowledge_bases_count": 3,
+  "user_groups_count": 0,
+  "active_recipes_count": 0,
+  "inactive_skills_count": 5,
+  "code_interpreter_enabled": true,
+  "custom_oauth_key_id": 5678,
+  "connection_id": null,
+  "folders": [
       {
         "id": 21285720,
         "name": "Customer Assistants"
@@ -641,7 +725,7 @@ POST https://YOUR_DATA_CENTER/api/agentic/genies/:id/assign_skills
 
 | Name | Type | Description |
 | --- | --- | --- |
-| id | **string** _required_ | The ID of the genie you to which you plan to assign skills. |
+| id | **string** _required_ | The ID of the genie to which you plan to assign skills. |
 
 #### Payload
 
@@ -779,7 +863,7 @@ POST https://YOUR_DATA_CENTER/api/agentic/genies/:id/assign_knowledge_bases
 
 | Name | Type | Description |
 | --- | --- | --- |
-| id | **string** _required_ | The ID of the genie you to which you plan to assign knowledge bases. |
+| id | **string** _required_ | The ID of the genie to which you plan to assign knowledge bases. |
 
 #### Payload
 
@@ -887,7 +971,7 @@ POST https://YOUR_DATA_CENTER/api/agentic/genies/:id/assign_user_groups
 
 | Name | Type | Description |
 | --- | --- | --- |
-| id | **string** _required_ | The ID of the genie you to which you plan to assign user group access. |
+| id | **string** _required_ | The ID of the genie to which you plan to assign user group access. |
 
 #### Payload
 
@@ -1707,7 +1791,7 @@ GET /api/agentic/genies/:genie_id/conversations
 | app\_type | **string** _optional_ | The trigger source to filter results by. Accepted values are `slack`, `teams`, `go`, `headless_api`, `test_mode`, `genie_task`, or `app_event`. Defaults to all sources. |
 | trigger\_id | **string** _optional_ | The ID of a chat trigger (`ginct-…`) or custom client (`gincl-…`) to filter conversations by. Returns only conversations that client originated. Ignored when multiple clients per genie isn't enabled for your workspace. |
 | identity\_user\_id | **string** _optional_ | The ID of a Workato Identity user to filter conversations by. Defaults to all users. |
-| feedback\[\] | **array of string** _optional_ | The feedback state to filter conversations by. Accepted values are `has_positive`, `has_negative`, `has_comments`, or `no_feedback`. You can pass `has_positive`, `has_negative`, and `has_comments` together with `OR`. `no_feedback` is exclusive and can't be combined with any other `feedback[]` values. Requests that combine it with other values return `400 Invalid request`. Requires the feedback filtering feature flag to be enabled for your workspace. |
+| feedback\[\] | **array of string** _optional_ | The feedback state to filter conversations by. Accepted values are `has_positive`, `has_negative`, `has_comments`, or `no_feedback`. You can pass `has_positive`, `has_negative`, and `has_comments` together with `OR`. `no_feedback` is exclusive and can't be combined with any other `feedback[]` values. Requests that combine it with other values return `400 Invalid request`. Requires the feedback filtering to be enabled for your workspace. |
 
 ##### Sample request
 
@@ -1811,7 +1895,7 @@ curl -X GET https://YOUR_DATA_CENTER/api/agentic/genies/gin-AaDdXzLX-dAFvWn-B6/c
 
 The Get conversation endpoint doesn't return the underlying event payload, such as LLM calls, tool executions, and guardrail evaluations. Use [List conversation events](#list-conversation-events) to retrieve event-level detail.
 
-When the feedback filtering feature flag is enabled for your workspace, `totals` includes a `feedback` block with counts of positive and negative reactions and the number of those reactions that carried a comment. Both `count` and `comments` are `0` when the conversation has received no feedback.
+When feedback filtering is enabled for your workspace, `totals` includes a `feedback` block with counts of positive and negative reactions and the number of those reactions that carried a comment. Both `count` and `comments` are `0` when the conversation has received no feedback.
 
 When multiple clients per genie is enabled for your workspace, the response includes `trigger_id` and `trigger_name`. These fields are omitted, not returned as `null`, for legacy conversations without a handle and when the trigger was deleted.
 
@@ -2022,7 +2106,7 @@ curl -sS https://YOUR_DATA_CENTER/api/agentic/genies/:id/guardrails \
 | Status | When |
 | --- | --- |
 | `401 Unauthorized` | Missing or invalid API token. |
-| `404 Not Found` | Genie handle unknown, outside your folder scope, or the `genie_guardrails_enabled` flag is off. |
+| `404 Not Found` | Genie handle unknown, outside your folder scope, or guardrails isn't enabled in your workspace. |
 
 * * *
 
@@ -2100,7 +2184,7 @@ curl -X PUT https://YOUR_DATA_CENTER/api/agentic/genies/:id/guardrails/policies/
 | --- | --- |
 | `400 Bad Request` | `policy_type` isn't one of the six valid values. |
 | `401 Unauthorized` | Missing or invalid API token. |
-| `404 Not Found` | Genie not found, no guardrail attached to the genie, or the feature flag is off. |
+| `404 Not Found` | Genie not found, no guardrail attached to the genie, or guardrails isn't enabled for your workspace. |
 | `422 Unprocessable Entity` | `configuration` failed validation. This can be caused by missing a required field, an unknown key, an invalid enum value, or if the request exceeds quotas. |
 
 ##### Sample 422 response
@@ -2415,6 +2499,7 @@ curl -X POST https://YOUR_DATA_CENTER/api/agentic/knowledge_bases \
   "folder_id": "7498",
   "source_type": "recipe",
   "data_sources": "zendesk_articles"
+}
 ```
 
 ### Get a knowledge base by ID

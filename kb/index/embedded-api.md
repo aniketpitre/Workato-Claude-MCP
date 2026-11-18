@@ -1,6 +1,6 @@
 # Embedded API
 
-39 pages. Paths are relative to the repository root.
+40 pages. Paths are relative to the repository root.
 
 
 ## Embedded API
@@ -15,6 +15,7 @@
 - **Embedded API - Environment properties** - `kb/docs/en/oem/oem-api/account-properties.md` - Reference for Workato Embedded API environment property endpoints to list properties by prefix and upsert properties in a customer workspace.
 - **Embedded API - Activity audit log reference** - `kb/docs/en/oem/oem-api/activity-reference.md` - Reference for the resource types and event types used to filter results from the Workato Embedded activity audit log API.
 - **Embedded API - Connectors** - `kb/docs/en/oem/oem-api/adapters.md` - Reference for Workato Embedded API connector endpoints to retrieve input schemas and list standard and platform connector metadata.
+- **Embedded API - Agent Studio** - `kb/docs/en/oem/oem-api/agent-studio.md` - Reference for the Embedded API Agent Studio endpoints to create and manage genies, knowledge bases, skills, and guardrail policies in a customer workspace programmatically.
 - **Embedded API - API clients** - `kb/docs/en/oem/oem-api/api-clients.md` - Reference for Workato Embedded API endpoints to create, list, update, delete, and rotate tokens for Developer API clients and roles.
 - **Embedded API - API platform** - `kb/docs/en/oem/oem-api/api-platform.md` - Reference for Workato Embedded API platform endpoints to create and manage API collections, endpoints, clients, and access profiles.
 - **Embedded API - Collaborator groups** - `kb/docs/en/oem/oem-api/collaborator-groups.md` - Reference for Workato Embedded API endpoints to create, list, update, and delete collaborator groups and members in a customer workspace.
@@ -30,7 +31,7 @@
 - **Embedded API - Environment roles** - `kb/docs/en/oem/oem-api/environment-roles.md` - Reference for the Embedded API environment roles endpoints to list, create, update, and delete environment roles in customer workspaces.
 - **Embedded API - Event streams** - `kb/docs/en/oem/oem-api/event-streams.md` - Reference for the Embedded API event streams resource to list, create, update, purge, and delete event topics in customer workspaces.
 - **Embedded API - Folders** - `kb/docs/en/oem/oem-api/folders.md` - Reference for the Embedded API folders resource to manage folders and projects within customer workspaces programmatically.
-- **Embedded API - Jobs** - `kb/docs/en/oem/oem-api/jobs.md` - Reference for the Embedded API jobs endpoints to list jobs and retrieve job details for recipes in customer workspaces.
+- **Embedded API - Jobs** - `kb/docs/en/oem/oem-api/jobs.md` - Reference for the Embedded API jobs endpoints to list, resume, repeat, and cancel jobs for recipes in customer workspaces.
 - **Embedded API - JWT direct link configurations** - `kb/docs/en/oem/oem-api/jwt-direct-link-configurations.md` - Reference for the Embedded API endpoint to update the JWT signature verification key used for JWT direct linking.
 - **Embedded API - Lookup tables** - `kb/docs/en/oem/oem-api/lookup-tables.md` - Reference for the Embedded API lookup tables resource to list, create, and delete tables and to add, update, and remove rows.
 - **Embedded API - Managed customers** - `kb/docs/en/oem/oem-api/managed-users.md` - Reference for the Embedded API managed users resource to programmatically create, manage, and update customer workspaces.

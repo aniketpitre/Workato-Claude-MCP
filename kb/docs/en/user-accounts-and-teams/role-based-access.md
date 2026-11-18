@@ -1138,6 +1138,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data Pipelines | ✔ | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  |  |
 | Event streams | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  | ✔ |
+| Common data models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data tables | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  | ✔ |  |
 | Folders | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Blueprints | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
@@ -1248,6 +1249,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data Pipelines | ✔ | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  |  |
 | Event streams | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  | ✔ |
+| Common data models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data tables | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  | ✔ |  |
 | Folders | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Blueprints | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
@@ -1358,6 +1360,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data Pipelines | ❌ | ❌ | ❌ |  | ❌ | ❌ | ❌ |  |  |  |
 | Event streams | ❌ | ✔ | ✔ |  | ✔ | ❌ |  |  |  | ✔ |
+| Common data models | ❌ | ✔ | ✔ |  | ✔ | ❌ |  |  |  |  |
 | Data tables | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  | ✔ |  |
 | Folders | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Blueprints | ❌ | ❌ | ❌ |  | ❌ | ❌ |  |  |  |  |
@@ -1469,6 +1472,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  |  |
 | Data Pipelines | ❌ | ✔ | ❌ |  | ❌ | ❌ | ❌ |  |  |  |
 | Event streams | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  | ✔ |
+| Common data models | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  |  |
 | Data tables | ❌ | ❌ |  | ❌ | ❌ | ❌ |  |  | ❌ |  |
 | Folders | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  |  |
 | Blueprints | ❌ | ❌ | ❌ |  | ❌ | ❌ |  |  |  |  |
@@ -2757,6 +2761,37 @@ The following privileges control access to build and manage core project compone
     
   - Remove existing Blueprints from the project.
     
+
+- Common data models
+  
+- Controls project-level access to common data models. Collaborators must also be members of the project that contains the common data models.
+  
+  - Full access
+    
+  - Grants all Common data models permissions.
+    
+  - View
+    
+  - View common data models in the project.
+    
+  - Edit
+    
+  - Edit common data models in the project.
+    
+  - Create
+    
+  - Create common data models in the project.
+    
+  - Delete
+    
+  - Delete common data models in the project.
+    
+
+> **PERMISSION MIGRATION**
+> 
+> Access control for common data models is transitioning to the project level because common data models are now assets. Workato migrates existing access automatically by creating new user groups and project roles that provide collaborators equivalent project-level permissions to their pre-migration access.
+> 
+> Refer to [Common data models as project assets](/en/features/common-data-model#common-data-models-as-project-assets) for more information.
 
 ### MCP servers
 

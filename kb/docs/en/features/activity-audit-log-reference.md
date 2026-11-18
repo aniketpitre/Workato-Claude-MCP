@@ -225,6 +225,7 @@ Activities related to [Common data models](/en/features/common-data-model).
 | **Common data model created** | User created a new data model by going to **Tools > Common data models** and clicking **Create a new data model**. |
 | **Common data model updated** | User updated a data model by going to **Tools > Common data models**, selecting the data model, and modifying it. |
 | **Common data model deleted** | User deleted a data model by going to **Tools > Common data models**, selecting the data model, and clicking **Delete data model**. |
+| **Common data model moved** | User moved a common data model to a different project or folder. The activity log includes the project or folder path where the common data model was moved to and from. |
 
 * * *
 

@@ -9,6 +9,10 @@ description: >-
 
 The Mapper connector is a way for users to interact with schemas defined in the [common data model](/en/features/common-data-model) or in a [transformation map](/en/features/transformation-maps).
 
+> **COMMON DATA MODELS ARE TRANSITIONING TO PROJECT ASSETS**
+> 
+> Common data models are transitioning to project assets that belong to a folder or project and appear in the **Assets** view. Refer to [Common data models as project assets](/en/features/common-data-model#common-data-models-as-project-assets) for more information.
+
 The Mapper connector's **Map to object** action is typically used as a temporary step to store data in a predefined structure before publishing the data somewhere for a subscriber to consume, or before moving the data to another application. It would typically be used with the [JMS connector](/en/connectors/jms) or [Workato Event streams](/en/connectors/pubsub).
 
 ## How to connect to the Mapper connector on Workato

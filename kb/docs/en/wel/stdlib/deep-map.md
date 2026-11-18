@@ -194,7 +194,7 @@ The condition lambda is what makes this safe. Without it, `trim` would run on `q
 
 ## Related
 
-- [Map functions](/en/wel/stdlib/map): Single-level reading, merging, and `flatten_map`.
+- [Map functions](/en/wel/stdlib/map): Read, merge, and flatten maps.
 - [List functions](/en/wel/stdlib/list): What to do with a collected list.
 - [JSON functions](/en/wel/stdlib/json): Use `json_path` for wildcards, indexing, and slices.
 - [Common functions](/en/wel/stdlib/common): Use `type_of` to write condition lambdas.

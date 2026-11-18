@@ -6,13 +6,13 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 
 | Section | Pages | Index |
 | --- | ---: | --- |
-| Connectors | 2980 | [index/connectors.md](index/connectors.md) |
+| Connectors | 2997 | [index/connectors.md](index/connectors.md) |
 | Recipe design | 195 | [index/recipe-design.md](index/recipe-design.md) |
-| Other | 121 | [index/other.md](index/other.md) |
+| Other | 122 | [index/other.md](index/other.md) |
 | Data orchestration | 117 | [index/data-orchestration.md](index/data-orchestration.md) |
 | Connector SDK | 93 | [index/connector-sdk.md](index/connector-sdk.md) |
 | Prebuilt MCP servers | 92 | [index/prebuilt-mcp-servers.md](index/prebuilt-mcp-servers.md) |
-| Agent Studio | 77 | [index/agent-studio.md](index/agent-studio.md) |
+| Agent Studio | 78 | [index/agent-studio.md](index/agent-studio.md) |
 | Workflow apps | 76 | [index/workflow-apps.md](index/workflow-apps.md) |
 | API platform | 68 | [index/api-platform.md](index/api-platform.md) |
 | Organization & workspaces | 54 | [index/organization-workspaces.md](index/organization-workspaces.md) |
@@ -20,7 +20,7 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 | On-prem | 42 | [index/on-prem.md](index/on-prem.md) |
 | Security and governance | 41 | [index/security-and-governance.md](index/security-and-governance.md) |
 | Developer API | 41 | [index/developer-api.md](index/developer-api.md) |
-| Embedded API | 39 | [index/embedded-api.md](index/embedded-api.md) |
+| Embedded API | 40 | [index/embedded-api.md](index/embedded-api.md) |
 | Accelerators | 38 | [index/accelerators.md](index/accelerators.md) |
 | AgentX Support | 36 | [index/agentx-support.md](index/agentx-support.md) |
 | Use cases | 34 | [index/use-cases.md](index/use-cases.md) |

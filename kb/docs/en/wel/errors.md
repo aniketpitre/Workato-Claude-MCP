@@ -161,7 +161,7 @@ The following errors occur when the data doesn't have the shape or value an oper
 | `E205` | Cannot concatenate with null | Wrap the value: `presence(x) | ''`. |
 | `E207` | Cannot compute on an empty list | Ensure the list isn't empty. [avg](/en/wel/stdlib/list#avg) of nothing has no answer. |
 | `E224` | Undefined name | Check for a typo, or a name used before it's bound. |
-| `E225` | Invalid value: expected one of a set | Use one of the allowed option tokens listed by the error message. |
+| `E225` | Invalid value: expected one of a set, or the text doesn't match the parse options | Use one of the allowed option tokens listed by the error message, or use the format the [parse function](/en/wel/stdlib/conversion#parse-numeric-text) expects. |
 
 ### Parsing and formats
 

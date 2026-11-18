@@ -451,6 +451,7 @@ The following events are grouped by their associated resource type. Each resourc
 | --- | --- |
 | `common_data_model_created` | A common data model was created. |
 | `common_data_model_deleted` | A common data model was deleted. |
+| `common_data_model_moved` | A common data model was moved to a different project or folder. |
 | `common_data_model_updated` | A common data model was updated. |
 
 ### `WorkatoTemplate`

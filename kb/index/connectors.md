@@ -1,6 +1,6 @@
 # Connectors
 
-2980 pages. Paths are relative to the repository root.
+2997 pages. Paths are relative to the repository root.
 
 
 ## Connectors
@@ -814,6 +814,17 @@
 - **Workato connectors - Microsoft Dynamics 365 Search objects action** - `kb/docs/en/connectors/microsoft-dynamics-365/search-objects-action.md` - The Search objects action in the Microsoft Dynamics 365 connector lets you retrieve a list of objects that match your specified search criteria.
 - **Workato connectors - Microsoft Dynamics 365 Update object batch action** - `kb/docs/en/connectors/microsoft-dynamics-365/update-object-action-batch.md` - The Update object batch action in the Microsoft Dynamics 365 connector lets you update multiple records for a specified object in a single batch.
 - **Workato connectors - Microsoft Dynamics 365 Update object action** - `kb/docs/en/connectors/microsoft-dynamics-365/update-object-action.md` - The Update object action in the Microsoft Dynamics 365 connector lets you update an existing record for a specified object using its ID.
+- **Microsoft PowerPoint** - `kb/docs/en/connectors/microsoft-powerpoint.md` - Use the Microsoft PowerPoint connector in Workato to manage your slide-based presentations.
+- **Microsoft PowerPoint - Add slide action** - `kb/docs/en/connectors/microsoft-powerpoint/add-slide-action.md` - The Add slide action inserts a new slide into a PowerPoint presentation using a layout you specify.
+- **Microsoft PowerPoint - Copy slide action** - `kb/docs/en/connectors/microsoft-powerpoint/copy-slide-action.md` - The Copy slide action duplicates a slide within a PowerPoint presentation.
+- **Microsoft PowerPoint - Delete slide action** - `kb/docs/en/connectors/microsoft-powerpoint/delete-slide-action.md` - The Delete slide action permanently removes one or more slides from a PowerPoint presentation.
+- **Microsoft PowerPoint - Find and replace text action** - `kb/docs/en/connectors/microsoft-powerpoint/find-and-replace-text-action.md` - The Find and replace text action finds and replaces text across every slide in a PowerPoint presentation.
+- **Microsoft PowerPoint - Get presentation info action** - `kb/docs/en/connectors/microsoft-powerpoint/get-presentation-info-action.md` - The Get presentation info action retrieves metadata about a PowerPoint presentation, including its title, slide count, creator, and last modifier.
+- **Microsoft PowerPoint - Get slide content action** - `kb/docs/en/connectors/microsoft-powerpoint/get-slide-content-action.md` - The Get slide content action retrieves the text content and speaker notes for slides in a PowerPoint presentation.
+- **Microsoft PowerPoint - Get slide elements action** - `kb/docs/en/connectors/microsoft-powerpoint/get-slide-elements-action.md` - The Get slide elements action retrieves the position, size, and content of every element on a PowerPoint slide.
+- **Microsoft PowerPoint - List slide layouts action (batch)** - `kb/docs/en/connectors/microsoft-powerpoint/list-slide-layouts-action-batch.md` - The List slide layouts (batch) action retrieves the slide layouts and placeholders defined in a PowerPoint presentation.
+- **Microsoft PowerPoint - Update speaker notes action** - `kb/docs/en/connectors/microsoft-powerpoint/update-speaker-notes-action.md` - The Update speaker notes action replaces the speaker notes for a slide in a PowerPoint presentation.
+- **Microsoft PowerPoint - Update text content action** - `kb/docs/en/connectors/microsoft-powerpoint/update-text-content-action.md` - The Update text content action replaces the text of a specific element on a PowerPoint slide.
 - **Microsoft Teams** - `kb/docs/en/connectors/microsoft-teams.md` - Microsoft Teams integrates group chat, video conferencing, secure file storage, and business apps in one hub.
 - **Microsoft Word** - `kb/docs/en/connectors/microsoft-word.md` - Set up and connect the Microsoft Word connector in Workato using OAuth 2.0 authorization code or client credentials authentication.
 - **Microsoft Word - Accept tracked change action** - `kb/docs/en/connectors/microsoft-word/accept-tracked-change-action.md` - The Accept tracked change action accepts a specific tracked change in a Word document by its ID.
@@ -2044,6 +2055,12 @@
 - **Workato connectors - Clarity** - `kb/docs/en/connectors/clarity.md` - The Clarity connector lets you automate project and portfolio management workflows: search records and trigger recipes on new or updated records.
 - **Workato connectors - Clarity - Search records action** - `kb/docs/en/connectors/clarity/actions/search-records.md` - The Search records action in the Clarity connector lets you search records of a selected object type using filter criteria and sorting.
 - **Workato connectors - Clarity - New/updated record trigger** - `kb/docs/en/connectors/clarity/triggers/new-updated-record.md` - The New/updated record trigger in the Clarity connector monitors a selected object type and fires when records are created or updated.
+- **Clay** - `kb/docs/en/connectors/clay.md` - Connect Clay to Workato to look up company and person profiles and search for companies and people.
+- **Clay - Get company funding action** - `kb/docs/en/connectors/clay/get-company-funding-action.md` - Retrieve funding signals for a company in Clay, including its total funding amount range.
+- **Clay - Get company profile action** - `kb/docs/en/connectors/clay/get-company-profile-action.md` - Retrieve details about a company in Clay, such as its industry, size, location, and annual revenue.
+- **Clay - Get person profile action** - `kb/docs/en/connectors/clay/get-person-profile-action.md` - Retrieve a professional profile in Clay by full name, company, or both.
+- **Clay - Search companies action** - `kb/docs/en/connectors/clay/search-companies-action.md` - Search for companies in Clay by industry, size, funding, location, revenue, or type.
+- **Clay - Search people action** - `kb/docs/en/connectors/clay/search-people-action.md` - Search for people in Clay by company, job title, seniority, location, or name.
 - **Workato connectors - ClickUp** - `kb/docs/en/connectors/clickup.md` - The ClickUp connector enables you to automate project, task, and productivity workflows across documents, time tracking, and goals.
 - **ClickUp - Create record action** - `kb/docs/en/connectors/clickup/create-record-action.md` - The **Create record** action creates a record in ClickUp, such as a task. Select the object to create, then provide the data for creating the record.
 - **ClickUp - Delete record action** - `kb/docs/en/connectors/clickup/delete-record-action.md` - The **Delete record** action deletes the specified record from ClickUp.

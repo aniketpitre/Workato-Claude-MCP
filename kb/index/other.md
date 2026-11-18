@@ -1,6 +1,6 @@
 # Other
 
-121 pages. Paths are relative to the repository root.
+122 pages. Paths are relative to the repository root.
 
 
 ## Other
@@ -101,6 +101,7 @@
 - **Embedded connection widget implementation** - `kb/docs/en/oem/embedded-connections.md` - Implement the Embedded Connection Widget to let customers authenticate app connections in an iframe without leaving your application.
 - **Embedded API - Picklist parameters** - `kb/docs/en/oem/oem-api/picklist-parameters.md` - Reference for the picklist names and parameters required to retrieve picklist values by connector through the Workato platform API.
 - **Embedded API - Timezone list** - `kb/docs/en/oem/oem-api/timezone-list.md` - Reference for timezone names used in the time_zone parameter of Workato platform API managed_users endpoints when creating or updating customers.
+- **Embedded API - Workato Identity IAM** - `kb/docs/en/oem/oem-api/workato-identity-iam.md` - Reference for the Embedded API Workato Identity IAM endpoints to list, create, update, and delete users, user groups, and app links in a customer workspace.
 - **On-prem agent - Status endpoint** - `kb/docs/en/on-prem/agents/status.md` - Reference for the Workato on-prem agent /status endpoint, which returns the agent process ID, state, version, active requests, and profiles.
 - **Product Updates** - `kb/docs/en/product-updates.md` - Workato product updates have moved to the Workato product changelog.
 - **Workato recipe editor update** - `kb/docs/en/recipe-editor-update/overview.md` - See how the Workato recipe editor improves recipe building, with sections on triggers, steps, actions, and data mapping.

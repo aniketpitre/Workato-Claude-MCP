@@ -286,7 +286,7 @@ This use of `except` is the denylist form, and it's only safe while you know eve
 
 ## Combine maps
 
-The following function combines two maps into one:
+The following functions combine two maps into one. [merge](#merge) combines only the top-level keys: nested maps replace each other completely. [deep\_merge](#deep-merge) and [deep\_merge\_by](#deep-merge-by) merge nested maps at any depth.
 
 ### `merge`
 
@@ -344,7 +344,100 @@ merge(
 {"currency": "EUR", "locale": "en-US", "notify": true}
 ```
 
-`merge` combines one level. A nested map in the second argument replaces its counterpart outright rather than being merged into it.
+`merge` combines only the top-level keys. A nested map in the second argument replaces its counterpart outright rather than being merged into it. Use [deep\_merge](#deep-merge) or [deep\_merge\_by](#deep-merge-by) to merge nested maps.
+
+### `deep_merge`
+
+Combines two maps. Map keys merge values instead of replacing each other.
+
+```wel
+deep_merge(first, second, options)
+```
+
+| Parameter | Description |
+| --- | --- |
+| first | The base map. A non-map argument raises `E100`. |
+| second | The map whose values take precedence, even when the winning value is `null`. A non-map argument raises `E100`. |
+| options | An optional map to control the merge. `max_depth`: How many nested levels to merge before replacing a conflicting map outright. `0` merges the top-level keys, and replaces a conflicting map one level down. Defaults to unlimited. A non-integer value raises `E218`. A negative value raises `E211`.; `lists`: How to combine matching lists. An invalid value raises `E225`. `replace` (the default): Uses the list from `second`.; `concat`: Appends the list from `second` to the list from `first`.; `union`: Keeps the first occurrence of each element from `first ++ second`, using WEL's [comparison](/en/wel/language/operators#comparison) rules to evaluate equality. A non-map `options` raises `E100`. An unrecognized key raises `E225`. |
+
+Merge a shared nested map
+
+The following example merges two maps that share a nested map:
+
+**Formula**
+
+```wel
+deep_merge({retry: {attempts: 3, delay: 100}}, {retry: {attempts: 5}})
+```
+
+**Output**
+
+```wel
+{retry: {attempts: 5, delay: 100}}
+```
+
+Concatenate lists instead of replacing them
+
+The following example appends the list from `second` to the list from `first` instead of replacing it:
+
+**Formula**
+
+```wel
+deep_merge({a: [1, 2]}, {a: [3]}, {lists: 'concat'})
+```
+
+**Output**
+
+```wel
+{a: [1, 2, 3]}
+```
+
+### `deep_merge_by`
+
+Combines two maps. Map keys merge values instead of replacing each other. `deep_merge_by` calls a `resolver` for non-map conflicts. A key present in only one map passes through unchanged, without calling `resolver`.
+
+```wel
+deep_merge_by(first, second, resolver, options)
+```
+
+| Parameter | Description |
+| --- | --- |
+| first | The base map. A non-map argument raises `E100`. |
+| second | The map to combine with `first`. A non-map argument raises `E100`. |
+| resolver | A lambda that decides the value to keep for a conflict `deep_merge_by` doesn't merge automatically. `resolver` receives three parameters. `path`: The list of keys traversed from the root to reach the conflict., `first`: The conflicting value from `first`., `second`: The conflicting value from `second`. Return the value to keep, or `Skip` to omit the key entirely. `resolver` raises `E105` if you don't provide exactly three parameters, and `E100` if it returns a function instead of a value. |
+| options | An optional map to control the merge. `max_depth`: How many nested levels to merge before calling `resolver` on a conflicting map instead of merging into it. `0` still merges the top-level keys, and calls `resolver` on a conflicting map one level down. Defaults to unlimited. A non-integer value raises `E218`. A negative value raises `E211`. A non-map `options` raises `E100`. An unrecognized key raises `E225`. |
+
+Combine conflicting values instead of replacing them
+
+The following example adds conflicting counts together instead of keeping only the value from `second`:
+
+**Formula**
+
+```wel
+deep_merge_by({counts: {ok: 2}}, {counts: {ok: 3}}, (path, first, second) ~> first + second)
+```
+
+**Output**
+
+```wel
+{counts: {ok: 5}}
+```
+
+Drop a conflicting field instead of resolving it
+
+The following example uses `path` to drop one conflicting field and keep the value from `second` for the rest:
+
+**Formula**
+
+```wel
+deep_merge_by({a: 1, b: 2}, {a: 9, b: 3}, (path, first, second) ~> if path == ['a'] then Skip else second)
+```
+
+**Output**
+
+```wel
+{b: 3}
+```
 
 ## Convert between maps and lists
 
@@ -565,6 +658,6 @@ The flattened keys are exactly the column headers the destination expects. Pass 
 - [List functions](/en/wel/stdlib/list): What to do with `entries`, `pairs`, `keys`, and `values`.
 - [Deep map functions](/en/wel/stdlib/deep-map): Reach through nesting rather than flattening it.
 - [Data types](/en/wel/language/data-types): `Map`, `Skip`, and `null`.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E104`, `E218`, and `E223`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E104`, `E105`, `E218`, and `E223`.
 
 ---

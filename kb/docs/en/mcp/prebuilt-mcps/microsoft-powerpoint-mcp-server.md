@@ -93,72 +93,160 @@ Complete the following steps to install a prebuilt MCP server to your project:
 
 View Microsoft PowerPoint connection setup steps
 
-The Microsoft PowerPoint MCP server supports the following authentication types:
+The Microsoft PowerPoint MCP server supports [Authorization code grant authentication (OAuth 2.0)](#authentication-auth-code).
 
-- [Authorization code grant authentication](#authentication-auth-code)
-- [Client credentials-based authentication](#authentication-client-credentials): _Only available for tenant-specific connections_
+View Microsoft MFA enforcement steps
+
+> **MICROSOFT MFA ENFORCEMENT**
+> 
+> Microsoft is rolling out mandatory multifactor authentication (MFA) gradually to different applications and accounts in phases. This enforcement continues throughout 2025 and beyond. Refer to the Microsoft [Mandatory multifactor authentication for Azure and admin portals](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-mandatory-multifactor-authentication?tabs=dotnet) documentation for more information.
+> 
+> We strongly recommend enabling MFA now for all Microsoft accounts used with Workato to avoid service disruptions from short-notice enforcement changes.
+> 
+> Complete the following steps to maintain uninterrupted service:
+> 
+> 1. Enable MFA for your Microsoft organization following the Microsoft MFA setup guide. Refer to [Set up multifactor authentication for Microsoft 365](https://learn.microsoft.com/en-us/microsoft-365/admin/security-and-compliance/set-up-multi-factor-authentication?view=o365-worldwide) for more information.
+>    
+> 2. Reconnect your Microsoft connection in Workato.
+>    
+> 3. Complete the OAuth flow with MFA when prompted.
+>    
+> 4. Test your recipes to ensure they work with the updated connection.
+>    
 
 ### Authorization code grant authentication (OAuth 2.0)
 
-View authorization code grant authentication steps
+This authentication method requires the following value for tenant-specific account types:
 
-Complete the following steps to set up an authorization code grant connection to PowerPoint in Workato:
+- Tenant ID
+
+#### Minimum and default scopes
+
+View minimum and default scopes
+
+The Microsoft PowerPoint connector requests the following scopes for authorization code grant connections by default. These scopes are necessary to use all of the connector's actions. Additionally, you must assign these permissions to the Workato app as **Delegated** permissions in the Azure portal.
+
+| Permission | Description | Relevant action |
+| --- | --- | --- |
+| `Files.Read.All` | Allows the app to read all files the signed-in user can access. | Get presentation info, Get slide content, Get slide elements, and List slide layouts (batch) |
+| `Files.ReadWrite.All` | Allows the app to read and write all files the signed-in user can access. | All actions in `Files.Read.All` and Add slide, Copy slide, Delete slide, Find and replace text, Update speaker notes, and Update text content |
+| `Sites.Read.All` | Allows the app to read documents in all SharePoint site collections on behalf of the signed-in user. | Get presentation info, Get slide content, Get slide elements, and List slide layouts (batch) |
+| `Sites.ReadWrite.All` | Allows the app to read and write documents in all SharePoint site collections on behalf of the signed-in user. | All actions in `Sites.Read.All` and Add slide, Copy slide, Delete slide, Find and replace text, Update speaker notes, and Update text content |
+| `User.Read` | Allows the app to sign in and read the profile of the signed-in user. | The connector always requests this permission. |
+| `offline_access` | Allows the app to access Microsoft Graph data after the user signs out or the session expires. | The connector always requests this permission. |
+
+Use **Requested permissions (OAuth scopes)** in **Advanced settings** to limit the requested permissions. Select `Files.ReadWrite.All`, `Sites.ReadWrite.All`, or both to use actions that create or modify slides. Those actions fail on connections that request only read permissions.
+
+You must add the following minimum scopes to establish a connection to Microsoft PowerPoint with authorization code grant authentication:
+
+- `offline_access`
+- `User.Read`
+
+#### Microsoft PowerPoint setup for authorization code grant authentication
+
+View Microsoft PowerPoint setup for authorization code grant authentication steps
+
+Complete the following steps to set up Microsoft PowerPoint for authorization code grant authentication:
+
+- [Register the Workato app in the Azure portal](#auth-register)
+- [Assign permissions to your app](#assign-permissions)
+- [Obtain the Directory (tenant) ID from the Azure portal](#obtain-directory-id)
+
+##### Register the Workato app in the Azure portal
+
+View register the Workato app in the Azure portal steps
+
+Complete the following steps to register the Workato app in the Azure portal:
+
+1. Sign in to the [Azure portal](https://portal.azure.com/).
+   
+2. Select **App registrations > + New registration**.
+   
+3. Enter a unique name for the application.
+   
+4. Use the **Supported account types** drop-down menu to select an account type.
+   
+5. Select **Web** from the **Select a platform** drop-down menu.
+   
+6. Use the following URI for the **Redirect URI**:
+   
+   ```html
+   https://www.workato.com/oauth/callback
+   ```
+   
+7. Select **Register**.
+   
+
+##### Assign permissions to your app
+
+View assign permissions to your app steps
+
+Complete the following steps to assign permissions to your app:
+
+1. In the navigation sidebar, select **Manage > API permissions**.
+   
+2. Click **\+ Add a permission** and select **Microsoft Graph APIs**.
+   
+   ![Add permissions](/assets/app-permissions.Cbe76A6a.png)_Add permissions_
+   
+3. Add the required permissions. Assign **Delegated** permissions for authorization code grant connections and **Application** permissions for client credentials-based connections.
+   
+4. Click **Add permissions**.
+   
+   Admin consent is required for specific permissions. Refer to the [Connect Microsoft Entra ID to the Microsoft PowerPoint connector](/en/connectors/microsoft-powerpoint#admin-consent) to learn more.
+   
+
+##### Obtain the Directory (tenant) ID from the Azure portal
+
+View obtain the Directory (tenant) ID from the Azure portal steps
+
+Complete the following steps to obtain the Directory (tenant) ID from the Azure portal:
+
+1. Go to the **Overview > Essentials** section.
+   
+   ![App details](/assets/app-details.Qi8HIQ2x.png)_App details_
+   
+2. Copy and save the `Directory (tenant) ID` for use in Workato.
+   
+
+#### Connect to Microsoft PowerPoint with authorization code grant authentication
+
+View connect to Microsoft PowerPoint with authorization code grant authentication steps
+
+Complete the following steps to set up an authorization code grant connection to Microsoft PowerPoint in Workato:
 
 1. Click **Create > Connection** or press C twice.
    
-2. Search for `PowerPoint` and select it as your app.
+2. Search for `Microsoft PowerPoint` and select it as your app.
    
 3. Enter a name for your connection in the **Connection name** field.
    
 4. Use the **Location** drop-down menu to select the project where you plan to store the connection.
    
-5. Use the **Account type** drop-down menu to select the type of Microsoft account to connect to.
+5. Use the **Account type** drop-down menu to select the type of Microsoft account to connect to. The available choices are **Common** and **Tenant specific**.
+   
+   **Common**
+   
+   - **Common**: This option supports personal and enterprise Microsoft accounts.
+   
+   ![Microsoft PowerPoint Common connection setup](/assets/connect-common.D2AA5xSb.png)_Microsoft PowerPoint Common connection setup_
+   
+   **Tenant specific**
+   
+   - **Tenant specific**: This option requires a Tenant ID.
+   
+   ![Microsoft PowerPoint Tenant specific connection setup with authorization code grant](/assets/connect-tenant-specific-auth-code.CxxIfBQr.png)_Microsoft PowerPoint Tenant specific connection setup with authorization code grant_
+   
+   Provide the Microsoft Entra ID tenant ID (a GUID) or its domain name in the **Tenant ID** field.
    
 6. Use the **Authentication type** drop-down menu to select **Authorization code grant**.
    
-7. Expand the **Advanced settings** section to configure **Requested permissions (OAuth scopes)** for your connection. Ensure your connection provides write permissions if you plan to use actions or MCP server tools that create or modify slides. `Files.Read.All`, `User.Read`, and `offline_access` are requested in addition to any selected permissions.
+7. Expand the **Advanced settings** section to configure **Requested permissions (OAuth scopes)** for your connection. Ensure your connection provides write permissions if you plan to use actions or MCP server tools that create or modify slides. `User.Read` and `offline_access` are requested in addition to any selected permissions.
    
 8. Optional. Use the **Custom OAuth profile** drop-down menu to select a custom OAuth profile for your connection.
    
 9. Click **Sign in with Microsoft**.
    
-
-### Client credentials authentication
-
-View client credentials authentication steps
-
-Complete the following steps to set up a client credentials grant connection to PowerPoint in Workato:
-
-> **PREREQUISITES**
-> 
-> Client credentials connections require a tenant ID, user ID, client ID, and client secret.
-> 
-> Refer to the Microsoft [Application configuration](https://learn.microsoft.com/en-us/entra/identity-platform/msal-client-application-configuration) documentation to generate these values.
-
-1. Click **Create > Connection** or press C twice.
-   
-2. Search for `PowerPoint` and select it as your app.
-   
-3. Enter a name for your connection in the **Connection name** field.
-   
-4. Use the **Location** drop-down menu to select the project where you plan to store the connection.
-   
-5. Use the **Account type** drop-down menu to select **Tenant specific**.
-   
-6. Enter the Azure **Tenant ID**.
-   
-   Refer to the Microsoft [Authority](https://learn.microsoft.com/en-us/entra/identity-platform/msal-client-application-configuration#authority) documentation for more information about tenant IDs.
-   
-7. Use the **Authentication type** drop-down menu to select **Client credentials**.
-   
-8. Expand the **Advanced settings** section and provide the following **User ID**, **Client ID**, and **Client secret** for your account.
-   
-   Refer to the Microsoft [Authority](https://learn.microsoft.com/en-us/entra/identity-platform/msal-client-application-configuration#authority) documentation to generate these values.
-   
-9. Optional. Use the **Custom OAuth profile** drop-down menu to select a custom OAuth profile for your connection.
-   
-10. Click **Sign in with Microsoft**.
-    
 
 ### Project property configuration
 

@@ -88,10 +88,10 @@ Complete the following steps to install a prebuilt MCP server to your project:
 
 View Clay Contact & Company Explorer connection setup steps
 
-Ensure you complete the following steps before using the Clay connector in Workato:
+Ensure you complete the following steps before you use the Clay connector in Workato:
 
 - [Download Clay from the community](#download-clay-from-the-community)
-- [Retrieve API key in Clay](#retrieve-api-key-in-clay)
+- [Create API key in Clay](#create-api-key-in-clay)
 
 ### Download Clay from the community
 
@@ -118,9 +118,32 @@ Complete the following steps to install the Clay connector from the [community l
    ![The Confirm release dialog](/assets/release.CpEhhA-6.png)_The **Confirm release** dialog_
    
 
-### Retrieve API key in Clay
+### Create API key in Clay
 
-Refer to the Clay [Find your API key](https://university.clay.com/docs/guide-find-clay-api-key) guide to retrieve your Clay API key.
+View Create API key in Clay steps
+
+Complete the following steps to create an API key in Clay:
+
+1. Sign in to your [Clay](https://app.clay.com/workspaces) workspace.
+   
+2. Click **API and CLI > API keys**.
+   
+3. Click **Add API key**.
+   
+4. Enter a **Name**.
+   
+5. Select **Public API** under **Scopes**.
+   
+6. Click **Add API key**.
+   
+7. Copy and save the **API key** for use in Workato.
+   
+   > **SAVE THE API KEY**
+   > 
+   > Clay only displays the API key once. You must create a new one if you lose it.
+   
+8. Click **I've copied my API key**.
+   
 
 ### Connect to Clay on Workato
 
@@ -136,7 +159,7 @@ Complete the following steps to connect your Clay account to Workato:
    
 4. Use the **Location** drop-down menu to select the project or folder where you plan to store the connection.
    
-5. Enter the Clay **API key**. Refer to [Retrieve API key in Clay](#retrieve-api-key-in-clay) to obtain this value.
+5. Enter the Clay **API key**. Refer to [Create API key in Clay](#create-api-key-in-clay) for more information.
    
 6. Click **Connect**.
    

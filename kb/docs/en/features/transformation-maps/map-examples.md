@@ -55,7 +55,7 @@ This example uses the following JSON sample to generate an output schema:
 
 The `total` node uses the following formula:
 
-```text
+```wel
 _.unit_price * _.qty
 ```
 
@@ -104,7 +104,7 @@ This example uses the following JSON sample to generate an output schema:
 
 The `summarize by category` node uses the following formula:
 
-```text
+```wel
 {
   totals_by_category: _.lines
     >> group_by(line ~> line.category)
@@ -165,7 +165,7 @@ This example uses the following JSON sample to generate an output schema:
 
 The `line_totals` node uses the following formula:
 
-```text
+```wel
 {
   lines: _.lines
   >> map_by(l ~> {
@@ -179,7 +179,7 @@ The `line_totals` node uses the following formula:
 
 The `filter` node uses the following formula:
 
-```text
+```wel
 {
   filtered: _.line_totals_lines >> filter_by(t ~> t.amount >= 20)
 }
@@ -189,7 +189,7 @@ The `filter` node uses the following formula:
 
 The `sort` node uses the following formula:
 
-```text
+```wel
 {
   high_value_lines: _.filter_filtered >> sort_by(f ~> 0 - f.amount)
 }
@@ -258,7 +258,7 @@ This example uses the following JSON sample to generate an output schema:
 
 The `flatten units` node uses the following formula:
 
-```text
+```wel
 {
   units: _.lines
     >> map_by(l ~> l.units >> map_by(u ~> {
@@ -318,7 +318,7 @@ This example uses the following JSON sample to generate an output schema:
 
 The `join products` node uses the following formula:
 
-```text
+```wel
 let catalog = _.products >> map_by(p ~> [p.sku, p]) >> from_pairs do
 
 {

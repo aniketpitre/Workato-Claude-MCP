@@ -52,6 +52,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data Pipelines | ✔ | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  |  |
 | Event streams | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  | ✔ |
+| Common data models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data tables | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  | ✔ |  |
 | Folders | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Blueprints | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
@@ -162,6 +163,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data Pipelines | ✔ | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  |  |
 | Event streams | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  | ✔ |
+| Common data models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data tables | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  | ✔ |  |
 | Folders | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Blueprints | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
@@ -272,6 +274,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Data Pipelines | ❌ | ❌ | ❌ |  | ❌ | ❌ | ❌ |  |  |  |
 | Event streams | ❌ | ✔ | ✔ |  | ✔ | ❌ |  |  |  | ✔ |
+| Common data models | ❌ | ✔ | ✔ |  | ✔ | ❌ |  |  |  |  |
 | Data tables | ✔ | ✔ |  | ✔ | ✔ | ✔ |  |  | ✔ |  |
 | Folders | ✔ | ✔ | ✔ |  | ✔ | ✔ |  |  |  |  |
 | Blueprints | ❌ | ❌ | ❌ |  | ❌ | ❌ |  |  |  |  |
@@ -383,6 +386,7 @@ The following privileges control access to recipe-building features and shared p
 | Decision models | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  |  |
 | Data Pipelines | ❌ | ✔ | ❌ |  | ❌ | ❌ | ❌ |  |  |  |
 | Event streams | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  | ✔ |
+| Common data models | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  |  |
 | Data tables | ❌ | ❌ |  | ❌ | ❌ | ❌ |  |  | ❌ |  |
 | Folders | ❌ | ✔ | ❌ |  | ❌ | ❌ |  |  |  |  |
 | Blueprints | ❌ | ❌ | ❌ |  | ❌ | ❌ |  |  |  |  |

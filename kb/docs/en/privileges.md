@@ -197,6 +197,36 @@ _Recipe creation privileges_
 > 
 > You can access event stream access through either [project-level](/en/user-accounts-and-teams/role-based-access/new-model/privileges-reference#project-assets) or [environment-level](/en/user-accounts-and-teams/role-based-access/new-model/privileges-reference#tools) privileges during the [transition period](/en/event-streams#event-streams-as-project-assets). You must use the project-level privilege after the transition period.
 
+#### Common data models
+
+- Manage project-level access to common data models. Collaborators must also be members of the project that contains the common data models.
+  - Full access
+    
+  - All [Common data model](/en/features/common-data-model.html) permissions: view, edit, create, and delete.
+    
+  - View
+    
+  - View common data models in the project.
+    
+  - Edit
+    
+  - Edit common data models in the project.
+    
+  - Create
+    
+  - Create common data models in the project.
+    
+  - Delete
+    
+  - Delete common data models in the project.
+    
+
+> **PERMISSION MIGRATION**
+> 
+> Access control for common data models is transitioning to the project level because common data models are now assets. Workato migrates existing access automatically by creating new user groups and project roles that provide collaborators equivalent project-level permissions to their pre-migration access.
+> 
+> Refer to [Common data models as project assets](/en/features/common-data-model#common-data-models-as-project-assets) for more information.
+
 #### Blueprints
 
 - Manage access to [Blueprints](/en/airo/blueprints) when working with recipes.

@@ -1,6 +1,6 @@
 # Agent Studio
 
-77 pages. Paths are relative to the repository root.
+78 pages. Paths are relative to the repository root.
 
 
 ## Agent Studio
@@ -24,6 +24,7 @@
 - **App Events best practices** - `kb/docs/en/agentic/agent-studio/app-events/best-practices.md` - Learn best practices for App Events.
 - **App Events conversations** - `kb/docs/en/agentic/agent-studio/app-events/conversations.md` - Learn how to use Continue conversation mode and New conversation mode with App Events.
 - **Agent Studio - Business approvals** - `kb/docs/en/agentic/agent-studio/business-approvals.md` - Build Agent Studio skills with approval workflows so a designated reviewer approves or rejects genie operations in the chat interface before execution.
+- **Agent Studio - Code Interpreter** - `kb/docs/en/agentic/agent-studio/code-interpreter.md` - Code Interpreter enables genies to write and execute Python code dynamically in a secure, sandboxed environment.
 - **Create your first genie** - `kb/docs/en/agentic/agent-studio/create-a-genie.md` - Create your first genie in Agent Studio, an AI-powered agent that performs contextual, goal-oriented tasks using LLMs, knowledge bases, and skills.
 - **Agent Studio - Upload files and images** - `kb/docs/en/agentic/agent-studio/upload-files-and-images.md` - Upload files and images to genies in Agent Studio through the chat interface, with supported file types, size quotas, and parsing behavior.
 

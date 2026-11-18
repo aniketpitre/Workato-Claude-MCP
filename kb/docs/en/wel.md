@@ -1,8 +1,9 @@
 ---
 url: 'https://docs.workato.com/en/wel.md'
 description: >-
-  WEL is Workato's transformation language - 245 built-in functions, 16 data
-  types, and exact decimal arithmetic, running natively alongside your recipe.
+  WEL is Workato's transformation language, including 250 built-in functions, 16
+  data types, and exact decimal arithmetic and runs natively alongside your
+  recipe.
 ---
 
 # Workato Expression Language
@@ -29,11 +30,11 @@ Four properties make WEL a language rather than a mapping tool, and each prevent
 
 - [16 data types](/en/wel/language/data-types): Exact decimals and zone-aware temporal types keep business data from quietly changing shape in transit.
   
-- [245 built-in functions](/en/wel/stdlib): They span strings, lists, maps, temporal arithmetic, numeric rounding, encoding, escaping, Unicode, and cryptography, all in the language rather than in a library you add.
+- [250 built-in functions](/en/wel/stdlib): They span strings, lists, maps, temporal arithmetic, numeric rounding, encoding, escaping, Unicode, and cryptography, all in the language rather than in a library you add.
   
 - [Composition](/en/wel/language/operators#pipeline): The pipeline operator `>>` lets a multi-step transformation read in the order it happens rather than inside-out:
   
-  ```text
+  ```wel
   _.orders
     >> filter_by(o ~> o.status == 'open')
     >> sort_by(o ~> o.total)
@@ -59,17 +60,24 @@ You don't need WEL for a straight one-to-one field mapping.
 
 ## Where WEL runs
 
-WEL runs on Workato's data plane. The data plane is the part of the platform that processes your data while a recipe runs, as opposed to the control plane, which handles configuration. WEL runs in the same place as the rest of your recipe, so your data doesn't move to reach it.
+WEL runs on Workato's data plane. The data plane is the part of the platform that processes your data while a recipe runs.
 
-WEL is available in recipes through the [Transform data](/en/wel/workato-expression-language-connector) action. You declare input shape, write an expression, and declare the output shape. The results become datapills for downstream steps.
+You can construct and run WEL expressions in the following locations:
+
+- **In recipe steps**: Use the [Transform data](/en/wel/workato-expression-language-connector) action to define and run WEL expressions in a recipe step. **Transform data** returns data output by the formula as datapills for downstream recipe steps.
+  
+- **In reusable maps**: Use [formula nodes](/en/features/transformation-maps/create-map#formula-transformations) to run WEL expressions in a reusable [transformation map](/en/features/transformation-maps) that centralizes mapping and transformation logic across recipes. Transformation maps return data you define in their output schema as datapills for downstream recipe steps. This can include input fields mapped directly to output fields without passing through a WEL formula.
+  
 
 ## Next steps
 
-- [Quickstart](/en/wel/quickstart): An example showing different WEL workflows.
+Use the following resources to start using WEL alongside your recipes.
+
+- [Quickstart](/en/wel/quickstart): Follow along with an example showing different WEL workflows.
 - [Transform data](/en/wel/workato-expression-language-connector): Use WEL in recipes through a connector.
-- [Data types](/en/wel/language/data-types): The 16 WEL data types and when to use each one.
-- [Standard library](/en/wel/stdlib): All 245 WEL functions.
-- [Cookbook](/en/wel/cookbook): Examples of common integration problems.
+- [Data types](/en/wel/language/data-types): Understand the 16 WEL data types and when to use each one.
+- [Standard library](/en/wel/stdlib): Learn all 250 WEL functions.
+- [Cookbook](/en/wel/cookbook): View examples of common integration problems.
 - [Error codes](/en/wel/errors): Troubleshoot job failures.
 
 ---

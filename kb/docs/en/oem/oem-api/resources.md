@@ -7,6 +7,50 @@ description: >-
 
 # Embedded API endpoints
 
+## Agent Studio
+
+| Type | Resource | Description |
+| --- | --- | --- |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies](/en/oem/oem-api/agent-studio#genies) | Returns a list of genies. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies](/en/oem/oem-api/agent-studio#create-a-genie) | Creates a new genie. |
+| PUT | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id](/en/oem/oem-api/agent-studio#update-a-genie) | Updates an existing genie. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id](/en/oem/oem-api/agent-studio#get-a-genie-by-id) | Returns the genie associated with the ID you specify. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id](/en/oem/oem-api/agent-studio#delete-a-genie) | Deletes a genie. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/start](/en/oem/oem-api/agent-studio#start-a-genie) | Starts the genie associated with the ID you specify. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/stop](/en/oem/oem-api/agent-studio#stop-a-genie) | Stops the genie associated with the ID you specify. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/assign\_skills](/en/oem/oem-api/agent-studio#assign-a-skill-to-a-genie) | Assigns skills and MCP servers to the genie associated with the ID you specify. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/remove\_skills](/en/oem/oem-api/agent-studio#remove-a-skill-from-a-genie) | Removes skills from the genie associated with the ID you specify. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/assign\_knowledge\_bases](/en/oem/oem-api/agent-studio#assign-a-knowledge-base-to-a-genie) | Assigns knowledge bases to the genie associated with the ID you specify. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/remove\_knowledge\_bases](/en/oem/oem-api/agent-studio#remove-a-knowledge-base-from-a-genie) | Removes knowledge bases from the genie associated with the ID you specify. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/assign\_user\_groups](/en/oem/oem-api/agent-studio#assign-a-user-group-to-a-genie) | Assigns user group access to the genie associated with the ID you specify. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/remove\_user\_groups](/en/oem/oem-api/agent-studio#remove-a-user-group-from-a-genie) | Removes user group access from the genie associated with the ID you specify. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients](/en/oem/oem-api/agent-studio#list-genie-clients) | Returns a list of genie clients. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients](/en/oem/oem-api/agent-studio#create-a-genie-client) | Creates a new genie client (API key or OAuth). |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients/:client\_id](/en/oem/oem-api/agent-studio#get-a-genie-client) | Returns the genie client associated with the ID you specify. |
+| PUT | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients/:client\_id](/en/oem/oem-api/agent-studio#update-a-genie-client) | Updates a genie client's name and OAuth redirect URLs. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients/:client\_id](/en/oem/oem-api/agent-studio#delete-a-genie-client) | Deletes a genie client. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients/:client\_id/regenerate](/en/oem/oem-api/agent-studio#regenerate-a-genie-client-key) | Regenerates the API key for a genie client. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients/:client\_id/pause](/en/oem/oem-api/agent-studio#pause-a-genie-client) | Pauses a genie client. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/clients/:client\_id/start](/en/oem/oem-api/agent-studio#start-a-genie-client) | Starts a paused genie client. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/clients](/en/oem/oem-api/agent-studio#attach-a-client-to-a-genie) | Attaches a client to a genie. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/agentic/genies/:id/clients/:client\_id](/en/oem/oem-api/agent-studio#detach-a-client-from-a-genie) | Detaches a client from a genie. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/:genie\_id/interfaces](/en/oem/oem-api/agent-studio#list-chat-interface-triggers) | Returns all chat interface triggers of a genie in a single list. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/:genie\_id/conversations](/en/oem/oem-api/agent-studio#list-conversations) | Returns a list of a genie's conversations. Doesn't include event-level detail. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/:genie\_id/conversations/:conversation\_id](/en/oem/oem-api/agent-studio#get-a-conversation) | Returns a genie conversation you specify. Doesn't include event-level detail. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/:genie\_id/conversations/:conversation\_id/events](/en/oem/oem-api/agent-studio#list-conversation-events) | Returns the full events of a single conversation. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/genies/:genie\_id/guardrails](/en/oem/oem-api/agent-studio#get-a-genies-guardrail) | Returns the guardrail and its policies for the genie associated with the ID you specify. |
+| PUT | [/api/managed\_users/:managed\_user\_id/agentic/genies/:genie\_id/guardrails/policies/:policy\_type](/en/oem/oem-api/agent-studio#create-or-update-a-policy) | Creates or updates a single guardrail policy on the genie associated with the ID you specify. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases](/en/oem/oem-api/agent-studio#list-knowledge-bases) | Returns a list of knowledge bases. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases](/en/oem/oem-api/agent-studio#create-a-knowledge-base) | Creates a new knowledge base. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases/:id](/en/oem/oem-api/agent-studio#get-a-knowledge-base-by-id) | Returns the knowledge base associated with the ID you specify. |
+| PUT | [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases/:id](/en/oem/oem-api/agent-studio#update-a-knowledge-base) | Updates an existing knowledge base. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases/:id](/en/oem/oem-api/agent-studio#delete-a-knowledge-base) | Deletes a knowledge base. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases/:id/data\_sources](/en/oem/oem-api/agent-studio#get-knowledge-base-data-sources) | Returns the data sources associated with the knowledge base ID you specify. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/knowledge\_bases/:id/recipes](/en/oem/oem-api/agent-studio#get-knowledge-base-recipes) | Returns the recipes associated with the knowledge base ID you specify. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/skills](/en/oem/oem-api/agent-studio#list-skills) | Returns a list of skills. |
+| POST | [/api/managed\_users/:managed\_user\_id/agentic/skills](/en/oem/oem-api/agent-studio#create-a-skill) | Creates a new skill. |
+| GET | [/api/managed\_users/:managed\_user\_id/agentic/skills/:id](/en/oem/oem-api/agent-studio#get-a-skill-by-id) | Returns the skill associated with the ID you specify. |
+
 ## API clients
 
 | Type | Resource | Description |
@@ -245,7 +289,9 @@ Base URL: `https://data-tables.workato.com`, except [Upload file](/en/oem/oem-ap
 | --- | --- | --- |
 | GET | [/api/managed\_users/:id/recipes/:recipe\_id/jobs](/en/oem/oem-api/jobs#list-jobs) | List jobs for a recipe. |
 | GET | [/api/managed\_users/:id/recipes/:recipe\_id/jobs/:job\_id](/en/oem/oem-api/jobs#get-job-details) | Get job details. |
+| POST | [/api/managed\_users/:managed\_user\_id/job/resume](/en/oem/oem-api/jobs#job-resume) | Resumes a job based on the `resume_token` you provide. A successful request returns a `204 No Content` status code with no response body. This endpoint is used by [SDK Wait for resume actions](/en/developing-connectors/sdk/guides/building-actions/wait-for-resume-actions). |
 | POST | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/repeat\_jobs](/en/oem/oem-api/jobs#repeat-jobs) | Repeats jobs you specify in a customer workspace. |
+| POST | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/cancel\_jobs](/en/oem/oem-api/jobs#cancel-jobs) | Cancels ongoing jobs you specify in a customer workspace. |
 
 ## JWT direct link configurations
 
@@ -447,5 +493,31 @@ Looking for APIs to export packages? Refer to the [Workato API docs](/en/workato
 | POST | [/api/managed\_users/:managed\_user\_id/test\_cases/run\_requests](/en/oem/oem-api/test-automation#run-test-cases) | Run test cases in a customer workspace. |
 | GET | [/api/managed\_users/:managed\_user\_id/recipes/:recipe\_id/test\_cases](/en/oem/oem-api/test-automation#list-test-cases) | List test cases for a specific recipe in a customer workspace. |
 | GET | [/api/managed\_users/:managed\_user\_id/test\_cases/run\_requests/:test\_id](/en/oem/oem-api/test-automation#run-a-test-case) | Get the current state of a test case run request in a customer workspace. |
+
+## Workspace details
+
+### Workato Identity IAM
+
+| Type | Resource | Description |
+| --- | --- | --- |
+| GET | [/api/managed\_users/:managed\_user\_id/iam/users](/en/oem/oem-api/workato-identity-iam#list-users) | List users in the customer workspace. |
+| GET | [/api/managed\_users/:managed\_user\_id/iam/users/:user-id](/en/oem/oem-api/workato-identity-iam#get-user-by-id) | Retrieve details for a specific user by ID. |
+| POST | [/api/managed\_users/:managed\_user\_id/iam/users](/en/oem/oem-api/workato-identity-iam#create-user) | Create one or more new users. |
+| PUT | [/api/managed\_users/:managed\_user\_id/iam/users/:user-id](/en/oem/oem-api/workato-identity-iam#update-user) | Update an existing user. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/iam/users/:user-id](/en/oem/oem-api/workato-identity-iam#delete-user) | Delete a user from the customer workspace. |
+| POST | [/api/managed\_users/:managed\_user\_id/iam/users/:user-id/add\_to\_group](/en/oem/oem-api/workato-identity-iam#add-user-to-group) | Add a user to a specific group. |
+| POST | [/api/managed\_users/:managed\_user\_id/iam/users/:user-id/remove\_from\_group](/en/oem/oem-api/workato-identity-iam#remove-user-from-group) | Remove a user from a specific group. |
+| GET | [/api/managed\_users/:managed\_user\_id/iam/user\_groups](/en/oem/oem-api/workato-identity-iam#list-user-groups) | List user groups in the customer workspace. |
+| GET | [/api/managed\_users/:managed\_user\_id/iam/user\_groups/:user-group-id](/en/oem/oem-api/workato-identity-iam#get-user-group-by-id) | Retrieve details for a specific user group by ID. |
+| POST | [/api/managed\_users/:managed\_user\_id/iam/user\_groups](/en/oem/oem-api/workato-identity-iam#create-user-group) | Create a new user group. |
+| PUT | [/api/managed\_users/:managed\_user\_id/iam/user\_groups/:user-group-id](/en/oem/oem-api/workato-identity-iam#update-user-group) | Update an existing user group. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/iam/user\_groups/:user-group-id](/en/oem/oem-api/workato-identity-iam#delete-user-group) | Delete a user group. |
+| POST | [/api/managed\_users/:managed\_user\_id/iam/user\_groups/:user-group-id/add\_users](/en/oem/oem-api/workato-identity-iam#add-users-to-group) | Add multiple users to a group. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/iam/user\_groups/:user-group-id/remove\_users](/en/oem/oem-api/workato-identity-iam#remove-users-from-group) | Remove multiple users from a group. |
+| GET | [/api/managed\_users/:managed\_user\_id/iam/user\_groups/:user-group-id/members](/en/oem/oem-api/workato-identity-iam#list-group-members) | List all members of a user group. |
+| GET | [/api/managed\_users/:managed\_user\_id/iam/app\_links](/en/oem/oem-api/workato-identity-iam#list-app-links) | List app links in the customer workspace. |
+| POST | [/api/managed\_users/:managed\_user\_id/iam/app\_links](/en/oem/oem-api/workato-identity-iam#create-app-link) | Create an app link. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/iam/app\_links/:id](/en/oem/oem-api/workato-identity-iam#delete-app-link) | Delete an app link by ID. |
+| DELETE | [/api/managed\_users/:managed\_user\_id/iam/app\_links](/en/oem/oem-api/workato-identity-iam#delete-app-links) | Delete app links by IDs. |
 
 ---

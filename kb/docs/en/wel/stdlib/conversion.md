@@ -141,6 +141,161 @@ Float('3.14')
 3.14
 ```
 
+## Parse formatted numeric text
+
+The [Integer](#integer), [Decimal](#decimal), and [Float](#float) functions raise an error for inputs that break WEL's numeric grammar, such as zero-padding or a locale-specific separator. Use the functions in this section instead to convert numeric text written with non-WEL grammar.
+
+### `parse_integer`
+
+Converts a string of digits into an `Integer`. Accepts formatting that the stricter [Integer](#integer) constructor rejects, such as zero-padding, a thousands separator, or a different base.
+
+```wel
+parse_integer(input, options)
+```
+
+| Parameter | Description |
+| --- | --- |
+| input | A string of digits. Malformed text, a decimal place, or an exponent raises `E225`. A non-string argument raises `E100`. |
+| options | An optional map to control how `input` parses. `trim`: Allows surrounding whitespace. Defaults to `true`.; `underscores`: Allows a single underscore (`_`) between digits, such as `'1_000_000'`. Defaults to `true`.; `decimal_separator`: The character to treat as the decimal separator when parsing `input`. Defaults to the data-plane locale. Must differ from `thousands_separator`.; `thousands_separator`: The character to treat as the thousands separator when parsing `input`. Defaults to the data-plane locale. Must differ from `decimal_separator`. Set to `''` to disable digit grouping.; `base`: An integer defining the base to use. Valid values include `2` to `36` (inclusive) and `0`. `0` infers the base from a `0b`, `0o`, or `0x` prefix in `input` and rejects zero-padding without a prefix. `decimal_separator` and `thousands_separator` require base `10`. Defaults to `10`. An unknown key, an invalid separator, or `base: 1` raises `E225`. An option value of the wrong type raises `E218`. A `base` outside `0` to `36`, or a value beyond `Integer`'s size limit, raises `E211`. A non-map `options` raises `E100`. |
+
+Convert zero-padded text
+
+The following example converts zero-padded text:
+
+**Formula**
+
+```wel
+parse_integer('000030')
+```
+
+**Output**
+
+```wel
+30
+```
+
+Convert digit-grouped text
+
+The following example converts text grouped with a thousands separator:
+
+**Formula**
+
+```wel
+parse_integer('1,000,000', {thousands_separator: ','})
+```
+
+**Output**
+
+```wel
+1000000
+```
+
+Convert a hexadecimal string
+
+The following example converts a hexadecimal string:
+
+**Formula**
+
+```wel
+parse_integer('ff', {base: 16})
+```
+
+**Output**
+
+```wel
+255
+```
+
+### `parse_decimal`
+
+Converts numeric text into an exact `Decimal` that keeps its written scale. Accepts formatting that the stricter [Decimal](#decimal) constructor rejects, such as zero-padding or a locale-specific separator.
+
+```wel
+parse_decimal(input, options)
+```
+
+| Parameter | Description |
+| --- | --- |
+| input | A numeric string. `parse_decimal` also accepts `.5`, `1.`, and `1e3`. Malformed text, `NaN`, or infinity raises `E225`. A non-string argument raises `E100`. |
+| options | An optional map to control how `input` parses. `trim`: Allows surrounding whitespace. Defaults to `true`., `underscores`: Allows a single underscore (`_`) between digits. Defaults to `true`., `decimal_separator`: The character to treat as the decimal separator when parsing `input`. Defaults to the data-plane locale. Must differ from `thousands_separator`., `thousands_separator`: The character to treat as the thousands separator when parsing `input`. Defaults to the data-plane locale. Must differ from `decimal_separator`. Set to `''` to disable digit grouping. An unknown key or an invalid separator raises `E225`. An option value of the wrong type raises `E218`. A value beyond `Decimal`'s size limit raises `E211`. A non-map `options` raises `E100`. |
+
+Keep scale from zero-padded text
+
+The following example converts zero-padded text and maintains its scale:
+
+**Formula**
+
+```wel
+parse_decimal('00012.50')
+```
+
+**Output**
+
+```wel
+12.50
+```
+
+Convert a European-formatted amount
+
+The following example converts an amount that uses a comma as the decimal separator and a period to group digits:
+
+**Formula**
+
+```wel
+parse_decimal('1.234,56', {decimal_separator: ',', thousands_separator: '.'})
+```
+
+**Output**
+
+```wel
+1234.56
+```
+
+### `parse_float`
+
+Converts numeric text into a correctly rounded `Float`. Accepts formatting that the stricter [Float](#float) constructor rejects, such as zero-padding or a locale-specific separator. `Float` accepts `'inf'` and `'infinity'`. `parse_float` rejects `'inf'`, `'infinity'`, `'NaN'`, and any other non-numeric text.
+
+```wel
+parse_float(input, options)
+```
+
+| Parameter | Description |
+| --- | --- |
+| input | A numeric string. `parse_float` also accepts `.5`, `1.`, and `1e3`. A value too small for a `Float` rounds to zero instead of raising an error. Malformed text, `NaN`, or infinity raises `E225`. A non-string argument raises `E100`. |
+| options | An optional map to control how `input` parses. `trim`: Allows surrounding whitespace. Defaults to `true`., `underscores`: Allows a single underscore (`_`) between digits. Defaults to `true`., `decimal_separator`: The character to treat as the decimal separator when parsing `input`. Defaults to the data-plane locale. Must differ from `thousands_separator`., `thousands_separator`: The character to treat as the thousands separator when parsing `input`. Defaults to the data-plane locale. Must differ from `decimal_separator`. Set to `''` to disable digit grouping. An unknown key or an invalid separator raises `E225`. An option value of the wrong type raises `E218`. A finite value beyond `Float`'s range raises `E211`. A non-map `options` raises `E100`. |
+
+Convert a numeric string
+
+The following example converts a numeric string:
+
+**Formula**
+
+```wel
+parse_float('12.50')
+```
+
+**Output**
+
+```wel
+12.5
+```
+
+Convert a value too small for a Float
+
+The following example converts a value too small for a `Float`, which rounds to zero:
+
+**Formula**
+
+```wel
+parse_float('1e-400')
+```
+
+**Output**
+
+```wel
+0
+```
+
 ## Text and truth
 
 The following constructors convert to `String`, `Bool`, and `Binary`:
@@ -488,6 +643,6 @@ Every field arrives as a string, including ones that logically aren't. Convert t
 - [Data types](/en/wel/language/data-types): The 16 WEL data types and when to use each one.
 - [Numeric functions](/en/wel/stdlib/numeric): Round a `Decimal`.
 - [Temporal functions](/en/wel/stdlib/temporal): Work with dates after conversion.
-- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E008`, `E020`, `E100`, `E102`, and `E211`.
+- [Error codes](/en/wel/errors): Troubleshoot job failures such as `E008`, `E020`, `E100`, `E102`, `E211`, `E218`, and `E225`.
 
 ---
