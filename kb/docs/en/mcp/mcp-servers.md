@@ -15,15 +15,9 @@ Watch a quick video guide: Getting started with MCP and Workato
 
 [Video](https://www.youtube.com/embed/xwxL47rHhfs?rel=0&si=-ujcTLN91wOvADU4)
 
-> **FEATURE AVAILABILITY**
-> 
-> MCP is available to all users in the US, EU, AU, JP, SG, IL, KR, and UK data centers. MCP servers are hosted in the US, EU, and APAC regions and respect data residency requirements where possible. MCP isn't available to workspaces in the CN data center. This reflects local regulatory requirements and Workato's commitment to data sovereignty and applies to our multi-tenant and [Virtual Private Workato (VPW)](/en/cloud-hosting-editions/hosting-editions#virtual-private-workato) offerings.
-> 
-> Contact your Customer Success representative if you're interested in using MCP or require additional information.
-
 ## Create an MCP server
 
-You can create an MCP server and add tools in the AI Hub.
+You can create an MCP server using project assets or an API collection, or configure a proxy MCP server.
 
 > **NEED AN EXAMPLE?**
 > 
@@ -105,6 +99,20 @@ Complete the following steps to create an MCP with an API collection:
 
 ### Create a proxy for external MCP servers
 
+Proxy MCP servers support the following authentication types:
+
+- [OAuth 2.0](#oauth-20-)
+- [API key header](#api-key-header)
+- [API key query](#api-key-query-parameter)
+- [Bearer token](#bearer-token)
+- [OAuth 2.0 with client registration](#oauth-20-with-client-registration)
+- [No authentication](#no-authentication)
+
+Proxy MCP servers support cloud and on-prem connections:
+
+- **Cloud**: MCP servers are reachable over the public internet.
+- **On-prem**: MCP servers route tool calls through the existing Workato [on-prem agent](/en/on-prem/agents) (OPA) secure tunnel. OPA masks query parameter strings globally at the log level by default. You must select your [on-prem group](/en/on-prem/groups) to use this connection type.
+
 Use an external MCP server as your tool source in the following scenarios:
 
 - **A third-party MCP server already exists**: You plan to use vendor-provided tools.
@@ -132,7 +140,7 @@ Complete the following steps to create a proxy MCP server:
    
    OAuth 2.0
    
-   #### OAuth 2.0
+   ##### OAuth 2.0
    
    1. Select **OAuth 2.0**.
       

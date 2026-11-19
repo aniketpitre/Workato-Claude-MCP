@@ -159,6 +159,7 @@ These privileges control access to environment-level security settings and audit
 | --- | --- |
 | Activity audit | ✔ |
 | Audit log replication | ✔ |
+| OpenTelemetry | ✔ |
 | Debug, Log and Security | ✔ |
 | Manage locked projects | ✔ |
 
@@ -337,6 +338,7 @@ These privileges control access to environment-level security settings and audit
 | --- | --- |
 | Activity audit | ❌ |
 | Audit log replication | ❌ |
+| OpenTelemetry | ❌ |
 | Debug, Log and Security | ❌ |
 | Manage locked projects | ❌ |
 
@@ -514,6 +516,7 @@ These privileges control access to environment-level security settings and audit
 | --- | --- |
 | Activity audit | ❌ |
 | Audit log replication | ❌ |
+| OpenTelemetry | ❌ |
 | Debug, Log and Security | ❌ |
 | Manage locked projects | ❌ |
 

@@ -1,5 +1,28 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-19T11:48:38+00:00 (incremental)
+
+- Pages: 4566 | added 5 | changed 12 | removed 0
+- Added:
+  - https://docs.workato.com/en/agentic/workato-genies/sales/rep-genie/features.md
+  - https://docs.workato.com/en/agentic/workato-genies/sales/rep-genie/how-it-works.md
+  - https://docs.workato.com/en/agentic/workato-genies/sales/rep-genie/setup.md
+  - https://docs.workato.com/en/agentic/workato-genies/sales/rep-genie/usage.md
+  - https://docs.workato.com/en/features/opentelemetry.md
+- Changed:
+  - https://docs.workato.com/en/agentic/ai-marketplace.md
+  - https://docs.workato.com/en/agentic/workato-genies.md
+  - https://docs.workato.com/en/agentic/workato-genies/sales/rep-genie.md
+  - https://docs.workato.com/en/api-mgmt/custom-authorization.md
+  - https://docs.workato.com/en/api-mgmt/securing-apis.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sql-server-source.md
+  - https://docs.workato.com/en/features/activity-audit-log-streaming.md
+  - https://docs.workato.com/en/features/json-transformation-action.md
+  - https://docs.workato.com/en/mcp/mcp-servers.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access/new-model/privileges-reference.md
+  - https://docs.workato.com/en/user-accounts-and-teams/role-based-access/new-model/system-environment-roles.md
+
 ## 2026-11-18T11:51:06+00:00 (incremental)
 
 - Pages: 4561 | added 20 | changed 31 | removed 0

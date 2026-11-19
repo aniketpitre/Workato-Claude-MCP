@@ -16,7 +16,7 @@ The [AI Marketplace](https://marketplace.workato.com/en/) is Workato's curated c
 
 ## What's in the AI Marketplace
 
-- **[Workato Genies](/en/agentic/workato-genies)**: Pre-built AI agents that autonomously execute end-to-end business processes. For example, a Rep Genie handles call follow-ups and CRM updates so account executives can focus on selling.
+- **[Workato Genies](/en/agentic/workato-genies)**: Pre-built AI agents that autonomously execute end-to-end business processes. For example, Sales Rep Agent handles call follow-ups and CRM updates.
 - **[MCP servers](/en/mcp/mcp-servers)**: Prebuilt MCP servers that expose enterprise systems and workflows to any MCP-compatible AI agent or assistant.
 - **Solution accelerators**: Ready-to-deploy templates that provide solutions for common enterprise AI use cases.
 - **Partner-built solutions**: Offerings from Workato's partner ecosystem that extend the catalog across industries and departments.

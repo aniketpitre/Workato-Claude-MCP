@@ -43,4 +43,8 @@ Workato validates both the access token and the client certificate. This ensures
 
 Use mTLS to enforce certificate-based trust with your configured authentication method. Refer to the [Mutual TLS authentication](/en/api-mgmt/mtls) guide for more information.
 
+## Custom authorization
+
+Custom authorization enforces additional claims on individual endpoints after a request is authenticated. Use it for role-based access control, locale restrictions, or custom business logic. Refer to [Custom authorization](/en/api-mgmt/custom-authorization) for more information.
+
 ---

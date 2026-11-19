@@ -18,6 +18,8 @@ Each job or event is represented as a JSON file, which Workato sends to the log 
 
 Refer to [Audit log streaming destinations](/en/features/activity-audit-log-streaming-destinations) for more information.
 
+Audit log streaming sends job and activity logs. Refer to [OpenTelemetry trace streaming](/en/features/opentelemetry) to send OpenTelemetry native traces to view step-level latency distributions.
+
 > **FEATURE AVAILABILITY**
 > 
 > Audit log streaming is available on specific pricing plans. Refer to your pricing plan and contract to learn more.

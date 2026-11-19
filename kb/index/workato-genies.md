@@ -1,6 +1,6 @@
 # Workato Genies
 
-22 pages. Paths are relative to the repository root.
+26 pages. Paths are relative to the repository root.
 
 
 ## Workato Genies
@@ -35,4 +35,8 @@
 ## Sales
 
 - **CPQ Genie** - `kb/docs/en/agentic/workato-genies/sales/cpq-genie.md` - CPQ Genie is an AI Salesforce CPQ assistant that streamlines quote creation, enforces business rules, and keeps Salesforce data clean and consistent.
-- **Rep Genie** - `kb/docs/en/agentic/workato-genies/sales/rep-genie.md` - Rep Genie helps sales reps sell by automating call follow-up, CRM updates, account research, call prep, and coaching insights across the deal lifecycle.
+- **Sales Rep Agent** - `kb/docs/en/agentic/workato-genies/sales/rep-genie.md` - Sales Rep Agent automates post-call CRM updates, account research, conversational CRM operations, deal alerts, and sales knowledge retrieval for sales reps.
+- **Sales Rep Agent features** - `kb/docs/en/agentic/workato-genies/sales/rep-genie/features.md` - Core and extended features for Sales Rep Agent, from post-call CRM updates and account research through CRM self-service, alerts, and knowledge retrieval.
+- **How Sales Rep Agent works** - `kb/docs/en/agentic/workato-genies/sales/rep-genie/how-it-works.md` - Learn how Sales Rep Agent processes calls, gathers account research, applies CRM changes, evaluates alert rules, and organizes its project folders.
+- **Set up Sales Rep Agent** - `kb/docs/en/agentic/workato-genies/sales/rep-genie/setup.md` - Step-by-step instructions for setting up Sales Rep Agent, including package installation, connections, metadata, project properties, webhooks, and activation.
+- **Using Sales Rep Agent** - `kb/docs/en/agentic/workato-genies/sales/rep-genie/usage.md` - How to use Sales Rep Agent for account research, CRM updates, and knowledge questions, with example prompts and account connection requirements.

@@ -76,6 +76,7 @@
 - **Manage API clients and applications** - `kb/docs/en/api-mgmt/api-client-mgmt.md` - Manage API clients and applications in Workato to group users, authenticate requests, control collection access, and set security parameters.
 - **Auth Token** - `kb/docs/en/api-mgmt/auth-token.md` - Learn how to retrieve and refresh an Auth token, the simplest way to authenticate an API request with the Workato API platform.
 - **Create an API client with DCR** - `kb/docs/en/api-mgmt/create-client-dcr.md` - Create an API client that uses a dynamic client registration provider so consumers can generate their own credentials in the developer portal.
+- **Custom authorization** - `kb/docs/en/api-mgmt/custom-authorization.md` - Configure custom authorization to enforce additional claims on API endpoints, enabling role-based access control and custom business logic.
 - **Custom validation** - `kb/docs/en/api-mgmt/custom-validation.md` - Configure custom validation for Workato API management.
 - **API platform - JSON Web Token** - `kb/docs/en/api-mgmt/jwt-token.md` - Set up JSON Web Token (JWT) authentication for API platform clients using RSA or HMAC signing to authenticate calls with signed tokens.
 - **API platform - Extract JWT payload claims** - `kb/docs/en/api-mgmt/jwt-token/extract-jwt-payload-claims.md` - Learn how to extract JWT payload claims such as email, employee ID, and scopes in a Workato recipe using the JWT claims datapill.
@@ -90,7 +91,6 @@
 - **API concurrency** - `kb/docs/en/api-mgmt/api-concurrency.md` - Configure API concurrency in Workato to set how your workspace queues or rejects requests when the simultaneous request quota is reached.
 - **Dynamic client registration** - `kb/docs/en/api-mgmt/api-dynamic-client.md` - Set up dynamic client registration so Workato can register API clients with your IdP like Okta and issue OAuth 2.0 credentials automatically.
 - **API Prefix** - `kb/docs/en/api-mgmt/api-prefix.md` - Learn how API prefixes set unique base paths per Workato account so you can separate development, testing, and production endpoints and reuse collection paths.
-- **Custom authorization** - `kb/docs/en/api-mgmt/custom-authorization.md` - Configure custom authorization to enforce additional claims on API endpoints, enabling role-based access control and custom business logic.
 - **Custom Domain** - `kb/docs/en/api-mgmt/custom-domain.md` - Configure a custom domain to route Workato API platform endpoints through your own subdomain instead of the default apim.workato.com URL.
 - **API traffic mirroring** - `kb/docs/en/api-mgmt/traffic-mirroring.md` - Configure API traffic mirroring to send Workato API request and response payloads to a SIEM provider for anomaly detection and PII monitoring.
 - **Truststore** - `kb/docs/en/api-mgmt/truststore.md` - Manage certificate bundles in the Workato Truststore to define trusted CA chains that validate client certificates during mTLS authentication.

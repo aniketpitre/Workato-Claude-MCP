@@ -22920,7 +22920,7 @@ Complete the following requirements before you connect SQL Server as a data pipe
 
 - A SQL Server instance reachable from your on-prem agent host
 - An on-prem agent running version **30 or above**. Refer to the [on-prem agent documentation](/en/on-prem/agents/run) for setup steps.
-- A SQL Server user with `SELECT` and `VIEW DEFINITION` permissions on the tables you plan to sync
+- A SQL Server user with `SELECT` and `VIEW DEFINITION` permissions on the tables you plan to sync. Incremental sync also requires the `VIEW CHANGE TRACKING` permission. Refer to [Enable Change Tracking](#enable-change-tracking) for more information.
 - The host, port, database name, username, and password for your SQL Server instance
 - Change Tracking enabled on your SQL Server database and on each table you plan to sync. Refer to [Enable Change Tracking](#enable-change-tracking) for setup steps.
 
@@ -22943,6 +22943,14 @@ ALTER TABLE [schema].[table_name] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPD
 ```
 
 Repeat the table-level command for each table you plan to add as an object in your pipeline.
+
+Grant the Workato user the `VIEW CHANGE TRACKING` permission on each table you plan to sync incrementally. Workato requires this permission to query the Change Tracking log:
+
+```sql
+GRANT VIEW CHANGE TRACKING ON OBJECT::[schema].[table_name] TO [workato_user]
+```
+
+Use `ON SCHEMA::[schema]` instead of `ON OBJECT::[schema].[table_name]` to grant the permission on every table in a schema.
 
 ## Supported connection types
 

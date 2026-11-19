@@ -11,6 +11,12 @@ Custom authorization allows you to enforce an additional set of authorization cl
 
 This feature enables you to enforce security measures such as role-based access control, locale restrictions, and custom business logic.
 
+Configure custom authorization on each endpoint in the endpoint's **Settings** tab. The API platform **Settings** page doesn't include this option.
+
+> **FEATURE AVAILABILITY**
+> 
+> Custom authorization is available to select customers. Contact your Customer Success Representative to confirm whether it's available in your workspace.
+
 ## Configure custom authorization
 
 Complete the following steps to configure custom authorization for an API endpoint:
@@ -76,7 +82,7 @@ This formula uses the following components:
 
 ### Supported formulas
 
-A limited set of Workato formulas is supported when configuring custom authorization expressions. This list is non-exhaustive, and additional Ruby methods may be supported beyond those specified here. To request new formulas, reach out to your Customer Success Manager.
+A limited set of Workato formulas is supported when configuring custom authorization expressions. This list is non-exhaustive, and additional Ruby methods may be supported beyond those specified here. To request new formulas, reach out to your Customer Success Representative.
 
 You can use the following in your expressions:
 

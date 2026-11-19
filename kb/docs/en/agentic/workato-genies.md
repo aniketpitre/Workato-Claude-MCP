@@ -75,9 +75,9 @@ Automates quote creation and contract amendments in Salesforce CPQ through guide
 
 ](/en/agentic/workato-genies/sales/cpq-genie.html)[
 
-### Rep Genie
+### Sales Rep Agent
 
-Automates sales workflows including call follow-up, CRM updates, call preparation, account planning, coaching insights, and daily digests for reps and managers.
+Automates post-call CRM updates, account research, conversational CRM operations, deal alerts, and sales knowledge retrieval for reps.
 
 
 

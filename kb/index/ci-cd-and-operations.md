@@ -1,6 +1,6 @@
 # CI/CD and operations
 
-25 pages. Paths are relative to the repository root.
+26 pages. Paths are relative to the repository root.
 
 
 ## CI/CD and operations
@@ -31,6 +31,7 @@
 - **Activity Audit Log - overview** - `kb/docs/en/features/activity-audit-log.md` - Learn how Workato activity audit logs let administrators track user logins, recipe changes, and other account activity over time.
 - **Operations hub dashboard FAQs** - `kb/docs/en/features/admin-dashboard-faqs.md` - Answers to common questions about the Workato Operations hub dashboard, including recipe insights, jobs graph customization, and metrics.
 - **Dependency graph** - `kb/docs/en/features/dependency-graph.md` - Use the Workato dependency graph to visualize relationships between workspace assets and analyze the impact of upstream and downstream changes.
+- **OpenTelemetry trace streaming** - `kb/docs/en/features/opentelemetry.md` - Stream OpenTelemetry (OTel) traces of recipe executions from Workato to your OTel collector or observability platform.
 
 ## Recipe lifecycle management
 

@@ -676,6 +676,7 @@ These privileges control access to environment-level security settings and audit
 | --- | --- |
 | Activity audit | ✔ |
 | Audit log replication | ✔ |
+| OpenTelemetry | ✔ |
 | Debug, Log and Security | ✔ |
 | Manage locked projects | ✔ |
 
@@ -854,6 +855,7 @@ These privileges control access to environment-level security settings and audit
 | --- | --- |
 | Activity audit | ❌ |
 | Audit log replication | ❌ |
+| OpenTelemetry | ❌ |
 | Debug, Log and Security | ❌ |
 | Manage locked projects | ❌ |
 
@@ -1031,6 +1033,7 @@ These privileges control access to environment-level security settings and audit
 | --- | --- |
 | Activity audit | ❌ |
 | Audit log replication | ❌ |
+| OpenTelemetry | ❌ |
 | Debug, Log and Security | ❌ |
 | Manage locked projects | ❌ |
 
@@ -2333,6 +2336,12 @@ The following privileges control access to environment-level logs, debug tools, 
   
   - Full access
   - Configure audit log replication settings and manage replication targets.
+- OpenTelemetry
+  
+- Controls access to configure and manage [OpenTelemetry trace streaming](/en/features/opentelemetry) for the environment.
+  
+  - Full access
+  - Configure the connection and collector URL for OpenTelemetry trace streaming, and stop trace streaming.
 - Debug, Log and Security
   
 - Controls access to view team activity and security settings for the environment.
