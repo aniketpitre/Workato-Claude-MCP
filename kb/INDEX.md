@@ -6,7 +6,7 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 
 | Section | Pages | Index |
 | --- | ---: | --- |
-| Connectors | 2997 | [index/connectors.md](index/connectors.md) |
+| Connectors | 2998 | [index/connectors.md](index/connectors.md) |
 | Recipe design | 195 | [index/recipe-design.md](index/recipe-design.md) |
 | Other | 122 | [index/other.md](index/other.md) |
 | Data orchestration | 117 | [index/data-orchestration.md](index/data-orchestration.md) |
@@ -31,8 +31,8 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 | CI/CD and operations | 26 | [index/ci-cd-and-operations.md](index/ci-cd-and-operations.md) |
 | Insights | 26 | [index/insights.md](index/insights.md) |
 | Workato Expression Language | 26 | [index/workato-expression-language.md](index/workato-expression-language.md) |
+| AIRO | 25 | [index/airo.md](index/airo.md) |
 | Workato GO | 19 | [index/workato-go.md](index/workato-go.md) |
-| AIRO | 19 | [index/airo.md](index/airo.md) |
 | Billing and usage | 19 | [index/billing-and-usage.md](index/billing-and-usage.md) |
 | Event streams | 18 | [index/event-streams.md](index/event-streams.md) |
 | User / Agent Identity | 15 | [index/user-agent-identity.md](index/user-agent-identity.md) |

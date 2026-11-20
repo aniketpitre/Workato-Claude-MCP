@@ -102,7 +102,7 @@ You can upload files for AIRO to analyze or attach to a [support ticket](#suppor
 
 AIRO accepts the following file types, up to 500 MB each:
 
-- **Documents**: PDF, DOC, DOCX, MD, TXT
+- **Documents**: PDF, DOC, DOCX, MD, TXT, JSON
 - **Images**: PNG, JPG, JPEG
 - **Videos**: MP4, MOV, WEBM. AIRO can't analyze videos and can only attach them to a [support ticket](#support-tickets-in-chat).
 

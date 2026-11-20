@@ -304,15 +304,23 @@ Refer to the [Supported objects](#supported-objects) tables to see the sync mode
 
 ## Schema and data type handling
 
-Anaplan doesn't expose a fixed schema for export data, so Workato determines each export table's schema at sync time and represents every value as text. The following sections describe what to expect from schema discovery, data types, and destination table naming.
+Anaplan doesn't expose a fixed schema for export data, so Workato determines each export table's schema at sync time and represents every value as text. The following sections describe what to expect from schema discovery, the page selector column on Grid (Current Page) exports, data types, and destination table naming.
 
 ### Dynamic schema discovery
 
-Every column in an export table is defined by your Anaplan model structure, so no two customers' export tables share the same schema. Workato discovers each export table's columns from the export action's own column headers, and treats every export table's schema as independent and tenant-specific.
+Every column in an export table is defined by your Anaplan model structure, so no two customers' export tables share the same schema. Workato discovers each export table's columns from the export action's own column headers, and treats every export table's schema as independent and tenant-specific. Grid (Current Page) export tables also include a [page selector column](#page-selector-column).
 
 When you select **Auto-sync new fields**, columns you add to an export definition in Anaplan appear automatically on the next sync. If you remove a column from an export definition, Workato doesn't fail the sync. It sends an empty value for that column instead. If you restructure an export's columns more significantly, the sync can fail until you refresh the object's schema.
 
 Anaplan export headers can contain blank cells (dimension columns without a label) or duplicate names (the same line item repeated across page selections). Workato renames these automatically so every column has a unique name. For example, a blank header becomes `column_0`.
+
+### Page selector column
+
+Workato adds a `_workato_model_page_selector` text column to every Grid (Current Page) export table. Grid exports can filter data by page selectors, and Anaplan writes the selected items as a separate line above the column headers instead of as a column. Workato copies those items into `_workato_model_page_selector` on every row it syncs, so you can tell which page of the grid the data comes from.
+
+For example, Anaplan's [Example map to CSV output](https://help.anaplan.com/example-map-to-csv-output-13919853-ad4f-416b-8b23-a3efe5473513) uses the page selectors `Apple`, `George Hardwick`, and `UK`. Every row in the destination table has `_workato_model_page_selector` set to `Apple, George Hardwick, UK`.
+
+The column is empty if the export has no page selectors. If you change the page selector items in the export definition, the column shows the new items after the next sync. Tabular Single Column (All Line Items) exports don't include this column.
 
 ### Data types
 

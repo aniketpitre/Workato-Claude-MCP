@@ -18,6 +18,7 @@ The following features are supported when you use Jira as a pipeline source:
 - **Full refresh and incremental sync**: Supports full refresh and incremental sync modes. Refer to [Sync modes](#sync-modes) for more information.
 - **Object-level selection**: Select Jira objects to sync as separate tables in your destination.
 - **Field-level selection**: Choose which fields to include or exclude from each object during extraction and schema replication.
+- **Raw JSON extraction**: Extract `Issues` field values as raw JSON instead of user-friendly values. Refer to [Extraction mode](#extraction-mode) for more information.
 - **Schema drift detection and handling**: Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**.
 - **Field-level data protection**: Hash or replicate sensitive fields as is before the data reaches your destination.
 - **Configurable sync frequency**: Schedule syncs on a time-based interval or with a cron expression. The minimum supported interval is 15 minutes.
@@ -74,8 +75,8 @@ We strongly recommend using API tokens, service account API tokens, OAuth 2.0, o
 > 
 > Authentication methods for the Jira connector have the following limitations:
 > 
-> - Real-time triggers aren't supported with OAuth 2.0 (Cloud - Atlassian-hosted Jira) or OAuth 2.0 (Data Center).
-> - On-prem Jira connections aren't supported with API token or service account (API token) authentication.
+> - OAuth 2.0 (Cloud - Atlassian-hosted Jira) and OAuth 2.0 (Data Center) don't support real-time triggers.
+> - API token and service account (API token) authentication don't support on-premise Jira connections.
 > - Atlassian deprecated basic authentication for cloud connections in December 2018. On-premise Jira is not affected.
 
 ### API token
@@ -243,7 +244,7 @@ OAuth 2.0 (Data Center) enables you to connect to an on-premise Jira Data Center
 
 > **REAL-TIME TRIGGERS NOT SUPPORTED**
 > 
-> OAuth 2.0 doesn't support real-time triggers because it's incompatible with webhooks. As an alternative, you can register the [Webhooks connector](/en/connectors/workato-webhooks) in Jira to use Jira's static webhook functionality. Refer to the [Jira Datacenter](https://confluence.atlassian.com/adminjiraserver/managing-webhooks-938846912.html) webhook documentation for registration steps.
+> OAuth 2.0 doesn't support real-time triggers because it's incompatible with webhooks. As an alternative, you can register the [Webhooks connector](/en/connectors/workato-webhooks) in Jira to use Jira's static webhook functionality. Refer to the [Jira Data Center](https://confluence.atlassian.com/adminjiraserver/managing-webhooks-938846912.html) webhook documentation for registration steps.
 
 #### Prerequisites
 
@@ -397,16 +398,31 @@ Complete the following steps to configure Jira as your data pipeline source.
     
     Workato recommends hashing personally identifiable information (PII) and other sensitive fields.
     
-12. Click **Add object** again to add more objects. Repeat this step to include additional Jira objects in your pipeline.
+12. Optional. Click the gear icon next to an object to open its settings. Use the **Sync mode** drop-down menu to select **Full sync** or **Incremental**.
     
-13. Use the **Choose how to handle schema changes** drop-down menu to select a schema drift handling option:
+    The sync mode defaults to **Full sync** for objects without a usable timestamp, such as `Issue Types`. Refer to [Sync modes](#sync-modes) for more information.
+    
+    For the `Issues` object, use the **Extraction mode** drop-down menu to select one of the following options:
+    
+    - **Extract user-friendly data**: Default. Converts field values into readable values where possible.
+    - **Always raw JSON**: Extracts most field values as the JSON returned by the Jira API.
+    
+    You can't change the extraction mode after you start the pipeline. Refer to [Extraction mode](#extraction-mode) for more information.
+    
+    Click **Save**.
+    
+    ![Configure object settings](/assets/extraction-mode-jira.CMq2JQTp.png)_Configure object settings_
+    
+13. Click **Add object** again to add more objects. Repeat this step to include additional Jira objects in your pipeline.
+    
+14. Use the **Choose how to handle schema changes** drop-down menu to select a schema drift handling option:
     
     - **Auto-sync new fields**: Automatically detects and syncs new fields added in the source.
     - **Block new fields**: Keeps the schema fixed after the pipeline starts. You must add new fields manually. This option may cause the destination to fall out of sync if the source schema updates.
     
     Refer to [Schema replication and schema drift management](/en/data-orchestration/data-pipeline-recipe/concepts#schema-drift) for more information.
     
-14. Choose either a standard time-based schedule or define a custom cron expression in the **Frequency** field. This determines how often the pipeline syncs data from Jira to the destination.
+15. Choose either a standard time-based schedule or define a custom cron expression in the **Frequency** field. This determines how often the pipeline syncs data from Jira to the destination.
     
     **Time-based schedule**
     
@@ -460,6 +476,7 @@ Jira data pipelines sync data from Jira REST API resources. Each object you sele
 Available objects include the following:
 
 - `Issues`: Issue records, including standard fields and any custom fields configured in your Jira instance.
+- `Issue Types`: Issue type definitions, including hierarchy level, subtask status, and project scope. Supports full refresh only.
 - `Projects`: Jira project records.
 - `Users`: Jira user records.
 - `Boards`: Boards from Jira Software products.
@@ -486,6 +503,19 @@ The following considerations apply to schema and data types when you sync data f
 ### Custom fields
 
 The pipeline automatically discovers custom fields configured on Jira objects and includes them in the schema alongside standard fields. For example, the `Issues` object includes standard fields such as `id`, `key`, and `Resolution` together with any custom fields configured on issues in your Jira instance. Deselect individual custom fields to exclude them from extraction and schema replication.
+
+### Extraction mode
+
+The **Extraction mode** setting on the `Issues` object controls how the pipeline writes Jira field values to your destination:
+
+- **Extract user-friendly data**: Converts complex field values, such as `status`, `issuetype`, and `reporter`, into readable values where possible. The `parent` field contains the parent issue ID.
+- **Always raw JSON**: Writes object and array field values as the JSON returned by the Jira API. The `parent` field contains the full parent issue object.
+
+The following fields are extracted the same way in both modes:
+
+- `id` and `key`.
+- Text area fields, including `description`, which use Jira's rendered format.
+- Date and datetime fields, which are converted to ISO 8601 format. For example, `2025-12-04T15:45:22.389+00:00`.
 
 ### Primary keys
 

@@ -3,7 +3,8 @@ url: >-
   https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sql-server-source.md
 description: >-
   Configure SQL Server as a data pipeline source to extract table records
-  through an on-prem agent and sync them with Change Tracking.
+  through an on-prem agent and sync them incrementally with Change Tracking or
+  Change Data Capture.
 ---
 
 # Configure SQL Server as a data pipeline source
@@ -17,24 +18,25 @@ The following features are supported when you use SQL Server as a pipeline sourc
 | Feature | Details |
 | --- | --- |
 | On-prem connectivity | Connect to SQL Server through an on-prem group. Cloud connections aren't supported for data pipelines. |
-| Full refresh and incremental sync | Supports full refresh and incremental sync modes. Incremental sync uses SQL Server Change Tracking. Refer to [Sync modes](#sync-modes) for more information. |
+| Full sync and incremental sync | Supports full sync and incremental sync modes. Incremental sync uses SQL Server Change Tracking or Change Data Capture (CDC). CDC is the default when both are enabled on a table. Refer to [Sync modes](#sync-modes) for more information. |
 | Table-level object selection | Select individual SQL Server tables to sync as objects in your pipeline. Tables across multiple schemas in the connected database are supported. Refer to [Configure the pipeline](#configure-the-pipeline) for more information. |
 | Schema drift detection and handling | Detect and apply schema changes automatically with **Auto-sync new fields**, or keep the schema fixed with **Block new fields**. |
-| Configurable sync frequency | Schedule syncs on a time-based interval. The minimum supported interval is 15 minutes. |
+| Configurable sync frequency | Schedule syncs on a time-based interval. The minimum supported interval is `15` minutes. |
 
 ## SQL Server prerequisites
 
-Complete the following requirements before you connect SQL Server as a data pipeline source.
+Connecting SQL Server as a data pipeline source requires:
 
 - A SQL Server instance reachable from your on-prem agent host
 - An on-prem agent running version **30 or above**. Refer to the [on-prem agent documentation](/en/on-prem/agents/run) for setup steps.
-- A SQL Server user with `SELECT` and `VIEW DEFINITION` permissions on the tables you plan to sync. Incremental sync also requires the `VIEW CHANGE TRACKING` permission. Refer to [Enable Change Tracking](#enable-change-tracking) for more information.
+- A SQL Server user with `SELECT` and `VIEW DEFINITION` permissions on the tables you plan to sync. Incremental sync requires additional permissions, such as `VIEW CHANGE TRACKING`. Refer to [Enable Change Tracking](#enable-change-tracking) or [Enable Change Data Capture](#enable-change-data-capture) for more information.
+- A primary key on each table you plan to sync
 - The host, port, database name, username, and password for your SQL Server instance
-- Change Tracking enabled on your SQL Server database and on each table you plan to sync. Refer to [Enable Change Tracking](#enable-change-tracking) for setup steps.
+- Change Tracking or CDC enabled on your SQL Server database and on each table you plan to sync incrementally. Refer to [Enable Change Tracking](#enable-change-tracking) or [Enable Change Data Capture](#enable-change-data-capture) for setup steps.
 
 ## Enable Change Tracking
 
-Workato requires SQL Server Change Tracking to detect row-level inserts, updates, and deletes for incremental sync. Your database administrator must enable it at both the database and table level before the pipeline can discover objects or run syncs.
+Incremental sync by Change Tracking uses SQL Server Change Tracking to detect row-level inserts, updates, and deletes. Your database administrator must enable it at both the database and table level before the pipeline can run incremental syncs with this method. Refer to the Microsoft [Enable and disable change tracking](https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/enable-and-disable-change-tracking-sql-server) documentation for more information.
 
 Enable Change Tracking at the database level:
 
@@ -42,7 +44,7 @@ Enable Change Tracking at the database level:
 ALTER DATABASE CURRENT SET CHANGE_TRACKING = ON (CHANGE_RETENTION = 7 DAYS, AUTO_CLEANUP = ON)
 ```
 
-Workato recommends a minimum retention of 3 days. Seven days provides a safe buffer if pipelines are paused or delayed.
+Set a data retention period longer than the longest time period a pipeline can be paused, including planned maintenance. Workato recommends a minimum retention of 3 days. Seven days provides a safe buffer if pipelines are paused or delayed. Incremental sync fails if a pipeline is paused longer than the retention period. Refer to [Change history retention](#change-history-retention) for more information.
 
 Enable Change Tracking at the table level for each table you plan to sync:
 
@@ -50,7 +52,7 @@ Enable Change Tracking at the table level for each table you plan to sync:
 ALTER TABLE [schema].[table_name] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON)
 ```
 
-Repeat the table-level command for each table you plan to add as an object in your pipeline.
+Repeat the table-level command for each table you plan to add as an object in your pipeline. `TRACK_COLUMNS_UPDATED = ON` is optional. It records which columns changed, which uses additional storage.
 
 Grant the Workato user the `VIEW CHANGE TRACKING` permission on each table you plan to sync incrementally. Workato requires this permission to query the Change Tracking log:
 
@@ -59,6 +61,81 @@ GRANT VIEW CHANGE TRACKING ON OBJECT::[schema].[table_name] TO [workato_user]
 ```
 
 Use `ON SCHEMA::[schema]` instead of `ON OBJECT::[schema].[table_name]` to grant the permission on every table in a schema.
+
+## Enable Change Data Capture
+
+Incremental sync by Change Data Capture (CDC) reads net changes from SQL Server CDC change tables. Refer to the Microsoft [Enable and disable change data capture](https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/enable-and-disable-change-data-capture-sql-server) documentation for more information.
+
+Ensure you meet the following requirements to use CDC:
+
+- CDC is enabled at the database and table level by your database administrator
+- SQL Server Agent is running
+- You have SQL Server Enterprise, Standard, or Developer edition
+
+> **UNSUPPORTED EDITIONS**
+> 
+> SQL Server Express and Web editions don't support CDC.
+
+### Enable CDC at the database level
+
+Run the following command to enable CDC on your database. This command requires the `sysadmin` role:
+
+```sql
+USE <your_database>;
+EXEC sys.sp_cdc_enable_db;
+```
+
+### Enable CDC at the table level
+
+Run the following command for each table you plan to sync. This command requires the `db_owner` role:
+
+```sql
+EXEC sys.sp_cdc_enable_table
+    @source_schema = N'<schema>',
+    @source_name   = N'<table_name>',
+    @role_name     = NULL,
+    @supports_net_changes = 1;
+```
+
+You must set `@supports_net_changes = 1`. Workato reads net changes, which collapse multiple changes to the same row into a single row with its final state. Net changes require a primary key or a unique index specified with `@index_name`, and Workato requires a primary key on every table you sync. Workato can't use CDC on tables enabled without net changes.
+
+### Grant access to CDC change data
+
+Run the following command to let the Workato user read CDC change data:
+
+```sql
+GRANT SELECT ON SCHEMA::cdc TO <workato_user>;
+```
+
+The table-level example sets `@role_name` to `NULL`, so no gating role restricts access to the change data. If you specify a gating role, add the Workato user to it:
+
+```sql
+ALTER ROLE <gating_role> ADD MEMBER <workato_user>;
+```
+
+### Verify that SQL Server Agent is running
+
+Ensure that SQL Server Agent is running. CDC captures changes through a SQL Server Agent job, so the change tables stay empty until the agent runs. SQL Server Agent is disabled by default on Linux. Run the following commands to enable it and restart SQL Server:
+
+```shell
+sudo /opt/mssql/bin/mssql-conf set sqlagent.enabled true
+sudo systemctl restart mssql-server
+```
+
+For a new SQL Server container, set the `MSSQL_AGENT_ENABLED=true` environment variable when you create the container instead.
+
+Keep SQL Server Agent running while CDC is enabled. SQL Server can't truncate the transaction log past changes the capture job hasn't read, so the log can keep growing while the capture job is stopped.
+
+### Confirm CDC is enabled
+
+Run the following query to confirm CDC is enabled with net changes on a table:
+
+```sql
+SELECT capture_instance, supports_net_changes
+FROM cdc.change_tables
+WHERE OBJECT_SCHEMA_NAME(source_object_id) = '<schema>'
+  AND OBJECT_NAME(source_object_id) = '<table_name>';
+```
 
 ## Supported connection types
 
@@ -224,21 +301,30 @@ Complete the following steps to configure SQL Server as your data pipeline sourc
 
 ## Supported SQL Server objects
 
-SQL Server data pipelines sync data from tables in your connected database. Workato discovers available tables across all schemas in the connected database when you select **Add object** during pipeline configuration. You can add one or more tables as objects in your pipeline. Views aren't supported because SQL Server Change Tracking requires base tables.
+SQL Server data pipelines sync data from tables in your connected database. Workato discovers available tables across all schemas in the connected database when you select **Add object** during pipeline configuration. You can add one or more tables as objects in your pipeline. Views aren't supported. Tables without Change Tracking or CDC enabled are still listed and can use full sync.
 
 ## Sync modes
 
-SQL Server data pipelines support full refresh and incremental sync. The sync mode is configured per object when you add it to your pipeline.
+SQL Server data pipelines support full sync and incremental sync. The sync mode is configured per object when you add it to your pipeline.
 
-### Full refresh
+### Full sync
 
-A full refresh sync reads all rows from the source table on every pipeline run. Use full refresh for tables where you need a complete snapshot of the data on each sync.
+A full sync reads all rows from the source table on every pipeline run. Use full sync for tables where you need a complete snapshot of the data on each sync.
 
-Tables with a primary key merge into the existing destination table, so rows deleted in SQL Server stay in the table. Tables without a primary key overwrite the destination table on every run.
+Each table merges into the existing destination table, so rows deleted in SQL Server stay in the table.
 
 ### Incremental sync
 
-An incremental sync uses SQL Server Change Tracking to detect row-level inserts, updates, and deletes since the last successful sync run. Workato queries the Change Tracking log rather than filtering by a timestamp column. You must enable Change Tracking at both the database and table level before the pipeline can run incremental syncs. Refer to [Enable Change Tracking](#enable-change-tracking) for setup steps.
+An incremental sync extracts only rows that changed since the last successful sync run. Workato supports the following incremental sync methods:
+
+- **Change Data Capture (CDC)**: Available when CDC is enabled on the table with net changes. Workato reads net inserts, updates, and deletes from the table's CDC change tables. Refer to [Enable Change Data Capture](#enable-change-data-capture) for setup steps.
+- **Change Tracking**: Available when Change Tracking is enabled on the database and table. Workato queries the Change Tracking log to detect row-level inserts, updates, and deletes. Refer to [Enable Change Tracking](#enable-change-tracking) for setup steps.
+
+Workato uses CDC by default when a table has both CDC and Change Tracking enabled. You can change the incremental sync method for the object.
+
+### Delete tracking
+
+Incremental sync by CDC or Change Tracking reports deleted rows through the synthetic `_workato_is_deleted` column. Deleted rows keep key column values, so the destination can identify which rows were deleted. Full sync doesn't track deletes. Refer to [Full sync](#full-refresh) for more information.
 
 ## Identifier handling
 
@@ -252,16 +338,37 @@ For example, the source column `$Name$` becomes `[_NAME_]` in the destination ta
 
 ## SQL Server limitations
 
-The following limitations apply when you use SQL Server as a data pipeline source.
+The following limitations apply when you use SQL Server as a data pipeline source:
 
 ### No objects displayed
 
-If the pipeline displays no objects when you select **Add object**, check the following:
-
-- **Change Tracking isn't enabled.** You must enable Change Tracking at the database and table level before Workato can discover objects. Refer to [Enable Change Tracking](#enable-change-tracking) for the required SQL commands.
-- **Cloud connection selected.** The pipeline can't discover tables over a cloud connection. Switch to an on-prem group in the **Connection type** field.
+If the pipeline doesn't display objects when you select **Add object**, check that you selected an on-prem group in the **Connection type** field. The pipeline can't discover tables over a cloud connection.
 
 ![No objects error](/assets/no-objects-error.DmLxbr8j.png)_No objects error_
+
+### Change history retention
+
+Incremental sync by Change Tracking or CDC depends on the change history SQL Server retains. If a pipeline is paused longer than the retention window, its saved cursor falls outside the retained history and the next run fails. You must [re-sync the object](/en/data-orchestration/sync-types#object-re-sync) to resume incremental sync.
+
+CDC cleans up change data after three days by default. Run the following command to increase the CDC retention period if you expect long pauses. The `@retention` value is in minutes, and this example sets retention to seven days:
+
+```sql
+EXEC sys.sp_cdc_change_job @job_type = N'cleanup', @retention = 10080;
+```
+
+The new value applies the next time the cleanup job runs. Run `SELECT job_type, retention FROM msdb.dbo.cdc_jobs;` to confirm the setting.
+
+Refer to [Enable Change Tracking](#enable-change-tracking) for the Change Tracking retention setting.
+
+### Column changes after CDC is enabled
+
+CDC doesn't capture columns added to a table after CDC was enabled on it, so those columns don't sync. Your database administrator must create a new capture instance for the table or disable and re-enable CDC to capture new columns. Run a full sync on the object to include the new columns. Workato uses the most recently created capture instance when a table has two capture instances.
+
+Columns dropped after CDC is enabled appear as `NULL` values in later changes.
+
+### Switching incremental sync methods
+
+Change Tracking and CDC store different types of cursors, and neither method can resume from the other's cursor. The next run fails if you change the incremental sync method for an existing object. Run a full sync on the object to reinitialize the cursor.
 
 ### On-prem agent version requirement
 

@@ -55,7 +55,22 @@ Complete the following steps to access an MCP server-level dashboard:
 
 ### View MCP server logs
 
-MCP server logs are stored in the [Workato Logging Service](/en/features/logging-service). Logs include the request IP address, the ID of the user who made the request, and the MCP server creation timestamp.
+You can view MCP server logs in the [Workato Logging Service](/en/features/logging-service) and stream logs to an external destination using [audit log streaming](/en/features/activity-audit-log-streaming-destinations). Logs include the request IP address, the ID of the user who made the request, and the MCP server creation timestamp.
+
+Log streaming supports the following event types:
+
+- Job summary
+- Job details, including input and output lines
+- User activity with an audit trail of all user, programmatic, and AIRO-initiated events
+- APIM logs from all API endpoints hosted on Workato
+- Workato log events from Workato assets such as:
+  - MCP tool calls
+  - Data pipeline runs
+  - MFT/SFTP transfers
+  - OPAs
+  - Webhook errors
+  - Logger by Workato logs
+- Genie conversation events from genie interactions
 
 Complete the following steps to access your MCP server logs:
 

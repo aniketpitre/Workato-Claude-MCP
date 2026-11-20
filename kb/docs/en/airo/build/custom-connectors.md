@@ -14,7 +14,7 @@ Refer to the [Connector SDK](/en/developing-connectors/sdk) documentation for th
 
 > **FEATURE AVAILABILITY**
 > 
-> - Building custom connectors with [AIRO MCP](/en/airo/mcp) is available in all workspaces with AIRO enabled, subject to the [prerequisites](#prerequisites).
+> - Building custom connectors with [AIRO Connect](/en/airo/mcp) is available in all workspaces with AIRO enabled, subject to the [prerequisites](#prerequisites).
 >   
 > - Building custom connectors with AIRO in Workato is available to select customers. Contact your Customer Success Representative to enable it in your workspace.
 >   
@@ -30,7 +30,7 @@ Confirm that you have the following before you build a custom connector:
 
 Don't paste passwords, tokens, client secrets, or other credentials into a prompt or hard-code them in connector source. Define sensitive values as connection fields and store the actual values in a Workato connection.
 
-Confirm that your AIRO MCP connection points to the intended workspace and environment before you start, and check whether your MCP client is set to approve AIRO MCP tools without prompting.
+Confirm that your AIRO Connect connection points to the intended workspace and environment before you start, and check whether your MCP client is set to approve AIRO Connect tools without prompting.
 
 ## Example: Build a weather-alert connector
 
@@ -49,8 +49,8 @@ AIRO can generate different valid implementations for the same request. As a res
 
 Open AIRO and describe the connector and the first behavior to build. Include the display title and API documentation.
 
-- **In Workato**: Ask AIRO from anywhere in the platform. AIRO takes you to the Connector SDK editor to continue. AIRO can't search the web for API documentation yet, so provide it yourself. Upload the API documentation as a PDF, MD, or TXT file, or paste it into the chat if it's under 10,000 lines. Refer to [Supported file types and size](/en/airo/chat#supported-file-types-and-size).
-- **In an MCP client**: [Connect the AIRO MCP server](/en/airo/mcp) to the client, then include a link to the API documentation in your prompt, for example `<https://www.weather.gov/documentation/services-web-api>`.
+- **In Workato**: Ask AIRO from anywhere in the platform. AIRO takes you to the Connector SDK editor to continue. AIRO can't search the web for API documentation, so you must provide it yourself. Upload the API documentation as a JSON file, such as an OpenAPI spec or Postman collection, or as a PDF, MD, or TXT file. You can also paste the documentation into the chat if it's under 10,000 lines. Refer to [Supported file types and size](/en/airo/chat#supported-file-types-and-size).
+- **In an MCP client**: [Connect an MCP client](/en/airo/mcp/connect) to AIRO Connect, then include a link to the API documentation in your prompt, for example `<https://www.weather.gov/documentation/services-web-api>`.
 
 The Connector SDK editor shows the AIRO chat panel beside the connector code, so you can follow each change against the source as you build.
 
@@ -351,7 +351,7 @@ In connector 4821, the polling trigger returns the following validation error af
 
 ### AIRO created or opened the connector in the wrong place
 
-Check the workspace and environment you're working in, or the ones associated with your AIRO MCP connection. Reconnect to the intended target before you create or save anything else.
+Check the workspace and environment you're working in, or the ones associated with your AIRO Connect connection. Reconnect to the intended target before you create or save anything else.
 
 ### An operation is denied
 

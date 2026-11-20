@@ -1,5 +1,37 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-20T11:49:27+00:00 (incremental)
+
+- Pages: 4573 | added 7 | changed 19 | removed 0
+- Added:
+  - https://docs.workato.com/en/airo/mcp/connect.md
+  - https://docs.workato.com/en/airo/mcp/connect/chatgpt.md
+  - https://docs.workato.com/en/airo/mcp/connect/claude-code.md
+  - https://docs.workato.com/en/airo/mcp/connect/claude-desktop.md
+  - https://docs.workato.com/en/airo/mcp/connect/codex-cli.md
+  - https://docs.workato.com/en/airo/mcp/connect/cursor.md
+  - https://docs.workato.com/en/connectors/docusign/action-create-envelope.md
+- Changed:
+  - https://docs.workato.com/en/agentic/workato-genies/hr/hr-self-service-genie.md
+  - https://docs.workato.com/en/agentic/workato-genies/hr/hr-self-service-genie/setup.md
+  - https://docs.workato.com/en/airo.md
+  - https://docs.workato.com/en/airo/build/custom-connectors.md
+  - https://docs.workato.com/en/airo/chat.md
+  - https://docs.workato.com/en/airo/mcp.md
+  - https://docs.workato.com/en/connectors/docusign.md
+  - https://docs.workato.com/en/connectors/docusign/trigger-new-recipient-event.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-anaplan.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-jira.md
+  - https://docs.workato.com/en/data-orchestration/data-pipeline-recipe/configure-sql-server-source.md
+  - https://docs.workato.com/en/features/activity-audit-log.md
+  - https://docs.workato.com/en/features/json-transformation-action.md
+  - https://docs.workato.com/en/features/lookup-tables.md
+  - https://docs.workato.com/en/limits.md
+  - https://docs.workato.com/en/mcp/mcp-server-access-and-configuration.md
+  - https://docs.workato.com/en/pricing/usage-metrics.md
+  - https://docs.workato.com/en/workato-api/limits.md
+  - https://docs.workato.com/en/workato-api/resources.md
+
 ## 2026-11-19T11:48:38+00:00 (incremental)
 
 - Pages: 4566 | added 5 | changed 12 | removed 0

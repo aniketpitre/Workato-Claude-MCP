@@ -130,9 +130,9 @@ When a request is simple, AIRO skips the blueprint flow and builds the asset dir
 
 ## Use AIRO from external AI clients
 
-The AIRO MCP server exposes your full Workato workspace to MCP-compatible AI clients such as Claude Code, Claude Desktop, and Cursor. Once connected, you can build recipes, manage Genies, query data, and administer workspace assets directly from your AI development environment using natural language.
+[AIRO Connect](/en/airo/mcp) brings AIRO to MCP-compatible AI clients such as Claude Code, Claude Desktop, and Cursor. Once connected, you can build recipes, manage Genies, query data, and administer workspace assets directly from your AI development environment using natural language.
 
-Refer to [AIRO MCP server](/en/airo/mcp) for setup instructions and supported clients.
+Refer to [Connect an MCP client to AIRO Connect](/en/airo/mcp/connect) for setup instructions and supported clients.
 
 ![AIRO as an MCP server](/assets/airo-mcp.DZD5VIs5.gif)_AIRO as an MCP server_
 

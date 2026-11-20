@@ -1,6 +1,6 @@
 # Connectors
 
-2997 pages. Paths are relative to the repository root.
+2998 pages. Paths are relative to the repository root.
 
 
 ## Connectors
@@ -321,6 +321,7 @@
 - **Workato connectors - Google Dialogflow** - `kb/docs/en/connectors/dialogflow.md` - Connect Google Dialogflow to Workato to power Workbot with natural language understanding for conversational interfaces and chatbots.
 - **Docusign** - `kb/docs/en/connectors/docusign.md` - Connect to Docusign to send, sign, and manage digital documents and eSignature workflows.
 - **Docusign - Create draft envelope from template action** - `kb/docs/en/connectors/docusign/action-create-draft-envelope-from-template.md` - The Create draft envelope from template action in the Docusign connector lets you create a draft envelope based on a template you configure.
+- **Docusign - Create envelope action** - `kb/docs/en/connectors/docusign/action-create-envelope.md` - The Create envelope action in the Docusign connector creates and sends an envelope from uploaded documents or an existing template.
 - **Docusign - Create recipient view action** - `kb/docs/en/connectors/docusign/action-create-recipient-view.md` - The Create recipient view action in the Docusign connector generates a URL for embedded signing of a Docusign envelope.
 - **Docusign - Create/send document action** - `kb/docs/en/connectors/docusign/action-create-send-document.md` - The Create/send document action in the Docusign connector lets you create and send a document for signing, with signers, routing, and signature tabs.
 - **Docusign - Create template action** - `kb/docs/en/connectors/docusign/action-create-template.md` - The Create template action creates a new template in your Docusign account.

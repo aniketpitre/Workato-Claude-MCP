@@ -46,7 +46,7 @@ Refer to the [Activity reference article](/en/features/activity-audit-log-refere
 
 ### How are AIRO-driven changes attributed?
 
-The activity audit log attributes each action [AIRO](/en/airo) takes to a user account and adds a `(via AIRO)` label to the entry. This applies whether you interact with AIRO through the [Workato UI](/en/airo/chat) or the [AIRO MCP server](/en/airo/mcp). Actions from an AIRO MCP server API token connection are attributed to the workspace owner.
+The activity audit log attributes each action [AIRO](/en/airo) takes to a user account and adds a `(via AIRO)` label to the entry. This applies whether you interact with AIRO through the [Workato UI](/en/airo/chat) or [AIRO Connect](/en/airo/mcp). Actions from an AIRO Connect API token connection are attributed to the workspace owner.
 
 ![Activity audit log entries for a recipe edit and create, both attributed to a user via AIRO.](/assets/airo-activity-audit-log.BmOOgr9Y.png)_Activity audit log entries attributed via AIRO_
 

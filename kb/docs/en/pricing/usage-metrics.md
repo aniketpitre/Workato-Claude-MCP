@@ -54,4 +54,13 @@ The following table lists each Workato asset, the metric used to measure its usa
 | [Workato GO](/en/pricing/usage-metrics/workato-go) | Seats | Measured by the number of seats assigned to end-users of Workato GO. Any assets invoked by Workato GO are measured separately, following their own usage metric. |
 | [Workflow apps](/en/pricing/usage-metrics/workflow-apps) | Seats | Measured by the number of seats assigned to end-users of Workflow apps. Any assets invoked by a Workflow app are measured separately, following their own usage metric. |
 
+### Metered and prepaid metrics
+
+Usage metrics are either metered or prepaid:
+
+- **Metered metrics**: Measure consumption of workflows, APIs, agents, and other assets at runtime. A metered metric accumulates as Workato processes activity in your workspace.
+- **Prepaid metrics**: Measure allocations for the billing period, such as seats and storage. Prepaid metrics apply at the workspace level and don't have asset-level or time-series breakdown for runtime events.
+
+Metered and prepaid metrics contribute toward the credits used, but they describe different kinds of usage. The credits used for a billing period are the sum of the credits from metered and prepaid metrics.
+
 ---

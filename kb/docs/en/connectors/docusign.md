@@ -270,6 +270,7 @@ The Docusign connector's actions and triggers call a mix of Docusign eSignature 
 | Trigger | [New document received](/en/connectors/docusign/trigger-new-document-received) | Mixed (v2.1 and v2.0) |
 | Trigger | [New recipient event](/en/connectors/docusign/trigger-new-recipient-event) | v2.1 |
 | Action | [Create draft envelope from template](/en/connectors/docusign/action-create-draft-envelope-from-template) | v2.1 |
+| Action | [Create envelope](/en/connectors/docusign/action-create-envelope) | v2.1 |
 | Action | [Create recipient view](/en/connectors/docusign/action-create-recipient-view) | v2.1 |
 | Action | [Create template](/en/connectors/docusign/action-create-template) | v2.1 |
 | Action | [Create/send document](/en/connectors/docusign/action-create-send-document) | v2.0 |

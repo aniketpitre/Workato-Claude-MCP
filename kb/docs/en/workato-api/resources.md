@@ -530,6 +530,16 @@ Base URL: `https://data-tables.workato.com`, except [Upload file](/en/workato-ap
 
 * * *
 
+## Usage and billing
+
+| Type | Resource | Description |
+| --- | --- | --- |
+| POST | [/api/v2/usage/billing\_periods](/en/workato-api/usage#billing-periods) | Retrieve billing and credit context for the current billing period(s). |
+| POST | [/api/v2/usage/total](/en/workato-api/usage#usage-totals) | Retrieve total credits for the current billing period, both metered and prepaid credits. |
+| POST | [/api/v2/usage/metrics\_metered](/en/workato-api/usage#metered-usage) | Retrieve metered usage by workspace, environment, or asset, optionally as a time series. |
+
+* * *
+
 ## Workspace collaborators
 
 | Type | Resource | Description |

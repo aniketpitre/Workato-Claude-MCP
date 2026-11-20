@@ -132,10 +132,13 @@ Go to **Agentic | HR Self Service Genie > Settings > Project properties** and [e
 | --- | --- |
 | **ApprovalWorkflow.EmployeeNotificationTriggerSchedule** | Set the cron schedule for notifying employees when their time-off requests are actioned in Workday. For example, `0 */4 * * 1-5`. |
 | **ApprovalWorkflow.ManagerNotificationTriggerSchedule** | Set the cron schedule for checking pending time-off requests and sending approval notifications to managers. For example, `0 9,17 * * 1-5`. |
+| **Base URL** | Enter the base URL of your Workday REST connection. For example, `https://wd2-impl-services1.workday.com/ccx/api`. |
 | **Delete Files Older Than in Days** | Set the number of days before temporary worker documents and HR reference letters are eligible for cleanup. For example, `5`. |
 | **Extensions.FileStorageDirectoryPath** | Enter the path of the Workato FileStorage directory that extension workflows use for worker documents and HR reference letters. For example, `/Worker Documents from Workday`. Create the directory before entering its path. Required only for worker documents and HR reference letters. |
 | **JiraServiceDesk.hr.projects** | Enter the key of the Jira Service Management HR project that the genie searches for employee tickets. For example, `HSSG`. Required only if you enable HR ticketing. |
+| **JiraServiceDesk\_BaseURL** | Enter the base URL of your Jira Service Desk connection. For example, `https://acme.atlassian.net`. Required only if you enable HR ticketing. |
 | **KB\_Name** | Enter the name of the HR knowledge base that the genie uses for policy and information retrieval. For example, `Confluence | HR`. Required only if you enable HR knowledge Q&A. |
+| **Tenant Name** | Enter the name of your Workday tenant. For example, `company_abc1`. |
 | **TimeOffBalances.RetrieveBalanceForDaysFollowing** | Set the number of days into the future for which the genie retrieves time-off balances from Workday. The default value is `90`. |
 | **TimeOffRequests.ReminderFrequencyDays** | Set the number of days between reminders for time-off requests that are awaiting action. For example, `3`. |
 | **Workday Organisation List** | Enter the Workday organization IDs that scope the retrieval and processing of time-off requests. Separate multiple IDs with commas. For example, `ORG-12345,ORG-67890`. The genie searches all organizations in Workday when this property is blank. |

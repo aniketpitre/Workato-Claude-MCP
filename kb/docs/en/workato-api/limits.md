@@ -85,6 +85,9 @@ In addition, Developer API resources have the following rate and payload quotas:
 | **Workato Identity IAM** | All | All [Workato Identity IAM](/en/workato-api/workato-identity-iam.html) endpoints | 60 requests per minute |
 | **Cross-workspace sharing** | Read | All read [Cross-workspace sharing](/en/workato-api/cross-workspace-sharing.html) endpoints | 600 requests per minute |
 | **Cross-workspace sharing** | Write | All write [Cross-workspace sharing](/en/workato-api/cross-workspace-sharing.html) endpoints | 60 requests per minute |
+| **Usage and billing** | POST | Retrieve billing periods: [/api/v2/usage/billing\_periods](/en/workato-api/usage.html#billing-periods) | 30 requests per second |
+| **Usage and billing** | POST | Retrieve usage totals: [/api/v2/usage/total](/en/workato-api/usage.html#usage-totals) | 5 requests per second |
+| **Usage and billing** | POST | Retrieve metered usage: [/api/v2/usage/metrics\_metered](/en/workato-api/usage.html#metered-usage) | 5 requests per second |
 
 > **FURTHER READING**
 > 

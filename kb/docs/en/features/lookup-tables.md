@@ -25,7 +25,7 @@ The **Lookup tables by Workato** connector enables you to create recipes that ad
 > 
 > Collaborators without access to the **Lookup tables** page can still interact with Lookup tables through the **Lookup tables by Workato** connector if the recipe is within the table's [scope](#assign-to-project).
 
-![Lookup table with timezones, times, and offsets](/assets/example-lookup-table.DFGH_K3a.png)_A Lookup table with timezones, times, and offsets_
+![Lookup table with timezones, times, and offsets](/assets/example-lookup-table.DNgCCflw.png)_A Lookup table with timezones, times, and offsets_
 
 ## Usage inspiration
 
@@ -100,7 +100,7 @@ Complete the following steps to restrict a Lookup table to a specific project:
    
 2. Select the Lookup table you plan to scope.
    
-3. Click **Available in** to open the **Update availability** dialog. ![Update Lookup table scope](/assets/specify-table-scope.DZfRgv5M.png)_Update the scope of a Lookup table_
+3. Click **Available in** to open the **Update availability** dialog. ![Update Lookup table scope](/assets/specify-table-scope.Bb0YmJCc.png)_Update the scope of a Lookup table_
    
 4. Use the **Choose a project** drop-down menu to restrict the Lookup table's access to a specific project.
    
@@ -142,11 +142,11 @@ Complete the following steps to create a new Lookup table:
    
 3. Click **Edit** (pencil icon) to enter a name for the Lookup table, and click **✓ Save** to save your changes.
    
-4. Click **Import CSV** to upload a CSV file with a header row that defines the column names and structure for the Lookup table, or click **Add entries manually** to add entries directly.
+4. Click **Import CSV** to upload a CSV file with a header row that defines the column names and structure for the Lookup table, or click **+** to add entries directly.
    
 5. Click **✓ Save** when finished.
    
-   ![Save button highlighted in lookup table entry](/assets/save-button.CsQn4iQo.png)
+   ![Save button highlighted in lookup table entry](/assets/save-button.Cr4WvJ28.png)_Click Save_
    
 
 * * *
@@ -187,26 +187,26 @@ Complete the following steps to import a CSV file into a Lookup table:
 
 Complete the following steps to add a new entry manually:
 
-1. Click **Add entry**:
+1. Click **+**.
    
-   ![Add entry button in the Lookup tables page](/assets/add-entry-button.BN2XV0fm.png)
+   ![Plus icon in the Lookup tables page](/assets/add-entry-button.4G84ukGj.png)_Click plus to add an entry_
    
 2. Enter values in each column of the new row.
    
 3. Click **✓ Save** when finished.
    
-   ![Save button highlighted in Lookup table entry](/assets/save-button.CsQn4iQo.png)
+   ![Save button highlighted in Lookup table entry](/assets/save-button.Cr4WvJ28.png)_Click Save_
    
 
 **Edit entries manually**
 
 Complete the following steps to edit an existing entry:
 
-1. Hover over the last column in the entry row and click **Edit** (pencil icon) when it appears.
+1. Select the cell to edit.
    
-   ![Edit entry button in a Lookup table entry](/assets/edit-entry.BvXdV1ZU.png)
+   ![Lookup table entry in edit mode](/assets/edit-entry.B5bd9hMz.png)_Click the cell to edit_
    
-2. Update the entry row's values.
+2. Update the cell's value.
    
 3. Click **✓ Save** when finished.
    

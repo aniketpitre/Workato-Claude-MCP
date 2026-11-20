@@ -1,6 +1,6 @@
 # AIRO
 
-19 pages. Paths are relative to the repository root.
+25 pages. Paths are relative to the repository root.
 
 
 ## AIRO
@@ -11,7 +11,16 @@
 - **AIRO - Chat with AIRO** - `kb/docs/en/airo/chat.md` - Chat with AIRO from anywhere in Workato. AIRO retains conversation context across pages.
 - **AIRO - Homepage** - `kb/docs/en/airo/homepage.md` - The AIRO homepage is the default landing page and includes an input bar, active incidents, recent work, and shortcuts for creating assets.
 - **AIRO - What AIRO knows** - `kb/docs/en/airo/knowledge-bases.md` - AIRO uses your workspace assets and Workato platform knowledge to answer questions.
-- **AIRO - AIRO MCP server** - `kb/docs/en/airo/mcp.md` - Connect an MCP-compatible AI client to the AIRO MCP server with OAuth 2.0 or an API token to build and manage Workato assets in natural language.
+- **AIRO - AIRO Connect** - `kb/docs/en/airo/mcp.md` - AIRO Connect brings AIRO to MCP-compatible AI clients: authentication options, access boundaries, and what you can build and manage from your AI client.
+
+## AIRO Connect
+
+- **AIRO - Connect an MCP client to AIRO Connect** - `kb/docs/en/airo/mcp/connect.md` - Connect Claude Code, Claude Desktop, Cursor, ChatGPT, or Codex CLI to AIRO Connect with OAuth 2.0 or an API token.
+- **AIRO - Set up AIRO Connect in ChatGPT** - `kb/docs/en/airo/mcp/connect/chatgpt.md` - Set up AIRO Connect in ChatGPT with OAuth 2.0.
+- **AIRO - Set up AIRO Connect in Claude Code** - `kb/docs/en/airo/mcp/connect/claude-code.md` - Set up AIRO Connect in Claude Code with OAuth 2.0 or an API token.
+- **AIRO - Set up AIRO Connect in Claude Desktop** - `kb/docs/en/airo/mcp/connect/claude-desktop.md` - Set up AIRO Connect in Claude Desktop with OAuth 2.0 or an API token.
+- **AIRO - Set up AIRO Connect in Codex CLI** - `kb/docs/en/airo/mcp/connect/codex-cli.md` - Set up AIRO Connect in Codex CLI with OAuth 2.0 or an API token.
+- **AIRO - Set up AIRO Connect in Cursor** - `kb/docs/en/airo/mcp/connect/cursor.md` - Set up AIRO Connect in Cursor with OAuth 2.0 or an API token.
 
 ## Blueprints
 
