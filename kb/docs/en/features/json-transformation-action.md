@@ -9223,7 +9223,7 @@ Complete the following steps to configure Jira as your data pipeline source.
    
 9. Search or browse the list of available Jira objects, select the objects you plan to sync, and click **Add**. Refer to [Supported objects](#supported-objects) for more information.
    
-   ![Select objects](/assets/select-objects-jira.Gng420ED.png)_Select objects_
+   ![Select objects](/assets/select-objects-jira.CFRYDiS5.png)_Select objects_
    
 10. Review and customize the schema for each selected object. When you select an object, the pipeline automatically fetches its schema, including standard fields and custom fields configured in your Jira instance, to ensure the destination matches the source.
     

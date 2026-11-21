@@ -1,5 +1,14 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-21T11:15:22+00:00 (incremental)
+
+- Pages: 4573 | added 0 | changed 4 | removed 0
+- Changed:
+  - https://docs.workato.com/en/agentic/agent-studio/code-interpreter.md
+  - https://docs.workato.com/en/ai-gateway/access-keys.md
+  - https://docs.workato.com/en/features/json-transformation-action.md
+  - https://docs.workato.com/en/on-prem/agents/versions.md
+
 ## 2026-11-20T11:49:27+00:00 (incremental)
 
 - Pages: 4573 | added 7 | changed 19 | removed 0

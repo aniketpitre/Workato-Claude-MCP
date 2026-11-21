@@ -25,40 +25,56 @@ Complete the following steps to create an access key:
    
 3. Enter a descriptive name in the **Name** field.
    
-   ![Create key](/assets/create-key.CLbfkaq-.png)_Create key_
+   ![Create key](/assets/create-key.D7zOoMsF.png)_Create key_
    
-4. Use the **Route(s)** drop-down menu to select the routes this key can use, then click **OK**. Click **Select all** to select every route. Manage routes in **Model Gateway > Routes**.
+4. Use the **Location** drop-down menu to select the project where you plan to store this key.
    
-5. Optional. Use the **Policy** drop-down menu to select a policy for this key. Click **Create policy** to create a policy without leaving the dialog, or manage policies in **Model Gateway > Policies**. Refer to [Create a policy](/en/ai-gateway/policies#create-a-policy) for the field descriptions.
+5. Optional. Use the **Assigned to** drop-down menu to assign the key to the person who uses it. Leave the field empty for keys that multiple users or services share.
+   
+   **Workato Identity user**
+   
+   Select a [Workato Identity](/en/workato-identity) user to link the key to that user. Model Gateway deactivates the key when the user leaves the workspace.
+   
+   To link the key to a user who isn't listed, click **Add them as an end user**. This opens **Workspace admin > Access control > End users**, where you can [add an end user](/en/workato-identity/add-end-user-manually).
+   
+   **Email only**
+   
+   Enter an email address and select it under **Email only** to record who uses the key without linking it. The key stays active when the person leaves.
+   
+   Click **X** to clear the selection.
+   
+6. Use the **Route(s)** drop-down menu to select the routes this key can use, then click **OK**. Click **Select all** to select every route. Manage routes in **Model Gateway > Routes**.
+   
+7. Optional. Use the **Policy** drop-down menu to select a policy for this key. Click **Create policy** to create a policy without leaving the dialog, or manage policies in **Model Gateway > Policies**. Refer to [Create a policy](/en/ai-gateway/policies#create-a-policy) for the field descriptions.
    
    > **SHARED USAGE**
    > 
    > All users who share an access key contribute to the same rate limits and token limits. Issue separate access keys for teams or applications that need independent limits.
    
-6. Optional. Enter one or more tags in the **Tags** field. Rules on a rule-based route can match on the tags assigned to a key.
+8. Optional. Enter one or more tags in the **Tags** field. Rules on a rule-based route can match on the tags assigned to a key.
    
-7. Optional. Click **Add parameter** to add a key-value pair to this access key, then enter a **Parameter name** and a **Value**. Rules on a rule-based route can match on these parameters to differentiate requests that come from this key. Click **Clear** to remove a parameter.
+9. Optional. Click **Add parameter** to add a key-value pair to this access key, then enter a **Parameter name** and a **Value**. Rules on a rule-based route can match on these parameters to differentiate requests that come from this key. Click **Clear** to remove a parameter.
    
-8. Click **Create**.
-   
-9. Copy the generated key and store it in a safe place. Click **Copy**, then click **Close**.
-   
-   The **Access key generated** dialog also displays the URL to call and the request body format for the OpenAI-compatible API. Refer to [Test a route](/en/ai-gateway/test-route) for the Anthropic-compatible API. Pass the route ID as the `model` value to select which route serves the request:
-   
-   ```json
-   {
-     "model": "<route-id>"
-   }
-   ```
-   
-   Refer to [Test a route](/en/ai-gateway/test-route) for a full example request.
-   
-   > **THE KEY IS DISPLAYED ONCE**
-   > 
-   > You can't view the generated key again after you close the dialog. Refresh the key to generate a new value if you lose it.
-   
+10. Click **Create**.
+    
+11. Copy the generated key and store it in a safe place. Click **Copy**, then click **Close**.
+    
+    The **Access key generated** dialog also displays the URL to call and the request body format for the OpenAI-compatible API. Refer to [Test a route](/en/ai-gateway/test-route) for the Anthropic-compatible API. Pass the route ID as the `model` value to select which route serves the request:
+    
+    ```json
+    {
+      "model": "<route-id>"
+    }
+    ```
+    
+    Refer to [Test a route](/en/ai-gateway/test-route) for a full example request.
+    
+    > **THE KEY IS DISPLAYED ONCE**
+    > 
+    > You can't view the generated key again after you close the dialog. Refresh the key to generate a new value if you lose it.
+    
 
-The access key displays in the **Keys** list with its routes, policy, creation date, and a masked key value. You can filter the list by route and by policy.
+The access key displays in the **Keys** list with its routes, policy, creation date, and a masked key value. The assigned email address displays under the key name, with a person icon for a linked Workato Identity user or an envelope icon for an email-only assignment. Use the **Search keys** field to find a key by name.
 
 ## Edit an access key
 
@@ -70,7 +86,7 @@ Complete the following steps to edit an access key:
    
    ![Edit key](/assets/edit-key.KOWYOC9J.png)_Edit key_
    
-3. Update the **Name**, **Route(s)**, **Policy**, **Tags**, or **Parameters** fields, then click **Save**.
+3. Update the **Name**, **Assigned to**, **Route(s)**, **Policy**, **Tags**, or **Parameters** fields, then click **Save**.
    
 
 ## Refresh an access key

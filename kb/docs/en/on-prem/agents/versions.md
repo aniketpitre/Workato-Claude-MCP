@@ -13,6 +13,12 @@ Learn more about how to [upgrade your OPA version](/en/on-prem/agents/upgrade).
 
 * * *
 
+> **JAVA BASE64 DECODER**
+> 
+> The [Java Base64 decoder vulnerability (CVE-2026-114938)](https://adoptium.net/news/2026/11/temurin-november-2026-cspu-java4shell) affects the Java Runtime Environment (JRE) in all supported OPA versions. This could allow arbitrary code execution and memory corruption on x86-64 hosts with AVX-512 VBMI support. Communication between OPA and Workato isn't affected, since OPA authenticates the Workato gateway using [Workato's private certificate authority](/en/on-prem#overview) instead of a public CA.
+> 
+> Refer to the [Workato Trust Center](https://trust.workato.com/) for more information.
+
 > **VERSION DEPRECATION**
 > 
 > On-prem agent versions older than 2.19.0 were sunset on January 8, 2026.
@@ -31,6 +37,12 @@ _Released November 11, 2026_
 ### v34.0
 
 _Released October 30, 2026_
+
+> **EMUDHRA CA KEY WEAKNESS**
+> 
+> The [eMudhra CA key weakness](https://emudhra.com/en/post/certificate-security-incident) affects a JRE trust store included in OPA [v33.1](#v33-1) and earlier. This could allow impersonation of HTTPS/TLS endpoints OPA connects to. Communication between OPA and Workato isn't affected, since OPA authenticates the Workato gateway using [Workato's private certificate authority](/en/on-prem#overview) instead of a public CA. [Upgrade your agents](/en/on-prem/agents/upgrade) to v34.0 or later to resolve the issue.
+> 
+> Refer to the [Workato Trust Center](https://trust.workato.com/) for more information.
 
 - **Solace**: New Message batch trigger, added manual ACK for Receive Messages Batch action.
 - **MCP**: Added MCP access via OPA.
