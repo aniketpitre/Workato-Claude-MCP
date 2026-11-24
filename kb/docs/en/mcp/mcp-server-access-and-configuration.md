@@ -55,22 +55,7 @@ Complete the following steps to access an MCP server-level dashboard:
 
 ### View MCP server logs
 
-You can view MCP server logs in the [Workato Logging Service](/en/features/logging-service) and stream logs to an external destination using [audit log streaming](/en/features/activity-audit-log-streaming-destinations). Logs include the request IP address, the ID of the user who made the request, and the MCP server creation timestamp.
-
-Log streaming supports the following event types:
-
-- Job summary
-- Job details, including input and output lines
-- User activity with an audit trail of all user, programmatic, and AIRO-initiated events
-- APIM logs from all API endpoints hosted on Workato
-- Workato log events from Workato assets such as:
-  - MCP tool calls
-  - Data pipeline runs
-  - MFT/SFTP transfers
-  - OPAs
-  - Webhook errors
-  - Logger by Workato logs
-- Genie conversation events from genie interactions
+You can view MCP server logs natively in the [Workato Logging Service](/en/features/logging-service). Logs include caller context, such as end user identity, the MCP server name, the outcome, and input and output content.
 
 Complete the following steps to access your MCP server logs:
 
@@ -80,6 +65,30 @@ Complete the following steps to access your MCP server logs:
    
 3. Click the **Log type** filter, select **MCP server**, and click **Apply** to display only MCP server logs.
    
+   ![MCP server log](/assets/mcp-server-log.Bz3K4XVl.png)_MCP server log_
+   
+
+### MCP server log streaming to an external destination
+
+You can stream MCP server logs to an external destination, such as Datadog. MCP log data is wrapped within the `data` object when streamed to an external destination. For example:
+
+```json
+{
+  "data": "{\"message_type\":\"mcp_method\",\"outcome\":\"success\",\"timestamp\":\"2026-11-19T03:58:34.35658828Z\",\"environment_id\":8633,\"auth_method\":\"hashed_token\",\"ip_address\":\"115.66.146.108\",\"user_agent\":\"Python-urllib/3.9\",\"request_id\":\"1f2ff442-a5a9-4933-bb72-132ef808d619\",\"server_name\":\"Acme Order Assistant\",\"mcp_server_id\":\"5592\",\"transport\":\"streamable_http\",\"token_id\":4174,\"token_name\":\"claude-demo\",\"duration_seconds\":2.001542076,\"details\":{\"direction\":\"server_to_client\",\"json_rpc_id\":\"208\",\"method\":\"tools/call\",\"request\":{\"params\":{\"arguments\":{\"order_id\":\"O-50025\"},\"name\":\"get_order_status\"}},\"response\":{\"content\":[{\"text\":\"{\\\"result\\\":{\\\"in_stock\\\":true,\\\"order_id\\\":\\\"O-50025\\\",\\\"status\\\":\\\"placed\\\",\\\"total\\\":1200.0}}\",\"type\":\"text\"}],\"isError\":false}}}",
+  "date_time": "2026-11-19T03:58:34.356588280Z",
+  "flow_id": 316343,
+  "hostname": "workato-cloud",
+  "job_handle": "j-AcMf46K6-hooohN-B8",
+  "log_level": "INFO",
+  "service": "ipaas",
+  "source": "apim-mcp-gateway",
+  "user_id": 8633
+}
+```
+
+You can use `source: apim-mcp-gateway` to filter information. Refer to [Audit log streaming](/en/features/activity-audit-log-streaming) for more information.
+
+![MCP server log streamed to an external destination](/assets/mcp-server-log-datadog-destination.CPtrRNGS.png)_MCP server log streamed to an external destination_
 
 ## Quotas
 

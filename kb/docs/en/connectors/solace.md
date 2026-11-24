@@ -61,7 +61,7 @@ Complete the following steps to set up a basic authentication connection to Sola
        
     2. Enter the credentials for that SEMP endpoint in the **SEMP user name** and **SEMP password** fields.
        
-12. Optional. Expand the **Additional connection properties** section and click **Add parameter** to pass extra Solace session properties to the broker. For example, `JCSMPProperties.REAPPLY_SUBSCRIPTIONS`.
+12. Optional. Expand the **Additional connection properties** section and click **Add parameter** to pass extra Solace session properties to the broker. For example, `reapply_subscriptions`. Refer to the Solace [JCSMP Properties documentation](https://docs.solace.com/API-Developer-Online-Ref-Documentation/java/constant-values.html#com.solacesystems.jcsmp.JCSMPProperties) for available constant field values.
     
 13. Click **Connect**.
     
@@ -98,7 +98,7 @@ Complete the following steps to set up an OAuth 2.0 connection to Solace in Work
        
     2. Enter the credentials for that SEMP endpoint in the **SEMP user name** and **SEMP password** fields.
        
-13. Optional. Expand the **Additional connection properties** section and click **Add parameter** to pass extra Solace session properties to the broker. For example, `JCSMPProperties.REAPPLY_SUBSCRIPTIONS`.
+13. Optional. Expand the **Additional connection properties** section and click **Add parameter** to pass extra Solace session properties to the broker. For example, `reapply_subscriptions`. Refer to the Solace [JCSMP Properties documentation](https://docs.solace.com/API-Developer-Online-Ref-Documentation/java/constant-values.html#com.solacesystems.jcsmp.JCSMPProperties) for available constant field values.
     
 14. Click **Connect**.
 

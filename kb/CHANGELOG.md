@@ -1,5 +1,19 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-24T13:51:38+00:00 (incremental)
+
+- Pages: 4575 | added 2 | changed 6 | removed 0
+- Added:
+  - https://docs.workato.com/en/airo/build/data-tables.md
+  - https://docs.workato.com/en/airo/build/genies.md
+- Changed:
+  - https://docs.workato.com/en/airo/mcp.md
+  - https://docs.workato.com/en/connectors/solace.md
+  - https://docs.workato.com/en/connectors/solace/new-message-batch-trigger.md
+  - https://docs.workato.com/en/connectors/solace/new-message-queue-trigger.md
+  - https://docs.workato.com/en/features/activity-audit-log-streaming.md
+  - https://docs.workato.com/en/mcp/mcp-server-access-and-configuration.md
+
 ## 2026-11-21T11:15:22+00:00 (incremental)
 
 - Pages: 4573 | added 0 | changed 4 | removed 0

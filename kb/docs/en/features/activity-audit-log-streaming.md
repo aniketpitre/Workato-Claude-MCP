@@ -32,6 +32,23 @@ The file size quota for logs is 40 MB.
 
 When streaming full job details, the system does not send step-specific log lines if the overall file size exceeds 40 MB. If a file exceeds 40 MB, the system still sends contextual job information, such as `user_id`, `recipe_id`, and `time_executed`. However, the “lines” column displays the default text, `Log lines exceed size limit`.
 
+## Audit log streaming event types
+
+Log streaming supports the following event types:
+
+- Job summary
+- Job details, including input and output lines
+- User activity with an audit trail of all user, programmatic, and AIRO-initiated events
+- APIM logs from all API endpoints hosted on Workato
+- Workato log events from Workato assets such as:
+  - MCP tool calls
+  - Data pipeline runs
+  - MFT/SFTP transfers
+  - OPAs
+  - Webhook errors
+  - Logger by Workato logs
+- Genie conversation events from genie interactions
+
 ## Set up audit log streaming
 
 1. Sign in to your Workato account.

@@ -1,6 +1,6 @@
 # AIRO
 
-25 pages. Paths are relative to the repository root.
+27 pages. Paths are relative to the repository root.
 
 
 ## AIRO
@@ -32,6 +32,8 @@
 ## Build with AIRO
 
 - **AIRO - Build custom connectors with AIRO** - `kb/docs/en/airo/build/custom-connectors.md` - Use AIRO to build, review, and release Workato custom connectors, either directly in Workato or through an MCP client such as Claude Code, Claude Desktop, or Cursor.
+- **AIRO - Build data tables with AIRO Connect** - `kb/docs/en/airo/build/data-tables.md` - Create data tables and define their schemas with AIRO Connect.
+- **AIRO - Build genies with AIRO** - `kb/docs/en/airo/build/genies.md` - Create a genie, its knowledge base, and its skills by describing them to AIRO, in Workato or through an MCP client.
 - **AIRO - Build recipes with AIRO** - `kb/docs/en/airo/build/recipes.md` - Describe a use case in plain language and AIRO builds or modifies the recipe in the editor.
 
 ## Chat with AIRO

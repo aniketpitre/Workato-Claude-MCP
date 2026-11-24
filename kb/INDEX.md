@@ -24,6 +24,7 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 | Accelerators | 38 | [index/accelerators.md](index/accelerators.md) |
 | AgentX Support | 36 | [index/agentx-support.md](index/agentx-support.md) |
 | Use cases | 34 | [index/use-cases.md](index/use-cases.md) |
+| AIRO | 27 | [index/airo.md](index/airo.md) |
 | MCP | 27 | [index/mcp.md](index/mcp.md) |
 | Embedded | 27 | [index/embedded.md](index/embedded.md) |
 | Troubleshooting | 27 | [index/troubleshooting.md](index/troubleshooting.md) |
@@ -31,7 +32,6 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 | CI/CD and operations | 26 | [index/ci-cd-and-operations.md](index/ci-cd-and-operations.md) |
 | Insights | 26 | [index/insights.md](index/insights.md) |
 | Workato Expression Language | 26 | [index/workato-expression-language.md](index/workato-expression-language.md) |
-| AIRO | 25 | [index/airo.md](index/airo.md) |
 | Workato GO | 19 | [index/workato-go.md](index/workato-go.md) |
 | Billing and usage | 19 | [index/billing-and-usage.md](index/billing-and-usage.md) |
 | Event streams | 18 | [index/event-streams.md](index/event-streams.md) |

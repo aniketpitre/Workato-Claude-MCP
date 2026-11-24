@@ -47,7 +47,7 @@ The following categories describe the work AIRO Connect supports. Available capa
 | Custom connectors | Build, edit, and save custom connector SDK code |
 | Genies and knowledge bases | Create and configure Genies, manage knowledge bases, and assign knowledge sources |
 | Blueprints and assets | Work with blueprints, asset maps, and asset metadata |
-| Data | Create and manage data table schema |
+| Data | Create and manage data table schema, and query records |
 | Jobs and tests | Inspect job history and manage test cases |
 
 You can prompt your AI client to call `docs_get` for current tools and task guidance.
@@ -74,6 +74,8 @@ Set up a genie and connect it to relevant knowledge bases so it can answer domai
 Create a new genie called "Sales Intelligence" and assign the CRM knowledge base to it.
 ```
 
+Refer to [Build genies with AIRO](/en/airo/build/genies) for the full workflow, including building a knowledge base and skills for the genie to use.
+
 ### Build an MCP server
 
 Create an MCP server from your workspace assets so other AI clients can connect to your tools.
@@ -97,6 +99,8 @@ Create a data table and define its schema.
 ```
 Create a data table to store approver thresholds by region.
 ```
+
+Refer to [Build data tables with AIRO Connect](/en/airo/build/data-tables) for the full workflow, including schema updates and querying records.
 
 ### Build a custom connector
 
