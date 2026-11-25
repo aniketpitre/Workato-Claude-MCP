@@ -101,7 +101,7 @@ You can also edit any steps manually.
 
 ![AIRO chat panel with a change request typed in the message field](/assets/refine-the-recipe.DLZzU8Dq.gif)_Ask AIRO to make a change in the chat at any point_
 
-## Manage conversations
+## Switch between chat sessions
 
 Select **New chat** to start a new session. Your recipe content is preserved, but AIRO loses context from the previous session. Select **Chat history** to switch back to an earlier session.
 

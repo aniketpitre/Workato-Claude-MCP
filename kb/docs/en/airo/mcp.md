@@ -43,7 +43,7 @@ The following categories describe the work AIRO Connect supports. Available capa
 | Category | Typical work |
 | --- | --- |
 | Recipes | Create, edit, search, and manage recipes, including step-level operations, field mapping, conditions, and connections |
-| Skills and MCP | Convert recipes to skills and create or manage MCP servers |
+| Skills and MCP servers | Convert recipes to skills and create MCP servers |
 | Custom connectors | Build, edit, and save custom connector SDK code |
 | Genies and knowledge bases | Create and configure Genies, manage knowledge bases, and assign knowledge sources |
 | Blueprints and assets | Work with blueprints, asset maps, and asset metadata |
@@ -83,6 +83,8 @@ Create an MCP server from your workspace assets so other AI clients can connect 
 ```
 Build an MCP server called "Sales Tools" using the lead enrichment and deal scoring skills from the Sales Automation project.
 ```
+
+Refer to [Build MCP servers with AIRO](/en/airo/build/mcp-servers) for the full workflow, including building the skills it exposes.
 
 ### Investigate job failures
 

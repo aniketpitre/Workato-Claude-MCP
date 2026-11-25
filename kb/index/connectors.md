@@ -1,6 +1,6 @@
 # Connectors
 
-2998 pages. Paths are relative to the repository root.
+3003 pages. Paths are relative to the repository root.
 
 
 ## Connectors
@@ -2123,6 +2123,11 @@
 - **Creatomate - Update record action** - `kb/docs/en/connectors/creatomate/update-record-action.md` - The Update record action enables you to update a template by ID in Creatomate.
 - **Workato connectors - Datadog** - `kb/docs/en/connectors/datadog.md` - The Datadog connector connects your recipes with real-time metrics, traces, and logs from Datadog.
 - **Workato connectors - Datadog New event trigger** - `kb/docs/en/connectors/datadog/new-event-trigger.md` - The New event trigger uses webhooks to monitor Datadog for events in real-time.
+- **Deepgram** - `kb/docs/en/connectors/deepgram.md` - Connect Deepgram to Workato to transcribe audio, analyze text, generate speech, and list speech-to-text and text-to-speech models.
+- **Deepgram - Analyze text action** - `kb/docs/en/connectors/deepgram/analyze-text-action.md` - Analyze plain text or a text URL in Deepgram to summarize it and detect topics, intents, and sentiment.
+- **Deepgram - Generate speech action** - `kb/docs/en/connectors/deepgram/generate-speech-action.md` - Convert text to speech audio in Deepgram with an Aura voice model and the audio format you choose.
+- **Deepgram - List models action** - `kb/docs/en/connectors/deepgram/list-models-action.md` - List the speech-to-text and text-to-speech models available in Deepgram, with the option to include outdated versions.
+- **Deepgram - Transcribe audio action** - `kb/docs/en/connectors/deepgram/transcribe-audio-action.md` - Transcribe pre-recorded audio or video in Deepgram from a media URL or file contents, with optional summaries, topics, intents, and sentiment.
 - **Discord** - `kb/docs/en/connectors/discord.md` - Connect Discord to Workato to automate workflows with your communications platform.
 - **Discord - Add Guild member role action** - `kb/docs/en/connectors/discord/add-guild-member-role-action.md` - The Add Guild member role action assigns a role to a guild member in Discord.
 - **Discord - Create record action** - `kb/docs/en/connectors/discord/create-record-action.md` - The Create record action creates a record in Discord.

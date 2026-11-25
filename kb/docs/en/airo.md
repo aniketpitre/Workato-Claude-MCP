@@ -144,15 +144,6 @@ Refer to [Acumen](/en/airo/acumen) to learn how it monitors your workspace, acce
 
 ![Manage, monitor, and optimize with Acumen](/assets/ask-acumen-about-errors.DPD5MOUl.png)_Manage, monitor, and optimize with Acumen_
 
-## See AIRO in action
-
-Browse examples of AIRO building automations from a single request.
-
-- Refer to [Declutter your inbox](/en/airo/usage-inspiration/declutter-inbox) to sort a cluttered inbox into Slack alerts and labeled folders.
-- Refer to [Automate your to-do list](/en/airo/usage-inspiration/automate-to-do-list) to turn meeting notes into to-do items and a Slack rundown.
-- Refer to [Build a form-to-Slack alert](/en/airo/usage-inspiration/form-to-slack-alert) to get notified in Slack the moment someone submits a form.
-- Refer to [Find unused assets](/en/airo/usage-inspiration/find-unused-assets) to ask AIRO what's idle in your workspace.
-
 ## Quotas
 
 Each workspace has its own AIRO token budget per model, computed over a rolling 60-second window. When a workspace exceeds its budget, subsequent requests are throttled and users may see up to a 30-second delay in AIRO responses until the budget refreshes.

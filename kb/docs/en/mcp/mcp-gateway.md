@@ -206,7 +206,7 @@ MCP supports design-time governance with [AIRO](/en/airo). This enables you to i
 
 Complete the following steps to use design-time governance with AIRO:
 
-1. [Upload a playbook to AIRO](/en/airo/knowledge/manage#upload-playbooks) with MCP server governance guidelines. Alternatively, you can attach the playbook to a new AIRO chat.
+1. [Add a playbook to AIRO](/en/airo/knowledge/manage#upload-playbooks) with MCP server governance guidelines. Alternatively, you can attach the playbook to a new AIRO chat.
    
    ![Upload MCP governance guidelines to AIRO](/assets/mcp-governance-upload.Dcw3vL4s.png)_Upload MCP governance guidelines to AIRO_
    

@@ -1,13 +1,13 @@
 ---
 url: 'https://docs.workato.com/en/airo/knowledge/manage.md'
 description: >-
-  Upload, preview, search, and delete playbooks that AIRO references when
-  answering questions.
+  Add, view, search, and delete the playbooks AIRO references when answering
+  questions.
 ---
 
 # AIRO Playbooks
 
-You can upload playbooks to provide AIRO with context on your organization's policies, standards, and best practices.
+You can add playbooks to provide AIRO with context on your organization's policies, standards, and best practices.
 
 ![The AIRO Playbooks page](/assets/manage-knowledge.DIKbulgF.png)_The AIRO Playbooks page_
 
@@ -15,9 +15,9 @@ You can upload playbooks to provide AIRO with context on your organization's pol
 > 
 > AIRO Playbooks is available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
 
-## Upload playbooks
+## Add a playbook
 
-Complete the following steps to upload playbooks:
+Complete the following steps to add a playbook:
 
 1. Go to **Workspace admin > Settings > Workato AI**.
    
@@ -36,7 +36,7 @@ Complete the following steps to upload playbooks:
 5. Click **Done** to upload the playbook. The playbook appears in the **Playbook** table with a **Pending** status while AIRO processes it. AIRO can reference the playbook in chat after the status changes to **Ready**.
    
 
-## Preview a playbook
+## View a playbook
 
 Click a playbook name to view its details. The panel shows the file size, when it was uploaded, and when AIRO last indexed it.
 
@@ -45,7 +45,7 @@ The **Document body** section shows the content AIRO extracted from your playboo
 - **Fullscreen**: Click the fullscreen icon to read the full document body.
 - **Search**: Type a search term in the **Search document body** field to search within the document body. Enter at least 3 characters to generate results.
 
-![Preview a playbook in the side panel](/assets/preview-document.HUraBPvC.png)_Preview a playbook in the side panel_
+![View a playbook in the side panel](/assets/preview-document.HUraBPvC.png)_View a playbook in the side panel_
 
 ## Delete a playbook
 

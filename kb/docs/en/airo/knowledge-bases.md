@@ -32,7 +32,7 @@ Supported file formats include CSV, DOC, DOCX, and PDF. The maximum file size is
 
 AIRO prioritizes company-specific knowledge over general Workato documentation when the two conflict.
 
-Refer to [AIRO Playbooks](/en/airo/knowledge/manage) to upload, preview, and delete playbooks.
+Refer to [AIRO Playbooks](/en/airo/knowledge/manage) to add, view, and delete playbooks.
 
 ## Workspace asset knowledge
 

@@ -13,7 +13,7 @@ Model Gateway stores your Fireworks AI API key in a [provider](/en/ai-gateway/pr
 
 > **FEATURE AVAILABILITY**
 > 
-> Model Gateway is available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
+> Model Gateway is available to select customers. Contact your Customer Success Representative to confirm whether it is available to you.
 
 ## Prerequisites
 

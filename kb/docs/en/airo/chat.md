@@ -17,7 +17,7 @@ Press Shift+Enter to insert a line break without sending, so you can write a mul
 
 ![AIRO in the sidebar](/assets/button.507rxgrO.png)_AIRO in the sidebar_
 
-## Context-aware conversations
+## What context does AIRO have?
 
 AIRO automatically understands your context based on what you're currently viewing or working on.
 
@@ -29,30 +29,22 @@ Examples of conversations you can have with AIRO include:
 
 ![Context-aware conversations](/assets/context-aware-conversations.Dm8_rvqe.png)_Context-aware conversations_
 
-## Chat persists across the platform
+You can continue your conversation as you navigate between pages. For example, you can start on the homepage, open a project, and navigate to the recipe editor without losing your conversation context. This lets you ask questions such as "Why is this failing?" without re-explaining what "this" refers to.
 
-Your conversation continues as you move between pages. You can start on the homepage, navigate to a project, then jump to a recipe editor while keeping your chat thread active.
-
-AIRO automatically creates section separators when you navigate to new pages and send messages. These appear as timestamped headers that help you track what you discussed and when.
-
-This lets AIRO understand what "this" refers to when you ask questions like "Why is this failing?" without re-explaining. The result is natural conversations about your work with a clear record of your workflows.
+AIRO creates timestamped section separators when you navigate to a new page and send a message, so you can track what you discussed and where.
 
 ![Chat persists across the platform](/assets/chat-persistence.Ch-aa_6v.png)_Chat persists across the platform_
 
-## Manage multiple conversations
+## When to start a separate chat
 
-You can create separate chats to keep different topics organized. Click **\+ New chat** (or press A+I) to start a fresh conversation with its own context and history. By default, one conversation continues across all your Workato tabs, but you can switch between chats as needed.
-
-Start a new chat when:
+By default, one conversation continues across all your Workato tabs. Separate chats each keep their own context and history, which helps when you're:
 
 - Working on different projects simultaneously
 - Exploring different solutions to the same problem
 - Learning about new features while troubleshooting existing work
 - Building multiple unrelated assets
 
-This keeps your conversation history organized and makes it easier to find specific discussions later.
-
-## When AIRO is processing
+## What happens while AIRO works?
 
 While AIRO works on a request, it displays an "AIRO is working..." message. You can't send another message in this conversation until AIRO responds, but you can:
 
@@ -86,11 +78,13 @@ AIRO organizes information such as job success and failure counts or usage break
 
 ![AIRO chat response showing a 90-day usage summary formatted as headings and tables.](/assets/acumen-usage.lX4wk2X9.png)_A 90-day usage summary displayed as headings and tables in chat_
 
-Assets created by AIRO include a direct link, so you can open a [new recipe](/en/airo/build/recipes), [generated blueprint](/en/airo/blueprints/create), or other asset from the conversation.
+## Build assets in chat
 
 AIRO asks for any information it needs directly in chat, such as [which connection to use](/en/airo/build/recipes#connect-your-apps) for each app in a build.
 
-You can review the work before committing to it—for example, by checking [a diff of recipe changes](/en/airo/build/recipes#track-what-airo-changed) or reviewing [the generated blueprint](/en/airo/blueprints/create#generate-your-blueprint) before building its assets.
+Assets AIRO creates include a direct link, so you can open a [new recipe](/en/airo/build/recipes), [generated blueprint](/en/airo/blueprints/create), or other asset from the conversation.
+
+You can review the work before committing to it. For example, check [a diff of recipe changes](/en/airo/build/recipes#track-what-airo-changed) or review [the generated blueprint](/en/airo/blueprints/create#generate-your-blueprint) before building its assets.
 
 ## Upload files in chat
 

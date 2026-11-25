@@ -283,6 +283,14 @@ Base URL: `https://data-tables.workato.com`, except [Upload file](/en/oem/oem-ap
 | PUT | [/api/managed\_users/:managed\_user\_id/folders/:folder\_id](/en/oem/oem-api/folders#update-folder) | Update a folder in a customer workspace. |
 | DELETE | [/api/managed\_users/:managed\_user\_id/folders/:folder\_id](/en/oem/oem-api/folders#delete-folder) | Delete a folder in a customer workspace. |
 
+## Insights
+
+| Type | Resource | Description |
+| --- | --- | --- |
+| GET | [/api/v2/managed\_users/:managed\_user\_id/insights/tables](/en/oem/oem-api/insights#list-insights-schema-tables-in-a-customer-workspace) | List the Insights tables available in a customer workspace. |
+| POST | [/api/v2/managed\_users/:managed\_user\_id/insights/schema](/en/oem/oem-api/insights#get-insights-table-columns-in-a-customer-workspace) | Return the columns of named Insights tables in a customer workspace. |
+| POST | [/api/v2/managed\_users/:managed\_user\_id/insights/query](/en/oem/oem-api/insights#execute-an-insights-sql-query-in-a-customer-workspace) | Run a read-only SQL query in a customer workspace and return the result as CSV or JSON. |
+
 ## Jobs
 
 | Type | Resource | Description |

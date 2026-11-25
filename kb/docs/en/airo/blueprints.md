@@ -9,32 +9,25 @@ description: >-
 
 Blueprints map business requirements to the Workato assets a solution needs. You can start with a complete requirements document, such as a product requirements document or business requirements document, or with a high-level concept, and AIRO works with you to fill in gaps and refine your requirements.
 
-## How it works
-
-AIRO analyzes your requirements and generates a blueprint with the assets it identified for the solution. You can explore each asset in the blueprint to understand its purpose and build it with AIRO's guidance and Workato best practices.
+AIRO analyzes your requirements and generates a blueprint that identifies the assets your solution needs. The blueprint follows Workato best practices and helps you understand the project requirements before you build any assets. You can explore each asset to understand its purpose and select which assets AIRO builds.
 
 ![Blueprint builder view of an Employee Onboarding Automation blueprint, showing recipe, function, and API cards connected by CALLS relationships](/assets/blueprints.wyCCLXYE.png)_A blueprint with the assets AIRO identified for the solution_
 
-## Key benefits
+Refer to [Create your first blueprint](/en/airo/blueprints/create) for a walkthrough that builds an employee onboarding solution.
 
-Blueprints help you:
+## View blueprints
 
-- Skip manual planning for complex automation projects
-- Apply Workato best practices from the start
-- Identify required assets before you begin building
-- Turn high-level requirements into an actionable implementation plan in minutes
+You can view your blueprints by going to **Projects > Blueprints**.
 
-## Access your blueprints
-
-You can access your blueprints by going to **Projects > Blueprints**.
-
-![Access blueprints at the workspace level](/assets/blueprints-sidebar.CacrSRrt.png)_Access blueprints at the workspace level_
+![View blueprints at the workspace level](/assets/blueprints-sidebar.CacrSRrt.png)_View blueprints at the workspace level_
 
 Alternatively, select a specific project or folder and click the **Blueprints** tab.
 
-![Access blueprints from within your project](/assets/blueprints-in-projects.Dbm6OjRt.png)_Access blueprints from within your project_
+![View blueprints from within your project](/assets/blueprints-in-projects.Dbm6OjRt.png)_View blueprints from within your project_
 
-## Supported assets
+Refer to [Manage blueprints](/en/airo/blueprints/manage) to rename, delete, sort, and filter them.
+
+## Which assets can AIRO build from a blueprint?
 
 AIRO can build the following assets from blueprints:
 
@@ -59,9 +52,9 @@ AIRO can't build the following asset types from a blueprint:
 > 
 > Knowledge bases aren't part of a blueprint's asset map. If a genie in the blueprint requires a knowledge base, AIRO creates or updates it separately and attaches it directly to the genie.
 
-## Build order
+## How does AIRO decide what to build first?
 
-Assets in a blueprint are built in dependency order, not the order in which they appear in the blueprint. For example:
+AIRO builds assets in dependency order, not the order in which they appear in the blueprint. For example:
 
 - Recipe functions are built before recipes that call them.
 - Skills are built before genies or MCP servers that use them.

@@ -1,5 +1,43 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-25T13:05:10+00:00 (incremental)
+
+- Pages: 4580 | added 9 | changed 18 | removed 4
+- Added:
+  - https://docs.workato.com/en/airo/build/mcp-servers.md
+  - https://docs.workato.com/en/connectors/deepgram.md
+  - https://docs.workato.com/en/connectors/deepgram/analyze-text-action.md
+  - https://docs.workato.com/en/connectors/deepgram/generate-speech-action.md
+  - https://docs.workato.com/en/connectors/deepgram/list-models-action.md
+  - https://docs.workato.com/en/connectors/deepgram/transcribe-audio-action.md
+  - https://docs.workato.com/en/oem/oem-api/insights.md
+  - https://docs.workato.com/en/workato-api/insights-catalog.md
+  - https://docs.workato.com/en/workato-api/insights.md
+- Changed:
+  - https://docs.workato.com/en/ai-gateway.md
+  - https://docs.workato.com/en/ai-gateway/fireworks.md
+  - https://docs.workato.com/en/airo.md
+  - https://docs.workato.com/en/airo/acumen.md
+  - https://docs.workato.com/en/airo/blueprints.md
+  - https://docs.workato.com/en/airo/build/recipes.md
+  - https://docs.workato.com/en/airo/chat.md
+  - https://docs.workato.com/en/airo/homepage.md
+  - https://docs.workato.com/en/airo/knowledge-bases.md
+  - https://docs.workato.com/en/airo/knowledge/manage.md
+  - https://docs.workato.com/en/airo/mcp.md
+  - https://docs.workato.com/en/control-plane.md
+  - https://docs.workato.com/en/limits.md
+  - https://docs.workato.com/en/mcp/mcp-gateway.md
+  - https://docs.workato.com/en/oem/oem-api/limits.md
+  - https://docs.workato.com/en/oem/oem-api/resources.md
+  - https://docs.workato.com/en/workato-api/limits.md
+  - https://docs.workato.com/en/workato-api/resources.md
+- Removed:
+  - https://docs.workato.com/en/airo/usage-inspiration/automate-to-do-list.md
+  - https://docs.workato.com/en/airo/usage-inspiration/declutter-inbox.md
+  - https://docs.workato.com/en/airo/usage-inspiration/find-unused-assets.md
+  - https://docs.workato.com/en/airo/usage-inspiration/form-to-slack-alert.md
+
 ## 2026-11-24T13:51:38+00:00 (incremental)
 
 - Pages: 4575 | added 2 | changed 6 | removed 0

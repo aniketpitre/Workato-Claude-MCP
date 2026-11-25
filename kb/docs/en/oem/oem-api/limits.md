@@ -62,6 +62,7 @@ In addition, Embedded API resources have the following rate and payload quotas:
 | **Environment roles** | All[](/en/oem/oem-api/environment-roles.html) | All [Environment roles](/en/oem/oem-api/environment-roles.html) endpoints | 10 requests per second |
 | **Event streams** | All | All [Event streams](/en/oem/oem-api/event-streams.html) endpoints | 60 requests per minute |
 | **Folders** | All | All [Folders](/en/oem/oem-api/folders.html) endpoints | 60 requests per minute |
+| **Insights** | All | All [Insights](/en/oem/oem-api/insights.html) endpoints | 60 requests per minute |
 | **Jobs** | POST | Repeat jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/repeat\_jobs](/en/oem/oem-api/jobs.html#repeat-jobs) | 25 jobs per request |
 | **Jobs** | POST | Repeat jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/repeat\_jobs](/en/oem/oem-api/jobs.html#repeat-jobs) | 1 request per second |
 | **Jobs** | POST | Cancel jobs: [/api/managed\_users/:managed\_user\_id/recipes /:recipe\_id/cancel\_jobs](/en/oem/oem-api/jobs.html#cancel-jobs) | 25 jobs per request |

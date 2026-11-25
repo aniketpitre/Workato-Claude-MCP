@@ -15,7 +15,7 @@ Control plane provides a centralized identity for governance for multiple worksp
 
 > **FEATURE AVAILABILITY**
 > 
-> Control plane is available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
+> Control plane is available to select customers. Contact your Customer Success Representative to confirm whether it is available to you.
 
 ## What Control plane does
 

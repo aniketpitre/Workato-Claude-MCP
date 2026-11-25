@@ -12,7 +12,7 @@ Model Gateway is a single point of control between your applications and LLM pro
 
 > **FEATURE AVAILABILITY**
 > 
-> Model Gateway is available to select customers. Contact your Customer Success Representative to confirm whether it is available in your workspace.
+> Model Gateway is available to select customers. Contact your Customer Success Representative to confirm whether it is available to you.
 
 The following diagram shows the path a request takes through Model Gateway:
 

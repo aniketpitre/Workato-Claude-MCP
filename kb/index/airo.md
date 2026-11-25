@@ -1,12 +1,12 @@
 # AIRO
 
-27 pages. Paths are relative to the repository root.
+24 pages. Paths are relative to the repository root.
 
 
 ## AIRO
 
 - **AIRO** - `kb/docs/en/airo.md` - AIRO is Workato's AI automation engineer that transforms intent into production-ready business solutions.
-- **AIRO - Acumen** - `kb/docs/en/airo/acumen.md` - Acumen monitors your Workato workspace, raises active incidents, assists with troubleshooting, and forecasts usage.
+- **AIRO - Acumen** - `kb/docs/en/airo/acumen.md` - Use Acumen to monitor your workspace, investigate incidents and failures, and forecast usage.
 - **AIRO - Blueprints** - `kb/docs/en/airo/blueprints.md` - Blueprints transform business requirements into implementation plans. AIRO recommends the Workato asset that fits each requirement.
 - **AIRO - Chat with AIRO** - `kb/docs/en/airo/chat.md` - Chat with AIRO from anywhere in Workato. AIRO retains conversation context across pages.
 - **AIRO - Homepage** - `kb/docs/en/airo/homepage.md` - The AIRO homepage is the default landing page and includes an input bar, active incidents, recent work, and shortcuts for creating assets.
@@ -34,19 +34,13 @@
 - **AIRO - Build custom connectors with AIRO** - `kb/docs/en/airo/build/custom-connectors.md` - Use AIRO to build, review, and release Workato custom connectors, either directly in Workato or through an MCP client such as Claude Code, Claude Desktop, or Cursor.
 - **AIRO - Build data tables with AIRO Connect** - `kb/docs/en/airo/build/data-tables.md` - Create data tables and define their schemas with AIRO Connect.
 - **AIRO - Build genies with AIRO** - `kb/docs/en/airo/build/genies.md` - Create a genie, its knowledge base, and its skills by describing them to AIRO, in Workato or through an MCP client.
+- **AIRO - Build MCP servers with AIRO** - `kb/docs/en/airo/build/mcp-servers.md` - Create an MCP server and tools by describing the skills and MCP server to AIRO in Workato or through AIRO Connect.
 - **AIRO - Build recipes with AIRO** - `kb/docs/en/airo/build/recipes.md` - Describe a use case in plain language and AIRO builds or modifies the recipe in the editor.
 
 ## Chat with AIRO
 
 - **AIRO - Manage AIRO chat history** - `kb/docs/en/airo/chat/chat-history.md` - Revisit, rename, and delete past conversations with AIRO from the chat panel or the All chats list.
 
-## Usage inspiration
-
-- **AIRO - Automate your to-do list** - `kb/docs/en/airo/usage-inspiration/automate-to-do-list.md` - Use AIRO to build a solution that turns meeting notes into Trello cards and a Slack summary.
-- **AIRO - Declutter your inbox** - `kb/docs/en/airo/usage-inspiration/declutter-inbox.md` - Use AIRO to build a solution that sorts a Gmail inbox into Slack alerts and labeled folders.
-- **AIRO - Find unused assets** - `kb/docs/en/airo/usage-inspiration/find-unused-assets.md` - Use AIRO to find idle recipes, disconnected connections, and unused genies or knowledge bases in your workspace.
-- **AIRO - Build a form-to-Slack alert** - `kb/docs/en/airo/usage-inspiration/form-to-slack-alert.md` - Use AIRO to build a solution that sends a Slack alert when someone submits a Google Form.
-
 ## What AIRO knows
 
-- **AIRO - AIRO Playbooks** - `kb/docs/en/airo/knowledge/manage.md` - Upload, preview, search, and delete playbooks that AIRO references when answering questions.
+- **AIRO - AIRO Playbooks** - `kb/docs/en/airo/knowledge/manage.md` - Add, view, search, and delete the playbooks AIRO references when answering questions.

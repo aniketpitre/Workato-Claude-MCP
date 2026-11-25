@@ -32,7 +32,7 @@ Beneath the input bar, suggested prompt chips help you get started quickly.
 
 Each new conversation with AIRO starts a dedicated chat thread. Refer to [Manage AIRO chat history](/en/airo/chat/chat-history) to return to previous conversations.
 
-### What can AIRO help me with?
+### What can you ask AIRO?
 
 Here are some example queries to help you get started:
 
@@ -63,13 +63,7 @@ Select **View incident** to investigate an incident through AIRO's chat interfac
 
 ![Active incidents](/assets/smart-recommendations.CHrYSiRb.png)_Active incidents_
 
-### What Acumen monitors
-
-Acumen monitors the genies, MCP servers, APIs, and recipes in your workspace for:
-
-- **Silent failures** — when an automation suddenly stops processing jobs even though no error has been thrown (for example, a trigger has stalled, a webhook has rejected an incorrect schema, or an upstream system has stopped sending events).
-- **Failure patterns** — bursts of job errors, repeated connection failures, retry storms, or schema mismatches affecting your recipes.
-- **Unusual volume** — sudden spikes or drops in job throughput compared to historical baselines.
+Refer to [Acumen](/en/airo/acumen) for what it monitors and how it traces an issue to its root cause.
 
 ### View all incidents
 

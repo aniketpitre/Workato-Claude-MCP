@@ -328,6 +328,16 @@ Base URL: `https://data-tables.workato.com`, except [Upload file](/en/workato-ap
 
 * * *
 
+## Insights
+
+| Type | Resource | Description |
+| --- | --- | --- |
+| GET | [/api/insights/v1/tables](/en/workato-api/insights#list-insights-schema-tables) | List the Insights tables the API client can read. |
+| POST | [/api/insights/v1/schema](/en/workato-api/insights#get-insights-table-columns) | Return the columns of the named Insights tables. |
+| POST | [/api/insights/v1/query](/en/workato-api/insights#execute-insights-sql-query) | Run a read-only SQL query and return the result as CSV or JSON. |
+
+* * *
+
 ## Jobs
 
 | Type | Resource | Description |
