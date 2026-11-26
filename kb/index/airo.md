@@ -39,7 +39,7 @@
 
 ## Chat with AIRO
 
-- **AIRO - Manage AIRO chat history** - `kb/docs/en/airo/chat/chat-history.md` - Revisit, rename, and delete past conversations with AIRO from the chat panel or the All chats list.
+- **AIRO - Manage chats with AIRO** - `kb/docs/en/airo/chat/manage.md` - View, rename, delete, and copy the ID of past AIRO conversations from All chats or an open chat.
 
 ## What AIRO knows
 

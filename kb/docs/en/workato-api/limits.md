@@ -56,7 +56,6 @@ In addition, Developer API resources have the following rate and payload quotas:
 | **Event streams public API** | All | All [Event streams public API](/en/workato-api/pubsub.html) endpoints | 60 requests per minute |
 | **Event streams public API** | All | All [Event streams public API](/en/workato-api/pubsub.html) endpoints | Maximum payload size:​ 10 MB |
 | **Folders** | All | All [Folders](/en/workato-api/folders.html) endpoints | 60 requests per minute |
-| **Insights** | All | All [Insights](/en/workato-api/insights.html) endpoints | 60 requests per minute |
 | **Jobs** | POST | Repeat jobs: [/api/recipes/:recipe\_id/repeat\_jobs](/en/workato-api/jobs.html#repeat-jobs) | 25 jobs per request |
 | **Jobs** | POST | Repeat jobs: [/api/recipes/:recipe\_id/repeat\_jobs](/en/workato-api/jobs.html#repeat-jobs) | 1 request per second |
 | **Jobs** | POST | Cancel jobs: [/api/recipes/:recipe\_id/cancel\_jobs](/en/workato-api/jobs.html#cancel-jobs) | 25 jobs per request |

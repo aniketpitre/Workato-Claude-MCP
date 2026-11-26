@@ -13,6 +13,12 @@ The Parse EDI action enables you to convert EDI documents into Workato datapills
 
 To use this action you must select the EDI standard, provide a sample document, and the EDI document content to parse. A sample document is essential for Workato to generate the schema that is then used in configuring downstream actions of the recipe.
 
+> **FILE SIZE**
+> 
+> The **Parse EDI** action supports EDI files up to 2.5 MB. Files up to 5 MB may also be processed depending on the number of segments and line items they contain. Files larger than 5 MB aren't supported. Contact your Customer Success Manager to learn about a Workato EDI solution for larger files or high-volume workflows.
+> 
+> Refer to [EDI tools by Workato quotas](/en/features/edi/edi-by-workato#limits) for more information.
+
 ## Input
 
 | Input field | Description |

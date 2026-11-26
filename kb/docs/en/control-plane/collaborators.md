@@ -7,6 +7,36 @@ description: Manage collaborators who help govern workspaces within your Control
 
 Administrators can invite and manage collaborators who help govern workspaces within the Control plane. Control plane collaborators are separate from workspace collaborators. Linking a workspace to your Control plane doesn't automatically add collaborators within that workspace to the Control plane.
 
+## Collaborator roles
+
+Each collaborator has one role. Control plane provides the following roles:
+
+- **Admin**: Full administrative access to the Control plane, including linking and unlinking workspaces.
+- **Policy admin**: Read-only access to the Control plane. Policy admins can't access Activity audit.
+- **Auditor**: Read-only access to the Control plane, including the list of linked workspaces.
+
+Role changes and collaborator removals take effect within 60 seconds.
+
+> **AT LEAST ONE ADMIN REQUIRED**
+> 
+> Control plane must always have at least one collaborator with the **Admin** role. You can't remove the last Admin or change their role. Assign the **Admin** role to another collaborator first.
+
+The following table lists the access each role has to Control plane features:
+
+| Feature | Admin | Policy admin | Auditor |
+| --- | --- | --- | --- |
+| [AI usage dashboard](/en/control-plane/ai-usage) | View | View | View |
+| [AI registry asset catalog](/en/control-plane/ai-registry#asset-catalog) | View, manage visibility | View | View |
+| [AI registry User portal settings](/en/control-plane/ai-registry#configure-user-portal-settings) | View, edit | View | View |
+| [Workspaces](/en/control-plane/manage-workspaces) | View, link and unlink, resend and cancel requests | View | View |
+| [End users](/en/control-plane/add-end-users) | View, create, edit, delete, resend invitation, log out | View | View |
+| [End-user groups](/en/control-plane/user-groups) | View, create, edit, delete | View | View |
+| [SAML identity providers](/en/control-plane/user-groups#user-group-authentication) | View, create, edit, delete | View | View |
+| Collaborators | View, invite, edit, delete, resend invitation | View | View |
+| [Authentication](/en/control-plane/authentication) | View, edit | View | View |
+| [Subdomain](/en/control-plane/configure-subdomain) | View, edit | View | View |
+| [Activity audit](/en/control-plane/activity-audit) | View, export | No access | View, export |
+
 ## Invite a collaborator
 
 Complete the following steps to invite a collaborator to your control plane:

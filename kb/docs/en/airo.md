@@ -57,7 +57,7 @@ Refer to [Homepage](/en/airo/homepage) for more information.
 Use AIRO's conversational interface to get help, build automations, and manage workflows from anywhere in the platform.
 
 - Refer to [Chat](/en/airo/chat) to learn how to start conversations and maintain context across pages.
-- Refer to [Manage chat history](/en/airo/chat/chat-history) to organize multiple conversations and keep your AI interactions organized across different projects.
+- Refer to [Manage chats with AIRO](/en/airo/chat/manage) to organize multiple conversations and keep your AI interactions organized across different projects.
 
 ![Chat with AIRO](/assets/chat-with-airo.iekj-KoA.png)_Chat with AIRO_
 

@@ -1,6 +1,6 @@
 # Embedded API
 
-42 pages. Paths are relative to the repository root.
+40 pages. Paths are relative to the repository root.
 
 
 ## Embedded API
@@ -31,7 +31,6 @@
 - **Embedded API - Environment roles** - `kb/docs/en/oem/oem-api/environment-roles.md` - Reference for the Embedded API environment roles endpoints to list, create, update, and delete environment roles in customer workspaces.
 - **Embedded API - Event streams** - `kb/docs/en/oem/oem-api/event-streams.md` - Reference for the Embedded API event streams resource to list, create, update, purge, and delete event topics in customer workspaces.
 - **Embedded API - Folders** - `kb/docs/en/oem/oem-api/folders.md` - Reference for the Embedded API folders resource to manage folders and projects within customer workspaces programmatically.
-- **Embedded API - Insights** - `kb/docs/en/oem/oem-api/insights.md` - Reference for the Embedded API endpoints to discover queryable Insights tables and run read-only SQL queries against a customer workspace.
 - **Embedded API - Jobs** - `kb/docs/en/oem/oem-api/jobs.md` - Reference for the Embedded API jobs endpoints to list, resume, repeat, and cancel jobs for recipes in customer workspaces.
 - **Embedded API - JWT direct link configurations** - `kb/docs/en/oem/oem-api/jwt-direct-link-configurations.md` - Reference for the Embedded API endpoint to update the JWT signature verification key used for JWT direct linking.
 - **Embedded API - Lookup tables** - `kb/docs/en/oem/oem-api/lookup-tables.md` - Reference for the Embedded API lookup tables resource to list, create, and delete tables and to add, update, and remove rows.
@@ -49,4 +48,3 @@
 - **Embedded API - Tag assignments** - `kb/docs/en/oem/oem-api/tag-assignments.md` - Reference for the Embedded API endpoint that applies tags to or removes tags from recipes and connections in a customer workspace.
 - **Embedded API - Customer workspace collaborators** - `kb/docs/en/oem/oem-api/team.md` - Reference for the Embedded API endpoint that invites a collaborator to a customer workspace and assigns environment or legacy roles.
 - **Embedded API - Test Automation** - `kb/docs/en/oem/oem-api/test-automation.md` - Reference for Embedded API endpoints to run test cases, list a recipe's test cases, and check test run status in customer workspaces.
-- **Insights data catalog** - `kb/docs/en/workato-api/insights-catalog.md` - Insights table descriptions, row grain, join keys, and filter values for the Workato Developer API and Embedded API.

@@ -1,5 +1,37 @@
 # Workato docs knowledge base - change log
 
+## 2026-11-26T12:45:19+00:00 (incremental)
+
+- Pages: 4578 | added 2 | changed 19 | removed 4
+- Added:
+  - https://docs.workato.com/en/airo/chat/manage.md
+  - https://docs.workato.com/en/control-plane/activity-audit.md
+- Changed:
+  - https://docs.workato.com/en/airo.md
+  - https://docs.workato.com/en/airo/chat.md
+  - https://docs.workato.com/en/airo/homepage.md
+  - https://docs.workato.com/en/connectors/limits.md
+  - https://docs.workato.com/en/control-plane.md
+  - https://docs.workato.com/en/control-plane/authentication.md
+  - https://docs.workato.com/en/control-plane/collaborators.md
+  - https://docs.workato.com/en/control-plane/get-started.md
+  - https://docs.workato.com/en/control-plane/manage-workspaces.md
+  - https://docs.workato.com/en/control-plane/preference-settings.md
+  - https://docs.workato.com/en/features/edi/edi-by-workato.md
+  - https://docs.workato.com/en/features/edi/generate-edi-action.md
+  - https://docs.workato.com/en/features/edi/parse-edi-action.md
+  - https://docs.workato.com/en/limits.md
+  - https://docs.workato.com/en/oem/oem-api/limits.md
+  - https://docs.workato.com/en/oem/oem-api/resources.md
+  - https://docs.workato.com/en/organization-workspaces.md
+  - https://docs.workato.com/en/workato-api/limits.md
+  - https://docs.workato.com/en/workato-api/resources.md
+- Removed:
+  - https://docs.workato.com/en/airo/chat/chat-history.md
+  - https://docs.workato.com/en/oem/oem-api/insights.md
+  - https://docs.workato.com/en/workato-api/insights-catalog.md
+  - https://docs.workato.com/en/workato-api/insights.md
+
 ## 2026-11-25T13:05:10+00:00 (incremental)
 
 - Pages: 4580 | added 9 | changed 18 | removed 4

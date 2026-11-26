@@ -17,6 +17,12 @@ Press Shift+Enter to insert a line break without sending, so you can write a mul
 
 ![AIRO in the sidebar](/assets/button.507rxgrO.png)_AIRO in the sidebar_
 
+## Resize the chat panel
+
+Drag the top or left edge of the AIRO chat panel to resize it.
+
+![Resized AIRO chat panel](/assets/resize-chat.CyogTdjd.gif)_Resized AIRO chat panel_
+
 ## What context does AIRO have?
 
 AIRO automatically understands your context based on what you're currently viewing or working on.
@@ -107,6 +113,8 @@ You can ask AIRO to file a support ticket when its answers don't resolve your re
 AIRO drafts the ticket with relevant context from the conversation, shows you a summary to review or edit, and submits the ticket after you confirm the summary.
 
 You can also ask AIRO to list open tickets, check a ticket's status, or update its details in chat.
+
+Include the [conversation ID](/en/airo/chat/manage#copy-a-conversation-id) when you file the support ticket.
 
 ![AIRO chat response showing a support ticket's status, priority, and a link to view it on Freshdesk.](/assets/manage-support-tickets.BYM4GbiF.png)_Ticket status and details shown in chat_
 

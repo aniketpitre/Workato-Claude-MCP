@@ -1,8 +1,6 @@
 ---
 url: 'https://docs.workato.com/en/control-plane/preference-settings.md'
-description: >-
-  Use Control plane to scale a workspace-level identity across an organization
-  with multiple workspaces.
+description: 'Customize your Control plane preferences, such as the theme.'
 ---
 
 # Set your preferences

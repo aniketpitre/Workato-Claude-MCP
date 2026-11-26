@@ -30,7 +30,7 @@ Provide input as text, or attach files by clicking the attach button or dragging
 
 Beneath the input bar, suggested prompt chips help you get started quickly.
 
-Each new conversation with AIRO starts a dedicated chat thread. Refer to [Manage AIRO chat history](/en/airo/chat/chat-history) to return to previous conversations.
+Each new conversation with AIRO starts a dedicated chat thread. Refer to [Manage chats with AIRO](/en/airo/chat/manage) to return to previous conversations.
 
 ### What can you ask AIRO?
 

@@ -24,7 +24,7 @@ Learn more about [workspace provisioning](/en/user-accounts-and-teams/workspace-
 
 ## Control plane
 
-Use Control plane to scale a workspace-level identity across an organization with multiple workspaces. Control plane runs its own SAML SSO and SCIM provisioning independent of any workspace. This allows an enterprise organization to authenticate and auto-provision Control plane users directly against its own IdP. Refer to [Control plane](/en/control-plane) for more information.
+Use Control plane to govern AI across an organization with multiple workspaces. Link workspaces to Control plane to monitor AI usage, catalog and share AI assets, and manage who can access them from one place. Refer to [Control plane](/en/control-plane) for more information.
 
 ## Automation HQ
 

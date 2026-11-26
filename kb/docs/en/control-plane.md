@@ -1,17 +1,13 @@
 ---
 url: 'https://docs.workato.com/en/control-plane.md'
 description: >-
-  Use Control plane to scale a workspace-level identity across an organization
-  with multiple workspaces.
+  Use Control plane to catalog AI assets, control who can access them, and track
+  AI usage across your organization.
 ---
 
 # Control plane
 
-Control plane provides a centralized identity for governance for multiple workspaces. Control plane runs its own SAML SSO and SCIM provisioning independent of any workspace. This allows an enterprise organization to authenticate and auto-provision Control plane users directly against its own identity provider (IdP).
-
-> **CONTROL PLANE ISN'T A WORKSPACE**
-> 
-> Control plane isn't a workspace. Control plane doesn't provide the configuration or tools for teams to collaborate, build recipes, and deploy recipes for a department, level of business, or organization unit.
+Control plane is a central place to govern your organization's AI. It gives you a single catalog of AI assets, one set of policies that applies to them, control over who can access them, and visibility into how they're used. The governed assets include agents, MCP servers, and Model Gateway routes. Governance applies whether you build assets in Workato or route external AI clients through [Model Gateway](/en/ai-gateway).
 
 > **FEATURE AVAILABILITY**
 > 
@@ -19,12 +15,23 @@ Control plane provides a centralized identity for governance for multiple worksp
 
 ## What Control plane does
 
-Use Control plane to link multiple workspaces to a single identity for centralized policy management. The Control plane governs identity, roles, linked workspaces, policies, and audit trails. It doesn't govern assets, including recipes, connections, agents, or runtime configurations.
+You can use Control plane to perform the following actions:
+
+- **Catalog AI assets**: Publish agents, MCP servers, and Model Gateway routes to a central [AI registry](/en/control-plane/ai-registry). Teams discover and reuse published assets instead of rebuilding them.
+- **Control who can access assets**: Organize end users into [end-user groups](/en/control-plane/user-groups) with access to `Development`, `Test`, and `Production` environments. End users access published assets through the [User portal](/en/control-plane/ai-registry#configure-user-portal-settings), and MCP-compatible clients connect through the [Registry MCP](/en/control-plane/ai-registry#access-registry-mcp) endpoint.
+- **Authenticate through your identity provider (IdP)**: Require collaborators to sign in with SAML-based SSO and provision users with SCIM, JIT, or manual provisioning. Configure SAML identity providers for end-user groups and [share them with linked workspaces](/en/control-plane/user-groups#user-group-authentication).
+- **Enforce policies and guardrails**: Define policies once in Control plane and enforce them at Model Gateway, MCP Gateway, and Agent Gateway. Policies cover PII protection, content guardrails, and request, token, and cost limits. Attach a policy to your organization, a workspace, an environment, or an individual asset. When multiple policies apply, the most restrictive one wins. Refer to [Gateways](/en/ai-gateway/gateways) for more information.
+- **Track usage**: View AI token and request activity by workspace, model, route, identity, and consumer in [AI usage](/en/control-plane/ai-usage).
+- **Audit governance activity**: Review sign-ins, collaborator changes, workspace link requests, and SAML SSO and SCIM changes in [Activity audit](/en/control-plane/activity-audit), and export them as CSV or JSON.
+
+## How Control plane works
+
+Control plane separates governance from execution. Your workspaces build and run recipes, genies, and MCP servers. Control plane holds the registry, policies, access settings, usage data, and activity audit for those assets. Policy changes propagate to the gateways without changes to the assets they govern.
 
 ```mermaid
 block
 space
-  D ("<strong>Control plane</strong><br/>for centralized policy management")
+  D ("<strong>Control plane</strong><br/>AI usage, AI registry, and access")
   space
 columns 1
   block:ID
@@ -49,28 +56,12 @@ class D WorkatoBlue
 class A,E WorkatoPink
 ```
 
-## AI registry
+> **CONTROL PLANE ISN'T A WORKSPACE**
+> 
+> Control plane isn't a workspace. Control plane doesn't provide the configuration or tools for teams to collaborate, build recipes, and deploy recipes for a department, level of business, or organization unit.
 
-Control plane includes a centralized AI registry that provides a catalog of your AI assets, including [agents](/en/agentic/agent-studio/genies-configuration), [MCP servers](/en/mcp/mcp-servers), and AI model [routes](/en/ai-gateway/routes#create-a-route).
+## Get started
 
-Control plane AI registry also provides access control through a User portal and Registry MCP endpoint.
-
-Refer to [Control plane AI registry](/en/control-plane/ai-registry) for more information.
-
-## Subdomain
-
-You must configure a subdomain to provide end users with access to the Control plane. Refer to [Configure subdomain](/en/control-plane/configure-subdomain) for more information.
-
-## Link workspaces
-
-You must link workspaces to your Control plane to enable centralized identity governance. Refer to [Link workspaces to Control plane](/en/control-plane/manage-workspaces) for more information.
-
-## Collaborators and end users
-
-Control plane has two types of users that administrators must manage: collaborators and end users.
-
-Collaborators help govern workspaces within Control plane. Administrators invite collaborators, assign each collaborator a role, and manage privileges in **Control plane settings > Collaborators**. Control plane collaborators are separate from workspace collaborators, so linking a workspace to Control plane doesn't add its collaborators to Control plane. Refer to [Collaborators](/en/control-plane/collaborators) for more information.
-
-End users access Control plane through your organization's subdomain to use available AI assets. Administrators add and manage end users in **End user access**. Administrators also define end-user environment access for `Development`, `Test`, and `Production` and assign end users to environment-specific end-user groups. Refer to [Add an end user](/en/control-plane/add-end-users) and [End-user group management](/en/control-plane/user-groups) for more information.
+Refer to [Get started with Control plane](/en/control-plane/get-started) for the key components of Control plane and the steps to configure your subdomain, connect your IdP, link workspaces, and add collaborators and end users.
 
 ---

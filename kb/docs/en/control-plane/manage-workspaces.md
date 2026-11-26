@@ -5,7 +5,7 @@ description: Use Control plane to link multiple workspaces.
 
 # Link workspaces
 
-You must link workspaces to your Control plane to enable centralized identity governance. A workspace provides a single location for projects, Workato [tools](/en/tools), such as data orchestration, event streams, and API platform, and other platform features, such as agents and MCP servers.
+Link workspaces to Control plane to include their AI assets in AI registry and their activity in AI usage. A workspace provides a single location for projects, Workato [Platform capabilities](/en/tools#platform-capabilities), such as Data orchestration, Event streams, and API platform, and other platform features, such as genies and MCP servers.
 
 > **CONTROL PLANE ISN'T A WORKSPACE**
 > 

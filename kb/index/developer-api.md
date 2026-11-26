@@ -1,6 +1,6 @@
 # Developer API
 
-42 pages. Paths are relative to the repository root.
+41 pages. Paths are relative to the repository root.
 
 
 ## Developer API
@@ -31,7 +31,6 @@
 - **Developer API - Environment roles** - `kb/docs/en/workato-api/environment-roles.md` - Reference for the Workato environment roles API to list, retrieve, create, update, and delete environment roles in your workspace.
 - **Developer API - Event streams** - `kb/docs/en/workato-api/event-streams.md` - Reference for the Workato event streams API to publish and consume messages and create, list, update, purge, and delete event topics.
 - **Developer API - Folders** - `kb/docs/en/workato-api/folders.md` - Reference for the Workato folders API to list, create, update, and manage folders and projects in your workspace.
-- **Developer API - Insights** - `kb/docs/en/workato-api/insights.md` - Reference for the Workato Insights API to discover queryable Insights tables and run read-only SQL queries against your workspace data.
 - **Developer API - Jobs** - `kb/docs/en/workato-api/jobs.md` - Reference for the Workato jobs API to list recipe jobs, retrieve job metadata, resume a job, and repeat jobs programmatically.
 - **Developer API - Lookup tables** - `kb/docs/en/workato-api/lookup-tables.md` - Reference for the Workato lookup tables API to list, create, and delete tables and add, get, update, and remove rows programmatically.
 - **Developer API - MCP servers** - `kb/docs/en/workato-api/mcp-servers.md` - Reference for the Workato MCP servers API to create, update, and delete servers, assign tools and user groups, manage server policies, and manage hashed tokens.

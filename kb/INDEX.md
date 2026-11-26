@@ -17,10 +17,10 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 | API platform | 68 | [index/api-platform.md](index/api-platform.md) |
 | Organization & workspaces | 54 | [index/organization-workspaces.md](index/organization-workspaces.md) |
 | Workbot | 43 | [index/workbot.md](index/workbot.md) |
-| Embedded API | 42 | [index/embedded-api.md](index/embedded-api.md) |
 | On-prem | 42 | [index/on-prem.md](index/on-prem.md) |
-| Developer API | 42 | [index/developer-api.md](index/developer-api.md) |
 | Security and governance | 41 | [index/security-and-governance.md](index/security-and-governance.md) |
+| Developer API | 41 | [index/developer-api.md](index/developer-api.md) |
+| Embedded API | 40 | [index/embedded-api.md](index/embedded-api.md) |
 | Accelerators | 38 | [index/accelerators.md](index/accelerators.md) |
 | AgentX Support | 36 | [index/agentx-support.md](index/agentx-support.md) |
 | Use cases | 34 | [index/use-cases.md](index/use-cases.md) |
@@ -36,7 +36,7 @@ Search: `python3 kb/search.py "<query>"`. Read a page: open its path below.
 | Billing and usage | 19 | [index/billing-and-usage.md](index/billing-and-usage.md) |
 | Event streams | 18 | [index/event-streams.md](index/event-streams.md) |
 | User / Agent Identity | 15 | [index/user-agent-identity.md](index/user-agent-identity.md) |
-| Control plane | 12 | [index/control-plane.md](index/control-plane.md) |
+| Control plane | 13 | [index/control-plane.md](index/control-plane.md) |
 | Model Gateway | 11 | [index/model-gateway.md](index/model-gateway.md) |
 | MFT | 10 | [index/mft.md](index/mft.md) |
 | Copilots | 9 | [index/copilots.md](index/copilots.md) |

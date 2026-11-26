@@ -16,6 +16,12 @@ To use this action, you must provide the necessary data for the EDI document. Th
 - [Set up using transaction type](#transaction-type)
 - [Set up using a sample document](#sample-document)
 
+> **DOCUMENT SIZE**
+> 
+> Workato may fail to generate very large documents, such as an invoice with tens of thousands of line items or an interchange with thousands of transactions. Split large batches across multiple interchanges, or contact your Customer Success Manager to learn about a Workato EDI solution for high-volume workflows.
+> 
+> Refer to [EDI tools by Workato quotas](/en/features/edi/edi-by-workato#limits) for more information.
+
 ## Input
 
 | Input field | Description |

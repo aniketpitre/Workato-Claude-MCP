@@ -139,6 +139,15 @@ View PDF tools by Workato quotas
 | Merge PDF action maximum input | 50 files, 100 MB combined |
 | Split PDF action maximum output | 50 output files |
 
+### EDI tools by Workato quotas
+
+View EDI tools by Workato quotas
+
+| Description | Quota | Notes |
+| --- | --- | --- |
+| Parse EDI action supported file size | 2.5 MB | Files up to 5 MB may be processed depending on the number of segments and line items they contain. Files larger than 5 MB aren't supported. Contact your Customer Success Manager to learn about a Workato EDI solution for larger files or high-volume workflows. |
+| Generate EDI action document size | Varies | Workato may fail to generate very large documents, such as an invoice with tens of thousands of line items or an interchange with thousands of transactions. Split large batches across multiple interchanges, or contact your Customer Success Manager to learn about a Workato EDI solution for high-volume workflows. |
+
 ### Dynamic schema building quotas
 
 View dynamic schema building quotas

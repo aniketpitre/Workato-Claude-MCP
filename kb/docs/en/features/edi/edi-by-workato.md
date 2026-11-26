@@ -28,5 +28,17 @@ You can access EDI tools by Workato from the recipe builder. It is a utility app
 2. Select the action you plan to use. Choose **Generate EDI** to create an EDI file or **Parse EDI** to parse an EDI file.
    
 3. Configure the corresponding action. Refer to our [Generate EDI action](/en/features/edi/generate-edi-action) or [Parse EDI action](/en/features/edi/parse-edi-action) documentation to learn more.
+   
+
+## Quotas
+
+EDI tools by Workato has the following quotas:
+
+| Description | Quota | Notes |
+| --- | --- | --- |
+| Parse EDI action supported file size | 2.5 MB | Files up to 5 MB may be processed depending on the number of segments and line items they contain. Files larger than 5 MB aren't supported. Contact your Customer Success Manager to learn about a Workato EDI solution for larger files or high-volume workflows. |
+| Generate EDI action document size | Varies | Workato may fail to generate very large documents, such as an invoice with tens of thousands of line items or an interchange with thousands of transactions. Split large batches across multiple interchanges, or contact your Customer Success Manager to learn about a Workato EDI solution for high-volume workflows. |
+
+Contact your Customer Success Manager to learn about the complete Workato EDI solution in partnership with [Orderful](https://www.workato.com/platform/b2b-edi) for larger files or high-volume workflows.
 
 ---

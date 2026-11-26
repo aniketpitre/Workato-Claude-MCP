@@ -1,15 +1,13 @@
 ---
 url: 'https://docs.workato.com/en/control-plane/authentication.md'
 description: >-
-  Use Control plane to manage a single identity for authentication across
-  multiple workspaces.
+  Configure how collaborators sign in to Control plane, including SAML-based SSO
+  through your identity provider.
 ---
 
 # Authentication
 
-Control plane allows you to manage a single identity for authentication across multiple workspaces.
-
-Collaborators sign in with their email address and password by default. You can enable SAML-based SSO to require collaborators to authenticate through your identity provider (IdP) for all domains or selected domains.
+Collaborators sign in to Control plane separately from your workspaces, with their email address and password by default. You can enable SAML-based SSO to require collaborators to authenticate through your identity provider (IdP) for all domains or selected domains.
 
 ## Set up a SAML-SSO provider
 
